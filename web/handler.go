@@ -1,0 +1,61 @@
+package web
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"github.com/f1shl3gs/manta"
+	"github.com/julienschmidt/httprouter"
+	"net/http"
+
+	"go.uber.org/zap"
+)
+
+var (
+	ErrParamsNotFound = errors.New("params not found")
+)
+
+func idFromRequestPath(r *http.Request) (manta.ID, error) {
+	params := httprouter.ParamsFromContext(r.Context())
+	if params == nil {
+		return 0, ErrParamsNotFound
+	}
+
+	return idFromParams(params)
+}
+
+// todo: move it to an independent file
+func idFromParams(params httprouter.Params) (manta.ID, error) {
+	var (
+		id  manta.ID
+		raw = params.ByName("id")
+	)
+
+	if err := id.DecodeFromString(raw); err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func orgIDFrom() {
+
+}
+
+func encodeResponse(ctx context.Context, w http.ResponseWriter, code int, res interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(code)
+
+	return json.NewEncoder(w).Encode(res)
+}
+
+func logEncodingError(log *zap.Logger, r *http.Request, err error) {
+	// If we encounter an error while encoding the response to an http request
+	// the best thing we can do is log that error, as we may have already written
+	// the headers for the http request in question.
+	log.Info("Error encoding response",
+		zap.String("path", r.URL.Path),
+		zap.String("method", r.Method),
+		zap.String("remote", r.RemoteAddr),
+		zap.Error(err))
+}

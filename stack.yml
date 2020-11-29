@@ -1,0 +1,11 @@
+kind: check
+name: abc
+spec:
+  name: abc
+
+---
+kind: dashboard
+name: dn
+spec:
+  name: abc
+

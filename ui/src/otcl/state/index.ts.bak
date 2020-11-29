@@ -1,0 +1,39 @@
+import {useState} from 'react';
+import constate from "constate";
+import useFetch from "use-http";
+
+import {Otcl} from 'types';
+import remoteDataState from "utils/rds";
+
+type State = {
+  initialOtcl?: Otcl
+}
+
+const emptyOtcl: Partial<Otcl> = {
+  id: '',
+  name: '',
+  desc: '',
+  content: ''
+}
+
+const [OtclProvider, useOtcl] = constate((initialState: State) => {
+    const [otcl, setOtcl] = useState(initialState.initialOtcl || emptyOtcl)
+    return {otcl, setOtcl}
+  },
+  value => {
+    return {...value}
+  }
+)
+
+function useOtcls(orgID: string) {
+  const {data, loading, error} = useFetch<[Otcl]>(`/api/v1/otcls?orgID=${orgID}`, {}, [])
+  const rds = remoteDataState(loading, error)
+  return {otcls: data, rds}
+}
+
+export {
+  OtclProvider,
+  useOtcl,
+  emptyOtcl,
+  useOtcls,
+}
