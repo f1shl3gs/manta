@@ -16,11 +16,13 @@
     "@welldone-software/why-did-you-render": "^6.0.0-rc.1",
     "codemirror": "^5.58.3",
     "constate": "^3.1.0",
+    "node-sass": "^5.0.0",
     "react": "^16.14.0",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "source-map-explorer": "^2.5.1",
     "use-http": "^1.0.15"
   },
   "scripts": {
@@ -30,7 +32,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
