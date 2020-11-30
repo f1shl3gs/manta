@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteMatch, withRouter } from 'react-router';
+import { useRouteMatch } from 'react-router';
 
 import {
   FontWeight,

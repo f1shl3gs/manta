@@ -4,7 +4,6 @@ import useFetch, {CachePolicies} from "shared/hooks/useFetch";
 
 import {Otcl} from 'types';
 import remoteDataState from "utils/rds";
-import {useOrgID} from "shared/state/organization/organization";
 
 const OtclPrefix = '/api/v1/otcls'
 
@@ -23,32 +22,32 @@ type State = {
 
 const [OtclProvider, useOtcls, useOtcl] = constate(
   ({orgID}: State) => {
-    const [mutation, setMutation] = useState<number>(0);
+    const [mutated, setMutated] = useState<number>(0);
     const [otcl, setOtcl] = useState<Otcl>(emptyOtcl);
+    const reload = useCallback(() => {
+      setMutated(mutated => mutated + 1)
+    }, []);
 
     return {
       otcl,
       setOtcl,
       orgID,
-      mutation,
-      setMutation
+      reload,
+      mutated,
     }
   },
   // useOtcls
   value => {
-    const {mutation, setMutation, orgID} = value;
-    const {data, error, loading} = useFetch<[Otcl]>(`/api/v1/otcls?orgID=${value.orgID}`,
-      {}, [
-        orgID, mutation
-      ])
+    const {orgID, mutated} = value;
 
-    console.log('data', data)
+    const {data, error, loading} = useFetch(`${OtclPrefix}?orgID=${orgID}`, {
+      cachePolicy: CachePolicies.NO_CACHE,
+    }, [mutated])
 
-    const rds = remoteDataState(loading, error)
     return {
-      rds,
+      reload: value.reload,
       otcls: data,
-      reload: useCallback(() => setMutation(mutation + 1), [mutation])
+      rds: remoteDataState(loading, error)
     }
   },
   // useOtcl
@@ -60,48 +59,9 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
   }
 )
 
-const useOtclV2 = (id: string) => {
-  const orgID = useOrgID();
-  const {reload} = useOtcls();
-  const {otcl, setOtcl} = useOtcl();
-  const {error, loading, post, patch, del} = useFetch(`/api/v1/otcls/${id}`, {
-    cachePolicy: CachePolicies.NO_CACHE,
-    interceptors: {
-      response: async ({response, options}) => {
-        if (options.method !== 'GET') {
-          reload()
-        }
-
-        // note: `response.data` is equivalent to `await response.json()`
-        return response // returning the `response` is important
-      }
-    }
-  })
-  const rds = remoteDataState(loading, error)
-
-  return {
-    otcl,
-    rds,
-    post: useCallback(() => {
-      return post({
-        orgID,
-        name: otcl.name,
-        desc: otcl.desc,
-        content: otcl.content,
-      })
-    }, [otcl]),
-    patch: useCallback(() => {
-      return patch(otcl)
-    }, [otcl]),
-    del: useCallback(() => {
-      return del()
-    }, [id])
-  }
-}
-
 export {
   OtclProvider,
   useOtcls,
-  emptyOtcl,
   useOtcl,
+  emptyOtcl,
 }

@@ -71,15 +71,13 @@ const Otcl: React.FC = () => {
   }, [orgID]);
 
   return (
-    <>
+    <OtclProvider orgID={orgID}>
       <OtclPage onCreate={onCreate} />
-      <OtclProvider orgID={orgID}>
-        <Switch>
-          <Route path={`${otclsPrefix}/new`} component={OtclCreate} />
-          <Route path={`${otclsPrefix}/:otclID`} component={OtclEdit} />
-        </Switch>
-      </OtclProvider>
-    </>
+      <Switch>
+        <Route path={`${otclsPrefix}/new`} component={OtclCreate} />
+        <Route path={`${otclsPrefix}/:otclID`} component={OtclEdit} />
+      </Switch>
+    </OtclProvider>
   );
 };
 

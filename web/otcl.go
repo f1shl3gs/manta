@@ -2,13 +2,13 @@ package web
 
 import (
 	"encoding/json"
-	"github.com/f1shl3gs/manta/pkg/tracing"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 const (
@@ -35,6 +35,7 @@ func otclService(logger *zap.Logger, router *Router, b *Backend) {
 	h.HandlerFunc(http.MethodGet, otclsPrefix, h.getOtcls)
 	h.HandlerFunc(http.MethodPost, otclsPrefix, h.createOtcl)
 	h.HandlerFunc(http.MethodPatch, otclsIDPath, h.patchOtcl)
+	h.HandlerFunc(http.MethodDelete, otclsIDPath, h.deleteOtcl)
 }
 
 func (h *otclHandler) getOtcls(w http.ResponseWriter, r *http.Request) {
@@ -149,4 +150,22 @@ func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
 	if err := encodeResponse(ctx, w, http.StatusOK, otcl); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+func (h *otclHandler) deleteOtcl(w http.ResponseWriter, r *http.Request) {
+	var ctx = r.Context()
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.otclService.DeleteOtcl(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

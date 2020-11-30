@@ -19,10 +19,8 @@ import useFetch from "use-http";
 const Otcls: React.FC = props => {
   const orgID = useOrgID();
   const history = useHistory();
-  const {otcls, rds} = useOtcls(orgID);
-  const {del} = useFetch(`/api/v1/otcls/`, {})
-
-  console.log('otcls', otcls)
+  const {otcls, rds, reload} = useOtcls();
+  const {del} = useFetch(`/api/v1/otcls`, {})
 
   const context = useCallback((id: string): JSX.Element => {
     return (
@@ -34,7 +32,8 @@ const Otcls: React.FC = props => {
         onClick={() => {
           del(`${id}`)
             .then(() => {
-              console.log('success')
+              console.log('delete', id, "success")
+              reload()
             })
             .catch(() => {
               console.log('failed')

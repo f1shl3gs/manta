@@ -8,9 +8,9 @@ import {
   Form,
   Grid,
   Input,
-} from '@influxdata/clockface';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-import { useOtcl } from 'otcl/state';
+} from "@influxdata/clockface";
+import {UnControlled as ReactCodeMirror} from "react-codemirror2";
+import {useOtcl} from "otcl/state";
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
@@ -25,25 +25,28 @@ const options = {
   autoRefresh: true,
   theme: 'material',
   completeSingle: false,
-};
+}
 
 const notEmpty = (name: string): string | null => {
   if (!name) {
-    return 'Value cannot be empty';
+    return 'Value cannot be empty'
   }
 
-  return null;
-};
+  return null
+}
 
 type Props = {
-  onSubmit: () => void;
-  onDismiss: () => void;
-};
+  onSubmit: () => void
+  onDismiss: () => void
+}
 
-const OtclForm: React.FC<Props> = (props) => {
-  const { onSubmit, onDismiss } = props;
+const OtclForm: React.FC<Props> = props => {
+  const {
+    onSubmit,
+    onDismiss
+  } = props;
 
-  const { otcl, setOtcl } = useOtcl();
+  const {otcl, setOtcl} = useOtcl();
 
   return (
     <Form onSubmit={onSubmit}>
@@ -55,16 +58,18 @@ const OtclForm: React.FC<Props> = (props) => {
               value={otcl.name || ''}
               validationFunc={notEmpty}
             >
-              {(status) => (
+              {status => (
                 <Input
-                  value={otcl.name || ''}
+                  value={otcl.name}
                   name="name"
-                  onChange={(ev) =>
-                    setOtcl({
+                  onChange={(ev) => {
+                    const next = {
                       ...otcl,
-                      name: ev.target.value,
-                    })
-                  }
+                      name: ev.target.value
+                    }
+
+                    setOtcl(next)
+                  }}
                   titleText="Name"
                   placeholder="Name this Otcl"
                   autoFocus={true}
@@ -80,16 +85,23 @@ const OtclForm: React.FC<Props> = (props) => {
               value={otcl.desc || ''}
               validationFunc={notEmpty}
             >
-              {(status) => (
-                <Input
-                  value={otcl.desc || ''}
-                  name="desc"
-                  onChange={(v) => console.log('desc onchange', v)}
-                  titleText="Desc"
-                  placeholder="Discribe this Otcl"
-                  status={status}
-                />
-              )}
+              {
+                status => (
+                  <Input
+                    value={otcl.desc || ''}
+                    name="desc"
+                    onChange={(ev) => {
+                      setOtcl({
+                        ...otcl,
+                        desc: ev.target.value,
+                      })
+                    }}
+                    titleText="Desc"
+                    placeholder="Discribe this Otcl"
+                    status={status}
+                  />
+                )
+              }
             </Form.ValidationElement>
           </Grid.Column>
         </Grid.Row>
@@ -100,19 +112,21 @@ const OtclForm: React.FC<Props> = (props) => {
             value={otcl.content || ''}
             validationFunc={notEmpty}
           >
-            {(status) => (
-              <ReactCodeMirror
-                autoCursor={true}
-                options={options}
-                value={otcl.content}
-                onChange={(editor, data, value) => {
-                  setOtcl({
-                    ...otcl,
-                    content: value,
-                  });
-                }}
-              />
-            )}
+            {
+              status => (
+                <ReactCodeMirror
+                  autoCursor={true}
+                  options={options}
+                  value={otcl.content}
+                  onChange={(editor, data, value) => {
+                    setOtcl({
+                      ...otcl,
+                      content: value,
+                    })
+                  }}
+                />
+              )
+            }
           </Form.ValidationElement>
         </Grid.Row>
 
@@ -136,7 +150,7 @@ const OtclForm: React.FC<Props> = (props) => {
         </Grid.Row>
       </Grid>
     </Form>
-  );
-};
+  )
+}
 
-export default OtclForm;
+export default OtclForm
