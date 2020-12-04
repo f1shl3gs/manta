@@ -17,6 +17,7 @@ import Otcl from 'otcl';
 import { OrgProvider } from 'shared/state/organization/organization';
 import useFetch from 'use-http';
 import Todo from '../../components/Todo';
+import TracePage from "../../trace";
 
 type Props = RouteComponentProps<{ orgID: string }>;
 
@@ -36,9 +37,9 @@ const Org: React.FC<Props> = (props) => {
       <OrgProvider initialOrg={data}>
         <Switch>
           <Route path={`${orgPath}/otcls`} component={Otcl} />
+          <Route path={`${orgPath}/traces`} component={TracePage} />
           <Route path={`${orgPath}/metrics`} component={Todo} />
           <Route path={`${orgPath}/logs`} component={Todo} />
-          <Route path={`${orgPath}/traces`} component={Todo} />
           <Route path={`${orgPath}/alerting`} component={Todo} />
         </Switch>
       </OrgProvider>
