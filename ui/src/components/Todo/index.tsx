@@ -17,7 +17,7 @@ const Todo: React.FC = () => {
       type={Typeface.Rubik}
       weight={FontWeight.Bold}
       underline={false}
-      selectable={true}
+      selectable
     >
       Todo: {url}
     </Heading>

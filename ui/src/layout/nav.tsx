@@ -1,14 +1,6 @@
 import React from 'react';
 
-import {
-  Link,
-  matchPath,
-  RouteComponentProps,
-  useHistory,
-  useParams,
-  useRouteMatch,
-  withRouter,
-} from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   ComponentColor,
   Icon,

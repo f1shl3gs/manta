@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import {TraceSpan} from "../containers/jaeger/types";
+import { TraceSpan } from '../containers/jaeger/types';
 
 /**
  * Children state means whether spans are collapsed or not. Also provides some functions to manipulate that state.
@@ -37,7 +37,10 @@ export function useChildrenState() {
       }
       let nearestCollapsedAncestor: TraceSpan | undefined;
       const newChildrenHiddenIDs = spans.reduce((res, curSpan) => {
-        if (nearestCollapsedAncestor && curSpan.depth <= nearestCollapsedAncestor.depth) {
+        if (
+          nearestCollapsedAncestor &&
+          curSpan.depth <= nearestCollapsedAncestor.depth
+        ) {
           res.add(nearestCollapsedAncestor.spanID);
           if (curSpan.hasChildren) {
             nearestCollapsedAncestor = curSpan;
@@ -100,7 +103,10 @@ export function useChildrenState() {
   };
 }
 
-function shouldDisableCollapse(allSpans: TraceSpan[], hiddenSpansIds: Set<string>) {
-  const allParentSpans = allSpans.filter(s => s.hasChildren);
+function shouldDisableCollapse(
+  allSpans: TraceSpan[],
+  hiddenSpansIds: Set<string>
+) {
+  const allParentSpans = allSpans.filter((s) => s.hasChildren);
   return allParentSpans.length === hiddenSpansIds.size;
 }

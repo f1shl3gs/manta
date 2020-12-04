@@ -28,20 +28,20 @@ const OtclOverlay: React.FC<Props> = (props) => {
   };
 
   return (
-    <Overlay visible={true}>
+    <Overlay visible>
       <Overlay.Container maxWidth={800}>
         <Overlay.Header
-          title={'new'}
+          title="new"
           onDismiss={() => {
             console.log('dismiss');
           }}
         >
-          <Input placeholder={'New'} />
+          <Input placeholder="New" />
         </Overlay.Header>
 
         <Overlay.Body>
           <ReactCodeMirror
-            autoCursor={true}
+            autoCursor
             options={options}
             value={value}
             onChange={(value) => {
@@ -53,7 +53,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
         </Overlay.Body>
 
         <Overlay.Footer>
-          <Button text={'Close'} onClick={onDismiss} />
+          <Button text="Close" onClick={onDismiss} />
         </Overlay.Footer>
       </Overlay.Container>
     </Overlay>

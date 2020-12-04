@@ -8,23 +8,35 @@ import { useCallback, useState } from 'react';
  * Ideally would be changed to trace view internal state.
  */
 export function useHoverIndentGuide() {
-  const [hoverIndentGuideIds, setHoverIndentGuideIds] = useState(new Set<string>());
+  const [hoverIndentGuideIds, setHoverIndentGuideIds] = useState(
+    new Set<string>()
+  );
 
-  const addHoverIndentGuideId = useCallback(function addHoverIndentGuideId(spanID: string) {
-    setHoverIndentGuideIds(prevState => {
+  const addHoverIndentGuideId = useCallback(function addHoverIndentGuideId(
+    spanID: string
+  ) {
+    setHoverIndentGuideIds((prevState) => {
       const newHoverIndentGuideIds = new Set(prevState);
       newHoverIndentGuideIds.add(spanID);
       return newHoverIndentGuideIds;
     });
-  }, []);
+  },
+  []);
 
-  const removeHoverIndentGuideId = useCallback(function removeHoverIndentGuideId(spanID: string) {
-    setHoverIndentGuideIds(prevState => {
-      const newHoverIndentGuideIds = new Set(prevState);
-      newHoverIndentGuideIds.delete(spanID);
-      return newHoverIndentGuideIds;
-    });
-  }, []);
+  const removeHoverIndentGuideId = useCallback(
+    function removeHoverIndentGuideId(spanID: string) {
+      setHoverIndentGuideIds((prevState) => {
+        const newHoverIndentGuideIds = new Set(prevState);
+        newHoverIndentGuideIds.delete(spanID);
+        return newHoverIndentGuideIds;
+      });
+    },
+    []
+  );
 
-  return { hoverIndentGuideIds, addHoverIndentGuideId, removeHoverIndentGuideId };
+  return {
+    hoverIndentGuideIds,
+    addHoverIndentGuideId,
+    removeHoverIndentGuideId,
+  };
 }

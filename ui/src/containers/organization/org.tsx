@@ -17,7 +17,7 @@ import Otcl from 'otcl';
 import { OrgProvider } from 'shared/state/organization/organization';
 import useFetch from 'use-http';
 import Todo from '../../components/Todo';
-import TracePage from "../../trace";
+import TracePage from '../../trace';
 
 type Props = RouteComponentProps<{ orgID: string }>;
 

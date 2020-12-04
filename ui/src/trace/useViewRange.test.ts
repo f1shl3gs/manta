@@ -11,7 +11,9 @@ describe('useViewRange', () => {
     it('updates time', async () => {
       const { result } = renderHook(() => useViewRange());
       act(() => result.current.updateNextViewRangeTime({ cursor: 0.5 }));
-      expect(result.current.viewRange).toEqual({ time: { current: [0, 1], cursor: 0.5 } });
+      expect(result.current.viewRange).toEqual({
+        time: { current: [0, 1], cursor: 0.5 },
+      });
     });
   });
 
@@ -19,7 +21,9 @@ describe('useViewRange', () => {
     it('updates time', async () => {
       const { result } = renderHook(() => useViewRange());
       act(() => result.current.updateViewRangeTime(0.1, 0.2));
-      expect(result.current.viewRange).toEqual({ time: { current: [0.1, 0.2] } });
+      expect(result.current.viewRange).toEqual({
+        time: { current: [0.1, 0.2] },
+      });
     });
   });
 });

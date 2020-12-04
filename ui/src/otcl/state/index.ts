@@ -1,11 +1,11 @@
-import {useCallback, useState} from 'react';
-import constate from "constate";
-import useFetch, {CachePolicies} from "shared/hooks/useFetch";
+import { useCallback, useState } from 'react';
+import constate from 'constate';
+import useFetch, { CachePolicies } from 'shared/hooks/useFetch';
 
-import {Otcl} from 'types';
-import remoteDataState from "utils/rds";
+import { Otcl } from 'types';
+import remoteDataState from 'utils/rds';
 
-const OtclPrefix = '/api/v1/otcls'
+const OtclPrefix = '/api/v1/otcls';
 
 const emptyOtcl: Otcl = {
   id: '',
@@ -13,19 +13,19 @@ const emptyOtcl: Otcl = {
   desc: '',
   content: '',
   created: '',
-  modified: ''
-}
+  modified: '',
+};
 
 type State = {
-  orgID: string
-}
+  orgID: string;
+};
 
 const [OtclProvider, useOtcls, useOtcl] = constate(
-  ({orgID}: State) => {
+  ({ orgID }: State) => {
     const [mutated, setMutated] = useState<number>(0);
     const [otcl, setOtcl] = useState<Otcl>(emptyOtcl);
     const reload = useCallback(() => {
-      setMutated(mutated => mutated + 1)
+      setMutated((mutated) => mutated + 1);
     }, []);
 
     return {
@@ -34,34 +34,33 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
       orgID,
       reload,
       mutated,
-    }
+    };
   },
   // useOtcls
-  value => {
-    const {orgID, mutated} = value;
+  (value) => {
+    const { orgID, mutated } = value;
 
-    const {data, error, loading} = useFetch(`${OtclPrefix}?orgID=${orgID}`, {
-      cachePolicy: CachePolicies.NO_CACHE,
-    }, [mutated])
+    const { data, error, loading } = useFetch(
+      `${OtclPrefix}?orgID=${orgID}`,
+      {
+        cachePolicy: CachePolicies.NO_CACHE,
+      },
+      [mutated]
+    );
 
     return {
       reload: value.reload,
       otcls: data,
-      rds: remoteDataState(loading, error)
-    }
+      rds: remoteDataState(loading, error),
+    };
   },
   // useOtcl
-  value => {
+  (value) => {
     return {
       otcl: value.otcl,
       setOtcl: value.setOtcl,
-    }
+    };
   }
-)
+);
 
-export {
-  OtclProvider,
-  useOtcls,
-  useOtcl,
-  emptyOtcl,
-}
+export { OtclProvider, useOtcls, useOtcl, emptyOtcl };

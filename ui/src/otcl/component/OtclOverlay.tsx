@@ -1,5 +1,5 @@
 import React from 'react';
-import {Overlay} from '@influxdata/clockface';
+import { Overlay } from '@influxdata/clockface';
 
 type Props = {
   title: string;
@@ -8,16 +8,16 @@ type Props = {
 };
 
 const OtclOverlay: React.FC<Props> = (props) => {
-  const {title, children, onDismiss} = props;
+  const { title, children, onDismiss } = props;
 
   return (
-    <Overlay visible={true}>
+    <Overlay visible>
       <Overlay.Container maxWidth={800}>
-        <Overlay.Header title={title} onDismiss={onDismiss}/>
+        <Overlay.Header title={title} onDismiss={onDismiss} />
         <Overlay.Body>{children}</Overlay.Body>
       </Overlay.Container>
     </Overlay>
   );
 };
 
-export {OtclOverlay};
+export { OtclOverlay };

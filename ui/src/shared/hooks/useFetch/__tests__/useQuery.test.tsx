@@ -5,7 +5,7 @@
 //   cleanup,
 //   waitForElement
 // } from '@testing-library/react'
-import { useQuery } from '..'
+import { useQuery } from '..';
 
 // import { FetchMock } from "jest-fetch-mock"
 
@@ -32,7 +32,7 @@ import { useQuery } from '..'
  */
 describe('useQuery - general', (): void => {
   it('should be defined/exist when imported', (): void => {
-    expect(typeof useQuery).toBe('function')
-  })
-  console.log('TODO: useQuery')
-})
+    expect(typeof useQuery).toBe('function');
+  });
+  console.log('TODO: useQuery');
+});
