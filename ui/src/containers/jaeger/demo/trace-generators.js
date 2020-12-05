@@ -85,8 +85,8 @@ function attachReferences(spans, depth, spansPerLevel) {
 
 export default chance.mixin({
   trace({
-    // long trace
-    // very short trace
+    // long traces
+    // very short traces
     // average case
     numberOfSpans = chance.pickone([
       Math.ceil(chance.normal({ mean: 200, dev: 10 })) + 1,

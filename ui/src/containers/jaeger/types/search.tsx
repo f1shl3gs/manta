@@ -31,11 +31,11 @@ export type SearchQuery = {
  */
 export type TraceSummary = {
   /**
-   * Duration of trace in milliseconds.
+   * Duration of traces in milliseconds.
    */
   duration: number;
   /**
-   * Start time of trace in milliseconds.
+   * Start time of traces in milliseconds.
    */
   timestamp: number;
   traceName: string;
@@ -47,7 +47,7 @@ export type TraceSummary = {
 
 export type TraceSummaries = {
   /**
-   * Duration of longest trace in `traces` in milliseconds.
+   * Duration of longest traces in `traces` in milliseconds.
    */
   maxDuration: number;
   traces: TraceSummary[];

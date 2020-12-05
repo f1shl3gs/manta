@@ -91,7 +91,7 @@ export default function transformTraceData(data: TraceViewData | undefined): Tra
     const { startTime, duration, processID } = span;
     //
     let spanID = span.spanID;
-    // check for start / end time for the trace
+    // check for start / end time for the traces
     if (startTime < traceStartTime) {
       traceStartTime = startTime;
     }

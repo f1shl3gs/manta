@@ -34,7 +34,7 @@ it('getTraceId() should return the traceID', () => {
   expect(traceSelectors.getTraceId(generatedTrace)).toBe(generatedTrace.traceID);
 });
 
-it('hydrateSpansWithProcesses() should return the trace with processes on each span', () => {
+it('hydrateSpansWithProcesses() should return the traces with processes on each span', () => {
   const hydratedTrace = traceSelectors.hydrateSpansWithProcesses(generatedTrace);
 
   hydratedTrace.spans.forEach(span =>
@@ -119,11 +119,11 @@ it('getTraceDuration() should return the duration for the span', () => {
   expect(traceSelectors.getTraceDuration(generatedTrace)).toBe(generatedTrace.spans[0].duration);
 });
 
-it('getTraceTimestamp() should return the first timestamp for the conventional trace', () => {
+it('getTraceTimestamp() should return the first timestamp for the conventional traces', () => {
   expect(traceSelectors.getTraceTimestamp(generatedTrace)).toBe(generatedTrace.spans[0].startTime);
 });
 
-it('getTraceDepth() should determine the total depth of the trace tree', () => {
+it('getTraceDepth() should determine the total depth of the traces tree', () => {
   expect(traceSelectors.getTraceDepth(generatedTrace)).toBe(
     traceSelectors.getTraceSpanIdsAsTree(generatedTrace).depth - 1
   );
@@ -157,7 +157,7 @@ it('getSpanDepthForTrace() should determine the depth of a given span in the par
   testDepthCalc(generatedTrace.spans[Math.floor(generatedTrace.spans.length * 0.75)]);
 });
 
-it('getTraceServices() should return an unique array of all services in the trace', () => {
+it('getTraceServices() should return an unique array of all services in the traces', () => {
   const svcs = [...traceSelectors.getTraceServices(generatedTrace)].sort();
   const set = new Set(_values(generatedTrace.processes).map(v => v.serviceName));
   const setSvcs = [...set.values()].sort();
@@ -277,7 +277,7 @@ it('getTreeSizeForTraceSpan() should return -1 for an absent span', () => {
   ).toBe(-1);
 });
 
-it('getTraceName() should return the trace name based on the parentSpan', () => {
+it('getTraceName() should return the traces name based on the parentSpan', () => {
   const serviceName = generatedTrace.processes[generatedTrace.spans[0].processID].serviceName;
   const operationName = generatedTrace.spans[0].operationName;
 

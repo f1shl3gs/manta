@@ -206,8 +206,8 @@ export default class ScrollManager {
   }
 
   /**
-   * Sometimes the ScrollManager is created before the trace is loaded. This
-   * setter allows the trace to be set asynchronously.
+   * Sometimes the ScrollManager is created before the traces is loaded. This
+   * setter allows the traces to be set asynchronously.
    */
   setTrace(trace: Trace | TNil) {
     this._trace = trace;

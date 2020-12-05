@@ -52,15 +52,15 @@ export const TREE_ROOT_ID = '__root__';
  * Build a tree of { value: spanID, children } items derived from the
  * `span.references` information. The tree represents the grouping of parent /
  * child relationships. The root-most node is nominal in that
- * `.value === TREE_ROOT_ID`. This is done because a root span (the main trace
- * span) is not always included with the trace data. Thus, there can be
+ * `.value === TREE_ROOT_ID`. This is done because a root span (the main traces
+ * span) is not always included with the traces data. Thus, there can be
  * multiple top-level spans, and the root node acts as their common parent.
  *
  * The children are sorted by `span.startTime` after the tree is built.
  *
- * @param  {Trace} trace The trace to build the tree of spanIDs.
+ * @param  {Trace} trace The traces to build the tree of spanIDs.
  * @return {TreeNode}    A tree of spanIDs derived from the relationships
- *                       between spans in the trace.
+ *                       between spans in the traces.
  */
 export function getTraceSpanIdsAsTree(trace) {
   const nodesById = new Map(trace.spans.map(span => [span.spanID, new TreeNode(span.spanID)]));
@@ -272,7 +272,7 @@ export const enforceUniqueSpanIds = createSelector(
 
         if (spanID !== getSpanId(span)) {
           // eslint-disable-next-line no-console
-          console.warn('duplicate spanID in trace replaced', getSpanId(span), 'new:', spanID);
+          console.warn('duplicate spanID in traces replaced', getSpanId(span), 'new:', spanID);
         }
 
         // set the presence of the span in the map or increment the number

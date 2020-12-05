@@ -1,12 +1,5 @@
-import './wdyr';
-
 import React from 'react';
-import {
-  Route,
-  RouteComponentProps,
-  Switch,
-  withRouter,
-} from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 // styles
 import './App.css';
@@ -17,13 +10,11 @@ import { AppWrapper } from '@influxdata/clockface';
 import Sidebar from 'layout/nav';
 import Org from 'containers/organization/org';
 
-const createOrg: React.FC = (props) => {
+const createOrg: React.FC = () => {
   return <div>create org</div>;
 };
 
-type Props = RouteComponentProps;
-
-const App: React.FC<Props> = (props) => {
+const App: React.FC = () => {
   return (
     <AppWrapper presentationMode={false} className="dark">
       <Sidebar />

@@ -44,12 +44,12 @@ describe('<TracePageHeader>', () => {
     expect(wrapper.find('header').length).toBe(1);
   });
 
-  it('renders an empty <div> if a trace is not present', () => {
+  it('renders an empty <div> if a traces is not present', () => {
     wrapper = mount(<TracePageHeader {...defaultProps} trace={null} />);
     expect(wrapper.children().length).toBe(0);
   });
 
-  it('renders the trace title', () => {
+  it('renders the traces title', () => {
     expect(wrapper.find({ traceName: getTraceName(trace.spans) })).toBeTruthy();
   });
 

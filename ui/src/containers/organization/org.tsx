@@ -1,36 +1,24 @@
 import React from 'react';
-import {
-  Route,
-  RouteComponentProps,
-  Switch,
-  useParams,
-  withRouter,
-} from 'react-router';
+import { Route, Switch, useParams, withRouter } from 'react-router-dom';
 
-import {
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface';
-import Otcl from 'otcl';
+import { SpinnerContainer, TechnoSpinner } from '@influxdata/clockface';
+import Otcl from 'otcls';
 
 import { OrgProvider } from 'shared/state/organization/organization';
-import useFetch from 'use-http';
-import Todo from '../../components/Todo';
-import TracePage from '../../trace';
 
-type Props = RouteComponentProps<{ orgID: string }>;
+import Todo from 'components/Todo';
+import TracePage from 'traces';
+import remoteDataState from 'utils/rds';
+import { useFetch } from "use-http";
+import Logs from "logs/Logs";
 
-const Org: React.FC<Props> = (props) => {
+
+const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID';
-  const { orgID } = useParams();
+  const { orgID } = useParams<{orgID: string}>();
 
   const { data, loading, error } = useFetch(`/api/v1/orgs/${orgID}`, {}, []);
-  const rds = loading
-    ? RemoteDataState.Loading
-    : error !== undefined
-    ? RemoteDataState.Error
-    : RemoteDataState.Done;
+  const rds = remoteDataState(loading, error);
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
@@ -39,7 +27,7 @@ const Org: React.FC<Props> = (props) => {
           <Route path={`${orgPath}/otcls`} component={Otcl} />
           <Route path={`${orgPath}/traces`} component={TracePage} />
           <Route path={`${orgPath}/metrics`} component={Todo} />
-          <Route path={`${orgPath}/logs`} component={Todo} />
+          <Route path={`${orgPath}/logs`} component={Logs} />
           <Route path={`${orgPath}/alerting`} component={Todo} />
         </Switch>
       </OrgProvider>

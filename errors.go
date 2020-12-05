@@ -31,11 +31,11 @@ const (
 // Error is the error struct of platform.
 //
 // Errors may have error codes, human-readable messages,
-// and a logical stack trace.
+// and a logical stack traces.
 //
 // The Code targets automated handlers so that recovery can occur.
 // Msg is used by the system operator to help diagnose and fix the problem.
-// Op and Err chain errors together in a logical stack trace to
+// Op and Err chain errors together in a logical stack traces to
 // further help operators.
 //
 // To create a simple error,

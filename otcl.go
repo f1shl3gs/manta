@@ -7,7 +7,7 @@ import (
 var (
 	ErrOtclNotFound = &Error{
 		Code: ENotFound,
-		Msg:  "otcl not found",
+		Msg:  "otcls not found",
 	}
 )
 

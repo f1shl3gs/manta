@@ -51,7 +51,7 @@ describe('<SpanGraph>', () => {
     expect(wrapper.find(TickLabels).length).toBe(1);
   });
 
-  it('returns a <div> if a trace is not provided', () => {
+  it('returns a <div> if a traces is not provided', () => {
     wrapper = shallow(<SpanGraph {...props} trace={null} />);
     expect(wrapper.matchesElement(<div />)).toBeTruthy();
   });

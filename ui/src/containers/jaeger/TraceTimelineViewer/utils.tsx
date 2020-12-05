@@ -77,7 +77,7 @@ export const isErrorSpan = (span: TraceSpan) => isErrorBool(span) || isErrorStr(
  * Returns `true` if at least one of the descendants of the `parentSpanIndex`
  * span contains an error tag.
  *
- * @param      {TraceSpan[]}   spans            The spans for a trace - should be
+ * @param      {TraceSpan[]}   spans            The spans for a traces - should be
  *                                         sorted with children following parents.
  * @param      {number}   parentSpanIndex  The index of the parent span - only
  *                                         subsequent spans with depth less than

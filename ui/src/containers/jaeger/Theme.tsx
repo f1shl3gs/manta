@@ -117,10 +117,10 @@ const memoizedThemeMerge = memoizeOne((value?: ThemeOptions) => {
   }
   return value
     ? {
-        ...defaultTheme,
-        ...darkOverrides,
-        ...value,
-      }
+      ...defaultTheme,
+      ...darkOverrides,
+      ...value,
+    }
     : defaultTheme;
 });
 
@@ -149,6 +149,7 @@ export const withTheme = <Props extends { theme: Theme }, Statics extends {} = {
   };
 
   WithTheme.displayName = `WithTheme(${Component.displayName})`;
+  // @ts-ignore
   WithTheme = hoistNonReactStatics<React.ComponentType<Omit<Props, 'theme'>>, React.ComponentType<Props>>(
     // @ts-ignore
     WithTheme,

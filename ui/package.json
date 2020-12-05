@@ -1,10 +1,17 @@
 {
-  "name": "manta",
+  "name": "kanis",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@influxdata/clockface": "2.3.6",
-    "@welldone-software/why-did-you-render": "^6.0.0-rc.1",
+    "@influxdata/giraffe": "^1.0.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
     "classnames": "^2.2.6",
     "codemirror": "^5.58.3",
     "combokeys": "^3.0.1",
@@ -17,11 +24,11 @@
     "loadsh": "^0.0.4",
     "lru-memoize": "^1.1.0",
     "memoize-one": "^5.1.1",
+    "moment": "2.19.3",
     "moment-timezone": "^0.5.32",
-    "node-sass": "^5.0.0",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-codemirror2": "^7.2.1",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17.0.1",
     "react-icons": "2.2.7",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
@@ -30,31 +37,30 @@
     "source-map-explorer": "^2.5.1",
     "tinycolor2": "1.4.1",
     "tween-functions": "^1.2.0",
-    "use-http": "^1.0.15"
+    "typescript": "^4.0.3",
+    "urs": "^0.0.7",
+    "use-http": "^1.0.16",
+    "web-vitals": "^0.2.4"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.11",
+    "@types/deep-freeze": "^0.1.2",
+    "@types/lodash": "^4.14.165",
+    "@types/react-icons": "2.2.7",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.6",
+    "@types/recompose": "^0.30.7"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src/ --ext .ts,.tsx",
-    "lint:fix": "yarn lint -- --fix",
-    "precommit": "lint-staged",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  },
-  "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "prettier --write"
+    "extends": [
+      "react-app",
+      "react-app/jest"
     ]
   },
   "browserslist": {
@@ -68,35 +74,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/classnames": "^2.2.11",
-    "@types/deep-freeze": "^0.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/lodash": "^4.14.165",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "@types/react-icons": "2.2.7",
-    "@types/react-router": "^5.1.8",
-    "@types/react-router-dom": "^5.1.6",
-    "@types/recompose": "^0.30.7",
-    "@typescript-eslint/parser": "^4.9.0",
-    "eslint-config-airbnb": "^18.2.0",
-    "eslint-config-prettier": "^6.13.0",
-    "eslint-import-resolver-typescript": "^2.3.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.21.4",
-    "eslint-plugin-unused-imports": "^1.0.1",
-    "husky": "^4.3.0",
-    "lint-staged": "^10.4.2",
-    "prettier": "^2.1.2",
-    "typescript": "~3.7.2"
   },
   "proxy": "http://localhost:8080"
 }

@@ -100,7 +100,7 @@ describe('<VirtualizedTraceViewImpl>', () => {
     expect(wrapper).toBeDefined();
   });
 
-  it('renders when a trace is not set', () => {
+  it('renders when a traces is not set', () => {
     wrapper.setProps({ trace: null });
     expect(wrapper).toBeDefined();
   });
@@ -109,7 +109,7 @@ describe('<VirtualizedTraceViewImpl>', () => {
     expect(wrapper.find(ListView)).toBeDefined();
   });
 
-  it('sets the trace for global state.traceTimeline', () => {
+  it('sets the traces for global state.traceTimeline', () => {
     expect(props.setTrace.mock.calls).toEqual([[trace, props.uiFind]]);
     props.setTrace.mockReset();
     const traceID = 'some-other-id';

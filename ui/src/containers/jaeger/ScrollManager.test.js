@@ -117,7 +117,7 @@ describe('ScrollManager', () => {
       manager.setAccessors(null);
       expect(manager._scrollToVisibleSpan).toThrow();
     });
-    it('exits if the trace is not set', () => {
+    it('exits if the traces is not set', () => {
       manager.setTrace(null);
       manager._scrollToVisibleSpan();
       expect(scrollPastMock.mock.calls.length).toBe(0);

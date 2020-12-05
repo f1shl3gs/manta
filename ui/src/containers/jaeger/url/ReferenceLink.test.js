@@ -37,14 +37,14 @@ describe(ReferenceLink, () => {
   };
 
   describe('rendering', () => {
-    it('render for this trace', () => {
+    it('render for this traces', () => {
       const component = shallow(<ReferenceLink reference={sameTraceRef} focusSpan={focusMock} />);
       const link = component.find('a');
       expect(link.length).toBe(1);
       expect(link.props().role).toBe('button');
     });
 
-    it('render for external trace', () => {
+    it('render for external traces', () => {
       const component = mount(
         <ExternalLinkContext.Provider value={(trace, span) => `${trace}/${span}`}>
           <ReferenceLink reference={externalRef} focusSpan={focusMock} />

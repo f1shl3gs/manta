@@ -53,7 +53,7 @@ describe('<TickLabels>', () => {
     });
   });
 
-  it("doesn't explode if no trace is present", () => {
+  it("doesn't explode if no traces is present", () => {
     expect(() => shallow(<TickLabels {...defaultProps} trace={null} />)).not.toThrow();
   });
 });

@@ -113,7 +113,7 @@ const NUM_TICKS = 5;
 /**
  * `TraceTimelineViewer` now renders the header row because it is sensitive to
  * `props.viewRange.time.cursor`. If `VirtualizedTraceView` renders it, it will
- * re-render the ListView every time the cursor is moved on the trace minimap
+ * re-render the ListView every time the cursor is moved on the traces minimap
  * or `TimelineHeaderRow`.
  */
 export class UnthemedTraceTimelineViewer extends React.PureComponent<TProps, State> {

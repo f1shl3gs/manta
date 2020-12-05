@@ -153,7 +153,7 @@ export function computeTraceLink(linkPatterns: ProcessedLinkPattern[], trace: Tr
       const allParameters = pattern.parameters.every(parameter => {
         const key = parameter as keyof Trace;
         if (validKeys.includes(key)) {
-          // At this point is safe to access to trace object using parameter variable because
+          // At this point is safe to access to traces object using parameter variable because
           // we validated parameter against validKeys, this implies that parameter a keyof Trace.
           parameterValues[parameter] = trace[key];
           return true;

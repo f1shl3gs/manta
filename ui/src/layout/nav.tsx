@@ -1,6 +1,8 @@
+// libraries
 import React from 'react';
-
 import { Link, useParams } from 'react-router-dom';
+
+// components
 import {
   ComponentColor,
   Icon,
@@ -8,9 +10,7 @@ import {
   InfluxDBCloudLogo,
   TreeNav,
 } from '@influxdata/clockface';
-
-// type Props = RouteComponentProps<{ orgID: string }>
-type Props = {};
+import { useOrgID } from "../shared/state/organization/organization";
 
 export interface NavItemLink {
   type: 'link' | 'href';
@@ -53,7 +53,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
   return [
     {
       id: 'otcl',
-      testID: 'nav-item-otcl',
+      testID: 'nav-item-otcls',
       icon: IconFont.Cloud,
       label: 'OTcl',
       shortLabel: 'OTcl',
@@ -259,10 +259,10 @@ const generateNavItems = (orgID: string): NavItem[] => {
 };
 
 // todo: set it manully, test only
-const navItems = generateNavItems('06a30a3738a3d000');
+const navItems = generateNavItems('06b88c483da3d000');
 
-const Nav: React.FC<Props> = () => {
-  const { orgID } = useParams();
+const Nav: React.FC = () => {
+  const orgID = useOrgID();
   const orgPrefix = `/orgs/${orgID}`;
 
   return (

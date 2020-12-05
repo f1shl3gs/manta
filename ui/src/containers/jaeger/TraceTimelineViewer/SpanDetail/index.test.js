@@ -30,7 +30,7 @@ import transformTraceData from '../../model/transform-trace-data';
 describe('<SpanDetail>', () => {
   let wrapper;
 
-  // use `transformTraceData` on a fake trace to get a fully processed span
+  // use `transformTraceData` on a fake traces to get a fully processed span
   const span = transformTraceData(traceGenerator.trace({ numberOfSpans: 1 })).spans[0];
   const detailState = new DetailState()
     .toggleLogs()

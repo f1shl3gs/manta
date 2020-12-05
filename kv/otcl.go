@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	otclBucket   = []byte("otcl")
+	otclBucket   = []byte("otcls")
 	otclOrgIndex = []byte("otclorgindex")
 
 	otclOrgIndexMapping = NewIndexMapping(otclBucket, otclOrgIndex, func(data []byte) ([]byte, error) {
@@ -299,12 +299,12 @@ func (s *Service) deleteOtcl(ctx context.Context, tx Tx, id manta.ID) error {
 		return nil
 	}
 
-	// delete otcl
+	// delete otcls
 	if err = b.Delete(pk); err != nil {
 		return err
 	}
 
-	// delete otcl's org index
+	// delete otcls's org index
 	var otcl manta.Otcl
 	err = otcl.Unmarshal(val)
 	if err != nil {

@@ -12,6 +12,7 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
+	"github.com/f1shl3gs/manta/web/middlewares"
 )
 
 type Backend struct {
@@ -58,7 +59,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 		mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 		mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
 		mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+		mux.HandleFunc("/debug/pprof/traces", pprof.Trace)
 
 		// pprof
 		router.GET("/debug/pprof/*dummy", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -67,7 +68,8 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	}
 
 	// tracing
-	h := Trace(router)
+	h := middlewares.Log(logger, router)
+	h = Trace(h)
 
 	return h
 }
@@ -88,7 +90,7 @@ func Trace(next http.Handler) http.Handler {
 				continue
 			}
 
-			// If header has multiple values, only the first value will be logged on the trace.
+			// If header has multiple values, only the first value will be logged on the traces.
 			span.LogKV(k, v[0])
 		}
 

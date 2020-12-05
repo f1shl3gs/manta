@@ -50,7 +50,7 @@ describe('SpanTreeOffset', () => {
   });
 
   describe('.SpanTreeOffset--indentGuide', () => {
-    it('renders only one .SpanTreeOffset--indentGuide for entire trace if span has no ancestors', () => {
+    it('renders only one .SpanTreeOffset--indentGuide for entire traces if span has no ancestors', () => {
       spanAncestorIdsSpy.mockReturnValue([]);
       wrapper = shallow(<SpanTreeOffset {...props} />)
         .dive()
@@ -61,7 +61,7 @@ describe('SpanTreeOffset', () => {
       expect(indentGuides.prop('data-ancestor-id')).toBe(specialRootID);
     });
 
-    it('renders one .SpanTreeOffset--indentGuide per ancestor span, plus one for entire trace', () => {
+    it('renders one .SpanTreeOffset--indentGuide per ancestor span, plus one for entire traces', () => {
       const indentGuides = wrapper.find('[data-test-id="SpanTreeOffset--indentGuide"]');
       expect(indentGuides.length).toBe(3);
       expect(indentGuides.at(0).prop('data-ancestor-id')).toBe(specialRootID);
