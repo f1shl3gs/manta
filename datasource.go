@@ -17,6 +17,7 @@ type DatasourceFilter struct {
 	Default *bool
 	Name    *string
 	Type    *string
+	OrgID   *ID
 }
 
 type DatasourceService interface {

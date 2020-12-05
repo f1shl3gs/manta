@@ -1,0 +1,9 @@
+kind:
+  datasource
+name:
+  loki
+spec:
+  backend: http://localhost:3100
+  type: loki
+
+----

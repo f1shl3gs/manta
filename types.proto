@@ -306,10 +306,12 @@ message Datasource {
   string name = 4;
   string desc = 5;
   string type = 6;
+  uint64 orgID = 7 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+
   oneof config {
-    Loki loki = 7;
-    Jaeger jaeger = 8;
-    Prometheus prometheus = 9;
+    Loki loki = 8;
+    Jaeger jaeger = 9;
+    Prometheus prometheus = 10;
   }
 }
 

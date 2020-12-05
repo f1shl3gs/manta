@@ -84,7 +84,7 @@ func (s *Service) putOtcl(ctx context.Context, tx Tx, o *manta.Otcl) error {
 		return err
 	}
 
-	if err = b.Put(indexKey(fk, pk), pk); err != nil {
+	if err = b.Put(IndexKey(fk, pk), pk); err != nil {
 		return err
 	}
 
@@ -321,5 +321,5 @@ func (s *Service) deleteOtcl(ctx context.Context, tx Tx, id manta.ID) error {
 		return err
 	}
 
-	return b.Delete(indexKey(fk, pk))
+	return b.Delete(IndexKey(fk, pk))
 }
