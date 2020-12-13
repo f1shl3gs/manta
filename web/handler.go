@@ -38,8 +38,13 @@ func idFromParams(params httprouter.Params) (manta.ID, error) {
 	return id, nil
 }
 
-func orgIDFrom() {
+func orgIDFromRequest(r *http.Request) (manta.ID, error) {
+	var (
+		id  manta.ID
+		txt = r.URL.Query().Get("orgID")
+	)
 
+	return id, id.DecodeFromString(txt)
 }
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, code int, res interface{}) error {

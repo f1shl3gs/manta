@@ -1,0 +1,19 @@
+PUT http://localhost:8080/api/v1/datasources
+Content-Type: application/json
+
+{
+  "name": "loki3",
+  "desc": "like prom, but for logs",
+  "type": "loki",
+  "orgID": "06b88c483da3d000",
+  "loki": {
+    "url": "http://localhost:3100"
+  }
+}
+
+
+###
+GET http://localhost:8080/api/v1/datasources?orgID=06b88c483da3d000
+
+###
+GET http://localhost:8080/api/v1/datasources/06b9150390e3d000/proxy/loki/api/v1/query_range?direction=BACKWARD&limit=1000&query=%7Bjob%3D%22varlogs%22%7D&start=1607192526000000000&end=1607196127000000000&step=5

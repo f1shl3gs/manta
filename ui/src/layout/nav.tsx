@@ -178,7 +178,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Boards',
       link: {
         type: 'link',
-        location: `${orgPrefix}/dashboards-list`,
+        location: `${orgPrefix}/dashboards`,
       },
       activeKeywords: ['dashboards'],
     },

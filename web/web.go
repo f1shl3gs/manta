@@ -67,14 +67,8 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 		})
 	}
 
-	// loki
-	lh, err := newLokiHandler(logger, "http://localhost:3100")
-	if err != nil {
-		// todo: handle error properly
-		panic(err)
-	}
-
-	NewLokiService(lh, router)
+	// datasource
+	DatasourceService(logger, router, backend.DatasourceService)
 
 	// and more
 

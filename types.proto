@@ -334,6 +334,36 @@ message XAxis {
   string format = 3;
 }
 
+message Axis {
+  string Bounds = 1;
+  string label = 2;
+  string prefix = 3;
+  string suffix = 4;
+}
+
+message Axes {
+  Axis x = 1 [(gogoproto.nullable) = false];
+  Axis y = 2 [(gogoproto.nullable) = false];
+}
+
+message GaugeView {
+
+}
+
+message XYView {
+  string type = 1;
+  string timeFormat = 2;
+  Axes axes = 3 [(gogoproto.nullable) = false];
+}
+
+message SingleStatView {
+
+}
+
+message LinePlusSingleStatView {
+
+}
+
 message Panel {
   string name = 1;
   string description = 2;
@@ -344,8 +374,12 @@ message Panel {
   uint32 y = 6;
 
   repeated Query queries = 7 [(gogoproto.nullable) = false];
-  XAxis xAxis = 8 [(gogoproto.nullable) = false];
-  YAxis yAxis = 9 [(gogoproto.nullable) = false];
+  oneof properties {
+    GaugeView gauge = 8;
+    XYView xy = 9 [(gogoproto.customname) = "XY"];
+    SingleStatView singleStat = 10;
+    LinePlusSingleStatView linePlusSingleStat = 11;
+  }
 }
 
 message Dashboard {

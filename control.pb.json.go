@@ -6,7 +6,7 @@ package manta
 import (
 	"bytes"
 
-	"github.com/gogo/protobuf/jsonpb"
+	"github.com/golang/protobuf/jsonpb"
 )
 
 // MarshalJSON implements json.Marshaler

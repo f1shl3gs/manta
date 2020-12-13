@@ -41,10 +41,10 @@ func (r *Router) HandleHTTPError(ctx context.Context, err error, w http.Response
 		Message string `json:"message"`
 	}
 	e.Code = manta.ErrorCode(err)
-	if err, ok := err.(*manta.Error); ok {
-		e.Message = err.Error()
+	if mErr, ok := err.(*manta.Error); ok {
+		e.Message = mErr.Error()
 	} else {
-		e.Message = "An internal error has occurred"
+		e.Message = "An internal error has occurred, " + err.Error()
 	}
 	b, _ := json.Marshal(e)
 	_, _ = w.Write(b)
