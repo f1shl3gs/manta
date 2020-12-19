@@ -4,20 +4,28 @@ import { Button, ComponentColor, IconFont, Page } from "@influxdata/clockface";
 import SearchWidget from "../components/SearchWidget";
 import DashboardCards from "./components/DashboardCards";
 import { Dashboard } from "types";
+import { DashboardsProvider } from "./state";
+import { useFetch } from "use-http";
+import { useOrgID } from "../shared/state/organization/organization";
+import { useHistory } from "react-router-dom";
 
-const dashboards: Dashboard[] = [
-  {
-    id: "a",
-    name: "name",
-    desc: "desc",
-    created: "111111",
-    updated: "222222",
-    orgID: "111111",
-    panels: []
-  }
-];
+const useCreateDash = () => {
+  const orgID = useOrgID();
+
+  const { post } = useFetch<Dashboard>(`/api/v1/dashboards?orgID=${orgID}`, {
+    body: {
+      orgID
+    }
+  });
+
+  return post;
+};
 
 const DashboardsIndex: React.FC = () => {
+  const create = useCreateDash();
+  const history = useHistory();
+  const orgID = useOrgID();
+
   return (
     <Page>
       <Page.Header fullWidth={false}>
@@ -32,13 +40,23 @@ const DashboardsIndex: React.FC = () => {
             onSearch={v => console.log("v", v)}
           />
 
-
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <Button
             text={"Add"}
             icon={IconFont.Plus}
             color={ComponentColor.Primary}
+            onClick={() => {
+              create()
+                .then(resp => {
+                  const path = `/orgs/${orgID}/dashboards/${resp.id}`
+                  console.log('path', path)
+                  history.push(path);
+                })
+                .catch(err => {
+                  console.log("create dashboard failed", err);
+                });
+            }}
           />
         </Page.ControlBarRight>
       </Page.ControlBar>
@@ -48,7 +66,9 @@ const DashboardsIndex: React.FC = () => {
         fullWidth={false}
         scrollable={true}
       >
-        <DashboardCards dashboards={dashboards} />
+        <DashboardsProvider>
+          <DashboardCards/>
+        </DashboardsProvider>
       </Page.Contents>
     </Page>
   );

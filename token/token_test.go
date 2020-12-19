@@ -2,6 +2,7 @@ package token
 
 import (
 	"encoding/base64"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,6 +13,7 @@ func TestGen(t *testing.T) {
 	token, err := gen.Token()
 	require.NoError(t, err)
 	require.Equal(t, len(token) == base64.URLEncoding.EncodedLen(defaultTokenSize), true)
+	fmt.Println(token)
 }
 
 func BenchmarkGen(b *testing.B) {

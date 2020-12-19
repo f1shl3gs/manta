@@ -4,7 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import './index.css';
+import 'style/kanis.scss';
 import '@influxdata/clockface/dist/index.css';
 
 ReactDOM.render(

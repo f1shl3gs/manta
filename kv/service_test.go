@@ -2,10 +2,14 @@ package kv_test
 
 import (
 	"context"
+	"io/ioutil"
+	"os"
+	"time"
+
 	"github.com/f1shl3gs/manta/bolt"
+	"github.com/f1shl3gs/manta/kv"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
-	"os"
 )
 
 // TestingT is a subset of the API provided by all *testing.T and *testing.B
@@ -31,7 +35,11 @@ type TestingT interface {
 }
 
 func NewTestBolt(t TestingT, noSync bool) (*bolt.KVStore, func()) {
-	dbName := t.Name() + ".bolt"
+	f, err := ioutil.TempFile("", "manta-test")
+	require.NoError(t, err)
+	f.Close()
+
+	dbName := f.Name()
 	logger := zaptest.NewLogger(t)
 	var opts []bolt.KVOption
 	if noSync {
@@ -39,11 +47,24 @@ func NewTestBolt(t TestingT, noSync bool) (*bolt.KVStore, func()) {
 	}
 
 	s := bolt.NewKVStore(logger, dbName, opts...)
-	err := s.Open(context.TODO())
+	err = s.Open(context.TODO())
 	require.NoError(t, err)
 
 	return s, func() {
 		s.Close()
-		os.Remove(dbName)
+		os.RemoveAll(dbName)
 	}
+}
+
+func NewTestService(t TestingT) (*kv.Service, func()) {
+	store, closer := NewTestBolt(t, true)
+
+	svc := kv.NewService(zaptest.NewLogger(t), store)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := kv.Initial(ctx, store)
+	require.NoError(t, err)
+
+	return svc, closer
 }

@@ -66,7 +66,7 @@ func (h *otclHandler) getOtcl(w http.ResponseWriter, r *http.Request) {
 		params = httprouter.ParamsFromContext(ctx)
 	)
 
-	id, err := idFromParams(params)
+	id, err := idFromParams(params, "id")
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

@@ -25,7 +25,9 @@ export interface GaugeProperties {
 
 export type ViewProperties = XYViewProperties | GaugeProperties
 
-export interface Panel {
+export interface Cell {
+  id: string
+
   name: string
   desc: string
 
@@ -34,10 +36,10 @@ export interface Panel {
   x?: number
   y?: number
 
-  properties?: ViewProperties
+  properties: ViewProperties
 }
 
-export type Panels = Panel[]
+export type Cells = Cell[]
 
 export interface Dashboard {
   id: string
@@ -46,6 +48,7 @@ export interface Dashboard {
   name: string
   desc: string
   orgID: string
-  panels: Panels
+  cells: Cells
 }
 
+export type Dashboards = Dashboard[]

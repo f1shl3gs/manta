@@ -30,6 +30,8 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 		datasourceNameIndexBucket,
 		otclBucket,
 		otclOrgIndex,
+		dashboardBucket,
+		dashboardOrgIndexBucket,
 	} {
 		err := kv.CreateBucket(ctx, bucket)
 		if err != nil {

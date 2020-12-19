@@ -15,8 +15,36 @@ type DashboardUpdate struct {
 	Desc *string
 }
 
-type DashboardPanelUpdate struct {
-	W, H, X, Y *uint32
+func (udp DashboardUpdate) Apply(dash *Dashboard) {
+	if udp.Name != nil {
+		dash.Name = *udp.Name
+	}
+
+	if udp.Desc != nil {
+		dash.Desc = *udp.Name
+	}
+}
+
+type DashboardCellUpdate struct {
+	W, H, X, Y *int32
+}
+
+func (udp DashboardCellUpdate) Apply(cell *Cell) {
+	if udp.W != nil {
+		cell.W = *udp.W
+	}
+
+	if udp.H != nil {
+		cell.H = *udp.H
+	}
+
+	if udp.X != nil {
+		cell.X = *udp.X
+	}
+
+	if udp.Y != nil {
+		cell.Y = *udp.Y
+	}
 }
 
 type DashboardService interface {
@@ -26,46 +54,45 @@ type DashboardService interface {
 
 	CreateDashboard(ctx context.Context, d *Dashboard) error
 
-	UpdateDashboard(ctx context.Context, udp DashboardUpdate) (*Dashboard, error)
+	UpdateDashboard(ctx context.Context, id ID, udp DashboardUpdate) (*Dashboard, error)
 
-	AddDashboardPanel(ctx context.Context, p Panel) error
+	AddDashboardCell(ctx context.Context, id ID, cell *Cell) error
 
-	// RemoveDashboardPanel remove a panel by ID
-	RemoveDashboardPanel(ctx context.Context, did, pid ID) error
+	// RemoveDashboardCell remove a panel by ID
+	RemoveDashboardCell(ctx context.Context, did, pid ID) error
 
-	// UpdateDashboardPanel update the dashboard panel with the provided ids
-	UpdateDashboardPanel(ctx context.Context, did, pid ID, udp DashboardPanelUpdate) (Panel, error)
+	// UpdateDashboardCell update the dashboard cell with the provided ids
+	UpdateDashboardCell(ctx context.Context, did, pid ID, udp DashboardCellUpdate) (*Cell, error)
 
 	// RemoveDashboard removes dashboard by id
-	RemoveDashboard(ctx context.Context, id ID) error
+	DeleteDashboard(ctx context.Context, id ID) error
 }
 
-func (m *Panel) UnmarshalJSON(b []byte) error {
-	var p struct {
+func (m *Cell) UnmarshalJSON(b []byte) error {
+	var c struct {
 		Name        string          `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 		Description string          `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-		W           uint32          `protobuf:"varint,3,opt,name=w,proto3" json:"w,omitempty"`
-		H           uint32          `protobuf:"varint,4,opt,name=h,proto3" json:"h,omitempty"`
-		X           uint32          `protobuf:"varint,5,opt,name=x,proto3" json:"x,omitempty"`
-		Y           uint32          `protobuf:"varint,6,opt,name=y,proto3" json:"y,omitempty"`
+		W           int32           `protobuf:"varint,3,opt,name=w,proto3" json:"w,omitempty"`
+		H           int32           `protobuf:"varint,4,opt,name=h,proto3" json:"h,omitempty"`
+		X           int32           `protobuf:"varint,5,opt,name=x,proto3" json:"x,omitempty"`
+		Y           int32           `protobuf:"varint,6,opt,name=y,proto3" json:"y,omitempty"`
 		Queries     []Query         `protobuf:"bytes,7,rep,name=queries,proto3" json:"queries"`
 		Properties  json.RawMessage `json:"properties"`
 	}
 
-	if err := json.Unmarshal(b, &p); err != nil {
+	if err := json.Unmarshal(b, &c); err != nil {
 		return err
 	}
 
 	// set values
-	m.Name = p.Name
-	m.Description = p.Description
-	m.W = p.W
-	m.H = p.H
-	m.X = p.X
-	m.Y = p.Y
-	m.Queries = p.Queries
+	m.Name = c.Name
+	m.Description = c.Description
+	m.W = c.W
+	m.H = c.H
+	m.X = c.X
+	m.Y = c.Y
 
-	props, err := unmarshalPanelPropertiesJSON(p.Properties)
+	props, err := unmarshalCellPropertiesJSON(c.Properties)
 	if err != nil {
 		return err
 	}
@@ -74,7 +101,7 @@ func (m *Panel) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func unmarshalPanelPropertiesJSON(b []byte) (isPanel_Properties, error) {
+func unmarshalCellPropertiesJSON(b []byte) (isCell_Properties, error) {
 	var t struct {
 		Type string `json:"type"`
 	}

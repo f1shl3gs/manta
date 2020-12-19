@@ -1,5 +1,7 @@
 import React from "react";
 import { ResourceCard } from "@influxdata/clockface";
+import { useHistory } from "react-router-dom";
+import { useOrgID } from "../../shared/state/organization/organization";
 
 interface Props {
   id: string
@@ -15,6 +17,8 @@ const DashboardCard: React.FC<Props> = props => {
     desc,
     updatedAt
   } = props;
+  const history = useHistory();
+  const orgID = useOrgID();
 
   const contextMenu = (): JSX.Element => {
     return (
@@ -28,13 +32,13 @@ const DashboardCard: React.FC<Props> = props => {
       contextMenu={contextMenu()}
     >
       <ResourceCard.EditableName
-        onUpdate={() => console.log("update dashboard name")}
-        onClick={() => console.log("on click", name)}
+        onUpdate={(v) => console.log("update dashboard name", v)}
+        onClick={() => history.push(`/orgs/${orgID}/dashboards/${id}`)}
         name={name}
       />
 
       <ResourceCard.EditableDescription
-        onUpdate={() => console.log("update desc")}
+        onUpdate={(desc) => console.log("update desc", desc)}
         description={desc}
         placeholder={`Describe ${name}`}
       />

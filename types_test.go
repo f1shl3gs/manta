@@ -12,16 +12,16 @@ import (
 )
 
 func TestPanel(t *testing.T) {
-	panel := &manta.Panel{
+	panel := &manta.Cell{
 		Name:        "xy",
 		Description: "desc",
 		W:           0,
 		H:           2,
 		X:           4,
-		Queries: []manta.Query{
-			{},
-		},
 		Properties: &manta.XYView{
+			Queries: []manta.Query{
+				{},
+			},
 			Type:       "xy",
 			TimeFormat: "fff",
 			Axes:       manta.Axes{},
@@ -45,21 +45,21 @@ func TestPanel(t *testing.T) {
 		txt := `{
   "name": "xy",
   "description": "desc",
-  "h": 2,
   "x": 4,
-  "queries": [
-    {}
-  ],
+  "h": 2,
   "properties": {
     "type": "xy",
-    "timeFormat": "fff",
     "axes": {
       "x": {},
       "y": {}
-    }
+    },
+    "queries": [
+      {}
+    ],
+    "timeFormat": "fff"
   }
 }`
-		p := &manta.Panel{}
+		p := &manta.Cell{}
 		err := json.Unmarshal([]byte(txt), p)
 		require.NoError(t, err)
 

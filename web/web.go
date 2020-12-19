@@ -25,6 +25,7 @@ type Backend struct {
 	CheckService         manta.CheckService
 	TaskService          manta.TaskService
 	DatasourceService    manta.DatasourceService
+	DashboardService     manta.DashboardService
 	TemplateService      manta.TemplateService
 	UserService          manta.UserService
 	AuthorizationService manta.AuthorizationService
@@ -33,16 +34,23 @@ type Backend struct {
 func New(logger *zap.Logger, backend *Backend) http.Handler {
 	router := NewRouter()
 
+	// static
+	fileServer := http.FileServer(http.FS(manta.Assets))
+	router.GET("/ui/*filepath", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+		r.URL.Path = manta.UIPrefix + params.ByName("filepath")
+		fileServer.ServeHTTP(w, r)
+	})
+
 	// healthz
 	router.Handler(http.MethodGet, "/healthz", newHealthzHandler(logger))
-
-	otclService(logger, router, backend)
 
 	// readiness
 	router.Handler(http.MethodGet, "/ready", ReadyHandler())
 
 	// organizations
 	NewOrganizationHandler(logger, router, backend)
+
+	otclService(logger, router, backend)
 
 	{
 		// prometheus
@@ -69,6 +77,15 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 
 	// datasource
 	DatasourceService(logger, router, backend.DatasourceService)
+
+	// dashboard
+	dh := &DashboardHandler{
+		Router:           router,
+		logger:           logger,
+		dashboardService: backend.DashboardService,
+	}
+
+	NewDashboardService(dh)
 
 	// and more
 

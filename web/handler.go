@@ -21,11 +21,23 @@ func idFromRequestPath(r *http.Request) (manta.ID, error) {
 		return 0, ErrParamsNotFound
 	}
 
-	return idFromParams(params)
+	return idFromParams(params, "id")
+}
+
+func idFromURI(r *http.Request, key string) (manta.ID, error) {
+	ctx := r.Context()
+	params := httprouter.ParamsFromContext(ctx)
+
+	var id manta.ID
+	if err := id.DecodeFromString(params.ByName(key)); err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 // todo: move it to an independent file
-func idFromParams(params httprouter.Params) (manta.ID, error) {
+func idFromParams(params httprouter.Params, key string) (manta.ID, error) {
 	var (
 		id  manta.ID
 		raw = params.ByName("id")
