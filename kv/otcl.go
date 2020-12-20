@@ -47,7 +47,7 @@ func (s *Service) createOtcl(ctx context.Context, tx Tx, o *manta.Otcl) error {
 
 	o.ID = id
 	o.Created = now
-	o.Modified = now
+	o.Updated = now
 
 	return s.putOtcl(ctx, tx, o)
 }
@@ -261,7 +261,7 @@ func (s *Service) PatchOtcl(ctx context.Context, id manta.ID, u manta.OtclPatch)
 			otcl.Content = *u.Content
 		}
 
-		otcl.Modified = time.Now()
+		otcl.Updated = time.Now()
 
 		return s.putOtcl(ctx, tx, otcl)
 	})

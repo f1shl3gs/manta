@@ -66,7 +66,7 @@ const Otcls: React.FC = () => {
                 }}
               />
               <ResourceCard.Meta>
-                <span>updated: {item.modified}</span>
+                <span>updated: {item.updated}</span>
                 <span>desc: {item.desc}</span>
               </ResourceCard.Meta>
             </ResourceCard>

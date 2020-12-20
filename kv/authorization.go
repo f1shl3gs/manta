@@ -132,7 +132,7 @@ func (s *Service) createAuthorization(ctx context.Context, tx Tx, a *manta.Autho
 
 	a.ID = s.idGen.ID()
 	a.Created = time.Now()
-	a.Modified = time.Now()
+	a.Updated = time.Now()
 
 	return s.putAuthorization(ctx, tx, a)
 }
@@ -222,7 +222,7 @@ func (s *Service) updateAuthorization(ctx context.Context, tx Tx, id manta.ID, u
 		a.Status = *u.Status
 	}
 
-	a.Modified = time.Now()
+	a.Updated = time.Now()
 
 	if err = s.putAuthorization(ctx, tx, a); err != nil {
 		return nil, err

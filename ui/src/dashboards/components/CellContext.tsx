@@ -1,9 +1,16 @@
+// Libraries
 import React, { RefObject, useRef, useState } from "react";
-import { Cell, ViewProperties } from "../../types";
+import classnames from "classnames";
+
+// Components
 import { Appearance, Icon, IconFont, Popover, PopoverInteraction } from "@influxdata/clockface";
 import CellContextItem from "./CellContextItem";
 import CellContextDangerItem from "./CellContextDangerItem";
-import classnames from "classnames";
+
+// Types
+import { Cell, ViewProperties } from "types";
+import { useHistory } from "react-router-dom";
+
 
 interface Props {
   cell: Cell
@@ -15,8 +22,11 @@ const CellContext: React.FC<Props> = props => {
     cell
   } = props;
 
+  const history = useHistory();
+
   const handleEditCell = (): void => {
-    console.log("edit cell");
+    const { pathname } = history.location;
+    history.push(`${pathname}/cells/${cell.id}/edit`);
   };
 
   const handleEditNote = () => {
@@ -26,8 +36,6 @@ const CellContext: React.FC<Props> = props => {
   const handleDeleteCell = () => {
     console.log("delete cell");
   };
-
-  const editNoteText = cell.desc;
 
   const popoverContents = (onHide?: () => void): JSX.Element => {
     return (
@@ -40,7 +48,7 @@ const CellContext: React.FC<Props> = props => {
           testID="cell-context--configure"
         />
         <CellContextItem
-          label={editNoteText}
+          label={"Add Note"}
           onClick={handleEditNote}
           icon={IconFont.TextBlock}
           onHide={onHide}

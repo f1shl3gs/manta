@@ -179,7 +179,7 @@ func (s *Service) CreateNode(ctx context.Context, node *manta.Node) error {
 func (s *Service) createNode(ctx context.Context, tx Tx, node *manta.Node) error {
 	node.ID = s.idGen.ID()
 	node.Created = time.Now()
-	node.Modified = time.Now()
+	node.Updated = time.Now()
 
 	return s.putNode(ctx, tx, node)
 }
@@ -208,7 +208,7 @@ func (s *Service) UpdateNode(ctx context.Context, id manta.ID, u manta.NodeUpdat
 			node.Env = *u.Env
 		}
 
-		node.Modified = time.Now()
+		node.Updated = time.Now()
 		return s.putNode(ctx, tx, node)
 	})
 

@@ -24,7 +24,7 @@ message Matcher {
 message Organization {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // store some information about this node
   map<string, string> annotations = 4;
@@ -36,7 +36,7 @@ message Organization {
 message Node {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   uint64 orgID = 4 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 
@@ -52,7 +52,7 @@ message Node {
 message NotificationEndpoint {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -66,7 +66,7 @@ message NotificationEndpoint {
 message User {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string nickname = 5;
@@ -77,7 +77,7 @@ message User {
 message Template {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -99,7 +99,7 @@ message Permission {
 message Authorization {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   uint64 uid = 4 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
   string token = 5;
@@ -128,7 +128,7 @@ message Condition {
 message Check {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -145,7 +145,7 @@ message Check {
 message Alert {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string status = 4;
   map<string, string> labels = 5 [(gogoproto.casttype) = "github.com/f1shl3gs/manta/pkg/labelset.LabelSet", (gogoproto.castkey) = "github.com/f1shl3gs/manta/pkg/labelset.LabelName", (gogoproto.castvalue) = "github.com/f1shl3gs/manta/pkg/labelset.LabelValue"];
@@ -157,7 +157,7 @@ message Alert {
 message Inhibition {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -226,7 +226,7 @@ message Notification {
 message Collection {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -240,7 +240,7 @@ message Collection {
 message Task {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // store some data for this task
   map<string, string> annotations = 4;
@@ -301,7 +301,7 @@ message Prometheus {
 message Datasource {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -373,8 +373,8 @@ message Cell {
 
   string name = 2;
   string description = 3;
-  int32 x = 4;
-  int32 y = 5;
+  int32 x = 4 [(gogoproto.jsontag) = "x"];
+  int32 y = 5 [(gogoproto.jsontag) = "y"];
   int32 w = 6;
   int32 h = 7;
 
@@ -389,7 +389,7 @@ message Cell {
 message Dashboard {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
@@ -421,7 +421,7 @@ message UserResourceMapping {
 message Otcl {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp modified = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;

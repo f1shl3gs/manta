@@ -1,10 +1,9 @@
 import React from "react";
-import { Cell } from "../../types";
+
 import CellHeader from "./CellHeader";
 import CellContext from "./CellContext";
 
-// Style
-import './CellComponent.scss';
+import { Cell } from "types";
 
 interface Props {
   cell: Cell
@@ -13,7 +12,7 @@ interface Props {
 const CellComponent: React.FC<Props> = ({ cell }) => {
   return (
     <>
-      <CellHeader name={cell.name} note={""}>
+      <CellHeader name={cell.name || 'Name this Cell'} note={""}>
         <CellContext
           cell={cell}
           view={cell.properties}

@@ -231,7 +231,7 @@ func (s *Service) createDatasource(ctx context.Context, tx Tx, ds *manta.Datasou
 
 	ds.ID = s.idGen.ID()
 	ds.Created = time.Now()
-	ds.Modified = time.Now()
+	ds.Updated = time.Now()
 
 	b, err := tx.Bucket(datasourceNameIndexBucket)
 	if err != nil {

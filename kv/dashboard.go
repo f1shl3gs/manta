@@ -2,6 +2,8 @@ package kv
 
 import (
 	"context"
+	"fmt"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 	"time"
 
 	"github.com/f1shl3gs/manta"
@@ -171,7 +173,7 @@ func (s *Service) createDashboard(ctx context.Context, tx Tx, d *manta.Dashboard
 
 	d.ID = s.idGen.ID()
 	d.Created = now
-	d.Modified = now
+	d.Updated = now
 
 	return s.putDashboard(ctx, tx, d)
 }
@@ -224,7 +226,7 @@ func (s *Service) UpdateDashboard(ctx context.Context, id manta.ID, udp manta.Da
 		}
 
 		udp.Apply(dash)
-		dash.Modified = time.Now()
+		dash.Updated = time.Now()
 
 		return s.putDashboard(ctx, tx, dash)
 	})
@@ -252,7 +254,7 @@ func (s *Service) AddDashboardCell(ctx context.Context, id manta.ID, cell *manta
 		}
 
 		dash.Cells = append(dash.Cells, *cell)
-		dash.Modified = time.Now()
+		dash.Updated = time.Now()
 
 		return s.putDashboard(ctx, tx, dash)
 	})
@@ -278,7 +280,7 @@ func (s *Service) RemoveDashboardCell(ctx context.Context, did, cellID manta.ID)
 			}
 		}
 
-		dash.Modified = time.Now()
+		dash.Updated = time.Now()
 
 		return s.putDashboard(ctx, tx, dash)
 	})
@@ -305,7 +307,7 @@ func (s *Service) UpdateDashboardCell(ctx context.Context, did, cellID manta.ID,
 			}
 		}
 
-		dash.Modified = time.Now()
+		dash.Updated = time.Now()
 		return s.putDashboard(ctx, tx, dash)
 	})
 
@@ -356,4 +358,51 @@ func (s *Service) deleteDashboard(ctx context.Context, tx Tx, id manta.ID) error
 	}
 
 	return b.Delete(pk)
+}
+
+func (s *Service) ReplaceDashboardCells(ctx context.Context, did manta.ID, cells []manta.Cell) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
+	return s.kv.Update(ctx, func(tx Tx) error {
+		dash, err := s.findDashboardByID(ctx, tx, did)
+		if err != nil {
+			return err
+		}
+
+		dash.Cells = cells
+		dash.Updated = time.Now()
+
+		return s.putDashboard(ctx, tx, dash)
+	})
+}
+
+func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*manta.Cell, error) {
+	var (
+		cell *manta.Cell
+		err  error
+	)
+
+	err = s.kv.View(ctx, func(tx Tx) error {
+		dash, err := s.findDashboardByID(ctx, tx, did)
+		if err != nil {
+			return err
+		}
+
+		for i := 0; i < len(dash.Cells); i++ {
+			fmt.Println(dash.Cells[i].ID, cid)
+			if dash.Cells[i].ID == cid {
+				cell = &dash.Cells[i]
+				return nil
+			}
+		}
+
+		return ErrKeyNotFound
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return cell, nil
 }

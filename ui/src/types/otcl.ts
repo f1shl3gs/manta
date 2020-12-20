@@ -3,6 +3,6 @@ export interface Otcl {
   name: string;
   desc: string;
   created: string;
-  modified: string;
+  updated: string;
   content: string;
 }

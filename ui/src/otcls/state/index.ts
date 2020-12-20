@@ -13,7 +13,7 @@ const emptyOtcl: Otcl = {
   desc: '',
   content: '',
   created: '',
-  modified: '',
+  updated: '',
 };
 
 type State = {

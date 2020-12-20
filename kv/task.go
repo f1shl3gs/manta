@@ -177,7 +177,7 @@ func (s *Service) createTask(ctx context.Context, tx Tx, task *manta.Task) error
 
 	task.ID = s.idGen.ID()
 	task.Created = time.Now()
-	task.Modified = time.Now()
+	task.Updated = time.Now()
 
 	return s.putTask(ctx, tx, task)
 }
@@ -257,7 +257,7 @@ func (s *Service) UpdateTask(ctx context.Context, id manta.ID, udp manta.TaskUpd
 			task.LastRunError = *udp.LastRunError
 		}
 
-		task.Modified = time.Now()
+		task.Updated = time.Now()
 
 		return s.putTask(ctx, tx, task)
 	})

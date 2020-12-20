@@ -40,7 +40,7 @@ func idFromURI(r *http.Request, key string) (manta.ID, error) {
 func idFromParams(params httprouter.Params, key string) (manta.ID, error) {
 	var (
 		id  manta.ID
-		raw = params.ByName("id")
+		raw = params.ByName(key)
 	)
 
 	if err := id.DecodeFromString(raw); err != nil {

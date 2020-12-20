@@ -1,14 +1,14 @@
 import constate from "constate";
+import { CachePolicies, useFetch } from "use-http";
 
 import { Dashboards } from "types";
-import { useOrgID } from "../../shared/state/organization/organization";
-import { CachePolicies, useFetch } from "use-http";
+import { useOrgID } from "shared/state/organization/organization";
 
 const [DashboardsProvider, useDashboards] = constate(
   () => {
     const orgID = useOrgID();
     const { data, error, loading, get } = useFetch<Dashboards>(`/api/v1/dashboards?orgID=${orgID}`, {
-      cache: CachePolicies.NO_CACHE
+      cachePolicy: CachePolicies.NO_CACHE,
     }, []);
 
     return {

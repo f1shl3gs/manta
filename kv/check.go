@@ -153,7 +153,7 @@ func (s *Service) CreateCheck(ctx context.Context, c *manta.Check) error {
 func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error {
 	c.ID = s.idGen.ID()
 	c.Created = time.Now()
-	c.Modified = time.Now()
+	c.Updated = time.Now()
 
 	org, err := s.findOrganizationByID(ctx, tx, c.OrgID)
 	if err != nil {
@@ -266,7 +266,7 @@ func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpda
 			check.Status = *u.Status
 		}
 
-		check.Modified = time.Now()
+		check.Updated = time.Now()
 
 		return s.putCheck(ctx, tx, check)
 	})

@@ -64,19 +64,39 @@ type DashboardService interface {
 	// UpdateDashboardCell update the dashboard cell with the provided ids
 	UpdateDashboardCell(ctx context.Context, did, pid ID, udp DashboardCellUpdate) (*Cell, error)
 
+	GetDashboardCell(ctx context.Context, did, cid ID) (*Cell, error)
+
 	// RemoveDashboard removes dashboard by id
 	DeleteDashboard(ctx context.Context, id ID) error
+
+	ReplaceDashboardCells(ctx context.Context, did ID, cells []Cell) error
+}
+
+func (m *Cell) Validate() error {
+	if m.ID == 0 {
+		return ErrInvalidID
+	}
+
+	if m.W == 0 {
+		return errors.New("invalid width")
+	}
+
+	if m.H == 0 {
+		return errors.New("invalid height")
+	}
+
+	return nil
 }
 
 func (m *Cell) UnmarshalJSON(b []byte) error {
 	var c struct {
+		ID          ID              `json:"id"`
 		Name        string          `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 		Description string          `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 		W           int32           `protobuf:"varint,3,opt,name=w,proto3" json:"w,omitempty"`
 		H           int32           `protobuf:"varint,4,opt,name=h,proto3" json:"h,omitempty"`
 		X           int32           `protobuf:"varint,5,opt,name=x,proto3" json:"x,omitempty"`
 		Y           int32           `protobuf:"varint,6,opt,name=y,proto3" json:"y,omitempty"`
-		Queries     []Query         `protobuf:"bytes,7,rep,name=queries,proto3" json:"queries"`
 		Properties  json.RawMessage `json:"properties"`
 	}
 
@@ -85,12 +105,17 @@ func (m *Cell) UnmarshalJSON(b []byte) error {
 	}
 
 	// set values
+	m.ID = c.ID
 	m.Name = c.Name
 	m.Description = c.Description
 	m.W = c.W
 	m.H = c.H
 	m.X = c.X
 	m.Y = c.Y
+
+	if c.Properties == nil {
+		return nil
+	}
 
 	props, err := unmarshalCellPropertiesJSON(c.Properties)
 	if err != nil {

@@ -194,7 +194,7 @@ func (s *Service) createOrganization(ctx context.Context, tx Tx, org *manta.Orga
 
 	org.ID = s.idGen.ID()
 	org.Created = time.Now()
-	org.Modified = time.Now()
+	org.Updated = time.Now()
 
 	return s.putOrganization(ctx, tx, org)
 }
@@ -256,7 +256,7 @@ func (s *Service) UpdateOrganization(ctx context.Context, id manta.ID, u manta.O
 			current.Desc = *u.Description
 		}
 
-		current.Modified = time.Now()
+		current.Updated = time.Now()
 		err = s.createOrganization(ctx, tx, current)
 		if err != nil {
 			return err

@@ -31,6 +31,7 @@ const Org: React.FC = () => {
           <Route path={`${orgPath}/metrics`} component={Todo} />
           <Route path={`${orgPath}/logs`} component={Logs} />
           <Route path={`${orgPath}/alerting`} component={Todo} />
+
           <Route path={`${orgPath}/dashboards/:dashboardID`} component={DashboardPage} />
           <Route path={`${orgPath}/dashboards`} component={DashboardsIndex} />
         </Switch>

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { Button, ComponentColor, IconFont, Page, SpinnerContainer, TechnoSpinner } from "@influxdata/clockface";
 import { useFetch } from "use-http";
-import { useParams } from "react-router-dom";
+import { Route, Switch, useParams } from "react-router-dom";
 import { useOrgID } from "../../shared/state/organization/organization";
 import { Dashboard } from "../../types";
 import RenamablePageTitle from "../../components/RenamablePageTitle";
@@ -10,6 +10,7 @@ import AutoRefreshDropdown from "../../components/AutoRefreshDropdown";
 import { AutoRefreshOption } from "../../types/AutoRefresh";
 import { DashboardProvider } from "../state/dashboard";
 import Cells from "./Cells";
+import ViewEditorOverlay from "./ViewEditorOverlay";
 
 const autoRefreshDropdownOptions: AutoRefreshOption[] = [
   {
@@ -42,6 +43,8 @@ const autoRefreshDropdownOptions: AutoRefreshOption[] = [
   }
 ];
 
+const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`
+
 const DashboardPage: React.FC = () => {
   const { dashboardID } = useParams<{ dashboardID: string }>();
   const orgID = useOrgID();
@@ -59,40 +62,46 @@ const DashboardPage: React.FC = () => {
   }, []);
 
   return (
-    <Page>
-      <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
+    <>
+      <Page>
+        <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
 
-        <Page.Header fullWidth={true}>
-          <RenamablePageTitle
-            placeholder={"Name this dashboard"}
-            name={data?.name || ""}
-            maxLength={90}
-            onRename={name => console.log("name")}
-          />
-        </Page.Header>
-
-        <Page.ControlBar fullWidth={true}>
-          <Page.ControlBarLeft>
-            <Button
-              text={"Add Cell"}
-              color={ComponentColor.Primary}
-              icon={IconFont.AddCell}
-              onClick={addCell}
+          <Page.Header fullWidth={true}>
+            <RenamablePageTitle
+              placeholder={"Name this dashboard"}
+              name={data?.name || ""}
+              maxLength={90}
+              onRename={name => console.log("name")}
             />
-          </Page.ControlBarLeft>
+          </Page.Header>
 
-          <Page.ControlBarRight>
-            <AutoRefreshDropdown options={autoRefreshDropdownOptions} />
-          </Page.ControlBarRight>
+          <Page.ControlBar fullWidth={true}>
+            <Page.ControlBarLeft>
+              <Button
+                text={"Add Cell"}
+                color={ComponentColor.Primary}
+                icon={IconFont.AddCell}
+                onClick={addCell}
+              />
+            </Page.ControlBarLeft>
 
-        </Page.ControlBar>
+            <Page.ControlBarRight>
+              <AutoRefreshDropdown options={autoRefreshDropdownOptions} />
+            </Page.ControlBarRight>
 
-        <Page.Contents>
-          <Cells />
-        </Page.Contents>
+          </Page.ControlBar>
 
-      </SpinnerContainer>
-    </Page>
+          <Page.Contents>
+            <Cells />
+          </Page.Contents>
+
+        </SpinnerContainer>
+      </Page>
+
+      <Switch>
+        <Route path={`${dashRoute}/cells/:cellID/edit`} component={ViewEditorOverlay} />
+      </Switch>
+    </>
   );
 };
 

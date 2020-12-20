@@ -1,13 +1,15 @@
 import React from "react";
-import { ResourceCard } from "@influxdata/clockface";
+import { ComponentColor, IconFont, ResourceCard } from "@influxdata/clockface";
 import { useHistory } from "react-router-dom";
 import { useOrgID } from "../../shared/state/organization/organization";
+import Context from "../../components/context_menu/Context";
 
 interface Props {
   id: string
   name: string
   desc: string
   updatedAt: string
+  onDeleteDashboard: (id: string) => void
 }
 
 const DashboardCard: React.FC<Props> = props => {
@@ -15,14 +17,29 @@ const DashboardCard: React.FC<Props> = props => {
     id,
     name,
     desc,
-    updatedAt
+    updatedAt,
+    onDeleteDashboard
   } = props;
   const history = useHistory();
   const orgID = useOrgID();
 
   const contextMenu = (): JSX.Element => {
     return (
-      <div>Context Menu</div>
+      <Context>
+        <Context.Menu icon={IconFont.CogThick}>
+          <Context.Item
+            label={"Export"}
+            action={value => console.log("export action", value)}
+            testID={"context_menu-export"}
+          />
+        </Context.Menu>
+        <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
+          <Context.Item
+            label={"Delete"}
+            action={value => onDeleteDashboard(id)}
+          />
+        </Context.Menu>
+      </Context>
     );
   };
 

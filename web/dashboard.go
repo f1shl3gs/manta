@@ -1,18 +1,21 @@
 package web
 
 import (
-	"encoding/json"
-	"github.com/f1shl3gs/manta"
-	"github.com/julienschmidt/httprouter"
-	"go.uber.org/zap"
 	"net/http"
+
+	json "github.com/json-iterator/go"
+	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
 )
 
 const (
 	DashboardPrefix     = "/api/v1/dashboards"
 	DashboardIDPath     = "/api/v1/dashboards/:id"
 	DashboardCellPrefix = "/api/v1/dashboards/:id/cells"
-	DashboardCellIDPath = "/api/v1/dashboards/:id/cells/:cid"
+	DashboardCellIDPath = "/api/v1/dashboards/:id/cells/:cellID"
 )
 
 type DashboardHandler struct {
@@ -23,13 +26,16 @@ type DashboardHandler struct {
 }
 
 func NewDashboardService(h *DashboardHandler) {
-	h.HandlerFunc(http.MethodGet, DashboardPrefix, h.list)
-	h.HandlerFunc(http.MethodGet, DashboardIDPath, h.get)
+	h.HandlerFunc(http.MethodGet, DashboardPrefix, h.handleList)
+	h.HandlerFunc(http.MethodGet, DashboardIDPath, h.handleGet)
+	h.HandlerFunc(http.MethodDelete, DashboardIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPost, DashboardPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodPost, DashboardCellPrefix, h.handleAddCell)
+	h.HandlerFunc(http.MethodGet, DashboardCellIDPath, h.handleGetCell)
+	h.HandlerFunc(http.MethodPut, DashboardCellPrefix, h.handleReplaceDashboardCells)
 }
 
-func (h *DashboardHandler) list(w http.ResponseWriter, r *http.Request) {
+func (h *DashboardHandler) handleList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	ds, err := h.dashboardService.FindDashboards(ctx, manta.DashboardFilter{})
@@ -43,7 +49,7 @@ func (h *DashboardHandler) list(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *DashboardHandler) get(w http.ResponseWriter, r *http.Request) {
+func (h *DashboardHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	id, err := idFromRequestPath(r)
@@ -146,4 +152,95 @@ func decodeCreateCell(r *http.Request) (*manta.Cell, error) {
 		X: cc.X,
 		Y: cc.Y,
 	}, nil
+}
+
+func (h *DashboardHandler) handleReplaceDashboardCells(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cells, err := decodeCells(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.dashboardService.ReplaceDashboardCells(ctx, id, cells)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func decodeCells(r *http.Request) ([]manta.Cell, error) {
+	var (
+		cells []manta.Cell
+		err   error
+	)
+
+	err = json.NewDecoder(r.Body).Decode(&cells)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(cells); i++ {
+		if err = cells[i].Validate(); err != nil {
+			return nil, errors.Wrapf(err, "invalid cell at %d", i)
+		}
+
+	}
+
+	return cells, err
+}
+
+func (h *DashboardHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = h.dashboardService.DeleteDashboard(ctx, id); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *DashboardHandler) handleGetCell(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx    = r.Context()
+		params = httprouter.ParamsFromContext(ctx)
+	)
+
+	dashID, err := idFromParams(params, "id")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cellID, err := idFromParams(params, "cellID")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cell, err := h.dashboardService.GetDashboardCell(ctx, dashID, cellID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+	}
 }

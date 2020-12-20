@@ -3,6 +3,7 @@ import ReactGridLayout, { Layout, WidthProvider } from "react-grid-layout";
 import { useCells } from "../state/dashboard";
 import { Cell } from "../../types";
 import CellComponent from "./CellComponent";
+import GradientBorder from "./GradientBorder";
 
 const Grid = WidthProvider(ReactGridLayout);
 
@@ -24,13 +25,13 @@ const layout = (cells: Cell[]): Layout[] => {
 };
 
 const Cells: React.FC = () => {
-  const cells = useCells();
+  const { cells, setCells } = useCells();
 
-  console.log('cells', cells)
+  console.log("cells", cells);
 
   return (
     <>
-      {/* ScrollDetector!?*/}
+      {/* ScrollDetector!? */}
       <Grid
         cols={12}
         layout={layout(cells)}
@@ -38,8 +39,10 @@ const Cells: React.FC = () => {
         useCSSTransforms={false}
         containerPadding={[0, 0]}
         margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
-        draggableHandle={".cell-draggable"}
-        onLayoutChange={next => console.log("layout change")}
+        draggableHandle={".cell--draggable"}
+        onLayoutChange={next => setCells(next)}
+        isDraggable={true}
+        isResizable={true}
       >
         {
           cells.map(cell => (
@@ -48,6 +51,7 @@ const Cells: React.FC = () => {
               className="cell"
             >
               <CellComponent cell={cell} />
+              <GradientBorder />
             </div>
           ))
         }

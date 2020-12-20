@@ -154,7 +154,7 @@ func (s *Service) createNotificationEndpoint(ctx context.Context, tx Tx, ne *man
 	defer span.Finish()
 
 	ne.Created = time.Now()
-	ne.Modified = time.Now()
+	ne.Updated = time.Now()
 
 	return s.putNotificationEndpoint(ctx, tx, ne)
 }
@@ -232,7 +232,7 @@ func (s *Service) updateNotificationEndpoint(ctx context.Context, tx Tx, id mant
 		ne.Desc = *u.Description
 	}
 
-	ne.Modified = time.Now()
+	ne.Updated = time.Now()
 
 	err = s.putNotificationEndpoint(ctx, tx, ne)
 	if err != nil {
