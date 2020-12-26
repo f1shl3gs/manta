@@ -1,18 +1,18 @@
 // libraries
-import React, { useMemo } from "react";
-import moment from "moment";
+import React, {useMemo} from 'react'
+import moment from 'moment'
 
 // components
-import { ComponentSize, Table } from "@influxdata/clockface";
+import {ComponentSize, Table} from '@influxdata/clockface'
 
 // test data
-import testData from "./query_range_resp.json";
+import testData from './query_range_resp.json'
 
 type StreamResult = {
   stream: {
     [key: string]: string
-  },
-  values: string[][];
+  }
+  values: string[][]
 }
 
 type MatrixResult = {
@@ -36,27 +36,27 @@ type TableRow = {
 }
 
 const transformData = (ss: StreamResult[]) => {
-  const rows = new Array<TableRow>();
+  const rows = new Array<TableRow>()
 
-  ss.forEach(stream => {
-    stream.values.forEach(pair => {
+  ss.forEach((stream) => {
+    stream.values.forEach((pair) => {
       rows.push({
         ts: moment(Number(pair[0]) / 1000 / 1000).format(),
-        msg: pair[1]
-      });
-    });
-  });
+        msg: pair[1],
+      })
+    })
+  })
 
-  return rows;
-};
+  return rows
+}
 
 const LogList = () => {
   // todo: show the common labels
 
-  const resp = testData as Resp;
+  const resp = testData as Resp
   const rows = useMemo(() => {
-    return transformData(resp.data.result as StreamResult[]);
-  }, [resp.data.result]);
+    return transformData(resp.data.result as StreamResult[])
+  }, [resp.data.result])
 
   return (
     <Table fontSize={ComponentSize.ExtraSmall}>
@@ -68,20 +68,18 @@ const LogList = () => {
       </Table.Header>
 
       <Table.Body>
-        {
-          rows.map((item, index) => (
-            <Table.Row key={index}>
-              <Table.Cell>{item.ts}</Table.Cell>
-              <Table.Cell>{item.msg}</Table.Cell>
-            </Table.Row>
-          ))
-        }
+        {rows.map((item, index) => (
+          <Table.Row key={index}>
+            <Table.Cell>{item.ts}</Table.Cell>
+            <Table.Cell>{item.msg}</Table.Cell>
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table>
-  );
-};
+  )
+}
 
-export default LogList;
+export default LogList
 
 /*
 <Table>

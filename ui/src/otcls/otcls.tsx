@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {useCallback} from 'react'
+import {useHistory} from 'react-router-dom'
 
 import {
   Button,
@@ -11,18 +11,18 @@ import {
   ResourceList,
   SpinnerContainer,
   TechnoSpinner,
-} from '@influxdata/clockface';
+} from '@influxdata/clockface'
 
-import { useOrgID } from 'shared/state/organization/organization';
-import { useOtcls } from './state';
-import { Otcl } from '../types';
-import { useFetch } from "use-http";
+import {useOrgID} from 'shared/state/organization/organization'
+import {useOtcls} from './state'
+import {Otcl} from '../types'
+import {useFetch} from 'use-http'
 
 const Otcls: React.FC = () => {
-  const orgID = useOrgID();
-  const history = useHistory();
-  const { otcls, rds, reload } = useOtcls();
-  const { del } = useFetch(`/api/v1/otcls`, {});
+  const orgID = useOrgID()
+  const history = useHistory()
+  const {otcls, rds, reload} = useOtcls()
+  const {del} = useFetch(`/api/v1/otcls`, {})
 
   const context = useCallback((id: string): JSX.Element => {
     return (
@@ -34,16 +34,16 @@ const Otcls: React.FC = () => {
         onClick={() => {
           del(`${id}`)
             .then(() => {
-              console.log('delete', id, 'success');
-              reload();
+              console.log('delete', id, 'success')
+              reload()
             })
             .catch(() => {
-              console.log('failed');
-            });
+              console.log('failed')
+            })
         }}
       />
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
@@ -62,7 +62,7 @@ const Otcls: React.FC = () => {
               <ResourceCard.Name
                 name={item.name}
                 onClick={() => {
-                  history.push(`/orgs/${orgID}/otcls/${item.id}`);
+                  history.push(`/orgs/${orgID}/otcls/${item.id}`)
                 }}
               />
               <ResourceCard.Meta>
@@ -74,7 +74,7 @@ const Otcls: React.FC = () => {
         </ResourceList.Body>
       </ResourceList>
     </SpinnerContainer>
-  );
-};
+  )
+}
 
-export default Otcls;
+export default Otcls

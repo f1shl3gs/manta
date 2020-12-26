@@ -12,42 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TNil } from '../types';
+import {TNil} from '../types'
 
 interface TimeCursorUpdate {
-  cursor: number | TNil;
+  cursor: number | TNil
 }
 
 interface TimeReframeUpdate {
   reframe: {
-    anchor: number;
-    shift: number;
-  };
+    anchor: number
+    shift: number
+  }
 }
 
 interface TimeShiftEndUpdate {
-  shiftEnd: number;
+  shiftEnd: number
 }
 
 interface TimeShiftStartUpdate {
-  shiftStart: number;
+  shiftStart: number
 }
 
-export type TUpdateViewRangeTimeFunction = (start: number, end: number, trackSrc?: string) => void;
+export type TUpdateViewRangeTimeFunction = (
+  start: number,
+  end: number,
+  trackSrc?: string
+) => void
 
-export type ViewRangeTimeUpdate = TimeCursorUpdate | TimeReframeUpdate | TimeShiftEndUpdate | TimeShiftStartUpdate;
+export type ViewRangeTimeUpdate =
+  | TimeCursorUpdate
+  | TimeReframeUpdate
+  | TimeShiftEndUpdate
+  | TimeShiftStartUpdate
 
 export interface ViewRangeTime {
-  current: [number, number];
-  cursor?: number | TNil;
+  current: [number, number]
+  cursor?: number | TNil
   reframe?: {
-    anchor: number;
-    shift: number;
-  };
-  shiftEnd?: number;
-  shiftStart?: number;
+    anchor: number
+    shift: number
+  }
+  shiftEnd?: number
+  shiftStart?: number
 }
 
 export interface ViewRange {
-  time: ViewRangeTime;
+  time: ViewRangeTime
 }

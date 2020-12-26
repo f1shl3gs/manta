@@ -12,22 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { css } from 'emotion';
+import React from 'react'
+import {css} from 'emotion'
 
-import TimelineHeaderRow from './TimelineHeaderRow';
-import VirtualizedTraceView from './VirtualizedTraceView';
-import { merge as mergeShortcuts } from '../keyboard-shortcuts';
-import { Accessors } from '../ScrollManager';
-import { TUpdateViewRangeTimeFunction, ViewRange, ViewRangeTimeUpdate } from './types';
-import { TNil, TraceSpan, Trace, TraceLog, TraceKeyValuePair, TraceLink } from '../types';
-import TTraceTimeline from '../types/TTraceTimeline';
-import { autoColor, createStyle, Theme, withTheme } from '../Theme';
-import ExternalLinkContext from '../url/externalLinkContext';
+import TimelineHeaderRow from './TimelineHeaderRow'
+import VirtualizedTraceView from './VirtualizedTraceView'
+import {merge as mergeShortcuts} from '../keyboard-shortcuts'
+import {Accessors} from '../ScrollManager'
+import {
+  TUpdateViewRangeTimeFunction,
+  ViewRange,
+  ViewRangeTimeUpdate,
+} from './types'
+import {
+  TNil,
+  TraceSpan,
+  Trace,
+  TraceLog,
+  TraceKeyValuePair,
+  TraceLink,
+} from '../types'
+import TTraceTimeline from '../types/TTraceTimeline'
+import {autoColor, createStyle, Theme, withTheme} from '../Theme'
+import ExternalLinkContext from '../url/externalLinkContext'
 
 type TExtractUiFindFromStateReturn = {
-  uiFind: string | undefined;
-};
+  uiFind: string | undefined
+}
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -62,53 +73,61 @@ const getStyles = createStyle((theme: Theme) => {
         color: ${autoColor(theme, 'blue', 'black')};
       }
     `,
-  };
-});
+  }
+})
 
 type TProps = TExtractUiFindFromStateReturn & {
-  registerAccessors: (accessors: Accessors) => void;
-  findMatchesIDs: Set<string> | TNil;
-  scrollToFirstVisibleSpan: () => void;
-  traceTimeline: TTraceTimeline;
-  trace: Trace;
-  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void;
-  updateViewRangeTime: TUpdateViewRangeTimeFunction;
-  viewRange: ViewRange;
-  focusSpan: (uiFind: string) => void;
-  createLinkToExternalSpan: (traceID: string, spanID: string) => string;
+  registerAccessors: (accessors: Accessors) => void
+  findMatchesIDs: Set<string> | TNil
+  scrollToFirstVisibleSpan: () => void
+  traceTimeline: TTraceTimeline
+  trace: Trace
+  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void
+  updateViewRangeTime: TUpdateViewRangeTimeFunction
+  viewRange: ViewRange
+  focusSpan: (uiFind: string) => void
+  createLinkToExternalSpan: (traceID: string, spanID: string) => string
 
-  setSpanNameColumnWidth: (width: number) => void;
-  collapseAll: (spans: TraceSpan[]) => void;
-  collapseOne: (spans: TraceSpan[]) => void;
-  expandAll: () => void;
-  expandOne: (spans: TraceSpan[]) => void;
+  setSpanNameColumnWidth: (width: number) => void
+  collapseAll: (spans: TraceSpan[]) => void
+  collapseOne: (spans: TraceSpan[]) => void
+  expandAll: () => void
+  expandOne: (spans: TraceSpan[]) => void
 
-  childrenToggle: (spanID: string) => void;
-  clearShouldScrollToFirstUiFindMatch: () => void;
-  detailLogItemToggle: (spanID: string, log: TraceLog) => void;
-  detailLogsToggle: (spanID: string) => void;
-  detailWarningsToggle: (spanID: string) => void;
-  detailStackTracesToggle: (spanID: string) => void;
-  detailReferencesToggle: (spanID: string) => void;
-  detailProcessToggle: (spanID: string) => void;
-  detailTagsToggle: (spanID: string) => void;
-  detailToggle: (spanID: string) => void;
-  setTrace: (trace: Trace | TNil, uiFind: string | TNil) => void;
-  addHoverIndentGuideId: (spanID: string) => void;
-  removeHoverIndentGuideId: (spanID: string) => void;
-  linksGetter: (span: TraceSpan, items: TraceKeyValuePair[], itemIndex: number) => TraceLink[];
-  theme: Theme;
+  childrenToggle: (spanID: string) => void
+  clearShouldScrollToFirstUiFindMatch: () => void
+  detailLogItemToggle: (spanID: string, log: TraceLog) => void
+  detailLogsToggle: (spanID: string) => void
+  detailWarningsToggle: (spanID: string) => void
+  detailStackTracesToggle: (spanID: string) => void
+  detailReferencesToggle: (spanID: string) => void
+  detailProcessToggle: (spanID: string) => void
+  detailTagsToggle: (spanID: string) => void
+  detailToggle: (spanID: string) => void
+  setTrace: (trace: Trace | TNil, uiFind: string | TNil) => void
+  addHoverIndentGuideId: (spanID: string) => void
+  removeHoverIndentGuideId: (spanID: string) => void
+  linksGetter: (
+    span: TraceSpan,
+    items: TraceKeyValuePair[],
+    itemIndex: number
+  ) => TraceLink[]
+  theme: Theme
   createSpanLink?: (
     span: TraceSpan
-  ) => { href: string; onClick?: (e: React.MouseEvent) => void; content: React.ReactNode };
-};
+  ) => {
+    href: string
+    onClick?: (e: React.MouseEvent) => void
+    content: React.ReactNode
+  }
+}
 
 type State = {
   // Will be set to real height of the component so it can be passed down to size some other elements.
-  height: number;
-};
+  height: number
+}
 
-const NUM_TICKS = 5;
+const NUM_TICKS = 5
 
 /**
  * `TraceTimelineViewer` now renders the header row because it is sensitive to
@@ -116,10 +135,13 @@ const NUM_TICKS = 5;
  * re-render the ListView every time the cursor is moved on the traces minimap
  * or `TimelineHeaderRow`.
  */
-export class UnthemedTraceTimelineViewer extends React.PureComponent<TProps, State> {
+export class UnthemedTraceTimelineViewer extends React.PureComponent<
+  TProps,
+  State
+> {
   constructor(props: TProps) {
-    super(props);
-    this.state = { height: 0 };
+    super(props)
+    this.state = {height: 0}
   }
 
   componentDidMount() {
@@ -128,24 +150,24 @@ export class UnthemedTraceTimelineViewer extends React.PureComponent<TProps, Sta
       expandAll: this.expandAll,
       collapseOne: this.collapseOne,
       expandOne: this.expandOne,
-    });
+    })
   }
 
   collapseAll = () => {
-    this.props.collapseAll(this.props.trace.spans);
-  };
+    this.props.collapseAll(this.props.trace.spans)
+  }
 
   collapseOne = () => {
-    this.props.collapseOne(this.props.trace.spans);
-  };
+    this.props.collapseOne(this.props.trace.spans)
+  }
 
   expandAll = () => {
-    this.props.expandAll();
-  };
+    this.props.expandAll()
+  }
 
   expandOne = () => {
-    this.props.expandOne(this.props.trace.spans);
-  };
+    this.props.expandOne(this.props.trace.spans)
+  }
 
   render() {
     const {
@@ -157,15 +179,17 @@ export class UnthemedTraceTimelineViewer extends React.PureComponent<TProps, Sta
       traceTimeline,
       theme,
       ...rest
-    } = this.props;
-    const { trace } = rest;
-    const styles = getStyles(theme);
+    } = this.props
+    const {trace} = rest
+    const styles = getStyles(theme)
 
     return (
       <ExternalLinkContext.Provider value={createLinkToExternalSpan}>
         <div
           className={styles.TraceTimelineViewer}
-          ref={(ref: HTMLDivElement | null) => ref && this.setState({ height: ref.getBoundingClientRect().height })}
+          ref={(ref: HTMLDivElement | null) =>
+            ref && this.setState({height: ref.getBoundingClientRect().height})
+          }
         >
           <TimelineHeaderRow
             duration={trace.duration}
@@ -189,8 +213,8 @@ export class UnthemedTraceTimelineViewer extends React.PureComponent<TProps, Sta
           />
         </div>
       </ExternalLinkContext.Provider>
-    );
+    )
   }
 }
 
-export default withTheme(UnthemedTraceTimelineViewer);
+export default withTheme(UnthemedTraceTimelineViewer)

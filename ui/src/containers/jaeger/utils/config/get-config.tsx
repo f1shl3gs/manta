@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _get from 'lodash/get';
+import _get from 'lodash/get'
 
-import defaultConfig from '../../constants/default-config';
+import defaultConfig from '../../constants/default-config'
 
 /**
  * Merge the embedded config from the query service (if present) with the
  * default config from `../../constants/default-config`.
  */
 export default function getConfig() {
-  return defaultConfig;
+  return defaultConfig
 }
 
 export function getConfigValue(path: string) {
-  return _get(getConfig(), path);
+  return _get(getConfig(), path)
 }

@@ -1,8 +1,3 @@
-/*
-   Chronograf Styles
-   -----------------------------------------------------------------------------
-*/
-
 // Modules
 @import 'modules';
 
@@ -12,14 +7,18 @@
 */
 
 // Components
-@import "src/components/context_menu/ContextMenu";
-@import "src/components/RenamablePageTitle";
-@import "src/components/timeMachine/TimeMachine";
-@import "src/components/timeMachine/TimeMachineQueries";
-@import "src/dashboards/components/cells/Cell";
-@import "src/dashboards/components/GradientBorder";
-@import "src/dashboards/components/cells/react-grid-layout";
-@import "src/dashboards/components/ViewEditorOverlay";
+@import "src/components/RenamablePageTitle.scss";
+@import "src/components/AutoRefreshDropdown.scss";
+@import "src/components/context_menu/ContextMenu.scss";
+@import "src/components/timeMachine/TimeMachine.scss";
+@import "src/components/timeMachine/TimeMachineQueries.scss";
+@import "src/components/timeMachine/ViewOptions.scss";
+@import "src/dashboards/components/DashboardCardsGrid.scss";
+@import "src/dashboards/components/GradientBorder.scss";
+@import "src/dashboards/components/cells/Cell.scss";
+@import "src/dashboards/components/cells/react-grid-layout.scss";
+@import "src/dashboards/components/cells/Dashboards.scss";
+@import "src/dashboards/components/DashboardEmpty.scss";
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

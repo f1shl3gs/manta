@@ -1,14 +1,14 @@
-import React from 'react';
-import { Overlay } from '@influxdata/clockface';
+import React from 'react'
+import {Overlay} from '@influxdata/clockface'
 
 type Props = {
-  title: string;
-  onDismiss: () => void;
-  children: React.ReactNode;
-};
+  title: string
+  onDismiss: () => void
+  children: React.ReactNode
+}
 
 const OtclOverlay: React.FC<Props> = (props) => {
-  const { title, children, onDismiss } = props;
+  const {title, children, onDismiss} = props
 
   return (
     <Overlay visible>
@@ -17,7 +17,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
         <Overlay.Body>{children}</Overlay.Body>
       </Overlay.Container>
     </Overlay>
-  );
-};
+  )
+}
 
-export { OtclOverlay };
+export {OtclOverlay}

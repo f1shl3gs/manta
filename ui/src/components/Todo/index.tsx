@@ -1,15 +1,15 @@
-import React from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import React from 'react'
+import {useRouteMatch} from 'react-router-dom'
 
 import {
   FontWeight,
   Heading,
   HeadingElement,
   Typeface,
-} from '@influxdata/clockface';
+} from '@influxdata/clockface'
 
 const Todo: React.FC = () => {
-  const { url } = useRouteMatch();
+  const {url} = useRouteMatch()
 
   return (
     <Heading
@@ -21,7 +21,7 @@ const Todo: React.FC = () => {
     >
       Todo: {url}
     </Heading>
-  );
-};
+  )
+}
 
-export default Todo;
+export default Todo

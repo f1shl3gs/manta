@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { css } from 'emotion';
-import NewWindowIcon from '../common/NewWindowIcon';
-import { UITooltip, UIDropdown, UIMenuItem, UIMenu, TooltipPlacement } from '../uiElementsContext';
+import React from 'react'
+import {css} from 'emotion'
+import NewWindowIcon from '../common/NewWindowIcon'
+import {
+  UITooltip,
+  UIDropdown,
+  UIMenuItem,
+  UIMenu,
+  TooltipPlacement,
+} from '../uiElementsContext'
 
-import ReferenceLink from '../url/ReferenceLink';
-import { createStyle } from '../Theme';
-import {TraceSpanReference} from "../types";
+import ReferenceLink from '../url/ReferenceLink'
+import {createStyle} from '../Theme'
+import {TraceSpanReference} from '../types'
 
 export const getStyles = createStyle(() => {
   return {
@@ -40,41 +46,45 @@ export const getStyles = createStyle(() => {
     tooltip: css`
       max-width: none;
     `,
-  };
-});
+  }
+})
 
 type TReferencesButtonProps = {
-  references: TraceSpanReference[];
-  children: React.ReactNode;
-  tooltipText: string;
-  focusSpan: (spanID: string) => void;
-};
+  references: TraceSpanReference[]
+  children: React.ReactNode
+  tooltipText: string
+  focusSpan: (spanID: string) => void
+}
 
 export default class ReferencesButton extends React.PureComponent<TReferencesButtonProps> {
   referencesList = (references: TraceSpanReference[]) => {
-    const styles = getStyles();
+    const styles = getStyles()
     return (
       <UIMenu>
-        {references.map(ref => {
-          const { span, spanID } = ref;
+        {references.map((ref) => {
+          const {span, spanID} = ref
           return (
             <UIMenuItem key={`${spanID}`}>
-              <ReferenceLink reference={ref} focusSpan={this.props.focusSpan} className={styles.TraceRefLink}>
+              <ReferenceLink
+                reference={ref}
+                focusSpan={this.props.focusSpan}
+                className={styles.TraceRefLink}
+              >
                 {span
                   ? `${span.process.serviceName}:${span.operationName} - ${ref.spanID}`
                   : `(another trace) - ${ref.spanID}`}
                 {!span && <NewWindowIcon className={styles.NewWindowIcon} />}
               </ReferenceLink>
             </UIMenuItem>
-          );
+          )
         })}
       </UIMenu>
-    );
-  };
+    )
+  }
 
   render() {
-    const { references, children, tooltipText, focusSpan } = this.props;
-    const styles = getStyles();
+    const {references, children, tooltipText, focusSpan} = this.props
+    const styles = getStyles()
 
     const tooltipProps = {
       arrowPointAtCenter: true,
@@ -82,7 +92,7 @@ export default class ReferencesButton extends React.PureComponent<TReferencesBut
       placement: 'bottom' as TooltipPlacement,
       title: tooltipText,
       overlayClassName: styles.tooltip,
-    };
+    }
 
     if (references.length > 1) {
       return (
@@ -92,16 +102,16 @@ export default class ReferencesButton extends React.PureComponent<TReferencesBut
           </UIDropdown>
         </UITooltip>*/
         <a>{children}</a>
-      );
+      )
     }
-    const ref = references[0];
+    const ref = references[0]
     return (
-/*      <UITooltip {...tooltipProps}>
+      /*      <UITooltip {...tooltipProps}>
         <ReferenceLink reference={ref} focusSpan={focusSpan} className={styles.MultiParent}>
           {children}
         </ReferenceLink>
       </UITooltip>*/
       <a>{children}</a>
-    );
+    )
   }
 }

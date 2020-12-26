@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import { formatDuration } from './utils';
-import { TNil } from '../types';
-import { autoColor, createStyle, Theme, useTheme } from '../Theme';
+import {formatDuration} from './utils'
+import {TNil} from '../types'
+import {autoColor, createStyle, Theme, useTheme} from '../Theme'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -46,32 +46,33 @@ const getStyles = createStyle((theme: Theme) => {
       left: initial;
       right: 0.25rem;
     `,
-  };
-});
+  }
+})
 
 type TicksProps = {
-  endTime?: number | TNil;
-  numTicks: number;
-  showLabels?: boolean | TNil;
-  startTime?: number | TNil;
-};
+  endTime?: number | TNil
+  numTicks: number
+  showLabels?: boolean | TNil
+  startTime?: number | TNil
+}
 
 export default function Ticks(props: TicksProps) {
-  const { endTime, numTicks, showLabels, startTime } = props;
+  const {endTime, numTicks, showLabels, startTime} = props
 
-  let labels: undefined | string[];
+  let labels: undefined | string[]
   if (showLabels) {
-    labels = [];
-    const viewingDuration = (endTime || 0) - (startTime || 0);
+    labels = []
+    const viewingDuration = (endTime || 0) - (startTime || 0)
     for (let i = 0; i < numTicks; i++) {
-      const durationAtTick = (startTime || 0) + (i / (numTicks - 1)) * viewingDuration;
-      labels.push(formatDuration(durationAtTick));
+      const durationAtTick =
+        (startTime || 0) + (i / (numTicks - 1)) * viewingDuration
+      labels.push(formatDuration(durationAtTick))
     }
   }
-  const styles = getStyles(useTheme());
-  const ticks: React.ReactNode[] = [];
+  const styles = getStyles(useTheme())
+  const ticks: React.ReactNode[] = []
   for (let i = 0; i < numTicks; i++) {
-    const portion = i / (numTicks - 1);
+    const portion = i / (numTicks - 1)
     ticks.push(
       <div
         key={portion}
@@ -81,18 +82,22 @@ export default function Ticks(props: TicksProps) {
         }}
       >
         {labels && (
-          <span className={cx(styles.TicksTickLabel, { [styles.TicksTickLabelEndAnchor]: portion >= 1 })}>
+          <span
+            className={cx(styles.TicksTickLabel, {
+              [styles.TicksTickLabelEndAnchor]: portion >= 1,
+            })}
+          >
             {labels[i]}
           </span>
         )}
       </div>
-    );
+    )
   }
-  return <div className={styles.Ticks}>{ticks}</div>;
+  return <div className={styles.Ticks}>{ticks}</div>
 }
 
 Ticks.defaultProps = {
   endTime: null,
   showLabels: null,
   startTime: null,
-};
+}

@@ -12,42 +12,59 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { UIMenu, UIMenuItem } from '..';
-import NewWindowIcon from './NewWindowIcon';
+import * as React from 'react'
+import {UIMenu, UIMenuItem} from '..'
+import NewWindowIcon from './NewWindowIcon'
 
 type Link = {
-  text: string;
-  url: string;
-};
+  text: string
+  url: string
+}
 
 type ExternalLinksProps = {
-  links: Link[];
-  className?: string;
-};
+  links: Link[]
+  className?: string
+}
 
-const LinkValue = (props: { href: string; title?: string; children?: React.ReactNode; className?: string }) => (
-  <a href={props.href} title={props.title} target="_blank" rel="noopener noreferrer" className={props.className}>
+const LinkValue = (props: {
+  href: string
+  title?: string
+  children?: React.ReactNode
+  className?: string
+}) => (
+  <a
+    href={props.href}
+    title={props.title}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={props.className}
+  >
     {props.children} <NewWindowIcon />
   </a>
-);
+)
 
 // export for testing
 export const linkValueList = (links: Link[]) => (
   <UIMenu>
-    {links.map(({ text, url }, index) => (
+    {links.map(({text, url}, index) => (
       // `index` is necessary in the key because url can repeat
       <UIMenuItem key={`${url}-${index}`}>
         <LinkValue href={url}>{text}</LinkValue>
       </UIMenuItem>
     ))}
   </UIMenu>
-);
+)
 
 export default function ExternalLinks(props: ExternalLinksProps) {
-  const { links } = props;
+  const {links} = props
   if (links.length === 1) {
-    return <LinkValue href={links[0].url} title={links[0].text} className={props.className} />;
+    return (
+      <LinkValue
+        href={links[0].url}
+        title={links[0].text}
+        className={props.className}
+      />
+    )
   }
   return (
     /*<UIDropdown overlay={linkValueList(links)} placement="bottomRight" trigger={['click']}>
@@ -57,5 +74,5 @@ export default function ExternalLinks(props: ExternalLinksProps) {
     </UIDropdown>*/
 
     <div>dropdown</div>
-  );
+  )
 }

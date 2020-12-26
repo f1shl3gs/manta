@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import cx from 'classnames';
-import IoAndroidOpen from 'react-icons/lib/io/android-open';
-import { css } from 'emotion';
+import React from 'react'
+import cx from 'classnames'
+import IoAndroidOpen from 'react-icons/lib/io/android-open'
+import {css} from 'emotion'
 
-import { createStyle } from '../Theme';
+import {createStyle} from '../Theme'
 
 export const getStyles = createStyle(() => {
   return {
@@ -25,21 +25,21 @@ export const getStyles = createStyle(() => {
       label: NewWindowIconLarge;
       font-size: 1.5em;
     `,
-  };
-});
+  }
+})
 
 type Props = {
-  isLarge?: boolean;
-  className?: string;
-};
+  isLarge?: boolean
+  className?: string
+}
 
 export default function NewWindowIcon(props: Props) {
-  const { isLarge, className, ...rest } = props;
-  const styles = getStyles();
-  const cls = cx({ [styles.NewWindowIconLarge]: isLarge }, className);
-  return <IoAndroidOpen className={cls} {...rest} />;
+  const {isLarge, className, ...rest} = props
+  const styles = getStyles()
+  const cls = cx({[styles.NewWindowIconLarge]: isLarge}, className)
+  return <IoAndroidOpen className={cls} {...rest} />
 }
 
 NewWindowIcon.defaultProps = {
   isLarge: false,
-};
+}

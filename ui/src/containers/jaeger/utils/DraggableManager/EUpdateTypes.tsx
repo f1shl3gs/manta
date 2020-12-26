@@ -33,4 +33,4 @@ enum EUpdateTypes {
   MouseMove = 'MouseMove',
 }
 
-export default EUpdateTypes;
+export default EUpdateTypes

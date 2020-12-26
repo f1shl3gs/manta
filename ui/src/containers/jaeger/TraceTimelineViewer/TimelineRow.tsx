@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
-import { createStyle } from '../Theme';
-import { ubRelative } from '../uberUtilityStyles';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
+import {createStyle} from '../Theme'
+import {ubRelative} from '../uberUtilityStyles'
 
 const getStyles = createStyle(() => {
   return {
@@ -25,46 +25,54 @@ const getStyles = createStyle(() => {
       flex: 0 1 auto;
       flex-direction: row;
     `,
-  };
-});
+  }
+})
 
 type TTimelineRowProps = {
-  children: React.ReactNode;
-  className?: string;
-};
+  children: React.ReactNode
+  className?: string
+}
 
 interface TimelineRowCellProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  className?: string;
-  width: number;
-  style?: {};
+  children: React.ReactNode
+  className?: string
+  width: number
+  style?: {}
 }
 
 export default function TimelineRow(props: TTimelineRowProps) {
-  const { children, className = '', ...rest } = props;
-  const styles = getStyles();
+  const {children, className = '', ...rest} = props
+  const styles = getStyles()
   return (
     <div className={cx(styles.flexRow, className)} {...rest}>
       {children}
     </div>
-  );
+  )
 }
 
 TimelineRow.defaultProps = {
   className: '',
-};
-
-export function TimelineRowCell(props: TimelineRowCellProps) {
-  const { children, className = '', width, style, ...rest } = props;
-  const widthPercent = `${width * 100}%`;
-  const mergedStyle = { ...style, flexBasis: widthPercent, maxWidth: widthPercent };
-  return (
-    <div className={cx(ubRelative, className)} style={mergedStyle} {...(rest as any)}>
-      {children}
-    </div>
-  );
 }
 
-TimelineRowCell.defaultProps = { className: '', style: {} };
+export function TimelineRowCell(props: TimelineRowCellProps) {
+  const {children, className = '', width, style, ...rest} = props
+  const widthPercent = `${width * 100}%`
+  const mergedStyle = {
+    ...style,
+    flexBasis: widthPercent,
+    maxWidth: widthPercent,
+  }
+  return (
+    <div
+      className={cx(ubRelative, className)}
+      style={mergedStyle}
+      {...(rest as any)}
+    >
+      {children}
+    </div>
+  )
+}
 
-TimelineRow.Cell = TimelineRowCell;
+TimelineRowCell.defaultProps = {className: '', style: {}}
+
+TimelineRow.Cell = TimelineRowCell

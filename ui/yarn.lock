@@ -1252,15 +1252,15 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.4.0.tgz#e937f20fdd9151cea5eb3b886c4c4786279976ef"
-  integrity sha1-6TfyD92RUc6l6zuIbExHhieZdu8=
+"@influxdata/clockface@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.4.1.tgz#67c61d89782dea07a149dd35e45b9eb13ad63a5f"
+  integrity sha1-Z8YdiXgt6gehSd015FuesTrWOl8=
 
-"@influxdata/giraffe@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-1.0.2.tgz#a49c5cfbdb2b8fcbd34ab86118faa08bb238a885"
-  integrity sha1-pJxc+9srj8vTSrhhGPqgi7I4qIU=
+"@influxdata/giraffe@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.0.0.tgz#274f787890457f2703619832fa02f2bccdbe92e7"
+  integrity sha1-J094eJBFfycDYZgy+gLyvM2+kuc=
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -2252,6 +2252,13 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
+
+"@welldone-software/why-did-you-render@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.npm.taobao.org/@welldone-software/why-did-you-render/download/@welldone-software/why-did-you-render-6.0.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40welldone-software%2Fwhy-did-you-render%2Fdownload%2F%40welldone-software%2Fwhy-did-you-render-6.0.3.tgz#99c58ea8e3f2ea8c042fb1d58ebf147d345fff26"
+  integrity sha1-mcWOqOPy6owEL7HVjr8UfTRf/yY=
+  dependencies:
+    lodash "^4"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -7497,7 +7504,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.5, lodash@~4.17.10:
+"lodash@>=3.5 <5", lodash@^4, lodash@^4.0.0, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -9451,6 +9458,11 @@ prepend-http@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
+
+prettier@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/prettier/download/prettier-2.2.1.tgz?cache=0&sync_timestamp=1606523097359&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fprettier%2Fdownload%2Fprettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
+  integrity sha1-eVoaeN1S8HPaDNQrIfnJE4GSP/U=
 
 pretty-bytes@^5.3.0:
   version "5.4.1"

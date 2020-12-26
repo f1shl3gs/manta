@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-type TNil = null | undefined;
+type TNil = null | undefined
 
 // eslint-disable-next-line no-undef
-export default TNil;
+export default TNil

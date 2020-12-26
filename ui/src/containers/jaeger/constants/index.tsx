@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const TOP_NAV_HEIGHT = 46 as 46;
+export const TOP_NAV_HEIGHT = 46 as 46
 
-export const FALLBACK_DAG_MAX_NUM_SERVICES = 100 as 100;
-export const FALLBACK_TRACE_NAME = '<traces-without-root-span>' as '<traces-without-root-span>';
+export const FALLBACK_DAG_MAX_NUM_SERVICES = 100 as 100
+export const FALLBACK_TRACE_NAME = '<traces-without-root-span>' as '<traces-without-root-span>'
 
-export const FETCH_DONE = 'FETCH_DONE' as 'FETCH_DONE';
-export const FETCH_ERROR = 'FETCH_ERROR' as 'FETCH_ERROR';
-export const FETCH_LOADING = 'FETCH_LOADING' as 'FETCH_LOADING';
+export const FETCH_DONE = 'FETCH_DONE' as 'FETCH_DONE'
+export const FETCH_ERROR = 'FETCH_ERROR' as 'FETCH_ERROR'
+export const FETCH_LOADING = 'FETCH_LOADING' as 'FETCH_LOADING'
 
 export const fetchedState = {
   DONE: FETCH_DONE,
   ERROR: FETCH_ERROR,
   LOADING: FETCH_LOADING,
-};
+}

@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { css } from 'emotion';
+import React from 'react'
+import {css} from 'emotion'
 
-import SpanDetail from './SpanDetail';
-import DetailState from './SpanDetail/DetailState';
-import SpanTreeOffset from './SpanTreeOffset';
-import TimelineRow from './TimelineRow';
-import { autoColor, createStyle, Theme, withTheme } from '../Theme';
-import {TraceKeyValuePair, TraceLink, TraceLog, TraceSpan} from "../types";
+import SpanDetail from './SpanDetail'
+import DetailState from './SpanDetail/DetailState'
+import SpanTreeOffset from './SpanTreeOffset'
+import TimelineRow from './TimelineRow'
+import {autoColor, createStyle, Theme, withTheme} from '../Theme'
+import {TraceKeyValuePair, TraceLink, TraceLog, TraceSpan} from '../types'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -61,40 +61,44 @@ const getStyles = createStyle((theme: Theme) => {
       border-top: 3px solid;
       padding: 0.75rem;
     `,
-  };
-});
+  }
+})
 
 type SpanDetailRowProps = {
-  color: string;
-  columnDivision: number;
-  detailState: DetailState;
-  onDetailToggled: (spanID: string) => void;
-  linksGetter: (span: TraceSpan, links: TraceKeyValuePair[], index: number) => TraceLink[];
-  logItemToggle: (spanID: string, log: TraceLog) => void;
-  logsToggle: (spanID: string) => void;
-  processToggle: (spanID: string) => void;
-  referencesToggle: (spanID: string) => void;
-  warningsToggle: (spanID: string) => void;
-  stackTracesToggle: (spanID: string) => void;
-  span: TraceSpan;
-  tagsToggle: (spanID: string) => void;
-  traceStartTime: number;
-  focusSpan: (uiFind: string) => void;
-  hoverIndentGuideIds: Set<string>;
-  addHoverIndentGuideId: (spanID: string) => void;
-  removeHoverIndentGuideId: (spanID: string) => void;
-  theme: Theme;
-};
+  color: string
+  columnDivision: number
+  detailState: DetailState
+  onDetailToggled: (spanID: string) => void
+  linksGetter: (
+    span: TraceSpan,
+    links: TraceKeyValuePair[],
+    index: number
+  ) => TraceLink[]
+  logItemToggle: (spanID: string, log: TraceLog) => void
+  logsToggle: (spanID: string) => void
+  processToggle: (spanID: string) => void
+  referencesToggle: (spanID: string) => void
+  warningsToggle: (spanID: string) => void
+  stackTracesToggle: (spanID: string) => void
+  span: TraceSpan
+  tagsToggle: (spanID: string) => void
+  traceStartTime: number
+  focusSpan: (uiFind: string) => void
+  hoverIndentGuideIds: Set<string>
+  addHoverIndentGuideId: (spanID: string) => void
+  removeHoverIndentGuideId: (spanID: string) => void
+  theme: Theme
+}
 
 export class UnthemedSpanDetailRow extends React.PureComponent<SpanDetailRowProps> {
   _detailToggle = () => {
-    this.props.onDetailToggled(this.props.span.spanID);
-  };
+    this.props.onDetailToggled(this.props.span.spanID)
+  }
 
   _linksGetter = (items: TraceKeyValuePair[], itemIndex: number) => {
-    const { linksGetter, span } = this.props;
-    return linksGetter(span, items, itemIndex);
-  };
+    const {linksGetter, span} = this.props
+    return linksGetter(span, items, itemIndex)
+  }
 
   render() {
     const {
@@ -115,8 +119,8 @@ export class UnthemedSpanDetailRow extends React.PureComponent<SpanDetailRowProp
       addHoverIndentGuideId,
       removeHoverIndentGuideId,
       theme,
-    } = this.props;
-    const styles = getStyles(theme);
+    } = this.props
+    const styles = getStyles(theme)
     return (
       <TimelineRow>
         <TimelineRow.Cell width={columnDivision}>
@@ -133,13 +137,13 @@ export class UnthemedSpanDetailRow extends React.PureComponent<SpanDetailRowProp
               aria-checked="true"
               onClick={this._detailToggle}
               role="switch"
-              style={{ borderColor: color }}
+              style={{borderColor: color}}
               data-test-id="detail-row-expanded-accent"
             />
           </span>
         </TimelineRow.Cell>
         <TimelineRow.Cell width={1 - columnDivision}>
-          <div className={styles.infoWrapper} style={{ borderTopColor: color }}>
+          <div className={styles.infoWrapper} style={{borderTopColor: color}}>
             <SpanDetail
               detailState={detailState}
               linksGetter={this._linksGetter}
@@ -157,8 +161,8 @@ export class UnthemedSpanDetailRow extends React.PureComponent<SpanDetailRowProp
           </div>
         </TimelineRow.Cell>
       </TimelineRow>
-    );
+    )
   }
 }
 
-export default withTheme(UnthemedSpanDetailRow);
+export default withTheme(UnthemedSpanDetailRow)

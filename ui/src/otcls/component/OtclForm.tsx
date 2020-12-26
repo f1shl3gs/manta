@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Button,
   ButtonType,
@@ -8,14 +8,14 @@ import {
   Form,
   Grid,
   Input,
-} from '@influxdata/clockface';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-import { useOtcl } from 'otcls/state';
+} from '@influxdata/clockface'
+import {UnControlled as ReactCodeMirror} from 'react-codemirror2'
+import {useOtcl} from 'otcls/state'
 
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/material.css'
 
-require('codemirror/mode/yaml/yaml');
+require('codemirror/mode/yaml/yaml')
 
 const options = {
   tabIndex: 1,
@@ -25,25 +25,25 @@ const options = {
   autoRefresh: true,
   theme: 'material',
   completeSingle: false,
-};
+}
 
 const notEmpty = (name: string): string | null => {
   if (!name) {
-    return 'Value cannot be empty';
+    return 'Value cannot be empty'
   }
 
-  return null;
-};
+  return null
+}
 
 type Props = {
-  onSubmit: () => void;
-  onDismiss: () => void;
-};
+  onSubmit: () => void
+  onDismiss: () => void
+}
 
 const OtclForm: React.FC<Props> = (props) => {
-  const { onSubmit, onDismiss } = props;
+  const {onSubmit, onDismiss} = props
 
-  const { otcl, setOtcl } = useOtcl();
+  const {otcl, setOtcl} = useOtcl()
 
   return (
     <Form onSubmit={onSubmit}>
@@ -63,9 +63,9 @@ const OtclForm: React.FC<Props> = (props) => {
                     const next = {
                       ...otcl,
                       name: ev.target.value,
-                    };
+                    }
 
-                    setOtcl(next);
+                    setOtcl(next)
                   }}
                   titleText="Name"
                   placeholder="Name this Otcl"
@@ -90,7 +90,7 @@ const OtclForm: React.FC<Props> = (props) => {
                     setOtcl({
                       ...otcl,
                       desc: ev.target.value,
-                    });
+                    })
                   }}
                   titleText="Desc"
                   placeholder="Discribe this Otcl"
@@ -116,7 +116,7 @@ const OtclForm: React.FC<Props> = (props) => {
                   setOtcl({
                     ...otcl,
                     content: value,
-                  });
+                  })
                 }}
               />
             )}
@@ -143,7 +143,7 @@ const OtclForm: React.FC<Props> = (props) => {
         </Grid.Row>
       </Grid>
     </Form>
-  );
-};
+  )
+}
 
-export default OtclForm;
+export default OtclForm

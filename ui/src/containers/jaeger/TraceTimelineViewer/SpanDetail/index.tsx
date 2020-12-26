@@ -12,24 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import {css} from 'emotion';
-import cx from 'classnames';
+import React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import AccordianKeyValues from './AccordianKeyValues';
-import AccordianLogs from './AccordianLogs';
-import AccordianText from './AccordianText';
-import DetailState from './DetailState';
-import {formatDuration} from '../utils';
-import CopyIcon from '../../common/CopyIcon';
-import LabeledList from '../../common/LabeledList';
+import AccordianKeyValues from './AccordianKeyValues'
+import AccordianLogs from './AccordianLogs'
+import AccordianText from './AccordianText'
+import DetailState from './DetailState'
+import {formatDuration} from '../utils'
+import CopyIcon from '../../common/CopyIcon'
+import LabeledList from '../../common/LabeledList'
 
-import {TNil, TraceKeyValuePair, TraceLink, TraceLog, TraceSpan} from '../../types';
-import AccordianReferences from './AccordianReferences';
-import {autoColor, createStyle, Theme, useTheme} from '../../Theme';
-import {UIDivider} from '../../uiElementsContext';
-import {ubFlex, ubFlexAuto, ubItemsCenter, ubM0, ubMb1, ubMy1, ubTxRightAlign} from '../../uberUtilityStyles';
-import {Input} from "@influxdata/clockface";
+import {
+  TNil,
+  TraceKeyValuePair,
+  TraceLink,
+  TraceLog,
+  TraceSpan,
+} from '../../types'
+import AccordianReferences from './AccordianReferences'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {UIDivider} from '../../uiElementsContext'
+import {
+  ubFlex,
+  ubFlexAuto,
+  ubItemsCenter,
+  ubM0,
+  ubMb1,
+  ubMy1,
+  ubTxRightAlign,
+} from '../../uberUtilityStyles'
+import {Input} from '@influxdata/clockface'
 // import { TextArea } from '@grafana/ui';
 
 const getStyles = createStyle((theme: Theme) => {
@@ -99,23 +113,25 @@ const getStyles = createStyle((theme: Theme) => {
       word-break: break-all;
       white-space: pre;
     `,
-  };
-});
+  }
+})
 
 type SpanDetailProps = {
-  detailState: DetailState;
-  linksGetter: ((links: TraceKeyValuePair[], index: number) => TraceLink[]) | TNil;
-  logItemToggle: (spanID: string, log: TraceLog) => void;
-  logsToggle: (spanID: string) => void;
-  processToggle: (spanID: string) => void;
-  span: TraceSpan;
-  tagsToggle: (spanID: string) => void;
-  traceStartTime: number;
-  warningsToggle: (spanID: string) => void;
-  stackTracesToggle: (spanID: string) => void;
-  referencesToggle: (spanID: string) => void;
-  focusSpan: (uiFind: string) => void;
-};
+  detailState: DetailState
+  linksGetter:
+    | ((links: TraceKeyValuePair[], index: number) => TraceLink[])
+    | TNil
+  logItemToggle: (spanID: string, log: TraceLog) => void
+  logsToggle: (spanID: string) => void
+  processToggle: (spanID: string) => void
+  span: TraceSpan
+  tagsToggle: (spanID: string) => void
+  traceStartTime: number
+  warningsToggle: (spanID: string) => void
+  stackTracesToggle: (spanID: string) => void
+  referencesToggle: (spanID: string) => void
+  focusSpan: (uiFind: string) => void
+}
 
 export default function SpanDetail(props: SpanDetailProps) {
   const {
@@ -131,7 +147,7 @@ export default function SpanDetail(props: SpanDetailProps) {
     stackTracesToggle,
     referencesToggle,
     focusSpan,
-  } = props;
+  } = props
   const {
     isTagsOpen,
     isProcessOpen,
@@ -139,7 +155,7 @@ export default function SpanDetail(props: SpanDetailProps) {
     isWarningsOpen,
     isReferencesOpen,
     isStackTracesOpen,
-  } = detailState;
+  } = detailState
   const {
     operationName,
     process,
@@ -151,7 +167,7 @@ export default function SpanDetail(props: SpanDetailProps) {
     warnings,
     references,
     stackTraces,
-  } = span;
+  } = span
   const overviewItems = [
     {
       key: 'svc',
@@ -168,17 +184,23 @@ export default function SpanDetail(props: SpanDetailProps) {
       label: 'Start Time:',
       value: formatDuration(relativeStartTime),
     },
-  ];
-  const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`;
-  const styles = getStyles(useTheme());
+  ]
+  const deepLinkCopyText = `${window.location.origin}${window.location.pathname}?uiFind=${spanID}`
+  const styles = getStyles(useTheme())
 
   return (
     <div>
       <div className={cx(ubFlex, ubItemsCenter)}>
         <h2 className={cx(ubFlexAuto, ubM0)}>{operationName}</h2>
-        <LabeledList className={ubTxRightAlign} dividerClassName={styles.divider} items={overviewItems}/>
+        <LabeledList
+          className={ubTxRightAlign}
+          dividerClassName={styles.divider}
+          items={overviewItems}
+        />
       </div>
-      <UIDivider className={cx(styles.divider, styles.dividerVertical, ubMy1)}/>
+      <UIDivider
+        className={cx(styles.divider, styles.dividerVertical, ubMy1)}
+      />
       <div>
         <div>
           <AccordianKeyValues
@@ -206,7 +228,7 @@ export default function SpanDetail(props: SpanDetailProps) {
             isOpen={logsState.isOpen}
             openedItems={logsState.openedItems}
             onToggle={() => logsToggle(spanID)}
-            onItemToggle={logItem => logItemToggle(spanID, logItem)}
+            onItemToggle={(logItem) => logItemToggle(spanID, logItem)}
             timestamp={traceStartTime}
           />
         )}
@@ -214,7 +236,9 @@ export default function SpanDetail(props: SpanDetailProps) {
           <AccordianText
             className={styles.AccordianWarnings}
             headerClassName={styles.AccordianWarningsHeader}
-            label={<span className={styles.AccordianWarningsLabel}>Warnings</span>}
+            label={
+              <span className={styles.AccordianWarningsLabel}>Warnings</span>
+            }
             data={warnings}
             isOpen={isWarningsOpen}
             onToggle={() => warningsToggle(spanID)}
@@ -225,21 +249,24 @@ export default function SpanDetail(props: SpanDetailProps) {
             label="Stack trace"
             data={stackTraces}
             isOpen={isStackTracesOpen}
-            TextComponent={textComponentProps => {
-              let text;
+            TextComponent={(textComponentProps) => {
+              let text
               if (textComponentProps.data?.length > 1) {
                 text = textComponentProps.data
-                  .map((stackTrace, index) => `StackTrace ${index + 1}:\n${stackTrace}`)
-                  .join('\n');
+                  .map(
+                    (stackTrace, index) =>
+                      `StackTrace ${index + 1}:\n${stackTrace}`
+                  )
+                  .join('\n')
               } else {
-                text = textComponentProps.data?.[0];
+                text = textComponentProps.data?.[0]
               }
               return (
                 <Input
                   // it should be read only
                   value={text}
                 />
-              );
+              )
             }}
             onToggle={() => stackTracesToggle(spanID)}
           />
@@ -253,7 +280,7 @@ export default function SpanDetail(props: SpanDetailProps) {
           />
         )}
         <small className={styles.debugInfo}>
-          <span className={styles.debugLabel} data-label="SpanID:"/> {spanID}
+          <span className={styles.debugLabel} data-label="SpanID:" /> {spanID}
           <CopyIcon
             copyText={deepLinkCopyText}
             icon="link"
@@ -263,5 +290,5 @@ export default function SpanDetail(props: SpanDetailProps) {
         </small>
       </div>
     </div>
-  );
+  )
 }

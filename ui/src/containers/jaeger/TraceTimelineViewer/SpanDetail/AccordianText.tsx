@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
-import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down';
-import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right';
-import TextList from './TextList';
-import { TNil } from '../../types';
-import { getStyles as getAccordianKeyValuesStyles } from './AccordianKeyValues';
-import { autoColor, createStyle, Theme, useTheme } from '../../Theme';
-import { uAlignIcon } from '../../uberUtilityStyles';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
+import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down'
+import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right'
+import TextList from './TextList'
+import {TNil} from '../../types'
+import {getStyles as getAccordianKeyValuesStyles} from './AccordianKeyValues'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {uAlignIcon} from '../../uberUtilityStyles'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -35,23 +35,23 @@ const getStyles = createStyle((theme: Theme) => {
         background: ${autoColor(theme, '#e8e8e8')};
       }
     `,
-  };
-});
+  }
+})
 
 type AccordianTextProps = {
-  className?: string | TNil;
-  headerClassName?: string | TNil;
-  data: string[];
-  highContrast?: boolean;
-  interactive?: boolean;
-  isOpen: boolean;
-  label: React.ReactNode | string;
-  onToggle?: null | (() => void);
-  TextComponent?: React.ElementType<{ data: string[] }>;
-};
+  className?: string | TNil
+  headerClassName?: string | TNil
+  data: string[]
+  highContrast?: boolean
+  interactive?: boolean
+  isOpen: boolean
+  label: React.ReactNode | string
+  onToggle?: null | (() => void)
+  TextComponent?: React.ElementType<{data: string[]}>
+}
 
-function DefaultTextComponent({ data }: { data: string[] }) {
-  return <TextList data={data} />;
+function DefaultTextComponent({data}: {data: string[]}) {
+  return <TextList data={data} />
 }
 
 export default function AccordianText(props: AccordianTextProps) {
@@ -64,30 +64,40 @@ export default function AccordianText(props: AccordianTextProps) {
     label,
     onToggle,
     TextComponent = DefaultTextComponent,
-  } = props;
-  const isEmpty = !Array.isArray(data) || !data.length;
-  const accordianKeyValuesStyles = getAccordianKeyValuesStyles(useTheme());
-  const iconCls = cx(uAlignIcon, { [accordianKeyValuesStyles.emptyIcon]: isEmpty });
-  let arrow: React.ReactNode | null = null;
-  let headerProps: {} | null = null;
+  } = props
+  const isEmpty = !Array.isArray(data) || !data.length
+  const accordianKeyValuesStyles = getAccordianKeyValuesStyles(useTheme())
+  const iconCls = cx(uAlignIcon, {
+    [accordianKeyValuesStyles.emptyIcon]: isEmpty,
+  })
+  let arrow: React.ReactNode | null = null
+  let headerProps: {} | null = null
   if (interactive) {
-    arrow = isOpen ? <IoIosArrowDown className={iconCls} /> : <IoIosArrowRight className={iconCls} />;
+    arrow = isOpen ? (
+      <IoIosArrowDown className={iconCls} />
+    ) : (
+      <IoIosArrowRight className={iconCls} />
+    )
     headerProps = {
       'aria-checked': isOpen,
       onClick: isEmpty ? null : onToggle,
       role: 'switch',
-    };
+    }
   }
-  const styles = getStyles(useTheme());
+  const styles = getStyles(useTheme())
   return (
     <div className={className || ''}>
-      <div className={cx(styles.header, headerClassName)} {...headerProps} data-test-id="AccordianText--header">
+      <div
+        className={cx(styles.header, headerClassName)}
+        {...headerProps}
+        data-test-id="AccordianText--header"
+      >
         {arrow}
         <strong>{label}</strong> ({data.length})
       </div>
       {isOpen && <TextComponent data={data} />}
     </div>
-  );
+  )
 }
 
 AccordianText.defaultProps = {
@@ -95,4 +105,4 @@ AccordianText.defaultProps = {
   highContrast: false,
   interactive: true,
   onToggle: null,
-};
+}

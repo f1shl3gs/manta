@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { DetailState, TraceLog } from '../containers/jaeger';
+import {useCallback, useState} from 'react'
+import {DetailState, TraceLog} from '../containers/jaeger'
 
 function makeDetailSubsectionToggle(
   subSection:
@@ -13,28 +13,28 @@ function makeDetailSubsectionToggle(
   setDetailStates: (detailStates: Map<string, DetailState>) => void
 ): (id: string) => void {
   return (spanID: string) => {
-    const old = detailStates.get(spanID);
+    const old = detailStates.get(spanID)
     if (!old) {
-      return;
+      return
     }
-    let detailState;
+    let detailState
     if (subSection === 'tags') {
-      detailState = old.toggleTags();
+      detailState = old.toggleTags()
     } else if (subSection === 'process') {
-      detailState = old.toggleProcess();
+      detailState = old.toggleProcess()
     } else if (subSection === 'warnings') {
-      detailState = old.toggleWarnings();
+      detailState = old.toggleWarnings()
     } else if (subSection === 'references') {
-      detailState = old.toggleReferences();
+      detailState = old.toggleReferences()
     } else if (subSection === 'stackTraces') {
-      detailState = old.toggleStackTraces();
+      detailState = old.toggleStackTraces()
     } else {
-      detailState = old.toggleLogs();
+      detailState = old.toggleLogs()
     }
-    const newDetailStates = new Map(detailStates);
-    newDetailStates.set(spanID, detailState);
-    setDetailStates(newDetailStates);
-  };
+    const newDetailStates = new Map(detailStates)
+    newDetailStates.set(spanID, detailState)
+    setDetailStates(newDetailStates)
+  }
 }
 
 /**
@@ -44,34 +44,34 @@ function makeDetailSubsectionToggle(
 export function useDetailState() {
   const [detailStates, setDetailStates] = useState(
     new Map<string, DetailState>()
-  );
+  )
 
   const toggleDetail = useCallback(
     function toggleDetail(spanID: string) {
-      const newDetailStates = new Map(detailStates);
+      const newDetailStates = new Map(detailStates)
       if (newDetailStates.has(spanID)) {
-        newDetailStates.delete(spanID);
+        newDetailStates.delete(spanID)
       } else {
-        newDetailStates.set(spanID, new DetailState());
+        newDetailStates.set(spanID, new DetailState())
       }
-      setDetailStates(newDetailStates);
+      setDetailStates(newDetailStates)
     },
     [detailStates]
-  );
+  )
 
   const detailLogItemToggle = useCallback(
     function detailLogItemToggle(spanID: string, log: TraceLog) {
-      const old = detailStates.get(spanID);
+      const old = detailStates.get(spanID)
       if (!old) {
-        return;
+        return
       }
-      const detailState = old.toggleLogItem(log);
-      const newDetailStates = new Map(detailStates);
-      newDetailStates.set(spanID, detailState);
-      setDetailStates(newDetailStates);
+      const detailState = old.toggleLogItem(log)
+      const newDetailStates = new Map(detailStates)
+      newDetailStates.set(spanID, detailState)
+      setDetailStates(newDetailStates)
     },
     [detailStates]
-  );
+  )
 
   return {
     detailStates,
@@ -101,5 +101,5 @@ export function useDetailState() {
       makeDetailSubsectionToggle('tags', detailStates, setDetailStates),
       [detailStates]
     ),
-  };
+  }
 }

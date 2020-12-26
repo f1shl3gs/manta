@@ -1,9 +1,23 @@
 // Libraries
-import React, { ChangeEvent, FC, KeyboardEvent, MouseEvent, useState } from "react";
-import classnames from "classnames";
+import React, {
+  ChangeEvent,
+  FC,
+  KeyboardEvent,
+  MouseEvent,
+  useState,
+} from 'react'
+import classnames from 'classnames'
 
 // Components
-import { ClickOutside, ComponentSize, Icon, IconFont, Input, InputRef, Page } from "@influxdata/clockface";
+import {
+  ClickOutside,
+  ComponentSize,
+  Icon,
+  IconFont,
+  Input,
+  InputRef,
+  Page,
+} from '@influxdata/clockface'
 
 interface Props {
   onRename: (name: string) => void

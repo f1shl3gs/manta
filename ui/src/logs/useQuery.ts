@@ -1,18 +1,15 @@
-import constate from "constate";
-import { useState } from "react";
+import constate from 'constate'
+import {useState} from 'react'
 
 const [QueryProvider, useQuery] = constate(
   () => {
-    const [query, setQuery] = useState<string>('');
+    const [query, setQuery] = useState<string>('')
     return {
       query,
-      setQuery
-    };
+      setQuery,
+    }
   },
-  value => value
-);
+  (value) => value
+)
 
-export {
-  QueryProvider,
-  useQuery
-};
+export {QueryProvider, useQuery}

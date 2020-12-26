@@ -12,13 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css, cx } from 'emotion';
+import * as React from 'react'
+import {css, cx} from 'emotion'
 
-import { TUpdateViewRangeTimeFunction, ViewRangeTime, ViewRangeTimeUpdate } from '../types';
-import { TNil } from '../../types';
-import DraggableManager, { DraggableBounds, DraggingUpdate } from '../../utils/DraggableManager';
-import { createStyle } from '../../Theme';
+import {
+  TUpdateViewRangeTimeFunction,
+  ViewRangeTime,
+  ViewRangeTimeUpdate,
+} from '../types'
+import {TNil} from '../../types'
+import DraggableManager, {
+  DraggableBounds,
+  DraggingUpdate,
+} from '../../utils/DraggableManager'
+import {createStyle} from '../../Theme'
 
 // exported for testing
 export const getStyles = createStyle(() => {
@@ -75,8 +82,8 @@ export const getStyles = createStyle(() => {
       top: 0;
       user-select: none;
     `,
-  };
-});
+  }
+})
 
 type TimelineViewingLayerProps = {
   /**
@@ -84,24 +91,26 @@ type TimelineViewingLayerProps = {
    * bounds for dragging need to be recalculated. In practice, the name column
    * width serves fine for this.
    */
-  boundsInvalidator: any | null | undefined;
-  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void;
-  updateViewRangeTime: TUpdateViewRangeTimeFunction;
-  viewRangeTime: ViewRangeTime;
-};
+  boundsInvalidator: any | null | undefined
+  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void
+  updateViewRangeTime: TUpdateViewRangeTimeFunction
+  viewRangeTime: ViewRangeTime
+}
 
 type TDraggingLeftLayout = {
-  isDraggingLeft: boolean;
-  left: string;
-  width: string;
-};
+  isDraggingLeft: boolean
+  left: string
+  width: string
+}
 
 type TOutOfViewLayout = {
-  isOutOfView: true;
-};
+  isOutOfView: true
+}
 
-function isOutOfView(layout: TDraggingLeftLayout | TOutOfViewLayout): layout is TOutOfViewLayout {
-  return Reflect.has(layout, 'isOutOfView');
+function isOutOfView(
+  layout: TDraggingLeftLayout | TOutOfViewLayout
+): layout is TOutOfViewLayout {
+  return Reflect.has(layout, 'isOutOfView')
 }
 
 /**
@@ -109,8 +118,12 @@ function isOutOfView(layout: TDraggingLeftLayout | TOutOfViewLayout): layout is 
  * the middle half ([0.25, 0.75]), a value of 0.25 befomes 3/8.
  * @returns {number}
  */
-function mapFromViewSubRange(viewStart: number, viewEnd: number, value: number) {
-  return viewStart + value * (viewEnd - viewStart);
+function mapFromViewSubRange(
+  viewStart: number,
+  viewEnd: number,
+  value: number
+) {
+  return viewStart + value * (viewEnd - viewStart)
 }
 
 /**
@@ -119,7 +132,7 @@ function mapFromViewSubRange(viewStart: number, viewEnd: number, value: number) 
  * @returns {number}
  */
 function mapToViewSubRange(viewStart: number, viewEnd: number, value: number) {
-  return (value - viewStart) / (viewEnd - viewStart);
+  return (value - viewStart) / (viewEnd - viewStart)
 }
 
 /**
@@ -128,48 +141,61 @@ function mapToViewSubRange(viewStart: number, viewEnd: number, value: number) {
  * `reframe` on `props.viewRangeTime`, not by the current state of the
  * component. So, it reflects in-progress dragging from the span minimap.
  */
-function getNextViewLayout(start: number, position: number): TDraggingLeftLayout | TOutOfViewLayout {
-  let [left, right] = start < position ? [start, position] : [position, start];
+function getNextViewLayout(
+  start: number,
+  position: number
+): TDraggingLeftLayout | TOutOfViewLayout {
+  let [left, right] = start < position ? [start, position] : [position, start]
   if (left >= 1 || right <= 0) {
-    return { isOutOfView: true };
+    return {isOutOfView: true}
   }
   if (left < 0) {
-    left = 0;
+    left = 0
   }
   if (right > 1) {
-    right = 1;
+    right = 1
   }
   return {
     isDraggingLeft: start > position,
     left: `${left * 100}%`,
     width: `${(right - left) * 100}%`,
-  };
+  }
 }
 
 /**
  * Render the visual indication of the "next" view range.
  */
-function getMarkers(viewStart: number, viewEnd: number, from: number, to: number, isShift: boolean): React.ReactNode {
-  const mappedFrom = mapToViewSubRange(viewStart, viewEnd, from);
-  const mappedTo = mapToViewSubRange(viewStart, viewEnd, to);
-  const layout = getNextViewLayout(mappedFrom, mappedTo);
+function getMarkers(
+  viewStart: number,
+  viewEnd: number,
+  from: number,
+  to: number,
+  isShift: boolean
+): React.ReactNode {
+  const mappedFrom = mapToViewSubRange(viewStart, viewEnd, from)
+  const mappedTo = mapToViewSubRange(viewStart, viewEnd, to)
+  const layout = getNextViewLayout(mappedFrom, mappedTo)
   if (isOutOfView(layout)) {
-    return null;
+    return null
   }
-  const { isDraggingLeft, left, width } = layout;
-  const styles = getStyles();
+  const {isDraggingLeft, left, width} = layout
+  const styles = getStyles()
   const cls = cx({
     [styles.TimelineViewingLayerDraggedDraggingRight]: !isDraggingLeft,
     [styles.TimelineViewingLayerDraggedReframeDrag]: !isShift,
     [styles.TimelineViewingLayerDraggedShiftDrag]: isShift,
-  });
+  })
   return (
     <div
-      className={cx(styles.TimelineViewingLayerDragged, styles.TimelineViewingLayerDraggedDraggingLeft, cls)}
-      style={{ left, width }}
+      className={cx(
+        styles.TimelineViewingLayerDragged,
+        styles.TimelineViewingLayerDraggedDraggingLeft,
+        cls
+      )}
+      style={{left, width}}
       data-test-id="Dragged"
     />
-  );
+  )
 }
 
 /**
@@ -178,11 +204,11 @@ function getMarkers(viewStart: number, viewEnd: number, from: number, to: number
  * modifying it.
  */
 export default class TimelineViewingLayer extends React.PureComponent<TimelineViewingLayerProps> {
-  _draggerReframe: DraggableManager;
-  _root: Element | TNil;
+  _draggerReframe: DraggableManager
+  _root: Element | TNil
 
   constructor(props: TimelineViewingLayerProps) {
-    super(props);
+    super(props)
     this._draggerReframe = new DraggableManager({
       getBounds: this._getDraggingBounds,
       onDragEnd: this._handleReframeDragEnd,
@@ -190,72 +216,78 @@ export default class TimelineViewingLayer extends React.PureComponent<TimelineVi
       onDragStart: this._handleReframeDragUpdate,
       onMouseLeave: this._handleReframeMouseLeave,
       onMouseMove: this._handleReframeMouseMove,
-    });
-    this._root = undefined;
+    })
+    this._root = undefined
   }
 
   componentWillReceiveProps(nextProps: TimelineViewingLayerProps) {
-    const { boundsInvalidator } = this.props;
+    const {boundsInvalidator} = this.props
     if (boundsInvalidator !== nextProps.boundsInvalidator) {
-      this._draggerReframe.resetBounds();
+      this._draggerReframe.resetBounds()
     }
   }
 
   componentWillUnmount() {
-    this._draggerReframe.dispose();
+    this._draggerReframe.dispose()
   }
 
   _setRoot = (elm: Element | TNil) => {
-    this._root = elm;
-  };
+    this._root = elm
+  }
 
   _getDraggingBounds = (): DraggableBounds => {
     if (!this._root) {
-      throw new Error('invalid state');
+      throw new Error('invalid state')
     }
-    const { left: clientXLeft, width } = this._root.getBoundingClientRect();
-    return { clientXLeft, width };
-  };
+    const {left: clientXLeft, width} = this._root.getBoundingClientRect()
+    return {clientXLeft, width}
+  }
 
-  _handleReframeMouseMove = ({ value }: DraggingUpdate) => {
-    const [viewStart, viewEnd] = this.props.viewRangeTime.current;
-    const cursor = mapFromViewSubRange(viewStart, viewEnd, value);
-    this.props.updateNextViewRangeTime({ cursor });
-  };
+  _handleReframeMouseMove = ({value}: DraggingUpdate) => {
+    const [viewStart, viewEnd] = this.props.viewRangeTime.current
+    const cursor = mapFromViewSubRange(viewStart, viewEnd, value)
+    this.props.updateNextViewRangeTime({cursor})
+  }
 
   _handleReframeMouseLeave = () => {
-    this.props.updateNextViewRangeTime({ cursor: undefined });
-  };
+    this.props.updateNextViewRangeTime({cursor: undefined})
+  }
 
-  _handleReframeDragUpdate = ({ value }: DraggingUpdate) => {
-    const { current, reframe } = this.props.viewRangeTime;
-    const [viewStart, viewEnd] = current;
-    const shift = mapFromViewSubRange(viewStart, viewEnd, value);
-    const anchor = reframe ? reframe.anchor : shift;
-    const update = { reframe: { anchor, shift } };
-    this.props.updateNextViewRangeTime(update);
-  };
+  _handleReframeDragUpdate = ({value}: DraggingUpdate) => {
+    const {current, reframe} = this.props.viewRangeTime
+    const [viewStart, viewEnd] = current
+    const shift = mapFromViewSubRange(viewStart, viewEnd, value)
+    const anchor = reframe ? reframe.anchor : shift
+    const update = {reframe: {anchor, shift}}
+    this.props.updateNextViewRangeTime(update)
+  }
 
-  _handleReframeDragEnd = ({ manager, value }: DraggingUpdate) => {
-    const { current, reframe } = this.props.viewRangeTime;
-    const [viewStart, viewEnd] = current;
-    const shift = mapFromViewSubRange(viewStart, viewEnd, value);
-    const anchor = reframe ? reframe.anchor : shift;
-    const [start, end] = shift < anchor ? [shift, anchor] : [anchor, shift];
-    manager.resetBounds();
-    this.props.updateViewRangeTime(start, end, 'timeline-header');
-  };
+  _handleReframeDragEnd = ({manager, value}: DraggingUpdate) => {
+    const {current, reframe} = this.props.viewRangeTime
+    const [viewStart, viewEnd] = current
+    const shift = mapFromViewSubRange(viewStart, viewEnd, value)
+    const anchor = reframe ? reframe.anchor : shift
+    const [start, end] = shift < anchor ? [shift, anchor] : [anchor, shift]
+    manager.resetBounds()
+    this.props.updateViewRangeTime(start, end, 'timeline-header')
+  }
 
   render() {
-    const { viewRangeTime } = this.props;
-    const { current, cursor, reframe, shiftEnd, shiftStart } = viewRangeTime;
-    const [viewStart, viewEnd] = current;
-    const haveNextTimeRange = reframe != null || shiftEnd != null || shiftStart != null;
-    let cusrorPosition: string | TNil;
-    if (!haveNextTimeRange && cursor != null && cursor >= viewStart && cursor <= viewEnd) {
-      cusrorPosition = `${mapToViewSubRange(viewStart, viewEnd, cursor) * 100}%`;
+    const {viewRangeTime} = this.props
+    const {current, cursor, reframe, shiftEnd, shiftStart} = viewRangeTime
+    const [viewStart, viewEnd] = current
+    const haveNextTimeRange =
+      reframe != null || shiftEnd != null || shiftStart != null
+    let cusrorPosition: string | TNil
+    if (
+      !haveNextTimeRange &&
+      cursor != null &&
+      cursor >= viewStart &&
+      cursor <= viewEnd
+    ) {
+      cusrorPosition = `${mapToViewSubRange(viewStart, viewEnd, cursor) * 100}%`
     }
-    const styles = getStyles();
+    const styles = getStyles()
     return (
       <div
         aria-hidden
@@ -269,14 +301,17 @@ export default class TimelineViewingLayer extends React.PureComponent<TimelineVi
         {cusrorPosition != null && (
           <div
             className={styles.TimelineViewingLayerCursorGuide}
-            style={{ left: cusrorPosition }}
+            style={{left: cusrorPosition}}
             data-test-id="TimelineViewingLayer--cursorGuide"
           />
         )}
-        {reframe != null && getMarkers(viewStart, viewEnd, reframe.anchor, reframe.shift, false)}
-        {shiftEnd != null && getMarkers(viewStart, viewEnd, viewEnd, shiftEnd, true)}
-        {shiftStart != null && getMarkers(viewStart, viewEnd, viewStart, shiftStart, true)}
+        {reframe != null &&
+          getMarkers(viewStart, viewEnd, reframe.anchor, reframe.shift, false)}
+        {shiftEnd != null &&
+          getMarkers(viewStart, viewEnd, viewEnd, shiftEnd, true)}
+        {shiftStart != null &&
+          getMarkers(viewStart, viewEnd, viewStart, shiftStart, true)}
       </div>
-    );
+    )
   }
 }

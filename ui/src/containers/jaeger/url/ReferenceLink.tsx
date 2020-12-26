@@ -12,35 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React from 'react'
 
-import ExternalLinkContext from './externalLinkContext';
-import {TraceSpanReference} from "../types";
+import ExternalLinkContext from './externalLinkContext'
+import {TraceSpanReference} from '../types'
 
 type ReferenceLinkProps = {
-  reference: TraceSpanReference;
-  children: React.ReactNode;
-  className?: string;
-  focusSpan: (spanID: string) => void;
-  onClick?: () => void;
-};
+  reference: TraceSpanReference
+  children: React.ReactNode
+  className?: string
+  focusSpan: (spanID: string) => void
+  onClick?: () => void
+}
 
 export default function ReferenceLink(props: ReferenceLinkProps) {
-  const { reference, children, className, focusSpan, ...otherProps } = props;
-  delete otherProps.onClick;
+  const {reference, children, className, focusSpan, ...otherProps} = props
+  delete otherProps.onClick
   if (reference.span) {
     return (
-      <a role="button" onClick={() => focusSpan(reference.spanID)} className={className} {...otherProps}>
+      <a
+        role="button"
+        onClick={() => focusSpan(reference.spanID)}
+        className={className}
+        {...otherProps}
+      >
         {children}
       </a>
-    );
+    )
   }
 
   return (
     <ExternalLinkContext.Consumer>
-      {createLinkToExternalSpan => {
+      {(createLinkToExternalSpan) => {
         if (!createLinkToExternalSpan) {
-          throw new Error("ExternalLinkContext does not have a value, you probably forgot to setup it's provider");
+          throw new Error(
+            "ExternalLinkContext does not have a value, you probably forgot to setup it's provider"
+          )
         }
         return (
           <a
@@ -52,8 +59,8 @@ export default function ReferenceLink(props: ReferenceLinkProps) {
           >
             {children}
           </a>
-        );
+        )
       }}
     </ExternalLinkContext.Consumer>
-  );
+  )
 }

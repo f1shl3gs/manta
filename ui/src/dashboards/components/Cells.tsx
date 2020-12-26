@@ -1,19 +1,17 @@
-import React from "react";
-import ReactGridLayout, { Layout, WidthProvider } from "react-grid-layout";
-import { useCells } from "../state/dashboard";
-import { Cell } from "../../types";
-import CellComponent from "./CellComponent";
-import GradientBorder from "./GradientBorder";
+import React, { useEffect, useLayoutEffect } from 'react';
+import ReactGridLayout, { WidthProvider, Layout } from 'react-grid-layout';
+import { useCells } from '../state/dashboard';
+import { Cell } from '../../types';
+import CellComponent from './CellComponent';
+import GradientBorder from './GradientBorder';
 
 const Grid = WidthProvider(ReactGridLayout);
-
-// styles
 
 const DASHBOARD_LAYOUT_ROW_HEIGHT = 83.5;
 const LAYOUT_MARGIN = 4;
 
 const layout = (cells: Cell[]): Layout[] => {
-  return cells.map(c => {
+  return cells.map((c) => {
     return {
       i: c.id,
       w: c.w || 3,
@@ -24,10 +22,26 @@ const layout = (cells: Cell[]): Layout[] => {
   });
 };
 
+const eventHandler = () => {
+  console.log('resized event received');
+};
+
 const Cells: React.FC = () => {
   const { cells, setCells } = useCells();
 
-  console.log("cells", cells);
+  /*useEffect(() => {
+    window.addEventListener('resize', eventHandler);
+    return () => {
+      window.removeEventListener('resize', eventHandler);
+    };
+  });*/
+
+  useLayoutEffect(() => {
+    window.addEventListener('resize', eventHandler);
+    return () => {
+      window.removeEventListener('resize', eventHandler);
+    };
+  }, [])
 
   return (
     <>
@@ -39,22 +53,17 @@ const Cells: React.FC = () => {
         useCSSTransforms={false}
         containerPadding={[0, 0]}
         margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
-        draggableHandle={".cell--draggable"}
-        onLayoutChange={next => setCells(next)}
-        isDraggable={true}
-        isResizable={true}
+        onLayoutChange={(next) => setCells(next)}
+        draggableHandle={'.cell--draggable'}
+        isDraggable
+        isResizable
       >
-        {
-          cells.map(cell => (
-            <div
-              key={cell.id}
-              className="cell"
-            >
-              <CellComponent cell={cell} />
-              <GradientBorder />
-            </div>
-          ))
-        }
+        {cells.map((cell) => (
+          <div key={cell.id} className="cell">
+            <CellComponent cell={cell} />
+            <GradientBorder />
+          </div>
+        ))}
       </Grid>
     </>
   );

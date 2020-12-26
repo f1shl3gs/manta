@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { useContext } from 'react';
-import hoistNonReactStatics from 'hoist-non-react-statics';
-import memoizeOne from 'memoize-one';
+import React, {useContext} from 'react'
+import hoistNonReactStatics from 'hoist-non-react-statics'
+import memoizeOne from 'memoize-one'
 // @ts-ignore
-import tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2'
 
 const COLORS_HEX = [
   '#17B8BE',
@@ -39,7 +39,7 @@ const COLORS_HEX = [
   '#125C77',
   '#4DC19C',
   '#776E57',
-];
+]
 
 const COLORS_HEX_DARK = [
   '#17B8BE',
@@ -60,9 +60,9 @@ const COLORS_HEX_DARK = [
   '#DA70BF',
   '#4DC19C',
   '#776E57',
-];
+]
 
-export type ThemeOptions = Partial<Theme>;
+export type ThemeOptions = Partial<Theme>
 
 export enum ThemeType {
   Dark,
@@ -70,68 +70,73 @@ export enum ThemeType {
 }
 
 export type Theme = {
-  type: ThemeType;
-  servicesColorPalette: string[];
-  borderStyle: string;
+  type: ThemeType
+  servicesColorPalette: string[]
+  borderStyle: string
   components?: {
     TraceName?: {
-      fontSize?: number | string;
-    };
-  };
-};
+      fontSize?: number | string
+    }
+  }
+}
 
 export const defaultTheme: Theme = {
   type: ThemeType.Light,
   borderStyle: '1px solid #bbb',
   servicesColorPalette: COLORS_HEX,
-};
+}
 
 export function isLight(theme?: Theme | ThemeOptions) {
   // Light theme is default type not set which only happens if called for ThemeOptions.
-  return theme && theme.type ? theme.type === ThemeType.Light : false;
+  return theme && theme.type ? theme.type === ThemeType.Light : false
 }
 
-const ThemeContext = React.createContext<ThemeOptions | undefined>(undefined);
-ThemeContext.displayName = 'ThemeContext';
+const ThemeContext = React.createContext<ThemeOptions | undefined>(undefined)
+ThemeContext.displayName = 'ThemeContext'
 
-export const ThemeProvider = ThemeContext.Provider;
+export const ThemeProvider = ThemeContext.Provider
 
 type ThemeConsumerProps = {
-  children: (theme: Theme) => React.ReactNode;
-};
+  children: (theme: Theme) => React.ReactNode
+}
 export function ThemeConsumer(props: ThemeConsumerProps) {
   return (
     <ThemeContext.Consumer>
       {(value: ThemeOptions | undefined) => {
-        const theme = memoizedThemeMerge(value);
-        return props.children(theme);
+        const theme = memoizedThemeMerge(value)
+        return props.children(theme)
       }}
     </ThemeContext.Consumer>
-  );
+  )
 }
 
 const memoizedThemeMerge = memoizeOne((value?: ThemeOptions) => {
-  const darkOverrides: Partial<Theme> = {};
+  const darkOverrides: Partial<Theme> = {}
   if (!isLight(value)) {
-    darkOverrides.servicesColorPalette = COLORS_HEX_DARK;
+    darkOverrides.servicesColorPalette = COLORS_HEX_DARK
   }
   return value
     ? {
-      ...defaultTheme,
-      ...darkOverrides,
-      ...value,
-    }
-    : defaultTheme;
-});
+        ...defaultTheme,
+        ...darkOverrides,
+        ...value,
+      }
+    : defaultTheme
+})
 
-type WrappedWithThemeComponent<Props> = React.ComponentType<Omit<Props, 'theme'>> & {
-  wrapped: React.ComponentType<Props>;
-};
+type WrappedWithThemeComponent<Props> = React.ComponentType<
+  Omit<Props, 'theme'>
+> & {
+  wrapped: React.ComponentType<Props>
+}
 
-export const withTheme = <Props extends { theme: Theme }, Statics extends {} = {}>(
+export const withTheme = <
+  Props extends {theme: Theme},
+  Statics extends {} = {}
+>(
   Component: React.ComponentType<Props>
 ): WrappedWithThemeComponent<Props> => {
-  let WithTheme: React.ComponentType<Omit<Props, 'theme'>> = props => {
+  let WithTheme: React.ComponentType<Omit<Props, 'theme'>> = (props) => {
     return (
       <ThemeConsumer>
         {(theme: Theme) => {
@@ -140,36 +145,43 @@ export const withTheme = <Props extends { theme: Theme }, Statics extends {} = {
               {...({
                 ...props,
                 theme,
-              } as Props & { theme: Theme })}
+              } as Props & {theme: Theme})}
             />
-          );
+          )
         }}
       </ThemeConsumer>
-    );
-  };
+    )
+  }
 
-  WithTheme.displayName = `WithTheme(${Component.displayName})`;
+  WithTheme.displayName = `WithTheme(${Component.displayName})`
   // @ts-ignore
-  WithTheme = hoistNonReactStatics<React.ComponentType<Omit<Props, 'theme'>>, React.ComponentType<Props>>(
+  WithTheme = hoistNonReactStatics<
+    React.ComponentType<Omit<Props, 'theme'>>,
+    React.ComponentType<Props>
+  >(
     // @ts-ignore
     WithTheme,
     Component
-  );
-  (WithTheme as WrappedWithThemeComponent<Props>).wrapped = Component;
-  return WithTheme as WrappedWithThemeComponent<Props>;
-};
+  )
+  ;(WithTheme as WrappedWithThemeComponent<Props>).wrapped = Component
+  return WithTheme as WrappedWithThemeComponent<Props>
+}
 
 export function useTheme(): Theme {
-  const theme = useContext(ThemeContext);
+  const theme = useContext(ThemeContext)
   return {
     ...defaultTheme,
     ...theme,
-  };
+  }
 }
 
-export const createStyle = <Fn extends (this: any, ...newArgs: any[]) => ReturnType<Fn>>(fn: Fn) => {
-  return memoizeOne(fn);
-};
+export const createStyle = <
+  Fn extends (this: any, ...newArgs: any[]) => ReturnType<Fn>
+>(
+  fn: Fn
+) => {
+  return memoizeOne(fn)
+}
 
 /**
  * Tries to get a dark variant color. Either by simply inverting the luminosity and darkening or lightening the color
@@ -181,10 +193,10 @@ export const createStyle = <Fn extends (this: any, ...newArgs: any[]) => ReturnT
  */
 export function autoColor(theme: Theme, hex: string, base?: string) {
   if (isLight(theme)) {
-    return hex;
+    return hex
   } else {
     if (base) {
-      const color = tinycolor(hex);
+      const color = tinycolor(hex)
       return tinycolor
         .mostReadable(
           base,
@@ -199,12 +211,14 @@ export function autoColor(theme: Theme, hex: string, base?: string) {
             includeFallbackColors: false,
           }
         )
-        .toHex8String();
+        .toHex8String()
     }
-    const color = tinycolor(hex).toHsl();
-    color.l = 1 - color.l;
-    const newColor = tinycolor(color);
-    return newColor.isLight() ? newColor.darken(5).toHex8String() : newColor.lighten(5).toHex8String();
+    const color = tinycolor(hex).toHsl()
+    color.l = 1 - color.l
+    const newColor = tinycolor(color)
+    return newColor.isLight()
+      ? newColor.darken(5).toHex8String()
+      : newColor.lighten(5).toHex8String()
   }
 }
 
@@ -212,14 +226,17 @@ export function autoColor(theme: Theme, hex: string, base?: string) {
  * With theme overrides you can use both number or string (for things like rem units) so this makes sure we convert
  * the value accordingly or use fallback if not set
  */
-export function safeSize(size: number | string | undefined, fallback: string): string {
+export function safeSize(
+  size: number | string | undefined,
+  fallback: string
+): string {
   if (!size) {
-    return fallback;
+    return fallback
   }
 
   if (typeof size === 'string') {
-    return size;
+    return size
   } else {
-    return `${size}px`;
+    return `${size}px`
   }
 }

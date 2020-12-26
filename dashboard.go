@@ -29,6 +29,13 @@ type DashboardCellUpdate struct {
 	W, H, X, Y *int32
 }
 
+type ViewUpdate struct {
+}
+
+func (udp ViewUpdate) Apply(view *View) {
+	// todo: implement it
+}
+
 func (udp DashboardCellUpdate) Apply(cell *Cell) {
 	if udp.W != nil {
 		cell.W = *udp.W
@@ -45,6 +52,9 @@ func (udp DashboardCellUpdate) Apply(cell *Cell) {
 	if udp.Y != nil {
 		cell.Y = *udp.Y
 	}
+}
+
+type View struct {
 }
 
 type DashboardService interface {
@@ -65,6 +75,10 @@ type DashboardService interface {
 	UpdateDashboardCell(ctx context.Context, did, pid ID, udp DashboardCellUpdate) (*Cell, error)
 
 	GetDashboardCell(ctx context.Context, did, cid ID) (*Cell, error)
+
+	// GetDashboardCellView(ctx context.Context, did, cid ID) (*View, error)
+	//
+	// UpdateDashboardCellView(ctx context.Context, did, cid ID, udp ViewUpdate) (*View, error)
 
 	// RemoveDashboard removes dashboard by id
 	DeleteDashboard(ctx context.Context, id ID) error

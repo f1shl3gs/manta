@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const GradientBorder: React.FC = () => (
   <div className="gradient-border">
@@ -7,6 +7,6 @@ const GradientBorder: React.FC = () => (
     <div className="gradient-border--bottom-left" />
     <div className="gradient-border--bottom-right" />
   </div>
-);
+)
 
-export default GradientBorder;
+export default GradientBorder

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
+import * as React from 'react'
+import {css} from 'emotion'
 
-import { createStyle } from '../Theme';
+import {createStyle} from '../Theme'
 
 const getStyles = createStyle(() => {
   return {
@@ -24,41 +24,44 @@ const getStyles = createStyle(() => {
       display: inline-block;
       white-space: pre;
     `,
-  };
-});
+  }
+})
 
-const WORD_RX = /\W*\w+\W*/g;
+const WORD_RX = /\W*\w+\W*/g
 
 type Props = {
-  text: string;
-  className?: string;
-  wordRegexp?: RegExp;
-};
+  text: string
+  className?: string
+  wordRegexp?: RegExp
+}
 
 // TODO typescript doesn't understand text or null as react nodes
 // https://github.com/Microsoft/TypeScript/issues/21699
 export default function BreakableText(
   props: Props
 ): any /* React.ReactNode /* React.ReactElement | React.ReactElement[] \*\/ */ {
-  const { className, text, wordRegexp = WORD_RX } = props;
+  const {className, text, wordRegexp = WORD_RX} = props
   if (!text) {
-    return typeof text === 'string' ? text : null;
+    return typeof text === 'string' ? text : null
   }
-  const spans = [];
-  wordRegexp.exec('');
+  const spans = []
+  wordRegexp.exec('')
   // if the given text has no words, set the first match to the entire text
-  let match: RegExpExecArray | string[] | null = wordRegexp.exec(text) || [text];
+  let match: RegExpExecArray | string[] | null = wordRegexp.exec(text) || [text]
   while (match) {
     spans.push(
-      <span key={`${text}-${spans.length}`} className={className || getStyles().BreakableText}>
+      <span
+        key={`${text}-${spans.length}`}
+        className={className || getStyles().BreakableText}
+      >
         {match[0]}
       </span>
-    );
-    match = wordRegexp.exec(text);
+    )
+    match = wordRegexp.exec(text)
   }
-  return spans;
+  return spans
 }
 
 BreakableText.defaultProps = {
   wordRegexp: WORD_RX,
-};
+}

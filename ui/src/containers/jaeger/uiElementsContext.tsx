@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React from 'react'
 
 export type TooltipPlacement =
   | 'top'
@@ -26,194 +26,204 @@ export type TooltipPlacement =
   | 'leftTop'
   | 'leftBottom'
   | 'rightTop'
-  | 'rightBottom';
+  | 'rightBottom'
 export type PopoverProps = {
-  content?: React.ReactNode;
-  arrowPointAtCenter?: boolean;
-  overlayClassName?: string;
-  placement?: TooltipPlacement;
-  children?: React.ReactNode;
-};
+  content?: React.ReactNode
+  arrowPointAtCenter?: boolean
+  overlayClassName?: string
+  placement?: TooltipPlacement
+  children?: React.ReactNode
+}
 
-export const UIPopover: React.ComponentType<PopoverProps> = function UIPopover(props: PopoverProps) {
+export const UIPopover: React.ComponentType<PopoverProps> = function UIPopover(
+  props: PopoverProps
+) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Popover {...props} />;
+        return <elements.Popover {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
-type RenderFunction = () => React.ReactNode;
+type RenderFunction = () => React.ReactNode
 export type TooltipProps = {
-  title?: React.ReactNode | RenderFunction;
-  getPopupContainer?: (triggerNode: Element) => HTMLElement;
-  overlayClassName?: string;
-  children?: React.ReactNode;
-  placement?: TooltipPlacement;
-  mouseLeaveDelay?: number;
-  arrowPointAtCenter?: boolean;
-  onVisibleChange?: (visible: boolean) => void;
-};
+  title?: React.ReactNode | RenderFunction
+  getPopupContainer?: (triggerNode: Element) => HTMLElement
+  overlayClassName?: string
+  children?: React.ReactNode
+  placement?: TooltipPlacement
+  mouseLeaveDelay?: number
+  arrowPointAtCenter?: boolean
+  onVisibleChange?: (visible: boolean) => void
+}
 
-export const UITooltip: React.ComponentType<TooltipProps> = function UITooltip(props: TooltipProps) {
-  return (
-    <div>tooltip</div>
-  );
-};
+export const UITooltip: React.ComponentType<TooltipProps> = function UITooltip(
+  props: TooltipProps
+) {
+  return <div>tooltip</div>
+}
 
 export type IconProps = {
-  type: string;
-  className?: string;
-  onClick?: React.MouseEventHandler<any>;
-};
+  type: string
+  className?: string
+  onClick?: React.MouseEventHandler<any>
+}
 
-export const UIIcon: React.ComponentType<IconProps> = function UIIcon(props: IconProps) {
+export const UIIcon: React.ComponentType<IconProps> = function UIIcon(
+  props: IconProps
+) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Icon {...props} />;
+        return <elements.Icon {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type DropdownProps = {
-  overlay: React.ReactNode;
-  placement?: 'topLeft' | 'topCenter' | 'topRight' | 'bottomLeft' | 'bottomCenter' | 'bottomRight';
-  trigger?: Array<'click' | 'hover' | 'contextMenu'>;
-  children?: React.ReactNode;
-};
+  overlay: React.ReactNode
+  placement?:
+    | 'topLeft'
+    | 'topCenter'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomCenter'
+    | 'bottomRight'
+  trigger?: Array<'click' | 'hover' | 'contextMenu'>
+  children?: React.ReactNode
+}
 
 export const UIDropdown = function UIDropdown(props: DropdownProps) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Dropdown {...props} />;
+        return <elements.Dropdown {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type MenuProps = {
-  children?: React.ReactNode;
-};
+  children?: React.ReactNode
+}
 
 export const UIMenu = function UIMenu(props: MenuProps) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Menu {...props} />;
+        return <elements.Menu {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type MenuItemProps = {
-  children?: React.ReactNode;
-};
+  children?: React.ReactNode
+}
 
 export const UIMenuItem = function UIMenuItem(props: MenuItemProps) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.MenuItem {...props} />;
+        return <elements.MenuItem {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
-export type ButtonHTMLType = 'submit' | 'button' | 'reset';
+export type ButtonHTMLType = 'submit' | 'button' | 'reset'
 export type ButtonProps = {
-  children?: React.ReactNode;
-  className?: string;
-  htmlType?: ButtonHTMLType;
-  icon?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-};
+  children?: React.ReactNode
+  className?: string
+  htmlType?: ButtonHTMLType
+  icon?: string
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  disabled?: boolean
+}
 
 export const UIButton = function UIButton(props: ButtonProps) {
-  return (
-    <div>ui button {props.className}</div>
-  );
-};
+  return <div>ui button {props.className}</div>
+}
 
 export type DividerProps = {
-  className?: string;
-  type?: 'vertical' | 'horizontal';
-};
+  className?: string
+  type?: 'vertical' | 'horizontal'
+}
 
 export const UIDivider = function UIDivider(props: DividerProps) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Divider {...props} />;
+        return <elements.Divider {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type InputProps = {
-  autosize?: boolean | null;
-  placeholder?: string;
-  onChange: (value: React.ChangeEvent<HTMLInputElement>) => void;
-  suffix: React.ReactNode;
-  value?: string;
-};
+  autosize?: boolean | null
+  placeholder?: string
+  onChange: (value: React.ChangeEvent<HTMLInputElement>) => void
+  suffix: React.ReactNode
+  value?: string
+}
 
-export const UIInput: React.FC<InputProps> = function UIInput(props: InputProps) {
+export const UIInput: React.FC<InputProps> = function UIInput(
+  props: InputProps
+) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.Input {...props} />;
+        return <elements.Input {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type InputGroupProps = {
-  className?: string;
-  compact?: boolean;
-  style?: React.CSSProperties;
-  children?: React.ReactNode;
-};
+  className?: string
+  compact?: boolean
+  style?: React.CSSProperties
+  children?: React.ReactNode
+}
 
 export const UIInputGroup = function UIInputGroup(props: InputGroupProps) {
   return (
     <GetElementsContext>
       {(elements: Elements) => {
-        return <elements.InputGroup {...props} />;
+        return <elements.InputGroup {...props} />
       }}
     </GetElementsContext>
-  );
-};
+  )
+}
 
 export type Elements = {
-  Popover: React.ComponentType<PopoverProps>;
-  Tooltip: React.ComponentType<TooltipProps>;
-  Icon: React.ComponentType<IconProps>;
-  Dropdown: React.ComponentType<DropdownProps>;
-  Menu: React.ComponentType<MenuProps>;
-  MenuItem: React.ComponentType<MenuItemProps>;
-  Button: React.ComponentType<ButtonProps>;
-  Divider: React.ComponentType<DividerProps>;
-  Input: React.ComponentType<InputProps>;
-  InputGroup: React.ComponentType<InputGroupProps>;
-};
+  Popover: React.ComponentType<PopoverProps>
+  Tooltip: React.ComponentType<TooltipProps>
+  Icon: React.ComponentType<IconProps>
+  Dropdown: React.ComponentType<DropdownProps>
+  Menu: React.ComponentType<MenuProps>
+  MenuItem: React.ComponentType<MenuItemProps>
+  Button: React.ComponentType<ButtonProps>
+  Divider: React.ComponentType<DividerProps>
+  Input: React.ComponentType<InputProps>
+  InputGroup: React.ComponentType<InputGroupProps>
+}
 
 /**
  * Allows for injecting custom UI elements that will be used. Mainly for styling and removing dependency on
  * any specific UI library but can also inject specific behaviour.
  */
-const UIElementsContext = React.createContext<Elements | undefined>(undefined);
-UIElementsContext.displayName = 'UIElementsContext';
-export default UIElementsContext;
+const UIElementsContext = React.createContext<Elements | undefined>(undefined)
+UIElementsContext.displayName = 'UIElementsContext'
+export default UIElementsContext
 
 type GetElementsContextProps = {
-  children: (elements: Elements) => React.ReactNode;
-};
+  children: (elements: Elements) => React.ReactNode
+}
 
 /**
  * Convenience render prop style component to handle error state when elements are not defined.
@@ -223,10 +233,12 @@ export function GetElementsContext(props: GetElementsContextProps) {
     <UIElementsContext.Consumer>
       {(value: Elements | undefined) => {
         if (!value) {
-          throw new Error('Elements context is required. You probably forget to use UIElementsContext.Provider');
+          throw new Error(
+            'Elements context is required. You probably forget to use UIElementsContext.Provider'
+          )
         }
-        return props.children(value);
+        return props.children(value)
       }}
     </UIElementsContext.Consumer>
-  );
+  )
 }

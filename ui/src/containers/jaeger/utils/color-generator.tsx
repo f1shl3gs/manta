@@ -12,41 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Theme } from '../Theme';
-import memoizeOne from 'memoize-one';
+import {Theme} from '../Theme'
+import memoizeOne from 'memoize-one'
 
 // TS needs the precise return type
 function strToRgb(s: string): [number, number, number] {
   if (s.length !== 7) {
-    return [0, 0, 0];
+    return [0, 0, 0]
   }
-  const r = s.slice(1, 3);
-  const g = s.slice(3, 5);
-  const b = s.slice(5);
-  return [parseInt(r, 16), parseInt(g, 16), parseInt(b, 16)];
+  const r = s.slice(1, 3)
+  const g = s.slice(3, 5)
+  const b = s.slice(5)
+  return [parseInt(r, 16), parseInt(g, 16), parseInt(b, 16)]
 }
 
 class ColorGenerator {
-  colorsHex: string[];
-  colorsRgb: Array<[number, number, number]>;
-  cache: Map<string, number>;
-  currentIdx: number;
+  colorsHex: string[]
+  colorsRgb: Array<[number, number, number]>
+  cache: Map<string, number>
+  currentIdx: number
 
   constructor(colorsHex: string[]) {
-    this.colorsHex = colorsHex;
-    this.colorsRgb = colorsHex.map(strToRgb);
-    this.cache = new Map();
-    this.currentIdx = 0;
+    this.colorsHex = colorsHex
+    this.colorsRgb = colorsHex.map(strToRgb)
+    this.cache = new Map()
+    this.currentIdx = 0
   }
 
   _getColorIndex(key: string): number {
-    let i = this.cache.get(key);
+    let i = this.cache.get(key)
     if (i == null) {
-      i = this.currentIdx;
-      this.cache.set(key, this.currentIdx);
-      this.currentIdx = ++this.currentIdx % this.colorsHex.length;
+      i = this.currentIdx
+      this.cache.set(key, this.currentIdx)
+      this.currentIdx = ++this.currentIdx % this.colorsHex.length
     }
-    return i;
+    return i
   }
 
   /**
@@ -55,8 +55,8 @@ class ColorGenerator {
    * use the same color.
    */
   getColorByKey(key: string) {
-    const i = this._getColorIndex(key);
-    return this.colorsHex[i];
+    const i = this._getColorIndex(key)
+    return this.colorsHex[i]
   }
 
   /**
@@ -65,28 +65,31 @@ class ColorGenerator {
    * @returns {number[]} An array of three ints [0, 255] representing a color.
    */
   getRgbColorByKey(key: string): [number, number, number] {
-    const i = this._getColorIndex(key);
-    return this.colorsRgb[i];
+    const i = this._getColorIndex(key)
+    return this.colorsRgb[i]
   }
 
   clear() {
-    this.cache.clear();
-    this.currentIdx = 0;
+    this.cache.clear()
+    this.currentIdx = 0
   }
 }
 
 const getGenerator = memoizeOne((colors: string[]) => {
-  return new ColorGenerator(colors);
-});
+  return new ColorGenerator(colors)
+})
 
 export function clear() {
-  getGenerator([]);
+  getGenerator([])
 }
 
 export function getColorByKey(key: string, theme: Theme) {
-  return getGenerator(theme.servicesColorPalette).getColorByKey(key);
+  return getGenerator(theme.servicesColorPalette).getColorByKey(key)
 }
 
-export function getRgbColorByKey(key: string, theme: Theme): [number, number, number] {
-  return getGenerator(theme.servicesColorPalette).getRgbColorByKey(key);
+export function getRgbColorByKey(
+  key: string,
+  theme: Theme
+): [number, number, number] {
+  return getGenerator(theme.servicesColorPalette).getRgbColorByKey(key)
 }

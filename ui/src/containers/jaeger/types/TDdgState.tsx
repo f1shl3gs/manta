@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ApiError } from './api-error';
-import { fetchedState } from '../constants';
-import { TDdgModel } from '../model/ddg/types';
+import {ApiError} from './api-error'
+import {fetchedState} from '../constants'
+import {TDdgModel} from '../model/ddg/types'
 
 export type TDdgStateEntry =
   | {
-      state: typeof fetchedState.LOADING;
+      state: typeof fetchedState.LOADING
     }
   | {
-      error: ApiError;
-      state: typeof fetchedState.ERROR;
+      error: ApiError
+      state: typeof fetchedState.ERROR
     }
   | {
-      model: TDdgModel;
-      state: typeof fetchedState.DONE;
-      viewModifiers: Map<number, number>;
-    };
+      model: TDdgModel
+      state: typeof fetchedState.DONE
+      viewModifiers: Map<number, number>
+    }
 
-type TDdgState = Record<string, TDdgStateEntry>;
+type TDdgState = Record<string, TDdgStateEntry>
 
 // eslint-disable-next-line no-undef
-export default TDdgState;
+export default TDdgState

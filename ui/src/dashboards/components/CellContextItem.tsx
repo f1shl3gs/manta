@@ -1,5 +1,5 @@
-import React from "react";
-import { Icon, IconFont } from "@influxdata/clockface";
+import React from 'react'
+import {Icon, IconFont} from '@influxdata/clockface'
 
 interface Props {
   testID?: string
@@ -14,12 +14,12 @@ const CellContextItem: React.FC<Props> = ({
   label,
   testID,
   onHide,
-  onClick
+  onClick,
 }) => {
   const handleClick = (): void => {
-    onHide && onHide();
-    onClick();
-  };
+    onHide && onHide()
+    onClick()
+  }
 
   return (
     <div
@@ -30,7 +30,7 @@ const CellContextItem: React.FC<Props> = ({
       <Icon glyph={icon} />
       {label}
     </div>
-  );
-};
+  )
+}
 
-export default CellContextItem;
+export default CellContextItem

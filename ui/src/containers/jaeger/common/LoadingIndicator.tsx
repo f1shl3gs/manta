@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import { css, keyframes } from 'emotion';
+import React from 'react'
+import {css, keyframes} from 'emotion'
 
-import { createStyle } from '../Theme';
+import {createStyle} from '../Theme'
 
 const getStyles = createStyle(() => {
   const LoadingIndicatorColorAnim = keyframes`
@@ -29,14 +29,15 @@ const getStyles = createStyle(() => {
     to {
       color: teal;
     }
-  `;
+  `
   return {
     LoadingIndicator: css`
       label: LoadingIndicator;
       animation: ${LoadingIndicatorColorAnim} 1s infinite alternate;
       font-size: 36px;
       /* outline / stroke the loading indicator */
-      text-shadow: -0.5px 0 rgba(0, 128, 128, 0.6), 0 0.5px rgba(0, 128, 128, 0.6), 0.5px 0 rgba(0, 128, 128, 0.6),
+      text-shadow: -0.5px 0 rgba(0, 128, 128, 0.6),
+        0 0.5px rgba(0, 128, 128, 0.6), 0.5px 0 rgba(0, 128, 128, 0.6),
         0 -0.5px rgba(0, 128, 128, 0.6);
     `,
     LoadingIndicatorCentered: css`
@@ -49,14 +50,14 @@ const getStyles = createStyle(() => {
       label: LoadingIndicatorSmall;
       font-size: 0.7em;
     `,
-  };
-});
+  }
+})
 
 type LoadingIndicatorProps = {
-  centered?: boolean;
-  className?: string;
-  small?: boolean;
-};
+  centered?: boolean
+  className?: string
+  small?: boolean
+}
 
 export default function LoadingIndicator(props: LoadingIndicatorProps) {
   /*const { centered, className, small, ...rest } = props;
@@ -75,4 +76,4 @@ LoadingIndicator.defaultProps = {
   centered: false,
   className: undefined,
   small: false,
-};
+}

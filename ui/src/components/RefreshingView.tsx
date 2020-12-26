@@ -6,11 +6,8 @@ interface Props {
   manualRefresh: number
 }
 
-const RefreshingView: React.FC<Props> = props => {
-  return (
-    <div>RefreshView</div>
-  )
+const RefreshingView: React.FC<Props> = (props) => {
+  return <div>RefreshView</div>
 }
 
-export default RefreshingView;
-
+export default RefreshingView

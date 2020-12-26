@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
+import * as React from 'react'
+import {css} from 'emotion'
 
-import renderIntoCanvas from './render-into-canvas';
-import { getRgbColorByKey } from '../../utils/color-generator';
-import { TNil } from '../../types';
+import renderIntoCanvas from './render-into-canvas'
+import {getRgbColorByKey} from '../../utils/color-generator'
+import {TNil} from '../../types'
 
-import { autoColor, createStyle, Theme, withTheme } from '../../Theme';
+import {autoColor, createStyle, Theme, withTheme} from '../../Theme'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -30,47 +30,58 @@ const getStyles = createStyle((theme: Theme) => {
       position: absolute;
       width: 100%;
     `,
-  };
-});
+  }
+})
 
 type CanvasSpanGraphProps = {
-  items: Array<{ valueWidth: number; valueOffset: number; serviceName: string }>;
-  valueWidth: number;
-  theme: Theme;
-};
+  items: Array<{valueWidth: number; valueOffset: number; serviceName: string}>
+  valueWidth: number
+  theme: Theme
+}
 
 export class UnthemedCanvasSpanGraph extends React.PureComponent<CanvasSpanGraphProps> {
-  _canvasElm: HTMLCanvasElement | TNil;
+  _canvasElm: HTMLCanvasElement | TNil
 
   constructor(props: CanvasSpanGraphProps) {
-    super(props);
-    this._canvasElm = undefined;
+    super(props)
+    this._canvasElm = undefined
   }
 
-  getColor = (key: string) => getRgbColorByKey(key, this.props.theme);
+  getColor = (key: string) => getRgbColorByKey(key, this.props.theme)
 
   componentDidMount() {
-    this._draw();
+    this._draw()
   }
 
   componentDidUpdate() {
-    this._draw();
+    this._draw()
   }
 
   _setCanvasRef = (elm: HTMLCanvasElement | TNil) => {
-    this._canvasElm = elm;
-  };
+    this._canvasElm = elm
+  }
 
   _draw() {
     if (this._canvasElm) {
-      const { valueWidth: totalValueWidth, items } = this.props;
-      renderIntoCanvas(this._canvasElm, items, totalValueWidth, this.getColor, autoColor(this.props.theme, '#fff'));
+      const {valueWidth: totalValueWidth, items} = this.props
+      renderIntoCanvas(
+        this._canvasElm,
+        items,
+        totalValueWidth,
+        this.getColor,
+        autoColor(this.props.theme, '#fff')
+      )
     }
   }
 
   render() {
-    return <canvas className={getStyles(this.props.theme).CanvasSpanGraph} ref={this._setCanvasRef} />;
+    return (
+      <canvas
+        className={getStyles(this.props.theme).CanvasSpanGraph}
+        ref={this._setCanvasRef}
+      />
+    )
   }
 }
 
-export default withTheme(UnthemedCanvasSpanGraph);
+export default withTheme(UnthemedCanvasSpanGraph)

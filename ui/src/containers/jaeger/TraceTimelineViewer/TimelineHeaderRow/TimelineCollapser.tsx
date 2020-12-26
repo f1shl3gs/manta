@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Button} from '@influxdata/clockface';
-import {css} from 'emotion';
-import React from 'react';
-import {createStyle} from '../../Theme';
+import {Button} from '@influxdata/clockface'
+import {css} from 'emotion'
+import React from 'react'
+import {createStyle} from '../../Theme'
 
 const getStyles = createStyle(() => {
   return {
@@ -26,25 +26,25 @@ const getStyles = createStyle(() => {
       justify-content: center;
       margin-right: 0.5rem;
     `,
-  };
-});
+  }
+})
 
 type CollapserProps = {
-  onCollapseAll: () => void;
-  onCollapseOne: () => void;
-  onExpandOne: () => void;
-  onExpandAll: () => void;
-};
+  onCollapseAll: () => void
+  onCollapseOne: () => void
+  onExpandOne: () => void
+  onExpandAll: () => void
+}
 
 export function TimelineCollapser(props: CollapserProps) {
-  const {onExpandAll, onExpandOne, onCollapseAll, onCollapseOne} = props;
-  const styles = getStyles();
+  const {onExpandAll, onExpandOne, onCollapseAll, onCollapseOne} = props
+  const styles = getStyles()
   return (
     <div className={styles.TimelineCollapser} data-test-id="TimelineCollapser">
       <Button onClick={onExpandOne} text="Expand +1" />
-      <Button onClick={onCollapseOne} text="Collapse +1"/>
-      <Button onClick={onExpandAll} text="Expand All"/>
-      <Button onClick={onCollapseAll} text="CollapseAll"/>
+      <Button onClick={onCollapseOne} text="Collapse +1" />
+      <Button onClick={onExpandAll} text="Expand All" />
+      <Button onClick={onCollapseAll} text="CollapseAll" />
     </div>
-  );
+  )
 }

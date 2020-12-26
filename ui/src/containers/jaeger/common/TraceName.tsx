@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import BreakableText from './BreakableText';
-import LoadingIndicator from './LoadingIndicator';
-import { fetchedState, FALLBACK_TRACE_NAME } from '../constants';
+import BreakableText from './BreakableText'
+import LoadingIndicator from './LoadingIndicator'
+import {fetchedState, FALLBACK_TRACE_NAME} from '../constants'
 
-import { FetchedState, TNil } from '../types';
-import { ApiError } from '../types/api-error';
-import { createStyle, safeSize, Theme, useTheme } from '../Theme';
+import {FetchedState, TNil} from '../types'
+import {ApiError} from '../types/api-error'
+import {createStyle, safeSize, Theme, useTheme} from '../Theme'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -34,38 +34,43 @@ const getStyles = createStyle((theme: Theme) => {
       label: TraceNameError;
       color: #c00;
     `,
-  };
-});
+  }
+})
 
 type Props = {
-  className?: string;
-  error?: ApiError | TNil;
-  state?: FetchedState | TNil;
-  traceName?: string | TNil;
-};
+  className?: string
+  error?: ApiError | TNil
+  state?: FetchedState | TNil
+  traceName?: string | TNil
+}
 
 export default function TraceName(props: Props) {
-  const { className, error, state, traceName } = props;
-  const isErred = state === fetchedState.ERROR;
-  let title: string | React.ReactNode = traceName || FALLBACK_TRACE_NAME;
-  const styles = getStyles(useTheme());
-  let errorCssClass = '';
+  const {className, error, state, traceName} = props
+  const isErred = state === fetchedState.ERROR
+  let title: string | React.ReactNode = traceName || FALLBACK_TRACE_NAME
+  const styles = getStyles(useTheme())
+  let errorCssClass = ''
   if (isErred) {
-    errorCssClass = styles.TraceNameError;
-    let titleStr = '';
+    errorCssClass = styles.TraceNameError
+    let titleStr = ''
     if (error) {
-      titleStr = typeof error === 'string' ? error : error.message || String(error);
+      titleStr =
+        typeof error === 'string' ? error : error.message || String(error)
     }
     if (!titleStr) {
-      titleStr = 'Error: Unknown error';
+      titleStr = 'Error: Unknown error'
     }
-    title = titleStr;
-    title = <BreakableText text={titleStr} />;
+    title = titleStr
+    title = <BreakableText text={titleStr} />
   } else if (state === fetchedState.LOADING) {
-    title = <LoadingIndicator small />;
+    title = <LoadingIndicator small />
   } else {
-    const text = String(traceName || FALLBACK_TRACE_NAME);
-    title = <BreakableText text={text} />;
+    const text = String(traceName || FALLBACK_TRACE_NAME)
+    title = <BreakableText text={text} />
   }
-  return <span className={cx(styles.TraceName, errorCssClass, className)}>{title}</span>;
+  return (
+    <span className={cx(styles.TraceName, errorCssClass, className)}>
+      {title}
+    </span>
+  )
 }

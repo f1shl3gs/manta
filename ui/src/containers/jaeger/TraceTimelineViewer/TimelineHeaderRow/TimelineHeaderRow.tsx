@@ -12,18 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import { TimelineCollapser } from './TimelineCollapser';
-import TimelineColumnResizer from './TimelineColumnResizer';
-import TimelineViewingLayer from './TimelineViewingLayer';
-import Ticks from '../Ticks';
-import TimelineRow from '../TimelineRow';
-import { TUpdateViewRangeTimeFunction, ViewRangeTime, ViewRangeTimeUpdate } from '../types';
-import { autoColor, createStyle, Theme, useTheme } from '../../Theme';
-import { ubFlex, ubPx2 } from '../../uberUtilityStyles';
+import {TimelineCollapser} from './TimelineCollapser'
+import TimelineColumnResizer from './TimelineColumnResizer'
+import TimelineViewingLayer from './TimelineViewingLayer'
+import Ticks from '../Ticks'
+import TimelineRow from '../TimelineRow'
+import {
+  TUpdateViewRangeTimeFunction,
+  ViewRangeTime,
+  ViewRangeTimeUpdate,
+} from '../types'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {ubFlex, ubPx2} from '../../uberUtilityStyles'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -49,23 +53,23 @@ const getStyles = createStyle((theme: Theme) => {
       label: TimelineHeaderWrapper;
       align-items: center;
     `,
-  };
-});
+  }
+})
 
 type TimelineHeaderRowProps = {
-  duration: number;
-  nameColumnWidth: number;
-  numTicks: number;
-  onCollapseAll: () => void;
-  onCollapseOne: () => void;
-  onColummWidthChange: (width: number) => void;
-  onExpandAll: () => void;
-  onExpandOne: () => void;
-  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void;
-  updateViewRangeTime: TUpdateViewRangeTimeFunction;
-  viewRangeTime: ViewRangeTime;
-  columnResizeHandleHeight: number;
-};
+  duration: number
+  nameColumnWidth: number
+  numTicks: number
+  onCollapseAll: () => void
+  onCollapseOne: () => void
+  onColummWidthChange: (width: number) => void
+  onExpandAll: () => void
+  onExpandOne: () => void
+  updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void
+  updateViewRangeTime: TUpdateViewRangeTimeFunction
+  viewRangeTime: ViewRangeTime
+  columnResizeHandleHeight: number
+}
 
 export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
   const {
@@ -81,13 +85,21 @@ export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
     updateNextViewRangeTime,
     viewRangeTime,
     columnResizeHandleHeight,
-  } = props;
-  const [viewStart, viewEnd] = viewRangeTime.current;
-  const styles = getStyles(useTheme());
+  } = props
+  const [viewStart, viewEnd] = viewRangeTime.current
+  const styles = getStyles(useTheme())
   return (
-    <TimelineRow className={styles.TimelineHeaderRow} data-test-id="TimelineHeaderRow">
-      <TimelineRow.Cell className={cx(ubFlex, ubPx2, styles.TimelineHeaderWrapper)} width={nameColumnWidth}>
-        <h4 className={styles.TimelineHeaderRowTitle}>Service &amp; Operation</h4>
+    <TimelineRow
+      className={styles.TimelineHeaderRow}
+      data-test-id="TimelineHeaderRow"
+    >
+      <TimelineRow.Cell
+        className={cx(ubFlex, ubPx2, styles.TimelineHeaderWrapper)}
+        width={nameColumnWidth}
+      >
+        <h4 className={styles.TimelineHeaderRowTitle}>
+          Service &amp; Operation
+        </h4>
         <TimelineCollapser
           onCollapseAll={onCollapseAll}
           onExpandAll={onExpandAll}
@@ -102,7 +114,12 @@ export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
           updateViewRangeTime={updateViewRangeTime}
           viewRangeTime={viewRangeTime}
         />
-        <Ticks numTicks={numTicks} startTime={viewStart * duration} endTime={viewEnd * duration} showLabels />
+        <Ticks
+          numTicks={numTicks}
+          startTime={viewStart * duration}
+          endTime={viewEnd * duration}
+          showLabels
+        />
       </TimelineRow.Cell>
       <TimelineColumnResizer
         columnResizeHandleHeight={columnResizeHandleHeight}
@@ -112,5 +129,5 @@ export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
         max={0.85}
       />
     </TimelineRow>
-  );
+  )
 }

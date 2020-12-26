@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react'
 
 interface Props {
   name: string
   note: string
 }
 
-const CellHeader: React.FC<Props> = ({ name, note, children }) => {
+const CellHeader: React.FC<Props> = ({name, note, children}) => {
   return (
     <div className="cell--header">
       <div className="cell--draggable" data-testid={`cell--draggable ${name}`}>
@@ -17,7 +17,7 @@ const CellHeader: React.FC<Props> = ({ name, note, children }) => {
       {/*{note && <CellHeaderNote note={note} />}*/}
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default CellHeader;
+export default CellHeader

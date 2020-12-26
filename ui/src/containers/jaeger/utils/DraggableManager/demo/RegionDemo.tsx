@@ -12,33 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React from 'react'
 
-import DraggableManager, { DraggableBounds, DraggingUpdate } from '..';
-import { TNil } from '../../../types';
+import DraggableManager, {DraggableBounds, DraggingUpdate} from '..'
+import {TNil} from '../../../types'
 
-import './RegionDemo.css';
+import './RegionDemo.css'
 
 type TUpdate = {
-  regionCursor?: number | null;
-  regionDragging?: number[] | null;
-};
+  regionCursor?: number | null
+  regionDragging?: number[] | null
+}
 
 type RegionDemoProps = {
-  regionCursor: number | TNil;
-  regionDragging: [number, number] | TNil;
-  updateState: (update: TUpdate) => void;
-};
+  regionCursor: number | TNil
+  regionDragging: [number, number] | TNil
+  updateState: (update: TUpdate) => void
+}
 
 export default class RegionDemo extends React.PureComponent<RegionDemoProps> {
-  _dragManager: DraggableManager;
+  _dragManager: DraggableManager
 
-  _realmElm: HTMLElement | TNil;
+  _realmElm: HTMLElement | TNil
 
   constructor(props: RegionDemoProps) {
-    super(props);
+    super(props)
 
-    this._realmElm = null;
+    this._realmElm = null
 
     this._dragManager = new DraggableManager({
       getBounds: this._getDraggingBounds,
@@ -47,61 +47,63 @@ export default class RegionDemo extends React.PureComponent<RegionDemoProps> {
       onDragStart: this._handleDragUpdate,
       onMouseMove: this._handleMouseMove,
       onMouseLeave: this._handleMouseLeave,
-    });
+    })
   }
 
   _setRealm = (elm: HTMLElement | TNil) => {
-    this._realmElm = elm;
-  };
+    this._realmElm = elm
+  }
 
   _getDraggingBounds = (): DraggableBounds => {
     if (!this._realmElm) {
-      throw new Error('invalid state');
+      throw new Error('invalid state')
     }
-    const { left: clientXLeft, width } = this._realmElm.getBoundingClientRect();
+    const {left: clientXLeft, width} = this._realmElm.getBoundingClientRect()
     return {
       clientXLeft,
       width,
       maxValue: 1,
       minValue: 0,
-    };
-  };
+    }
+  }
 
-  _handleMouseMove = ({ value }: DraggingUpdate) => {
-    this.props.updateState({ regionCursor: value });
-  };
+  _handleMouseMove = ({value}: DraggingUpdate) => {
+    this.props.updateState({regionCursor: value})
+  }
 
   _handleMouseLeave = () => {
-    this.props.updateState({ regionCursor: null });
-  };
+    this.props.updateState({regionCursor: null})
+  }
 
-  _handleDragUpdate = ({ value }: DraggingUpdate) => {
-    const { regionDragging: prevRegionDragging } = this.props;
-    let regionDragging;
+  _handleDragUpdate = ({value}: DraggingUpdate) => {
+    const {regionDragging: prevRegionDragging} = this.props
+    let regionDragging
     if (prevRegionDragging) {
-      regionDragging = [prevRegionDragging[0], value];
+      regionDragging = [prevRegionDragging[0], value]
     } else {
-      regionDragging = [value, value];
+      regionDragging = [value, value]
     }
-    this.props.updateState({ regionDragging });
-  };
+    this.props.updateState({regionDragging})
+  }
 
-  _handleDragEnd = ({ value }: DraggingUpdate) => {
-    this.props.updateState({ regionDragging: null, regionCursor: value });
-  };
+  _handleDragEnd = ({value}: DraggingUpdate) => {
+    this.props.updateState({regionDragging: null, regionCursor: value})
+  }
 
   render() {
-    const { regionCursor, regionDragging } = this.props;
-    let cursorElm;
-    let regionElm;
+    const {regionCursor, regionDragging} = this.props
+    let cursorElm
+    let regionElm
     if (regionDragging) {
-      const [a, b] = regionDragging;
-      const [left, right] = a < b ? [a, 1 - b] : [b, 1 - a];
-      const regionStyle = { left: `${left * 100}%`, right: `${right * 100}%` };
-      regionElm = <div className="RegionDemo--region" style={regionStyle} />;
+      const [a, b] = regionDragging
+      const [left, right] = a < b ? [a, 1 - b] : [b, 1 - a]
+      const regionStyle = {left: `${left * 100}%`, right: `${right * 100}%`}
+      regionElm = <div className="RegionDemo--region" style={regionStyle} />
     } else if (regionCursor) {
-      const cursorStyle = { left: `${regionCursor * 100}%` };
-      cursorElm = <div className="RegionDemo--regionCursor" style={cursorStyle} />;
+      const cursorStyle = {left: `${regionCursor * 100}%`}
+      cursorElm = (
+        <div className="RegionDemo--regionCursor" style={cursorStyle} />
+      )
     }
     return (
       <div
@@ -115,6 +117,6 @@ export default class RegionDemo extends React.PureComponent<RegionDemoProps> {
         {regionElm}
         {cursorElm}
       </div>
-    );
+    )
   }
 }

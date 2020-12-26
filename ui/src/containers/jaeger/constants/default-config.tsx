@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze'
 
-import { FALLBACK_DAG_MAX_NUM_SERVICES } from './index';
+import {FALLBACK_DAG_MAX_NUM_SERVICES} from './index'
 
 export default deepFreeze(
   Object.defineProperty(
@@ -70,9 +70,9 @@ export default deepFreeze(
     },
     // fields that should be individually merged vs wholesale replaced
     '__mergeFields',
-    { value: ['dependencies', 'search', 'tracking'] }
+    {value: ['dependencies', 'search', 'tracking']}
   )
-);
+)
 
 export const deprecations = [
   {
@@ -83,4 +83,4 @@ export const deprecations = [
     formerKey: 'gaTrackingID',
     currentKey: 'tracking.gaID',
   },
-];
+]

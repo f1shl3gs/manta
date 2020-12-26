@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ApiError } from './api-error';
+import {ApiError} from './api-error'
 
 export type TraceArchive = {
-  isLoading?: boolean;
-  isArchived?: boolean;
-  isError?: boolean;
-  error?: ApiError;
-  isAcknowledged?: boolean;
-};
+  isLoading?: boolean
+  isArchived?: boolean
+  isError?: boolean
+  error?: ApiError
+  isAcknowledged?: boolean
+}
 
-export type TracesArchive = Record<string, TraceArchive>;
+export type TracesArchive = Record<string, TraceArchive>

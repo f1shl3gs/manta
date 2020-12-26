@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, {useState} from 'react'
 import {
   Button,
   ButtonShape,
   ComponentColor,
   IconFont,
   Icon,
-  ComponentSize
-} from "@influxdata/clockface";
+  ComponentSize,
+} from '@influxdata/clockface'
 
 interface Props {
   testID?: string
@@ -23,18 +23,18 @@ const CellContextItem: React.FC<Props> = ({
   testID,
   onHide,
   onClick,
-  confirmationText = "Confirm Delete"
+  confirmationText = 'Confirm Delete',
 }) => {
-  const [confirming, setConfirmationState] = useState<boolean>(false);
+  const [confirming, setConfirmationState] = useState<boolean>(false)
 
   const toggleConfirmationState = (): void => {
-    setConfirmationState(true);
-  };
+    setConfirmationState(true)
+  }
 
   const handleClick = (): void => {
-    onHide && onHide();
-    onClick();
-  };
+    onHide && onHide()
+    onClick()
+  }
 
   if (confirming) {
     return (
@@ -48,7 +48,7 @@ const CellContextItem: React.FC<Props> = ({
           testID={`${testID}-confirm`}
         />
       </div>
-    );
+    )
   }
 
   return (
@@ -60,7 +60,7 @@ const CellContextItem: React.FC<Props> = ({
       <Icon glyph={icon} />
       {label}
     </div>
-  );
-};
+  )
+}
 
-export default CellContextItem;
+export default CellContextItem

@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import cx from 'classnames';
-import IoAndroidLocate from 'react-icons/lib/io/android-locate';
-import { css } from 'emotion';
+import * as React from 'react'
+import cx from 'classnames'
+import IoAndroidLocate from 'react-icons/lib/io/android-locate'
+import {css} from 'emotion'
 
-import * as markers from './TracePageSearchBar.markers';
-import { TNil } from '../types';
+import * as markers from './TracePageSearchBar.markers'
+import {TNil} from '../types'
 
-import { createStyle } from '../Theme';
-import { ubFlexAuto, ubJustifyEnd } from '../uberUtilityStyles';
-import { memo } from 'react';
-import {Button, Input} from "@influxdata/clockface";
+import {createStyle} from '../Theme'
+import {ubFlexAuto, ubJustifyEnd} from '../uberUtilityStyles'
+import {memo} from 'react'
+import {Button, Input} from '@influxdata/clockface'
 
 export const getStyles = createStyle(() => {
   return {
@@ -55,23 +55,25 @@ export const getStyles = createStyle(() => {
       label: TracePageSearchBarLocateBtn;
       padding: 1px 8px 4px;
     `,
-  };
-});
+  }
+})
 
 type TracePageSearchBarProps = {
-  textFilter: string | TNil;
-  prevResult: () => void;
-  nextResult: () => void;
-  clearSearch: () => void;
-  focusUiFindMatches: () => void;
-  resultCount: number;
-  navigable: boolean;
-  searchValue: string;
-  onSearchValueChange: (value: string) => void;
-  hideSearchButtons?: boolean;
-};
+  textFilter: string | TNil
+  prevResult: () => void
+  nextResult: () => void
+  clearSearch: () => void
+  focusUiFindMatches: () => void
+  resultCount: number
+  navigable: boolean
+  searchValue: string
+  onSearchValueChange: (value: string) => void
+  hideSearchButtons?: boolean
+}
 
-export default memo(function TracePageSearchBar(props: TracePageSearchBarProps) {
+export default memo(function TracePageSearchBar(
+  props: TracePageSearchBarProps
+) {
   const {
     clearSearch,
     focusUiFindMatches,
@@ -83,28 +85,35 @@ export default memo(function TracePageSearchBar(props: TracePageSearchBarProps) 
     onSearchValueChange,
     searchValue,
     hideSearchButtons,
-  } = props;
-  const styles = getStyles();
+  } = props
+  const styles = getStyles()
 
-  const count = textFilter ? <span className={styles.TracePageSearchBarCount}>{resultCount}</span> : null;
+  const count = textFilter ? (
+    <span className={styles.TracePageSearchBarCount}>{resultCount}</span>
+  ) : null
 
-  const btnClass = cx(styles.TracePageSearchBarBtn, { [styles.TracePageSearchBarBtnDisabled]: !textFilter });
+  const btnClass = cx(styles.TracePageSearchBarBtn, {
+    [styles.TracePageSearchBarBtnDisabled]: !textFilter,
+  })
   const uiFindInputInputProps = {
     'data-test': markers.IN_TRACE_SEARCH,
     className: cx(styles.TracePageSearchBarBar, ubFlexAuto),
     name: 'search',
     suffix: count,
-  };
+  }
 
   return (
     <div className={styles.TracePageSearchBar}>
-      <Input onChange={(ev) => onSearchValueChange(ev.target.value)} value={searchValue}/>
-      <Button onClick={focusUiFindMatches} text={"focusuifindmatches"}>
-        <IoAndroidLocate/>
+      <Input
+        onChange={(ev) => onSearchValueChange(ev.target.value)}
+        value={searchValue}
+      />
+      <Button onClick={focusUiFindMatches} text={'focusuifindmatches'}>
+        <IoAndroidLocate />
       </Button>
-      <Button onClick={prevResult} text={"up"}/>
-      <Button onClick={nextResult} text={"down"}/>
-      <Button onClick={clearSearch} text={"close"}/>
+      <Button onClick={prevResult} text={'up'} />
+      <Button onClick={nextResult} text={'down'} />
+      <Button onClick={clearSearch} text={'close'} />
       {/* style inline because compact overwrites the display */}
       {/*<UIInputGroup className={ubJustifyEnd} compact style={{ display: 'flex' }}>
         <UiFindInput onChange={onSearchValueChange} value={searchValue} inputProps={uiFindInputInputProps} />
@@ -147,5 +156,5 @@ export default memo(function TracePageSearchBar(props: TracePageSearchBarProps) 
         )}
       </UIInputGroup>*/}
     </div>
-  );
-});
+  )
+})

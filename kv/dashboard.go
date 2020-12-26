@@ -2,7 +2,6 @@ package kv
 
 import (
 	"context"
-	"fmt"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 	"time"
 
@@ -377,6 +376,21 @@ func (s *Service) ReplaceDashboardCells(ctx context.Context, did manta.ID, cells
 	})
 }
 
+func (s *Service) findDashboardCell(ctx context.Context, tx Tx, did, cid manta.ID) (*manta.Cell, error) {
+	dash, err := s.findDashboardByID(ctx, tx, did)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(dash.Cells); i++ {
+		if dash.Cells[i].ID == cid {
+			return &dash.Cells[i], nil
+		}
+	}
+
+	return nil, ErrKeyNotFound
+}
+
 func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*manta.Cell, error) {
 	var (
 		cell *manta.Cell
@@ -384,20 +398,8 @@ func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*man
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		dash, err := s.findDashboardByID(ctx, tx, did)
-		if err != nil {
-			return err
-		}
-
-		for i := 0; i < len(dash.Cells); i++ {
-			fmt.Println(dash.Cells[i].ID, cid)
-			if dash.Cells[i].ID == cid {
-				cell = &dash.Cells[i]
-				return nil
-			}
-		}
-
-		return ErrKeyNotFound
+		cell, err = s.findDashboardCell(ctx, tx, did, cid)
+		return err
 	})
 
 	if err != nil {
@@ -406,3 +408,23 @@ func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*man
 
 	return cell, nil
 }
+
+// func (s *Service) GetDashboardCellView(ctx context.Context, did, cid manta.ID) (*manta.View, error) {
+// 	var (
+// 		cell *manta.Prop
+// 		err error
+// 	)
+//
+// 	err = s.kv.View(ctx, func(tx Tx) error {
+// 		cell, err = s.findDashboardCell(ctx, tx, did, cid)
+// 		if err != nil {
+// 			return err
+// 		}
+//
+// 		return nil
+// 	})
+// }
+//
+// func (s *Service) UpdateDashboardCellView(ctx context.Context, did, cid manta.ID, udp manta.ViewUpdate) (*manta.View, error) {
+// 	panic("implement me")
+// }

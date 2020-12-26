@@ -12,20 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {RefObject, useRef} from 'react';
-import _groupBy from 'lodash/groupBy';
-import { onlyUpdateForKeys, compose, withState, withProps } from 'recompose';
-import { css } from 'emotion';
-import cx from 'classnames';
+import React, {RefObject, useRef} from 'react'
+import _groupBy from 'lodash/groupBy'
+import {onlyUpdateForKeys, compose, withState, withProps} from 'recompose'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import AccordianLogs from './SpanDetail/AccordianLogs';
+import AccordianLogs from './SpanDetail/AccordianLogs'
 
-import { ViewedBoundsFunctionType } from './utils';
-import {TNil, TraceSpan} from '../types';
+import {ViewedBoundsFunctionType} from './utils'
+import {TNil, TraceSpan} from '../types'
 
 // import { UIPopover } from '../uiElementsContext';
-import { createStyle } from '../Theme';
-import {Appearance, ButtonRef, Popover, PopoverInteraction, PopoverPosition} from "@influxdata/clockface";
+import {createStyle} from '../Theme'
+import {
+  Appearance,
+  ButtonRef,
+  Popover,
+  PopoverInteraction,
+  PopoverPosition,
+} from '@influxdata/clockface'
 
 const getStyles = createStyle(() => {
   return {
@@ -96,42 +102,42 @@ const getStyles = createStyle(() => {
         padding: 0.25rem;
       }
     `,
-  };
-});
+  }
+})
 
 type TCommonProps = {
-  color: string;
+  color: string
   // onClick: (evt: React.MouseEvent<any>) => void;
-  onClick?: (evt: React.MouseEvent<any>) => void;
-  viewEnd: number;
-  viewStart: number;
-  getViewedBounds: ViewedBoundsFunctionType;
+  onClick?: (evt: React.MouseEvent<any>) => void
+  viewEnd: number
+  viewStart: number
+  getViewedBounds: ViewedBoundsFunctionType
   rpc:
     | {
-        viewStart: number;
-        viewEnd: number;
-        color: string;
+        viewStart: number
+        viewEnd: number
+        color: string
       }
-    | TNil;
-  traceStartTime: number;
-  span: TraceSpan;
-  className?: string;
-  labelClassName?: string;
-};
+    | TNil
+  traceStartTime: number
+  span: TraceSpan
+  className?: string
+  labelClassName?: string
+}
 
 type TInnerProps = {
-  label: string;
-  setLongLabel: () => void;
-  setShortLabel: () => void;
-} & TCommonProps;
+  label: string
+  setLongLabel: () => void
+  setShortLabel: () => void
+} & TCommonProps
 
 type TOuterProps = {
-  longLabel: string;
-  shortLabel: string;
-} & TCommonProps;
+  longLabel: string
+  shortLabel: string
+} & TCommonProps
 
 function toPercent(value: number) {
-  return `${(value * 100).toFixed(1)}%`;
+  return `${(value * 100).toFixed(1)}%`
 }
 
 function SpanBar(props: TInnerProps) {
@@ -149,17 +155,17 @@ function SpanBar(props: TInnerProps) {
     span,
     className,
     labelClassName,
-  } = props;
+  } = props
 
   const triggerRef: RefObject<ButtonRef> = useRef(null)
 
   // group logs based on timestamps
-  const logGroups = _groupBy(span.logs, log => {
-    const posPercent = getViewedBounds(log.timestamp, log.timestamp).start;
+  const logGroups = _groupBy(span.logs, (log) => {
+    const posPercent = getViewedBounds(log.timestamp, log.timestamp).start
     // round to the nearest 0.2%
-    return toPercent(Math.round(posPercent * 500) / 500);
-  });
-  const styles = getStyles();
+    return toPercent(Math.round(posPercent * 500) / 500)
+  })
+  const styles = getStyles()
 
   return (
     <div
@@ -179,12 +185,15 @@ function SpanBar(props: TInnerProps) {
           width: toPercent(viewEnd - viewStart),
         }}
       >
-        <div className={cx(styles.label, labelClassName)} data-test-id="SpanBar--label">
+        <div
+          className={cx(styles.label, labelClassName)}
+          data-test-id="SpanBar--label"
+        >
           {label}
         </div>
       </div>
       <div>
-        {Object.keys(logGroups).map(positionKey => (
+        {Object.keys(logGroups).map((positionKey) => (
           /*<UIPopover
             key={positionKey}
             arrowPointAtCenter
@@ -203,7 +212,14 @@ function SpanBar(props: TInnerProps) {
             position={PopoverPosition.Above}
             showEvent={PopoverInteraction.Hover}
             hideEvent={PopoverInteraction.Hover}
-            contents={() => <AccordianLogs interactive={false} isOpen logs={logGroups[positionKey]} timestamp={traceStartTime} />}
+            contents={() => (
+              <AccordianLogs
+                interactive={false}
+                isOpen
+                logs={logGroups[positionKey]}
+                timestamp={traceStartTime}
+              />
+            )}
           />
         ))}
       </div>
@@ -218,24 +234,28 @@ function SpanBar(props: TInnerProps) {
         />
       )}
     </div>
-  );
+  )
 }
 
 export default compose<TInnerProps, TOuterProps>(
-  withState('label', 'setLabel', (props: { shortLabel: string }) => props.shortLabel),
+  withState(
+    'label',
+    'setLabel',
+    (props: {shortLabel: string}) => props.shortLabel
+  ),
   withProps(
     ({
       setLabel,
       shortLabel,
       longLabel,
     }: {
-      setLabel: (label: string) => void;
-      shortLabel: string;
-      longLabel: string;
+      setLabel: (label: string) => void
+      shortLabel: string
+      longLabel: string
     }) => ({
       setLongLabel: () => setLabel(longLabel),
       setShortLabel: () => setLabel(shortLabel),
     })
   ),
   onlyUpdateForKeys(['label', 'rpc', 'viewStart', 'viewEnd'])
-)(SpanBar);
+)(SpanBar)

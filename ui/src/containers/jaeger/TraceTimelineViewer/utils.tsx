@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {TraceSpan} from '../types'
 
-
-import {TraceSpan} from "../types";
-
-export type ViewedBoundsFunctionType = (start: number, end: number) => { start: number; end: number };
+export type ViewedBoundsFunctionType = (
+  start: number,
+  end: number
+) => {start: number; end: number}
 /**
  * Given a range (`min`, `max`) and factoring in a zoom (`viewStart`, `viewEnd`)
  * a function is created that will find the position of a sub-range (`start`, `end`).
@@ -31,12 +32,17 @@ export type ViewedBoundsFunctionType = (start: number, end: number) => { start: 
  *                            relative to the `min`, `max`.
  * @returns {(number, number) => Object} Created view bounds function
  */
-export function createViewedBoundsFunc(viewRange: { min: number; max: number; viewStart: number; viewEnd: number }) {
-  const { min, max, viewStart, viewEnd } = viewRange;
-  const duration = max - min;
-  const viewMin = min + viewStart * duration;
-  const viewMax = max - (1 - viewEnd) * duration;
-  const viewWindow = viewMax - viewMin;
+export function createViewedBoundsFunc(viewRange: {
+  min: number
+  max: number
+  viewStart: number
+  viewEnd: number
+}) {
+  const {min, max, viewStart, viewEnd} = viewRange
+  const duration = max - min
+  const viewMin = min + viewStart * duration
+  const viewMax = max - (1 - viewEnd) * duration
+  const viewWindow = viewMax - viewMin
 
   /**
    * View bounds function
@@ -47,7 +53,7 @@ export function createViewedBoundsFunc(viewRange: { min: number; max: number; vi
   return (start: number, end: number) => ({
     start: (start - viewMin) / viewWindow,
     end: (end - viewMin) / viewWindow,
-  });
+  })
 }
 
 /**
@@ -61,17 +67,18 @@ export function createViewedBoundsFunc(viewRange: { min: number; max: number; vi
  */
 export function spanHasTag(key: string, value: any, span: TraceSpan) {
   if (!Array.isArray(span.tags) || !span.tags.length) {
-    return false;
+    return false
   }
-  return span.tags.some(tag => tag.key === key && tag.value === value);
+  return span.tags.some((tag) => tag.key === key && tag.value === value)
 }
 
-export const isClientSpan = spanHasTag.bind(null, 'span.kind', 'client');
-export const isServerSpan = spanHasTag.bind(null, 'span.kind', 'server');
+export const isClientSpan = spanHasTag.bind(null, 'span.kind', 'client')
+export const isServerSpan = spanHasTag.bind(null, 'span.kind', 'server')
 
-const isErrorBool = spanHasTag.bind(null, 'error', true);
-const isErrorStr = spanHasTag.bind(null, 'error', 'true');
-export const isErrorSpan = (span: TraceSpan) => isErrorBool(span) || isErrorStr(span);
+const isErrorBool = spanHasTag.bind(null, 'error', true)
+const isErrorStr = spanHasTag.bind(null, 'error', 'true')
+export const isErrorSpan = (span: TraceSpan) =>
+  isErrorBool(span) || isErrorStr(span)
 
 /**
  * Returns `true` if at least one of the descendants of the `parentSpanIndex`
@@ -84,15 +91,18 @@ export const isErrorSpan = (span: TraceSpan) => isErrorBool(span) || isErrorStr(
  *                                         the parent span will be checked.
  * @returns     {boolean}  Returns `true` if a descendant contains an error tag.
  */
-export function spanContainsErredSpan(spans: TraceSpan[], parentSpanIndex: number) {
-  const { depth } = spans[parentSpanIndex];
-  let i = parentSpanIndex + 1;
+export function spanContainsErredSpan(
+  spans: TraceSpan[],
+  parentSpanIndex: number
+) {
+  const {depth} = spans[parentSpanIndex]
+  let i = parentSpanIndex + 1
   for (; i < spans.length && spans[i].depth > depth; i++) {
     if (isErrorSpan(spans[i])) {
-      return true;
+      return true
     }
   }
-  return false;
+  return false
 }
 
 /**
@@ -100,18 +110,18 @@ export function spanContainsErredSpan(spans: TraceSpan[], parentSpanIndex: numbe
  */
 export function findServerChildSpan(spans: TraceSpan[]) {
   if (spans.length <= 1 || !isClientSpan(spans[0])) {
-    return false;
+    return false
   }
-  const span = spans[0];
-  const spanChildDepth = span.depth + 1;
-  let i = 1;
+  const span = spans[0]
+  const spanChildDepth = span.depth + 1
+  let i = 1
   while (i < spans.length && spans[i].depth === spanChildDepth) {
     if (isServerSpan(spans[i])) {
-      return spans[i];
+      return spans[i]
     }
-    i++;
+    i++
   }
-  return null;
+  return null
 }
 
-export { formatDuration } from '../utils/date';
+export {formatDuration} from '../utils/date'

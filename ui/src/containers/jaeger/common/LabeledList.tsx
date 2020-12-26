@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import { createStyle, isLight, Theme, useTheme } from '../Theme';
+import {createStyle, isLight, Theme, useTheme} from '../Theme'
 // import { UIDivider } from '../uiElementsContext';
 
 const getStyles = createStyle((theme: Theme) => {
@@ -36,35 +36,35 @@ const getStyles = createStyle((theme: Theme) => {
       color: ${isLight(theme) ? '#999' : '#666'};
       margin-right: 0.25rem;
     `,
-  };
-});
+  }
+})
 
 type LabeledListProps = {
-  className?: string;
-  dividerClassName?: string;
-  items: Array<{ key: string; label: React.ReactNode; value: React.ReactNode }>;
-};
+  className?: string
+  dividerClassName?: string
+  items: Array<{key: string; label: React.ReactNode; value: React.ReactNode}>
+}
 
 export default function LabeledList(props: LabeledListProps) {
-  const { className, dividerClassName, items } = props;
-  const styles = getStyles(useTheme());
+  const {className, dividerClassName, items} = props
+  const styles = getStyles(useTheme())
   return (
     <ul className={cx(styles.LabeledList, className)}>
-      {items.map(({ key, label, value }, i) => {
+      {items.map(({key, label, value}, i) => {
         const divider = i < items.length - 1 && (
           <li className={styles.LabeledListItem} key={`${key}--divider`}>
             {/*<UIDivider className={dividerClassName} type="vertical" />*/}
             <div>divider</div>
           </li>
-        );
+        )
         return [
           <li className={styles.LabeledListItem} key={key}>
             <span className={styles.LabeledListLabel}>{label}</span>
             <strong>{value}</strong>
           </li>,
           divider,
-        ];
+        ]
       })}
     </ul>
-  );
+  )
 }

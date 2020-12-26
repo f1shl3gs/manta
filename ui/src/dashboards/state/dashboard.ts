@@ -1,25 +1,39 @@
-import constate from "constate";
-import { useParams } from "react-router-dom";
-import { useFetch } from "use-http";
+import constate from 'constate';
+import { useParams } from 'react-router-dom';
+import { CachePolicies, useFetch } from 'use-http';
 
-import { Dashboard } from "types";
-import { Layout } from "react-grid-layout";
+import { Dashboard } from 'types';
+import { Layout } from 'react-grid-layout';
+import { useCallback, useEffect, useState } from 'react';
 
 const [DashboardProvider, useCells, useReload] = constate(
   () => {
     const { dashboardID } = useParams<{ dashboardID: string }>();
-    const { data, error, loading, get } = useFetch<Dashboard>(`/api/v1/dashboards/${dashboardID}`, {}, []);
+    const { error, loading, get } = useFetch<Dashboard>(
+      `/api/v1/dashboards/${dashboardID}`,
+      {
+        cachePolicy: CachePolicies.NO_CACHE
+      });
 
-    if (data !== undefined && data.cells === null) {
-      data.cells = [];
-    }
+    const [dash, setDash] = useState<Dashboard>({
+      id: '',
+      created: '',
+      updated: '',
+      name: '',
+      desc: '',
+      orgID: '',
+      cells: []
+    });
+
+    useEffect(() => {
+      get()
+        .then(res => setDash(res));
+    }, []);
 
     // replace Cells
     const { put } = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {});
-    const replaceCells = (layout: Layout[]) => {
-      console.log('next', layout)
-      
-      const cells = layout.map(l => {
+    const replaceCells = useCallback((layout: Layout[]) => {
+      const cells = layout.map((l) => {
         return {
           id: l.i,
           x: l.x,
@@ -29,28 +43,24 @@ const [DashboardProvider, useCells, useReload] = constate(
         };
       });
 
-      return put(cells)
-    };
+      return put(cells);
+    }, []);
 
     return {
       loading,
       error,
-      ...data,
+      ...dash,
       reload: get,
       replaceCells
     };
   },
-  value => {
+  (value) => {
     return {
       cells: value.cells || [],
       setCells: value.replaceCells
     };
   },
-  value => value.reload
+  (value) => value.reload
 );
 
-
-export {
-  DashboardProvider,
-  useCells
-};
+export { DashboardProvider, useCells };

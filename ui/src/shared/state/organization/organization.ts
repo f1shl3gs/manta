@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import constate from 'constate';
+import {useState} from 'react'
+import constate from 'constate'
 
-import { Organization } from 'types';
+import {Organization} from 'types'
 
 type State = {
-  initialOrg: Organization;
-};
+  initialOrg: Organization
+}
 
 const [OrgProvider, useOrgID] = constate(
   (state: State) => {
-    const [org] = useState<Organization>(state.initialOrg);
-    return { org };
+    const [org] = useState<Organization>(state.initialOrg)
+    return {org}
   },
   (value) => value.org.id
-);
+)
 
-export { OrgProvider, useOrgID };
+export {OrgProvider, useOrgID}

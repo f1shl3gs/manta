@@ -1,41 +1,44 @@
 // Libraries
-import React, { RefObject, useRef, useState } from "react";
-import classnames from "classnames";
+import React, {RefObject, useRef, useState} from 'react'
+import classnames from 'classnames'
 
 // Components
-import { Appearance, Icon, IconFont, Popover, PopoverInteraction } from "@influxdata/clockface";
-import CellContextItem from "./CellContextItem";
-import CellContextDangerItem from "./CellContextDangerItem";
+import {
+  Appearance,
+  Icon,
+  IconFont,
+  Popover,
+  PopoverInteraction,
+} from '@influxdata/clockface'
+import CellContextItem from './CellContextItem'
+import CellContextDangerItem from './CellContextDangerItem'
 
 // Types
-import { Cell, ViewProperties } from "types";
-import { useHistory } from "react-router-dom";
-
+import {Cell, ViewProperties} from 'types'
+import {useHistory} from 'react-router-dom'
 
 interface Props {
   cell: Cell
   view: ViewProperties
 }
 
-const CellContext: React.FC<Props> = props => {
-  const {
-    cell
-  } = props;
+const CellContext: React.FC<Props> = (props) => {
+  const {cell} = props
 
-  const history = useHistory();
+  const history = useHistory()
 
   const handleEditCell = (): void => {
-    const { pathname } = history.location;
-    history.push(`${pathname}/cells/${cell.id}/edit`);
-  };
+    const {pathname} = history.location
+    history.push(`${pathname}/cells/${cell.id}/edit`)
+  }
 
   const handleEditNote = () => {
-    console.log("edit cell note");
-  };
+    console.log('edit cell note')
+  }
 
   const handleDeleteCell = () => {
-    console.log("delete cell");
-  };
+    console.log('delete cell')
+  }
 
   const popoverContents = (onHide?: () => void): JSX.Element => {
     return (
@@ -48,7 +51,7 @@ const CellContext: React.FC<Props> = props => {
           testID="cell-context--configure"
         />
         <CellContextItem
-          label={"Add Note"}
+          label={'Add Note'}
           onClick={handleEditNote}
           icon={IconFont.TextBlock}
           onHide={onHide}
@@ -73,24 +76,21 @@ const CellContext: React.FC<Props> = props => {
           testID="cell-context--delete"
         />
       </div>
-    );
-  };
+    )
+  }
 
-  const [popoverVisible, setPopoverVisibility] = useState<boolean>(false);
-  const buttonClass = classnames("cell--context", {
-    "cell--context__active": popoverVisible
-  });
+  const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
+  const buttonClass = classnames('cell--context', {
+    'cell--context__active': popoverVisible,
+  })
 
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
     null
-  );
+  )
 
   return (
     <>
-      <button
-        className={buttonClass}
-        ref={triggerRef}
-      >
+      <button className={buttonClass} ref={triggerRef}>
         <Icon glyph={IconFont.CogThick} />
       </button>
 
@@ -102,14 +102,14 @@ const CellContext: React.FC<Props> = props => {
         triggerRef={triggerRef}
         contents={popoverContents}
         onShow={() => {
-          setPopoverVisibility(true);
+          setPopoverVisibility(true)
         }}
         onHide={() => {
-          setPopoverVisibility(false);
+          setPopoverVisibility(false)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default CellContext;
+export default CellContext

@@ -12,38 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React from 'react'
 
-import DividerDemo from './DividerDemo';
-import RegionDemo from './RegionDemo';
-import { TNil } from '../../../types';
+import DividerDemo from './DividerDemo'
+import RegionDemo from './RegionDemo'
+import {TNil} from '../../../types'
 
-import './DraggableManagerDemo.css';
+import './DraggableManagerDemo.css'
 
 export type DraggableManagerDemoState = {
-  dividerPosition: number;
-  regionCursor: number | TNil;
-  regionDragging: [number, number] | TNil;
-};
+  dividerPosition: number
+  regionCursor: number | TNil
+  regionDragging: [number, number] | TNil
+}
 
-export default class DraggableManagerDemo extends React.PureComponent<{}, DraggableManagerDemoState> {
-  state: DraggableManagerDemoState;
+export default class DraggableManagerDemo extends React.PureComponent<
+  {},
+  DraggableManagerDemoState
+> {
+  state: DraggableManagerDemoState
 
   constructor(props: {}) {
-    super(props);
+    super(props)
     this.state = {
       dividerPosition: 0.25,
       regionCursor: null,
       regionDragging: null,
-    };
+    }
   }
 
   _updateState = (nextState: {}) => {
-    this.setState(nextState);
-  };
+    this.setState(nextState)
+  }
 
   render() {
-    const { dividerPosition, regionCursor, regionDragging } = this.state;
+    const {dividerPosition, regionCursor, regionDragging} = this.state
     return (
       <div className="DraggableManagerDemo">
         <h1>DraggableManager demo</h1>
@@ -52,18 +55,31 @@ export default class DraggableManagerDemo extends React.PureComponent<{}, Dragga
           <p>Click and drag the gray divider in the colored area, below.</p>
           <p>Value: {dividerPosition.toFixed(3)}</p>
           <div className="DraggableManagerDemo--realm">
-            <DividerDemo position={dividerPosition} updateState={this._updateState} />
+            <DividerDemo
+              position={dividerPosition}
+              updateState={this._updateState}
+            />
           </div>
         </section>
         <section className="DraggableManagerDemo--scenario">
           <h2>Dragging a Sub-Region</h2>
-          <p>Click and drag horizontally somewhere in the colored area, below.</p>
-          <p>Value: {regionDragging && regionDragging.map(n => n.toFixed(3)).join(', ')}</p>
+          <p>
+            Click and drag horizontally somewhere in the colored area, below.
+          </p>
+          <p>
+            Value:{' '}
+            {regionDragging &&
+              regionDragging.map((n) => n.toFixed(3)).join(', ')}
+          </p>
           <div className="DraggableManagerDemo--realm">
-            <RegionDemo regionCursor={regionCursor} regionDragging={regionDragging} updateState={this._updateState} />
+            <RegionDemo
+              regionCursor={regionCursor}
+              regionDragging={regionDragging}
+              updateState={this._updateState}
+            />
           </div>
         </section>
       </div>
-    );
+    )
   }
 }

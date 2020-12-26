@@ -12,35 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import PathElem from './PathElem';
+import PathElem from './PathElem'
 
-export { default as PathElem } from './PathElem';
+export {default as PathElem} from './PathElem'
 
 export type TDdgService = {
-  name: string;
-  operations: Map<string, TDdgOperation>;
-};
+  name: string
+  operations: Map<string, TDdgOperation>
+}
 
 export type TDdgOperation = {
-  name: string;
-  pathElems: PathElem[];
-  service: TDdgService;
-};
+  name: string
+  pathElems: PathElem[]
+  service: TDdgService
+}
 
-export type TDdgServiceMap = Map<string, TDdgService>;
+export type TDdgServiceMap = Map<string, TDdgService>
 
 export type TDdgPath = {
-  focalIdx: number;
-  members: PathElem[];
-  traceIDs: string[];
-};
+  focalIdx: number
+  members: PathElem[]
+  traceIDs: string[]
+}
 
-export type TDdgDistanceToPathElems = Map<number, PathElem[]>;
+export type TDdgDistanceToPathElems = Map<number, PathElem[]>
 
 export type TDdgModel = {
-  distanceToPathElems: TDdgDistanceToPathElems;
-  hash: string;
-  paths: TDdgPath[];
-  services: TDdgServiceMap;
-  visIdxToPathElem: PathElem[];
-};
+  distanceToPathElems: TDdgDistanceToPathElems
+  hash: string
+  paths: TDdgPath[]
+  services: TDdgServiceMap
+  visIdxToPathElem: PathElem[]
+}

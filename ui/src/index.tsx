@@ -1,3 +1,5 @@
+import './wdyr';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
@@ -6,13 +8,18 @@ import reportWebVitals from './reportWebVitals';
 
 import 'style/kanis.scss';
 import '@influxdata/clockface/dist/index.css';
+import { PresentationModeProvider } from './shared/usePresentationMode';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
+  /*<React.StrictMode>
+
+  </React.StrictMode>,*/
+
+  <BrowserRouter>
+    <PresentationModeProvider>
       <Route path="/" component={App} />
-    </BrowserRouter>
-  </React.StrictMode>,
+    </PresentationModeProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

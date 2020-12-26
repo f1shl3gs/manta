@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ClickOutside, ComponentSize, Input } from "@influxdata/clockface";
+import React, {useState} from 'react'
+import {ClickOutside, ComponentSize, Input} from '@influxdata/clockface'
 
 interface Props {
   onUpdate: (val: string) => void
@@ -8,14 +8,9 @@ interface Props {
   placeholder?: string
 }
 
-const Editable: React.FC<Props> = (
-  {
-    placeholder,
-    value
-  }
-) => {
-  const [editing, setEditing] = useState(false);
-  const [text, setText] = useState(value);
+const Editable: React.FC<Props> = ({placeholder, value}) => {
+  const [editing, setEditing] = useState(false)
+  const [text, setText] = useState(value)
 
   return (
     <ClickOutside onClickOutside={() => setEditing(false)}>
@@ -26,12 +21,12 @@ const Editable: React.FC<Props> = (
         placeholder={placeholder}
         autoFocus={false}
         value={text}
-        onChange={e => {
-          setText(e.target.value);
+        onChange={(e) => {
+          setText(e.target.value)
         }}
       />
     </ClickOutside>
-  );
-};
+  )
+}
 
-export default Editable;
+export default Editable

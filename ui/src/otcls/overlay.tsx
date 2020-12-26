@@ -1,21 +1,21 @@
-import React from 'react';
+import React from 'react'
 
-import { Button, Input, Overlay } from '@influxdata/clockface';
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+import {Button, Input, Overlay} from '@influxdata/clockface'
+import {UnControlled as ReactCodeMirror} from 'react-codemirror2'
 
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/material.css'
 
-require('codemirror/mode/yaml/yaml');
+require('codemirror/mode/yaml/yaml')
 
 type Props = {
-  onDismiss: () => void;
-  value?: string;
-  onChange?: (v: string) => void;
-};
+  onDismiss: () => void
+  value?: string
+  onChange?: (v: string) => void
+}
 
 const OtclOverlay: React.FC<Props> = (props) => {
-  const { value = '', onChange, onDismiss } = props;
+  const {value = '', onChange, onDismiss} = props
 
   const options = {
     tabIndex: 1,
@@ -25,7 +25,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
     autoRefresh: true,
     theme: 'material',
     completeSingle: false,
-  };
+  }
 
   return (
     <Overlay visible>
@@ -33,7 +33,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
         <Overlay.Header
           title="new"
           onDismiss={() => {
-            console.log('dismiss');
+            console.log('dismiss')
           }}
         >
           <Input placeholder="New" />
@@ -46,7 +46,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
             value={value}
             onChange={(val) => {
               if (onChange !== undefined) {
-                onChange(val);
+                onChange(val)
               }
             }}
           />
@@ -57,7 +57,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
         </Overlay.Footer>
       </Overlay.Container>
     </Overlay>
-  );
-};
+  )
+}
 
-export default OtclOverlay;
+export default OtclOverlay

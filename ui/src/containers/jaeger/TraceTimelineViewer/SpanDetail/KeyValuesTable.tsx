@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
+import * as React from 'react'
 // @ts-ignore
-import jsonMarkup from 'json-markup';
-import { css } from 'emotion';
-import cx from 'classnames';
+import jsonMarkup from 'json-markup'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import CopyIcon from '../../common/CopyIcon';
+import CopyIcon from '../../common/CopyIcon'
 
-import { TNil, TraceKeyValuePair, TraceLink } from '../../types';
-import { UIDropdown, UIIcon, UIMenu, UIMenuItem } from '../../uiElementsContext';
-import { autoColor, createStyle, Theme, useTheme } from '../../Theme';
-import { ubInlineBlock, uWidth100 } from '../../uberUtilityStyles';
+import {TNil, TraceKeyValuePair, TraceLink} from '../../types'
+import {UIDropdown, UIIcon, UIMenu, UIMenuItem} from '../../uiElementsContext'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {ubInlineBlock, uWidth100} from '../../uberUtilityStyles'
 
 export const getStyles = createStyle((theme: Theme) => {
   const copyIcon = css`
     label: copyIcon;
-  `;
+  `
   return {
     KeyValueTable: css`
       label: KeyValueTable;
@@ -72,55 +72,66 @@ export const getStyles = createStyle((theme: Theme) => {
       font-weight: bold;
     `,
     copyIcon,
-  };
-});
+  }
+})
 
-const jsonObjectOrArrayStartRegex = /^(\[|\{)/;
+const jsonObjectOrArrayStartRegex = /^(\[|\{)/
 
 function parseIfComplexJson(value: any) {
   // if the value is a string representing actual json object or array, then use json-markup
   if (typeof value === 'string' && jsonObjectOrArrayStartRegex.test(value)) {
     // otherwise just return as is
     try {
-      return JSON.parse(value);
+      return JSON.parse(value)
       // eslint-disable-next-line no-empty
     } catch (_) {}
   }
-  return value;
+  return value
 }
 
-export const LinkValue = (props: { href: string; title?: string; children: React.ReactNode }) => {
-  const styles = getStyles(useTheme());
+export const LinkValue = (props: {
+  href: string
+  title?: string
+  children: React.ReactNode
+}) => {
+  const styles = getStyles(useTheme())
   return (
-    <a href={props.href} title={props.title} target="_blank" rel="noopener noreferrer">
+    <a
+      href={props.href}
+      title={props.title}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {props.children} <UIIcon className={styles.linkIcon} type="export" />
     </a>
-  );
-};
+  )
+}
 
 LinkValue.defaultProps = {
   title: '',
-};
+}
 
 const linkValueList = (links: TraceLink[]) => (
   <UIMenu>
-    {links.map(({ text, url }, index) => (
+    {links.map(({text, url}, index) => (
       // `index` is necessary in the key because url can repeat
       <UIMenuItem key={`${url}-${index}`}>
         <LinkValue href={url}>{text}</LinkValue>
       </UIMenuItem>
     ))}
   </UIMenu>
-);
+)
 
 type KeyValuesTableProps = {
-  data: TraceKeyValuePair[];
-  linksGetter: ((pairs: TraceKeyValuePair[], index: number) => TraceLink[]) | TNil;
-};
+  data: TraceKeyValuePair[]
+  linksGetter:
+    | ((pairs: TraceKeyValuePair[], index: number) => TraceLink[])
+    | TNil
+}
 
 export default function KeyValuesTable(props: KeyValuesTableProps) {
-  const { data, linksGetter } = props;
-  const styles = getStyles(useTheme());
+  const {data, linksGetter} = props
+  const styles = getStyles(useTheme())
   return (
     <div className={cx(styles.KeyValueTable)} data-test-id="KeyValueTable">
       <table className={uWidth100}>
@@ -128,10 +139,12 @@ export default function KeyValuesTable(props: KeyValuesTableProps) {
           {data.map((row, i) => {
             const markup = {
               __html: jsonMarkup(parseIfComplexJson(row.value)),
-            };
-            const jsonTable = <div className={ubInlineBlock} dangerouslySetInnerHTML={markup} />;
-            const links = linksGetter ? linksGetter(data, i) : null;
-            let valueMarkup;
+            }
+            const jsonTable = (
+              <div className={ubInlineBlock} dangerouslySetInnerHTML={markup} />
+            )
+            const links = linksGetter ? linksGetter(data, i) : null
+            let valueMarkup
             if (links && links.length === 1) {
               valueMarkup = (
                 <div>
@@ -139,24 +152,32 @@ export default function KeyValuesTable(props: KeyValuesTableProps) {
                     {jsonTable}
                   </LinkValue>
                 </div>
-              );
+              )
             } else if (links && links.length > 1) {
               valueMarkup = (
                 <div>
-                  <UIDropdown overlay={linkValueList(links)} placement="bottomRight" trigger={['click']}>
+                  <UIDropdown
+                    overlay={linkValueList(links)}
+                    placement="bottomRight"
+                    trigger={['click']}
+                  >
                     <a>
-                      {jsonTable} <UIIcon className={styles.linkIcon} type="profile" />
+                      {jsonTable}{' '}
+                      <UIIcon className={styles.linkIcon} type="profile" />
                     </a>
                   </UIDropdown>
                 </div>
-              );
+              )
             } else {
-              valueMarkup = jsonTable;
+              valueMarkup = jsonTable
             }
             return (
               // `i` is necessary in the key because row.key can repeat
               <tr className={styles.row} key={`${row.key}-${i}`}>
-                <td className={styles.keyColumn} data-test-id="KeyValueTable--keyColumn">
+                <td
+                  className={styles.keyColumn}
+                  data-test-id="KeyValueTable--keyColumn"
+                >
                   {row.key}
                 </td>
                 <td>{valueMarkup}</td>
@@ -168,10 +189,10 @@ export default function KeyValuesTable(props: KeyValuesTableProps) {
                   />
                 </td>
               </tr>
-            );
+            )
           })}
         </tbody>
       </table>
     </div>
-  );
+  )
 }

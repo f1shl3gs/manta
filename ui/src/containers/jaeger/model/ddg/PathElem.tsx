@@ -12,81 +12,93 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TDdgOperation, TDdgPath } from './types';
+import {TDdgOperation, TDdgPath} from './types'
 
 export default class PathElem {
-  memberIdx: number;
-  memberOf: TDdgPath;
-  operation: TDdgOperation;
-  private _visibilityIdx?: number;
+  memberIdx: number
+  memberOf: TDdgPath
+  operation: TDdgOperation
+  private _visibilityIdx?: number
 
-  constructor({ path, operation, memberIdx }: { path: TDdgPath; operation: TDdgOperation; memberIdx: number }) {
-    this.memberIdx = memberIdx;
-    this.memberOf = path;
-    this.operation = operation;
+  constructor({
+    path,
+    operation,
+    memberIdx,
+  }: {
+    path: TDdgPath
+    operation: TDdgOperation
+    memberIdx: number
+  }) {
+    this.memberIdx = memberIdx
+    this.memberOf = path
+    this.operation = operation
   }
 
   get distance() {
-    return this.memberIdx - this.memberOf.focalIdx;
+    return this.memberIdx - this.memberOf.focalIdx
   }
 
   get externalPath(): PathElem[] {
-    const result: PathElem[] = [];
-    let current: PathElem | null | undefined = this;
+    const result: PathElem[] = []
+    let current: PathElem | null | undefined = this
     while (current) {
-      result.push(current);
-      current = current.externalSideNeighbor;
+      result.push(current)
+      current = current.externalSideNeighbor
     }
     if (this.distance < 0) {
-      result.reverse();
+      result.reverse()
     }
-    return result;
+    return result
   }
 
   get externalSideNeighbor(): PathElem | null | undefined {
     if (!this.distance) {
-      return null;
+      return null
     }
-    return this.memberOf.members[this.memberIdx + Math.sign(this.distance)];
+    return this.memberOf.members[this.memberIdx + Math.sign(this.distance)]
   }
 
   get focalPath(): PathElem[] {
-    const result: PathElem[] = [];
-    let current: PathElem | null = this;
+    const result: PathElem[] = []
+    let current: PathElem | null = this
     while (current) {
-      result.push(current);
-      current = current.focalSideNeighbor;
+      result.push(current)
+      current = current.focalSideNeighbor
     }
     if (this.distance > 0) {
-      result.reverse();
+      result.reverse()
     }
-    return result;
+    return result
   }
 
   get focalSideNeighbor(): PathElem | null {
     if (!this.distance) {
-      return null;
+      return null
     }
-    return this.memberOf.members[this.memberIdx - Math.sign(this.distance)];
+    return this.memberOf.members[this.memberIdx - Math.sign(this.distance)]
   }
 
   get isExternal(): boolean {
-    return Boolean(this.distance) && (this.memberIdx === 0 || this.memberIdx === this.memberOf.members.length - 1);
+    return (
+      Boolean(this.distance) &&
+      (this.memberIdx === 0 ||
+        this.memberIdx === this.memberOf.members.length - 1)
+    )
   }
 
   set visibilityIdx(visibilityIdx: number) {
     if (this._visibilityIdx == null) {
-      this._visibilityIdx = visibilityIdx;
+      this._visibilityIdx = visibilityIdx
     } else {
-      throw new Error('Visibility Index cannot be changed once set');
+      throw new Error('Visibility Index cannot be changed once set')
     }
   }
 
   get visibilityIdx(): number {
     if (this._visibilityIdx == null) {
-      throw new Error('Visibility Index was never set for this PathElem');
+      throw new Error('Visibility Index was never set for this PathElem')
     }
-    return this._visibilityIdx;
+    return this._visibilityIdx
   }
 
   private toJSONHelper = () => ({
@@ -94,7 +106,7 @@ export default class PathElem {
     operation: this.operation.name,
     service: this.operation.service.name,
     visibilityIdx: this._visibilityIdx,
-  });
+  })
 
   /*
    * Because the memberOf on a PathElem contains an array of all of its members which in turn all contain
@@ -107,19 +119,19 @@ export default class PathElem {
       ...this.toJSONHelper(),
       memberOf: {
         focalIdx: this.memberOf.focalIdx,
-        members: this.memberOf.members.map(member => member.toJSONHelper()),
+        members: this.memberOf.members.map((member) => member.toJSONHelper()),
       },
-    };
+    }
   }
 
   // `toJSON` is called by `JSON.stringify` while `toString` is used by template strings and string concat
   toString() {
-    return JSON.stringify(this.toJSON(), null, 2);
+    return JSON.stringify(this.toJSON(), null, 2)
   }
 
   // `[Symbol.toStringTag]` is used when attempting to use an object as a key on an object, where a full
   // stringified JSON would reduce clarity
   get [Symbol.toStringTag]() {
-    return `PathElem ${this._visibilityIdx}`;
+    return `PathElem ${this._visibilityIdx}`
   }
 }

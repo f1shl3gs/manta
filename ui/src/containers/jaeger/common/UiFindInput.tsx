@@ -12,51 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
+import * as React from 'react'
 
-import { TNil } from '../types/index';
-import { UIIcon, UIInput } from '../uiElementsContext';
+import {TNil} from '../types/index'
+import {UIIcon, UIInput} from '../uiElementsContext'
 
 type Props = {
-  allowClear?: boolean;
-  inputProps: Record<string, any>;
-  location: Location;
-  match: any;
-  trackFindFunction?: (str: string | TNil) => void;
-  value: string | undefined;
-  onChange: (value: string) => void;
-};
+  allowClear?: boolean
+  inputProps: Record<string, any>
+  location: Location
+  match: any
+  trackFindFunction?: (str: string | TNil) => void
+  value: string | undefined
+  onChange: (value: string) => void
+}
 
 export default class UiFindInput extends React.PureComponent<Props> {
   static defaultProps: Partial<Props> = {
     inputProps: {},
     trackFindFunction: undefined,
     value: undefined,
-  };
+  }
 
   clearUiFind = () => {
-    this.props.onChange('');
-  };
+    this.props.onChange('')
+  }
 
   render() {
-    const { allowClear, inputProps, value } = this.props;
+    const {allowClear, inputProps, value} = this.props
 
     const suffix = (
       <>
-        {allowClear && value && value.length && <UIIcon type="close" onClick={this.clearUiFind} />}
+        {allowClear && value && value.length && (
+          <UIIcon type="close" onClick={this.clearUiFind} />
+        )}
         {inputProps.suffix}
       </>
-    );
+    )
 
     return (
       <UIInput
         autosize={null}
         placeholder="Find..."
         {...inputProps}
-        onChange={e => this.props.onChange(e.target.value)}
+        onChange={(e) => this.props.onChange(e.target.value)}
         suffix={suffix}
         value={value}
       />
-    );
+    )
   }
 }

@@ -13,13 +13,13 @@
 // limitations under the License.
 
 type EmbeddedStateV0 = {
-  version: 'v0';
-  searchHideGraph: boolean;
+  version: 'v0'
+  searchHideGraph: boolean
   timeline: {
-    collapseTitle: boolean;
-    hideMinimap: boolean;
-    hideSummary: boolean;
-  };
-};
+    collapseTitle: boolean
+    hideMinimap: boolean
+    hideSummary: boolean
+  }
+}
 
-export type EmbeddedState = EmbeddedStateV0;
+export type EmbeddedState = EmbeddedStateV0

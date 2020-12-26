@@ -1,7 +1,7 @@
 export enum AutoRefreshStatus {
-  Active = "active",
-  Paused = "paused",
-  Disabled = "disabled"
+  Active = 'active',
+  Paused = 'paused',
+  Disabled = 'disabled',
 }
 
 export interface AutoRefresh {

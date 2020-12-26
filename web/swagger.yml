@@ -5,8 +5,6 @@ info:
 
 servers:
   - url: /api/v1
-  # test only
-  - url: http://localhost:8080/api/v1
 
 tags:
   - name: Organizations
@@ -138,9 +136,11 @@ paths:
         - Otcls
       summary: Get Otcl by ID
       parameters:
-        - $ref: "#"#/components/parameters/TraceSpan"
+        - $ref: "#/components/parameters/TraceSpan"
         - in: path
           name: otclID
+          schema:
+            type: string
           required: true
           description: The ID of the Otcl to get
       responses:
@@ -158,6 +158,8 @@ components:
     TraceSpan:
       in: header
       name: Zap-Trace-Span
+      schema:
+        type: string
       description: OpenTracing span context
       example:
         trace_id: "1"
@@ -165,8 +167,6 @@ components:
         baggage:
           key: value
       required: false
-      schema:
-        type: string
 
   schemas:
     Error:

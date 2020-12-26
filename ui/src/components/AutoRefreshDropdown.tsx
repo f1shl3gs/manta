@@ -1,37 +1,39 @@
-import React, { useState } from "react";
-import { ComponentStatus, Dropdown, IconFont } from "@influxdata/clockface";
-import { AutoRefresh, AutoRefreshOption, AutoRefreshStatus } from "../types/AutoRefresh";
+import React, {useState} from 'react'
+import {ComponentStatus, Dropdown, IconFont} from '@influxdata/clockface'
+import {
+  AutoRefresh,
+  AutoRefreshOption,
+  AutoRefreshStatus,
+} from '../types/AutoRefresh'
 
 const dropdownIcon = (autoRefresh: AutoRefresh): IconFont => {
   if (autoRefresh.status) {
-    return IconFont.Pause;
+    return IconFont.Pause
   }
 
-  return IconFont.Refresh;
-};
+  return IconFont.Refresh
+}
 
 const dropdownStatus = (autoRefresh: AutoRefresh): ComponentStatus => {
   if (autoRefresh.status === AutoRefreshStatus.Disabled) {
-    return ComponentStatus.Disabled;
+    return ComponentStatus.Disabled
   }
 
-  return ComponentStatus.Default;
-};
+  return ComponentStatus.Default
+}
 
 interface Props {
   options: AutoRefreshOption[]
 }
 
-const AutoRefreshDropdown: React.FC<Props> = props => {
-  const {
-    options
-  } = props;
+const AutoRefreshDropdown: React.FC<Props> = (props) => {
+  const {options} = props
 
-  const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>({
+  const [autoRefresh] = useState<AutoRefresh>({
     status: AutoRefreshStatus.Active,
-    interval: 60
-  });
-  const [selected, setSelected] = useState(options[0]);
+    interval: 60,
+  })
+  const [selected, setSelected] = useState(options[0])
 
   return (
     <>
@@ -46,26 +48,22 @@ const AutoRefreshDropdown: React.FC<Props> = props => {
             {selected.label}
           </Dropdown.Button>
         )}
-        menu={onCollapse => (
-          <Dropdown.Menu
-            onCollapse={onCollapse}
-          >
-            {
-              options.map(option => (
-                <Dropdown.Item
-                  key={option.label}
-                  value={option}
-                  onClick={(v) => setSelected(v)}
-                >
-                  {option.label}
-                </Dropdown.Item>
-              ))
-            }
+        menu={(onCollapse) => (
+          <Dropdown.Menu onCollapse={onCollapse}>
+            {options.map((option) => (
+              <Dropdown.Item
+                key={option.label}
+                value={option}
+                onClick={(v) => setSelected(v)}
+              >
+                {option.label}
+              </Dropdown.Item>
+            ))}
           </Dropdown.Menu>
         )}
       />
     </>
-  );
-};
+  )
+}
 
-export default AutoRefreshDropdown;
+export default AutoRefreshDropdown

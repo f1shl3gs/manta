@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
+import React from 'react'
 
 /**
  * There are several places where external links to spans are created. The url layout though is something
  * that should be decided on the application level and not on the component level but at the same time
  * propagating the factory function everywhere could be cumbersome so we use this context for that.
  */
-const ExternalLinkContext = React.createContext<((traceID: string, spanID: string) => string) | undefined>(undefined);
-ExternalLinkContext.displayName = 'ExternalLinkContext';
-export default ExternalLinkContext;
+const ExternalLinkContext = React.createContext<
+  ((traceID: string, spanID: string) => string) | undefined
+>(undefined)
+ExternalLinkContext.displayName = 'ExternalLinkContext'
+export default ExternalLinkContext

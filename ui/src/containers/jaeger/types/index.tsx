@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ApiError } from './api-error';
-import {Trace} from "./trace";
+import {ApiError} from './api-error'
+import {Trace} from './trace'
 
 // @ts-ignore
-export { default as TTraceTimeline } from './TTraceTimeline';
+export {default as TTraceTimeline} from './TTraceTimeline'
 // @ts-ignore
-export { default as TNil } from './TNil';
+export {default as TNil} from './TNil'
 
-export type FetchedState = 'FETCH_DONE' | 'FETCH_ERROR' | 'FETCH_LOADING';
+export type FetchedState = 'FETCH_DONE' | 'FETCH_ERROR' | 'FETCH_LOADING'
 
 export type FetchedTrace = {
-  data?: Trace;
-  error?: ApiError;
-  id: string;
-  state?: FetchedState;
-};
+  data?: Trace
+  error?: ApiError
+  id: string
+  state?: FetchedState
+}
 
-
-export * from './trace';
+export * from './trace'

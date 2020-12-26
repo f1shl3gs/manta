@@ -12,25 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import cx from 'classnames';
+import * as React from 'react'
+import cx from 'classnames'
 
-import CanvasSpanGraph from './CanvasSpanGraph';
-import TickLabels from './TickLabels';
-import ViewingLayer from './ViewingLayer';
-import {Trace, TraceSpan, TUpdateViewRangeTimeFunction, ViewRange, ViewRangeTimeUpdate} from '../..';
-import { ubPb2, ubPx2, ubRelative } from '../../uberUtilityStyles';
+import CanvasSpanGraph from './CanvasSpanGraph'
+import TickLabels from './TickLabels'
+import ViewingLayer from './ViewingLayer'
+import {
+  Trace,
+  TraceSpan,
+  TUpdateViewRangeTimeFunction,
+  ViewRange,
+  ViewRangeTimeUpdate,
+} from '../..'
+import {ubPb2, ubPx2, ubRelative} from '../../uberUtilityStyles'
 
-const DEFAULT_HEIGHT = 60;
-const TIMELINE_TICK_INTERVAL = 4;
+const DEFAULT_HEIGHT = 60
+const TIMELINE_TICK_INTERVAL = 4
 
 type SpanGraphProps = {
-  height?: number;
-  trace: Trace;
-  viewRange: ViewRange;
-  updateViewRangeTime: TUpdateViewRangeTimeFunction;
-  updateNextViewRangeTime: (nextUpdate: ViewRangeTimeUpdate) => void;
-};
+  height?: number
+  trace: Trace
+  viewRange: ViewRange
+  updateViewRangeTime: TUpdateViewRangeTimeFunction
+  updateNextViewRangeTime: (nextUpdate: ViewRangeTimeUpdate) => void
+}
 
 /**
  * Store `items` in state so they are not regenerated every render. Otherwise,
@@ -38,53 +44,65 @@ type SpanGraphProps = {
  */
 type SpanGraphState = {
   items: Array<{
-    valueOffset: number;
-    valueWidth: number;
-    serviceName: string;
-  }>;
-};
+    valueOffset: number
+    valueWidth: number
+    serviceName: string
+  }>
+}
 
 function getItem(span: TraceSpan) {
   return {
     valueOffset: span.relativeStartTime,
     valueWidth: span.duration,
     serviceName: span.process.serviceName,
-  };
+  }
 }
 
-export default class SpanGraph extends React.PureComponent<SpanGraphProps, SpanGraphState> {
-  state: SpanGraphState;
+export default class SpanGraph extends React.PureComponent<
+  SpanGraphProps,
+  SpanGraphState
+> {
+  state: SpanGraphState
 
   static defaultProps = {
     height: DEFAULT_HEIGHT,
-  };
+  }
 
   constructor(props: SpanGraphProps) {
-    super(props);
-    const { trace } = props;
+    super(props)
+    const {trace} = props
     this.state = {
       items: trace ? trace.spans.map(getItem) : [],
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps: SpanGraphProps) {
-    const { trace } = nextProps;
+    const {trace} = nextProps
     if (this.props.trace !== trace) {
       this.setState({
         items: trace ? trace.spans.map(getItem) : [],
-      });
+      })
     }
   }
 
   render() {
-    const { height, trace, viewRange, updateNextViewRangeTime, updateViewRangeTime } = this.props;
+    const {
+      height,
+      trace,
+      viewRange,
+      updateNextViewRangeTime,
+      updateViewRangeTime,
+    } = this.props
     if (!trace) {
-      return <div />;
+      return <div />
     }
-    const { items } = this.state;
+    const {items} = this.state
     return (
       <div className={cx(ubPb2, ubPx2)}>
-        <TickLabels numTicks={TIMELINE_TICK_INTERVAL} duration={trace.duration} />
+        <TickLabels
+          numTicks={TIMELINE_TICK_INTERVAL}
+          duration={trace.duration}
+        />
         <div className={ubRelative}>
           <CanvasSpanGraph valueWidth={trace.duration} items={items} />
           <ViewingLayer
@@ -96,6 +114,6 @@ export default class SpanGraph extends React.PureComponent<SpanGraphProps, SpanG
           />
         </div>
       </div>
-    );
+    )
   }
 }

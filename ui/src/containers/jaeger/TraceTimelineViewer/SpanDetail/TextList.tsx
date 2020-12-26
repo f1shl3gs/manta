@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import { createStyle } from '../../Theme';
+import {createStyle} from '../../Theme'
 
 const getStyles = createStyle(() => {
   return {
@@ -37,16 +37,16 @@ const getStyles = createStyle(() => {
         background: #f5f5f5;
       }
     `,
-  };
-});
+  }
+})
 
 type TextListProps = {
-  data: string[];
-};
+  data: string[]
+}
 
 export default function TextList(props: TextListProps) {
-  const { data } = props;
-  const styles = getStyles();
+  const {data} = props
+  const styles = getStyles()
   return (
     <div className={cx(styles.TextList)} data-test-id="TextList">
       <ul className={styles.List}>
@@ -56,9 +56,9 @@ export default function TextList(props: TextListProps) {
             <li className={styles.item} key={`${i}`}>
               {row}
             </li>
-          );
+          )
         })}
       </ul>
     </div>
-  );
+  )
 }

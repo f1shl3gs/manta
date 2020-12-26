@@ -12,32 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import IoAlert from 'react-icons/lib/io/alert';
-import IoArrowRightA from 'react-icons/lib/io/arrow-right-a';
-import IoNetwork from 'react-icons/lib/io/network';
-import MdFileUpload from 'react-icons/lib/md/file-upload';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import IoAlert from 'react-icons/lib/io/alert'
+import IoArrowRightA from 'react-icons/lib/io/arrow-right-a'
+import IoNetwork from 'react-icons/lib/io/network'
+import MdFileUpload from 'react-icons/lib/md/file-upload'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import ReferencesButton from './ReferencesButton';
-import TimelineRow from './TimelineRow';
-import { formatDuration, ViewedBoundsFunctionType } from './utils';
-import SpanTreeOffset from './SpanTreeOffset';
-import SpanBar from './SpanBar';
-import Ticks from './Ticks';
+import ReferencesButton from './ReferencesButton'
+import TimelineRow from './TimelineRow'
+import {formatDuration, ViewedBoundsFunctionType} from './utils'
+import SpanTreeOffset from './SpanTreeOffset'
+import SpanBar from './SpanBar'
+import Ticks from './Ticks'
 
-import {TNil, TraceSpan} from '../types';
+import {TNil, TraceSpan} from '../types'
 
-import { autoColor, createStyle, Theme, withTheme } from '../Theme';
+import {autoColor, createStyle, Theme, withTheme} from '../Theme'
 
 const getStyles = createStyle((theme: Theme) => {
   const spanBar = css`
     label: spanBar;
-  `;
+  `
   const spanBarLabel = css`
     label: spanBarLabel;
-  `;
+  `
   const nameWrapper = css`
     label: nameWrapper;
     background: ${autoColor(theme, '#f8f8f8')};
@@ -50,34 +50,34 @@ const getStyles = createStyle((theme: Theme) => {
       min-width: calc(100% + 1px);
       overflow: visible;
     }
-  `;
+  `
 
   const nameWrapperMatchingFilter = css`
     label: nameWrapperMatchingFilter;
     background-color: ${autoColor(theme, '#fffce4')};
-  `;
+  `
 
   const endpointName = css`
     label: endpointName;
     color: ${autoColor(theme, '#808080')};
-  `;
+  `
 
   const view = css`
     label: view;
     position: relative;
-  `;
+  `
 
   const viewExpanded = css`
     label: viewExpanded;
     background: ${autoColor(theme, '#f8f8f8')};
     outline: 1px solid ${autoColor(theme, '#ddd')};
-  `;
+  `
 
   const viewExpandedAndMatchingFilter = css`
     label: viewExpandedAndMatchingFilter;
     background: ${autoColor(theme, '#fff3d7')};
     outline: 1px solid ${autoColor(theme, '#ddd')};
-  `;
+  `
 
   const nameColumn = css`
     label: nameColumn;
@@ -87,7 +87,7 @@ const getStyles = createStyle((theme: Theme) => {
     &:hover {
       z-index: 1;
     }
-  `;
+  `
 
   return {
     spanBar,
@@ -277,43 +277,47 @@ const getStyles = createStyle((theme: Theme) => {
       label: labelLeft;
       right: 100%;
     `,
-  };
-});
+  }
+})
 
 type SpanBarRowProps = {
-  className?: string;
-  theme: Theme;
-  color: string;
-  columnDivision: number;
-  isChildrenExpanded: boolean;
-  isDetailExpanded: boolean;
-  isMatchingFilter: boolean;
-  onDetailToggled: (spanID: string) => void;
-  onChildrenToggled: (spanID: string) => void;
-  numTicks: number;
+  className?: string
+  theme: Theme
+  color: string
+  columnDivision: number
+  isChildrenExpanded: boolean
+  isDetailExpanded: boolean
+  isMatchingFilter: boolean
+  onDetailToggled: (spanID: string) => void
+  onChildrenToggled: (spanID: string) => void
+  numTicks: number
   rpc?:
     | {
-        viewStart: number;
-        viewEnd: number;
-        color: string;
-        operationName: string;
-        serviceName: string;
+        viewStart: number
+        viewEnd: number
+        color: string
+        operationName: string
+        serviceName: string
       }
-    | TNil;
-  showErrorIcon: boolean;
-  getViewedBounds: ViewedBoundsFunctionType;
-  traceStartTime: number;
-  span: TraceSpan;
-  focusSpan: (spanID: string) => void;
-  hoverIndentGuideIds: Set<string>;
-  addHoverIndentGuideId: (spanID: string) => void;
-  removeHoverIndentGuideId: (spanID: string) => void;
-  clippingLeft?: boolean;
-  clippingRight?: boolean;
+    | TNil
+  showErrorIcon: boolean
+  getViewedBounds: ViewedBoundsFunctionType
+  traceStartTime: number
+  span: TraceSpan
+  focusSpan: (spanID: string) => void
+  hoverIndentGuideIds: Set<string>
+  addHoverIndentGuideId: (spanID: string) => void
+  removeHoverIndentGuideId: (spanID: string) => void
+  clippingLeft?: boolean
+  clippingRight?: boolean
   createSpanLink?: (
     span: TraceSpan
-  ) => { href: string; onClick?: (e: React.MouseEvent) => void; content: React.ReactNode };
-};
+  ) => {
+    href: string
+    onClick?: (e: React.MouseEvent) => void
+    content: React.ReactNode
+  }
+}
 
 /**
  * This was originally a stateless function, but changing to a PureComponent
@@ -324,19 +328,19 @@ type SpanBarRowProps = {
  * performance than the stateless function.
  */
 export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
-  static displayName = 'UnthemedSpanBarRow';
+  static displayName = 'UnthemedSpanBarRow'
   static defaultProps: Partial<SpanBarRowProps> = {
     className: '',
     rpc: null,
-  };
+  }
 
   _detailToggle = () => {
-    this.props.onDetailToggled(this.props.span.spanID);
-  };
+    this.props.onDetailToggled(this.props.span.spanID)
+  }
 
   _childrenToggle = () => {
-    this.props.onChildrenToggled(this.props.span.spanID);
-  };
+    this.props.onChildrenToggled(this.props.span.spanID)
+  }
 
   render() {
     const {
@@ -360,28 +364,31 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
       clippingRight,
       theme,
       createSpanLink,
-    } = this.props;
+    } = this.props
     const {
       duration,
       hasChildren: isParent,
       operationName,
-      process: { serviceName },
-    } = span;
-    const label = formatDuration(duration);
-    const viewBounds = getViewedBounds(span.startTime, span.startTime + span.duration);
-    const viewStart = viewBounds.start;
-    const viewEnd = viewBounds.end;
-    const styles = getStyles(theme);
+      process: {serviceName},
+    } = span
+    const label = formatDuration(duration)
+    const viewBounds = getViewedBounds(
+      span.startTime,
+      span.startTime + span.duration
+    )
+    const viewStart = viewBounds.start
+    const viewEnd = viewBounds.end
+    const styles = getStyles(theme)
 
-    const labelDetail = `${serviceName}::${operationName}`;
-    let longLabel;
-    let hintClassName;
+    const labelDetail = `${serviceName}::${operationName}`
+    let longLabel
+    let hintClassName
     if (viewStart > 1 - viewEnd) {
-      longLabel = `${labelDetail} | ${label}`;
-      hintClassName = styles.labelLeft;
+      longLabel = `${labelDetail} | ${label}`
+      hintClassName = styles.labelLeft
     } else {
-      longLabel = `${label} | ${labelDetail}`;
-      hintClassName = styles.labelRight;
+      longLabel = `${label} | ${labelDetail}`
+      hintClassName = styles.labelRight
     }
 
     return (
@@ -391,7 +398,8 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
           {
             [styles.rowExpanded]: isDetailExpanded,
             [styles.rowMatchingFilter]: isMatchingFilter,
-            [styles.rowExpandedAndMatchingFilter]: isMatchingFilter && isDetailExpanded,
+            [styles.rowExpandedAndMatchingFilter]:
+              isMatchingFilter && isDetailExpanded,
             [styles.rowClippingLeft]: clippingLeft,
             [styles.rowClippingRight]: clippingRight,
           },
@@ -399,7 +407,11 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
         )}
       >
         <TimelineRow.Cell className={styles.nameColumn} width={columnDivision}>
-          <div className={cx(styles.nameWrapper, { [styles.nameWrapperMatchingFilter]: isMatchingFilter })}>
+          <div
+            className={cx(styles.nameWrapper, {
+              [styles.nameWrapperMatchingFilter]: isMatchingFilter,
+            })}
+          >
             <SpanTreeOffset
               childrenVisible={isChildrenExpanded}
               span={span}
@@ -409,16 +421,19 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
               removeHoverIndentGuideId={removeHoverIndentGuideId}
             />
             <a
-              className={cx(styles.name, { [styles.nameDetailExpanded]: isDetailExpanded })}
+              className={cx(styles.name, {
+                [styles.nameDetailExpanded]: isDetailExpanded,
+              })}
               aria-checked={isDetailExpanded}
               onClick={this._detailToggle}
               role="switch"
-              style={{ borderColor: color }}
+              style={{borderColor: color}}
               tabIndex={0}
             >
               <span
                 className={cx(styles.svcName, {
-                  [styles.svcNameChildrenCollapsed]: isParent && !isChildrenExpanded,
+                  [styles.svcNameChildrenCollapsed]:
+                    isParent && !isChildrenExpanded,
                 })}
               >
                 {showErrorIcon && (
@@ -434,29 +449,42 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
                 {serviceName}{' '}
                 {rpc && (
                   <span>
-                    <IoArrowRightA /> <i className={styles.rpcColorMarker} style={{ background: rpc.color }} />
+                    <IoArrowRightA />{' '}
+                    <i
+                      className={styles.rpcColorMarker}
+                      style={{background: rpc.color}}
+                    />
                     {rpc.serviceName}
                   </span>
                 )}
               </span>
-              <small className={styles.endpointName}>{rpc ? rpc.operationName : operationName}</small>
+              <small className={styles.endpointName}>
+                {rpc ? rpc.operationName : operationName}
+              </small>
             </a>
             {createSpanLink &&
               (() => {
-                const link = createSpanLink(span);
+                const link = createSpanLink(span)
                 return (
                   <a
                     href={link.href}
                     // Needs to have target otherwise preventDefault would not work due to angularRouter.
                     target={'_blank'}
-                    style={{ marginRight: '5px' }}
+                    style={{marginRight: '5px'}}
                     rel="noopener noreferrer"
                     onClick={
                       link.onClick
-                        ? event => {
-                            if (!(event.ctrlKey || event.metaKey || event.shiftKey) && link.onClick) {
-                              event.preventDefault();
-                              link.onClick(event);
+                        ? (event) => {
+                            if (
+                              !(
+                                event.ctrlKey ||
+                                event.metaKey ||
+                                event.shiftKey
+                              ) &&
+                              link.onClick
+                            ) {
+                              event.preventDefault()
+                              link.onClick(event)
                             }
                           }
                         : undefined
@@ -464,7 +492,7 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
                   >
                     {link.content}
                   </a>
-                );
+                )
               })()}
 
             {span.references && span.references.length > 1 && (
@@ -476,26 +504,30 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
                 <IoNetwork />
               </ReferencesButton>
             )}
-            {span.subsidiarilyReferencedBy && span.subsidiarilyReferencedBy.length > 0 && (
-              <ReferencesButton
-                references={span.subsidiarilyReferencedBy}
-                tooltipText={`This span is referenced by ${
-                  span.subsidiarilyReferencedBy.length === 1 ? 'another span' : 'multiple other spans'
-                }`}
-                focusSpan={focusSpan}
-              >
-                <MdFileUpload />
-              </ReferencesButton>
-            )}
+            {span.subsidiarilyReferencedBy &&
+              span.subsidiarilyReferencedBy.length > 0 && (
+                <ReferencesButton
+                  references={span.subsidiarilyReferencedBy}
+                  tooltipText={`This span is referenced by ${
+                    span.subsidiarilyReferencedBy.length === 1
+                      ? 'another span'
+                      : 'multiple other spans'
+                  }`}
+                  focusSpan={focusSpan}
+                >
+                  <MdFileUpload />
+                </ReferencesButton>
+              )}
           </div>
         </TimelineRow.Cell>
         <TimelineRow.Cell
           className={cx(styles.view, {
             [styles.viewExpanded]: isDetailExpanded,
-            [styles.viewExpandedAndMatchingFilter]: isMatchingFilter && isDetailExpanded,
+            [styles.viewExpandedAndMatchingFilter]:
+              isMatchingFilter && isDetailExpanded,
           })}
           data-test-id="span-view"
-          style={{ cursor: 'pointer' }}
+          style={{cursor: 'pointer'}}
           width={1 - columnDivision}
           onClick={this._detailToggle}
         >
@@ -515,8 +547,8 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
           />
         </TimelineRow.Cell>
       </TimelineRow>
-    );
+    )
   }
 }
 
-export default withTheme(UnthemedSpanBarRow);
+export default withTheme(UnthemedSpanBarRow)

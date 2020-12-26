@@ -12,30 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _find from 'lodash/find';
-import _get from 'lodash/get';
+import _find from 'lodash/find'
+import _get from 'lodash/get'
 
-import {TNil, TraceSpan} from '../types';
+import {TNil, TraceSpan} from '../types'
 
 function getFirstAncestor(span: TraceSpan): TraceSpan | TNil {
   return _get(
     _find(
       span.references,
-      ({ span: ref, refType }) => ref && ref.spanID && (refType === 'CHILD_OF' || refType === 'FOLLOWS_FROM')
+      ({span: ref, refType}) =>
+        ref &&
+        ref.spanID &&
+        (refType === 'CHILD_OF' || refType === 'FOLLOWS_FROM')
     ),
     'span'
-  );
+  )
 }
 
 export default function spanAncestorIds(span: TraceSpan | TNil): string[] {
-  const ancestorIDs: string[] = [];
+  const ancestorIDs: string[] = []
   if (!span) {
-    return ancestorIDs;
+    return ancestorIDs
   }
-  let ref = getFirstAncestor(span);
+  let ref = getFirstAncestor(span)
   while (ref) {
-    ancestorIDs.push(ref.spanID);
-    ref = getFirstAncestor(ref);
+    ancestorIDs.push(ref.spanID)
+    ref = getFirstAncestor(ref)
   }
-  return ancestorIDs;
+  return ancestorIDs
 }

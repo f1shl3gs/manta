@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import _sortBy from 'lodash/sortBy';
-import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down';
-import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right';
-import { css } from 'emotion';
+import * as React from 'react'
+import _sortBy from 'lodash/sortBy'
+import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down'
+import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right'
+import {css} from 'emotion'
 
-import AccordianKeyValues from './AccordianKeyValues';
-import { formatDuration } from '../utils';
-import { TNil, TraceLog, TraceKeyValuePair, TraceLink } from '../../types';
-import { autoColor, createStyle, Theme, useTheme } from '../../Theme';
-import { uAlignIcon, ubMb1 } from '../../uberUtilityStyles';
+import AccordianKeyValues from './AccordianKeyValues'
+import {formatDuration} from '../utils'
+import {TNil, TraceLog, TraceKeyValuePair, TraceLink} from '../../types'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {uAlignIcon, ubMb1} from '../../uberUtilityStyles'
 
 const getStyles = createStyle((theme: Theme) => {
   return {
@@ -52,36 +52,51 @@ const getStyles = createStyle((theme: Theme) => {
       label: AccordianLogsFooter;
       color: ${autoColor(theme, '#999')};
     `,
-  };
-});
+  }
+})
 
 type AccordianLogsProps = {
-  interactive?: boolean;
-  isOpen: boolean;
-  linksGetter: ((pairs: TraceKeyValuePair[], index: number) => TraceLink[]) | TNil;
-  logs: TraceLog[];
-  onItemToggle?: (log: TraceLog) => void;
-  onToggle?: () => void;
-  openedItems?: Set<TraceLog>;
-  timestamp: number;
-};
+  interactive?: boolean
+  isOpen: boolean
+  linksGetter:
+    | ((pairs: TraceKeyValuePair[], index: number) => TraceLink[])
+    | TNil
+  logs: TraceLog[]
+  onItemToggle?: (log: TraceLog) => void
+  onToggle?: () => void
+  openedItems?: Set<TraceLog>
+  timestamp: number
+}
 
 export default function AccordianLogs(props: AccordianLogsProps) {
-  const { interactive, isOpen, linksGetter, logs, openedItems, onItemToggle, onToggle, timestamp } = props;
-  let arrow: React.ReactNode | null = null;
-  let HeaderComponent: 'span' | 'a' = 'span';
-  let headerProps: {} | null = null;
+  const {
+    interactive,
+    isOpen,
+    linksGetter,
+    logs,
+    openedItems,
+    onItemToggle,
+    onToggle,
+    timestamp,
+  } = props
+  let arrow: React.ReactNode | null = null
+  let HeaderComponent: 'span' | 'a' = 'span'
+  let headerProps: {} | null = null
   if (interactive) {
-    arrow = isOpen ? <IoIosArrowDown className={uAlignIcon} /> : <IoIosArrowRight className="u-align-icon" />;
-    HeaderComponent = 'a';
+    arrow = isOpen ? (
+      <IoIosArrowDown className={uAlignIcon} />
+    ) : (
+      <IoIosArrowRight className="u-align-icon" />
+    )
+    HeaderComponent = 'a'
     headerProps = {
       'aria-checked': isOpen,
       onClick: onToggle,
       role: 'switch',
-    };
+    }
   }
 
-  const styles = getStyles(useTheme());
+  const styles = getStyles(useTheme())
   return (
     <div className={styles.AccordianLogs}>
       <HeaderComponent className={styles.AccordianLogsHeader} {...headerProps}>
@@ -100,7 +115,9 @@ export default function AccordianLogs(props: AccordianLogsProps) {
               isOpen={openedItems ? openedItems.has(log) : false}
               label={`${formatDuration(log.timestamp - timestamp)}`}
               linksGetter={linksGetter}
-              onToggle={interactive && onItemToggle ? () => onItemToggle(log) : null}
+              onToggle={
+                interactive && onItemToggle ? () => onItemToggle(log) : null
+              }
             />
           ))}
           <small className={styles.AccordianLogsFooter}>
@@ -109,7 +126,7 @@ export default function AccordianLogs(props: AccordianLogsProps) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 AccordianLogs.defaultProps = {
@@ -118,4 +135,4 @@ AccordianLogs.defaultProps = {
   onItemToggle: undefined,
   onToggle: undefined,
   openedItems: undefined,
-};
+}

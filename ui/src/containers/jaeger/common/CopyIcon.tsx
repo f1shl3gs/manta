@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import { css } from 'emotion';
-import copy from 'copy-to-clipboard';
+import * as React from 'react'
+import {css} from 'emotion'
+import copy from 'copy-to-clipboard'
 
-import { createStyle } from '../Theme';
-import {Button} from "@influxdata/clockface";
+import {createStyle} from '../Theme'
+import {Button} from '@influxdata/clockface'
 
 const getStyles = createStyle(() => {
   return {
@@ -33,49 +33,52 @@ const getStyles = createStyle(() => {
         color: inherit;
       }
     `,
-  };
-});
+  }
+})
 
 type PropsType = {
-  className?: string;
-  copyText: string;
-  icon?: string;
-  placement?: string;
-  tooltipTitle: string;
-};
+  className?: string
+  copyText: string
+  icon?: string
+  placement?: string
+  tooltipTitle: string
+}
 
 type StateType = {
-  hasCopied: boolean;
-};
+  hasCopied: boolean
+}
 
-export default class CopyIcon extends React.PureComponent<PropsType, StateType> {
+export default class CopyIcon extends React.PureComponent<
+  PropsType,
+  StateType
+> {
   static defaultProps: Partial<PropsType> = {
     className: undefined,
     icon: 'copy',
     placement: 'left',
-  };
+  }
 
   state = {
     hasCopied: false,
-  };
+  }
 
   handleClick = () => {
     this.setState({
       hasCopied: true,
-    });
-    copy(this.props.copyText);
-  };
+    })
+    copy(this.props.copyText)
+  }
 
   handleTooltipVisibilityChange = (visible: boolean) => {
     if (!visible && this.state.hasCopied) {
       this.setState({
         hasCopied: false,
-      });
+      })
     }
-  };
+  }
 
   render() {
-    const styles = getStyles();
+    const styles = getStyles()
     return (
       <Button text={'copy'}>Copy Icon</Button>
       /*<UITooltip
@@ -92,6 +95,6 @@ export default class CopyIcon extends React.PureComponent<PropsType, StateType> 
           onClick={this.handleClick}
         />
       </UITooltip>*/
-    );
+    )
   }
 }

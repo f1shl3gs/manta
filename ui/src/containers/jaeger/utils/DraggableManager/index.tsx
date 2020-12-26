@@ -12,6 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './types';
-export { default as EUpdateTypes } from './EUpdateTypes';
-export { default } from './DraggableManager';
+export * from './types'
+export {default as EUpdateTypes} from './EUpdateTypes'
+export {default} from './DraggableManager'

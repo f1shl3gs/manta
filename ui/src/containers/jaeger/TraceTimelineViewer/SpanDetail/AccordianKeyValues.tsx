@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
-import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down';
-import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right';
-import { css } from 'emotion';
-import cx from 'classnames';
+import * as React from 'react'
+import IoIosArrowDown from 'react-icons/lib/io/ios-arrow-down'
+import IoIosArrowRight from 'react-icons/lib/io/ios-arrow-right'
+import {css} from 'emotion'
+import cx from 'classnames'
 
-import * as markers from './AccordianKeyValues.markers';
-import KeyValuesTable from './KeyValuesTable';
-import {TNil, TraceKeyValuePair, TraceLink} from '../../types';
-import { autoColor, createStyle, Theme, useTheme } from '../../Theme';
-import { uAlignIcon, uTxEllipsis } from '../../uberUtilityStyles';
+import * as markers from './AccordianKeyValues.markers'
+import KeyValuesTable from './KeyValuesTable'
+import {TNil, TraceKeyValuePair, TraceLink} from '../../types'
+import {autoColor, createStyle, Theme, useTheme} from '../../Theme'
+import {uAlignIcon, uTxEllipsis} from '../../uberUtilityStyles'
 
 export const getStyles = createStyle((theme: Theme) => {
   return {
@@ -78,27 +78,29 @@ export const getStyles = createStyle((theme: Theme) => {
       color: ${autoColor(theme, '#bbb')};
       padding: 0 0.2em;
     `,
-  };
-});
+  }
+})
 
 type AccordianKeyValuesProps = {
-  className?: string | TNil;
-  data: TraceKeyValuePair[];
-  highContrast?: boolean;
-  interactive?: boolean;
-  isOpen: boolean;
-  label: string;
-  linksGetter: ((pairs: TraceKeyValuePair[], index: number) => TraceLink[]) | TNil;
-  onToggle?: null | (() => void);
-};
+  className?: string | TNil
+  data: TraceKeyValuePair[]
+  highContrast?: boolean
+  interactive?: boolean
+  isOpen: boolean
+  label: string
+  linksGetter:
+    | ((pairs: TraceKeyValuePair[], index: number) => TraceLink[])
+    | TNil
+  onToggle?: null | (() => void)
+}
 
 // export for tests
-export function KeyValuesSummary(props: { data?: TraceKeyValuePair[] }) {
-  const { data } = props;
-  const styles = getStyles(useTheme());
+export function KeyValuesSummary(props: {data?: TraceKeyValuePair[]}) {
+  const {data} = props
+  const styles = getStyles(useTheme())
 
   if (!Array.isArray(data) || !data.length) {
-    return null;
+    return null
   }
 
   return (
@@ -112,27 +114,40 @@ export function KeyValuesSummary(props: { data?: TraceKeyValuePair[] }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
 KeyValuesSummary.defaultProps = {
   data: null,
-};
+}
 
 export default function AccordianKeyValues(props: AccordianKeyValuesProps) {
-  const { className, data, highContrast, interactive, isOpen, label, linksGetter, onToggle } = props;
-  const isEmpty = !Array.isArray(data) || !data.length;
-  const styles = getStyles(useTheme());
-  const iconCls = cx(uAlignIcon, { [styles.emptyIcon]: isEmpty });
-  let arrow: React.ReactNode | null = null;
-  let headerProps: {} | null = null;
+  const {
+    className,
+    data,
+    highContrast,
+    interactive,
+    isOpen,
+    label,
+    linksGetter,
+    onToggle,
+  } = props
+  const isEmpty = !Array.isArray(data) || !data.length
+  const styles = getStyles(useTheme())
+  const iconCls = cx(uAlignIcon, {[styles.emptyIcon]: isEmpty})
+  let arrow: React.ReactNode | null = null
+  let headerProps: {} | null = null
   if (interactive) {
-    arrow = isOpen ? <IoIosArrowDown className={iconCls} /> : <IoIosArrowRight className={iconCls} />;
+    arrow = isOpen ? (
+      <IoIosArrowDown className={iconCls} />
+    ) : (
+      <IoIosArrowRight className={iconCls} />
+    )
     headerProps = {
       'aria-checked': isOpen,
       onClick: isEmpty ? null : onToggle,
       role: 'switch',
-    };
+    }
   }
 
   return (
@@ -154,7 +169,7 @@ export default function AccordianKeyValues(props: AccordianKeyValuesProps) {
       </div>
       {isOpen && <KeyValuesTable data={data} linksGetter={linksGetter} />}
     </div>
-  );
+  )
 }
 
 AccordianKeyValues.defaultProps = {
@@ -162,4 +177,4 @@ AccordianKeyValues.defaultProps = {
   highContrast: false,
   interactive: true,
   onToggle: null,
-};
+}

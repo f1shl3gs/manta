@@ -1,9 +1,17 @@
-import React from "react";
+import React from 'react'
 
-import { Button, ComponentColor, ComponentSize, IconFont, Page, SquareButton } from "@influxdata/clockface";
-import RenamablePageTitle from "components/RenamablePageTitle";
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  IconFont,
+  Page,
+  SquareButton,
+} from '@influxdata/clockface'
+import RenamablePageTitle from 'components/RenamablePageTitle'
+import VisOptionsButton from './VisOptionsButton';
 
-const saveButtonClass = "veo-header--save-cell-button";
+const saveButtonClass = 'veo-header--save-cell-button'
 
 interface Props {
   name: string
@@ -12,13 +20,12 @@ interface Props {
   onCancel: () => void
 }
 
-const ViewEditorOverlayHeader: React.FC<Props> = props => {
-  const {
-    name,
-    onNameSet,
-    onSave,
-    onCancel
-  } = props;
+const onClickOutside = () => console.log('onClickOutside')
+
+const ViewEditorOverlayHeader: React.FC<Props> = (props) => {
+  const {name, onNameSet, onSave, onCancel} = props
+
+  console.log('veoh')
 
   return (
     <>
@@ -26,9 +33,9 @@ const ViewEditorOverlayHeader: React.FC<Props> = props => {
         <RenamablePageTitle
           name={name}
           onRename={onNameSet}
-          placeholder={"Name this Cell"}
+          placeholder={'Name this Cell'}
           maxLength={68}
-          onClickOutside={() => console.log("on click outside")}
+          onClickOutside={onClickOutside}
         />
       </Page.Header>
 
@@ -37,8 +44,8 @@ const ViewEditorOverlayHeader: React.FC<Props> = props => {
           {/* ViewTypeDropdown */}
           {/* VisOptionsButton */}
 
-          <Button text={"ViewtypeDropdown"} />
-          <Button text={"VisOptionsButton"} />
+          <Button text={'ViewtypeDropdown'} />
+          <VisOptionsButton />
         </Page.ControlBarLeft>
 
         <Page.ControlBarRight>
@@ -57,7 +64,7 @@ const ViewEditorOverlayHeader: React.FC<Props> = props => {
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>
-  );
-};
+  )
+}
 
-export default ViewEditorOverlayHeader;
+export default ViewEditorOverlayHeader

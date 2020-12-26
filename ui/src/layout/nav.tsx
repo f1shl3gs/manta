@@ -1,6 +1,6 @@
 // libraries
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // components
 import {
@@ -8,13 +8,13 @@ import {
   Icon,
   IconFont,
   InfluxDBCloudLogo,
-  TreeNav,
+  TreeNav
 } from '@influxdata/clockface';
-import { useOrgID } from "../shared/state/organization/organization";
+import { usePresentationMode } from '../shared/usePresentationMode';
 
 export interface NavItemLink {
-  type: 'link' | 'href';
-  location: string;
+  type: 'link' | 'href'
+  location: string
 }
 
 const getNavItemActivation = (
@@ -30,21 +30,21 @@ const getNavItemActivation = (
 };
 
 export interface NavSubItem {
-  id: string;
-  testID: string;
-  label: string;
-  link: NavItemLink;
+  id: string
+  testID: string
+  label: string
+  link: NavItemLink
 }
 
 interface NavItem {
-  id: string;
-  testID: string;
-  label: string;
-  shortLabel?: string;
-  link: NavItemLink;
-  icon: IconFont;
-  menu?: NavSubItem[];
-  activeKeywords: string[];
+  id: string
+  testID: string
+  label: string
+  shortLabel?: string
+  link: NavItemLink
+  icon: IconFont
+  menu?: NavSubItem[]
+  activeKeywords: string[]
 }
 
 const generateNavItems = (orgID: string): NavItem[] => {
@@ -59,9 +59,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'OTcl',
       link: {
         type: 'link',
-        location: `${orgPrefix}/otcls`,
+        location: `${orgPrefix}/otcls`
       },
-      activeKeywords: ['otcls'],
+      activeKeywords: ['otcls']
     },
     {
       id: 'logs',
@@ -71,9 +71,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Logs',
       link: {
         type: 'link',
-        location: `${orgPrefix}/logs`,
+        location: `${orgPrefix}/logs`
       },
-      activeKeywords: ['logs'],
+      activeKeywords: ['logs']
     },
     {
       id: 'metrics',
@@ -83,9 +83,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Metrics',
       link: {
         type: 'link',
-        location: `${orgPrefix}/metrics`,
+        location: `${orgPrefix}/metrics`
       },
-      activeKeywords: ['metrics'],
+      activeKeywords: ['metrics']
     },
     {
       id: 'traces',
@@ -95,68 +95,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Traces',
       link: {
         type: 'link',
-        location: `${orgPrefix}/traces`,
+        location: `${orgPrefix}/traces`
       },
-      activeKeywords: ['traces'],
-    },
-    {
-      id: 'load-data',
-      testID: 'nav-item-load-data',
-      icon: IconFont.DisksNav,
-      label: 'Load Data',
-      shortLabel: 'Data',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/load-data/sources`,
-      },
-      activeKeywords: ['load-data'],
-      menu: [
-        {
-          id: 'sources',
-          testID: 'nav-subitem-sources',
-          label: 'Sources',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/sources`,
-          },
-        },
-        {
-          id: 'buckets',
-          testID: 'nav-subitem-buckets',
-          label: 'Buckets',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/buckets`,
-          },
-        },
-        {
-          id: 'telegrafs',
-          testID: 'nav-subitem-telegrafs',
-          label: 'Telegraf',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/telegrafs`,
-          },
-        },
-        {
-          id: 'scrapers',
-          testID: 'nav-subitem-scrapers',
-          label: 'Scrapers',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/scrapers`,
-          },
-        },
-        {
-          id: 'tokens',
-          testID: 'nav-subitem-tokens',
-          label: 'Tokens',
-          link: {
-            type: 'link',
-            location: `${orgPrefix}/load-data/tokens`,
-          },
-        },
-      ],
+      activeKeywords: ['traces']
     },
     {
       id: 'data-explorer',
@@ -166,9 +107,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Explore',
       link: {
         type: 'link',
-        location: `${orgPrefix}/data-explorer`,
+        location: `${orgPrefix}/data-explorer`
       },
-      activeKeywords: ['data-explorer'],
+      activeKeywords: ['data-explorer']
     },
     {
       id: 'dashboards',
@@ -178,9 +119,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Boards',
       link: {
         type: 'link',
-        location: `${orgPrefix}/dashboards`,
+        location: `${orgPrefix}/dashboards`
       },
-      activeKeywords: ['dashboards'],
+      activeKeywords: ['dashboards']
     },
     {
       id: 'tasks',
@@ -189,9 +130,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Tasks',
       link: {
         type: 'link',
-        location: `${orgPrefix}/tasks`,
+        location: `${orgPrefix}/tasks`
       },
-      activeKeywords: ['tasks'],
+      activeKeywords: ['tasks']
     },
     {
       id: 'alerting',
@@ -200,7 +141,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Alerts',
       link: {
         type: 'link',
-        location: `${orgPrefix}/alerting`,
+        location: `${orgPrefix}/alerting`
       },
       activeKeywords: ['alerting'],
       menu: [
@@ -210,10 +151,10 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Alert History',
           link: {
             type: 'link',
-            location: `${orgPrefix}/alert-history`,
-          },
-        },
-      ],
+            location: `${orgPrefix}/alert-history`
+          }
+        }
+      ]
     },
     {
       id: 'settings',
@@ -222,7 +163,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Settings',
       link: {
         type: 'link',
-        location: `${orgPrefix}/settings/variables`,
+        location: `${orgPrefix}/settings/variables`
       },
       activeKeywords: ['settings'],
       menu: [
@@ -232,8 +173,8 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Variables',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/variables`,
-          },
+            location: `${orgPrefix}/settings/variables`
+          }
         },
         {
           id: 'templates',
@@ -241,8 +182,8 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Templates',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/templates`,
-          },
+            location: `${orgPrefix}/settings/templates`
+          }
         },
         {
           id: 'labels',
@@ -250,11 +191,11 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Labels',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/labels`,
-          },
-        },
-      ],
-    },
+            location: `${orgPrefix}/settings/labels`
+          }
+        }
+      ]
+    }
   ];
 };
 
@@ -262,8 +203,13 @@ const generateNavItems = (orgID: string): NavItem[] => {
 const navItems = generateNavItems('06b88c483da3d000');
 
 const Nav: React.FC = () => {
-  const orgID = useOrgID();
+  const orgID = '06b88c483da3d000';
   const orgPrefix = `/orgs/${orgID}`;
+
+  const { inPresentationMode } = usePresentationMode();
+  if (inPresentationMode) {
+    return null;
+  }
 
   return (
     <TreeNav

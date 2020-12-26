@@ -18,77 +18,77 @@
 
 // TODO: Everett Tech Debt: Fix KeyValuePair types
 export type TraceKeyValuePair = {
-  key: string;
-  type?: string;
-  value: any;
-};
+  key: string
+  type?: string
+  value: any
+}
 
 export type TraceLink = {
-  url: string;
-  text: string;
-};
+  url: string
+  text: string
+}
 
 export type TraceLog = {
-  timestamp: number;
-  fields: TraceKeyValuePair[];
-};
+  timestamp: number
+  fields: TraceKeyValuePair[]
+}
 
 export type TraceProcess = {
-  serviceName: string;
-  tags: TraceKeyValuePair[];
-};
+  serviceName: string
+  tags: TraceKeyValuePair[]
+}
 
 export type TraceSpanReference = {
-  refType: 'CHILD_OF' | 'FOLLOWS_FROM';
+  refType: 'CHILD_OF' | 'FOLLOWS_FROM'
   // eslint-disable-next-line no-use-before-define
-  span?: TraceSpan | null | undefined;
-  spanID: string;
-  traceID: string;
-};
+  span?: TraceSpan | null | undefined
+  spanID: string
+  traceID: string
+}
 
 export type TraceSpanData = {
-  spanID: string;
-  traceID: string;
-  processID: string;
-  operationName: string;
+  spanID: string
+  traceID: string
+  processID: string
+  operationName: string
   // Times are in microseconds
-  startTime: number;
-  duration: number;
-  logs: TraceLog[];
-  tags?: TraceKeyValuePair[];
-  references?: TraceSpanReference[];
-  warnings?: string[] | null;
-  stackTraces?: string[];
-  flags: number;
-  errorIconColor?: string;
-};
+  startTime: number
+  duration: number
+  logs: TraceLog[]
+  tags?: TraceKeyValuePair[]
+  references?: TraceSpanReference[]
+  warnings?: string[] | null
+  stackTraces?: string[]
+  flags: number
+  errorIconColor?: string
+}
 
 export type TraceSpan = TraceSpanData & {
-  depth: number;
-  hasChildren: boolean;
-  process: TraceProcess;
-  relativeStartTime: number;
-  tags: NonNullable<TraceSpanData['tags']>;
-  references: NonNullable<TraceSpanData['references']>;
-  warnings: NonNullable<TraceSpanData['warnings']>;
-  subsidiarilyReferencedBy: TraceSpanReference[];
-};
+  depth: number
+  hasChildren: boolean
+  process: TraceProcess
+  relativeStartTime: number
+  tags: NonNullable<TraceSpanData['tags']>
+  references: NonNullable<TraceSpanData['references']>
+  warnings: NonNullable<TraceSpanData['warnings']>
+  subsidiarilyReferencedBy: TraceSpanReference[]
+}
 
 export type TraceData = {
-  processes: Record<string, TraceProcess>;
-  traceID: string;
-  warnings?: string[] | null;
-};
+  processes: Record<string, TraceProcess>
+  traceID: string
+  warnings?: string[] | null
+}
 
 export type TraceViewData = TraceData & {
-  spans: TraceSpanData[];
-};
+  spans: TraceSpanData[]
+}
 
 export type Trace = TraceData & {
-  duration: number;
-  endTime: number;
-  spans: TraceSpan[];
-  startTime: number;
-  traceName: string;
-  services: Array<{ name: string; numberOfSpans: number }>;
-};
+  duration: number
+  endTime: number
+  spans: TraceSpan[]
+  startTime: number
+  traceName: string
+  services: Array<{name: string; numberOfSpans: number}>
+}
