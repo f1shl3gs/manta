@@ -3539,9 +3539,9 @@ code-point-at@^1.0.0:
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
 codemirror@^5.58.3:
-  version "5.58.3"
-  resolved "https://registry.npm.taobao.org/codemirror/download/codemirror-5.58.3.tgz?cache=0&sync_timestamp=1605773356638&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcodemirror%2Fdownload%2Fcodemirror-5.58.3.tgz#3f0689854ecfbed5d4479a98b96148b2c3b79796"
-  integrity sha1-PwaJhU7PvtXUR5qYuWFIssO3l5Y=
+  version "5.59.0"
+  resolved "https://registry.npm.taobao.org/codemirror/download/codemirror-5.59.0.tgz?cache=0&sync_timestamp=1608459717826&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcodemirror%2Fdownload%2Fcodemirror-5.59.0.tgz#6d8132055459aabf21d04cae5cf5c430e5c57bb9"
+  integrity sha1-bYEyBVRZqr8h0EyuXPXEMOXFe7k=
 
 collect-v8-coverage@^1.0.0:
   version "1.0.1"
