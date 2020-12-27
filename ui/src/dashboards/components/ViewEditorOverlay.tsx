@@ -8,7 +8,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import TimeMachine from 'components/timeMachine/TimeMachine';
 import { useViewEditor, ViewEditorProvider } from './useViewEditor';
 
-import { Cell, XYViewProperties } from 'types';
+import { Cell, XYViewProperties } from 'types/Dashboard';
 
 import remoteDataState from 'utils/rds';
 

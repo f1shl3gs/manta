@@ -7,7 +7,9 @@ import { DraggableResizer, Orientation } from '@influxdata/clockface';
 import TimeMachineVis from './TimeMachineVis';
 import TimeMachineQueries from './TimeMachineQueries';
 import ViewOptions from './ViewOptions';
-import { View } from '../../types';
+
+// Types
+import { View } from 'types/Dashboard';
 
 const INITIAL_RESIZER_HANDLE = 0.5;
 

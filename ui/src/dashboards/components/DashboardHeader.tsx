@@ -1,22 +1,25 @@
 import React, { useCallback } from 'react';
 import { Button, ComponentColor, IconFont, Page } from '@influxdata/clockface';
-import RenamablePageTitle from '../../components/RenamablePageTitle';
+import RenamablePageTitle from 'components/RenamablePageTitle';
 import { useFetch } from 'use-http';
 import { useParams } from 'react-router-dom';
 import PresentationModeToggle from './PresentationModeToggle';
+import AutoRefreshDropdown from 'components/AutoRefreshDropdown/AutoRefreshDropdown';
+import TimeRangeDropdown from './TimeRangeDropdown';
+import { AutoRefreshDropdownOptions } from '../../constants/autoRefresh';
 
 const DashboardHeader = () => {
 
-  const {dashboardID} = useParams<{dashboardID: string}>()
-  const {post} = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {})
+  const { dashboardID } = useParams<{ dashboardID: string }>();
+  const { post } = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {});
   const addCell = useCallback(() => {
     return post({
       w: 4,
       h: 4,
       x: 0,
-      y: 0,
-    })
-  }, [])
+      y: 0
+    });
+  }, []);
 
   return (
     <>
@@ -44,9 +47,10 @@ const DashboardHeader = () => {
           />
           <PresentationModeToggle />
         </Page.ControlBarLeft>
-          todo
-        <Page.ControlBarRight>
 
+        <Page.ControlBarRight>
+          <TimeRangeDropdown />
+          <AutoRefreshDropdown options={AutoRefreshDropdownOptions} />
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>

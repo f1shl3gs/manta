@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import constate from 'constate';
 
-import { ViewProperties, XYViewProperties } from 'types';
+import { ViewProperties, XYViewProperties } from 'types/Dashboard';
 
 interface State {
   view: ViewProperties

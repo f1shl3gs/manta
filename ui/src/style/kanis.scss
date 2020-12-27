@@ -7,9 +7,9 @@
 */
 
 // Components
-@import "src/components/RenamablePageTitle.scss";
-@import "src/components/AutoRefreshDropdown.scss";
+@import "src/components/AutoRefreshDropdown/AutoRefreshDropdown.scss";
 @import "src/components/context_menu/ContextMenu.scss";
+@import "src/components/RenamablePageTitle.scss";
 @import "src/components/timeMachine/TimeMachine.scss";
 @import "src/components/timeMachine/TimeMachineQueries.scss";
 @import "src/components/timeMachine/ViewOptions.scss";
@@ -19,6 +19,7 @@
 @import "src/dashboards/components/cells/react-grid-layout.scss";
 @import "src/dashboards/components/cells/Dashboards.scss";
 @import "src/dashboards/components/DashboardEmpty.scss";
+@import "src/dashboards/components/ViewEditorOverlay.scss";
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

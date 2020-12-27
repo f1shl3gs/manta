@@ -11,7 +11,7 @@ const dispatchResizeEvent = () => {
     ev.initEvent('resize', false, true)
     window.dispatchEvent(ev);
     console.log('dispatched resize event')
-  }, 500)
+  }, 50)
 };
 
 const [PresentationModeProvider, usePresentationMode] = constate(

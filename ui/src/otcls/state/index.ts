@@ -1,7 +1,7 @@
 import {useCallback, useState} from 'react'
 import constate from 'constate'
 
-import {Otcl} from 'types'
+import {Otcl} from 'types/otcl'
 import remoteDataState from 'utils/rds'
 import {CachePolicies, useFetch} from 'use-http'
 

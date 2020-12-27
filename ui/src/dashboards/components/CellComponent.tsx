@@ -3,7 +3,8 @@ import React from 'react'
 import CellHeader from './CellHeader'
 import CellContext from './CellContext'
 
-import {Cell} from 'types'
+import {Cell} from 'types/Dashboard'
+import TimeSeries from './TimeSeries';
 
 interface Props {
   cell: Cell
@@ -17,7 +18,7 @@ const CellComponent: React.FC<Props> = ({cell}) => {
       </CellHeader>
 
       <div className="cell--view">
-        <div>{cell.id}</div>
+        <TimeSeries/>
       </div>
     </>
   )

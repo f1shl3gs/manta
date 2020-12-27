@@ -4,8 +4,9 @@ import { LinePosition } from '@influxdata/giraffe';
 import { Grid } from '@influxdata/clockface';
 import ColumnSelector from '../ColumnSelector';
 
-import { Axes, ViewType, XYGeom } from 'types';
 import { useLineView } from './useView';
+
+import { Axes, ViewType, XYGeom } from 'types/Dashboard';
 
 interface X {
   xColumn?: string

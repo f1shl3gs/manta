@@ -2,7 +2,7 @@ import React from 'react'
 
 import {DapperScrollbars, Grid} from '@influxdata/clockface'
 
-import {ViewProperties} from 'types'
+import {ViewProperties} from 'types/Dashboard'
 import OptionsSwitcher from './OptionsSwitcher'
 
 interface Props {

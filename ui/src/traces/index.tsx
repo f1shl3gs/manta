@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react'
 
-import {useOrgID} from '../shared/state/organization/organization'
 import {useViewRange} from './useViewRange'
 import {useSearch} from './useSearch'
 

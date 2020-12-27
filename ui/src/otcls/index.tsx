@@ -13,7 +13,7 @@ import OtclEdit from './component/OtclEdit'
 import OtclCreate from './component/OtclCreate'
 
 import {OtclProvider} from './state'
-import {useOrgID} from '../shared/state/organization/organization'
+import {useOrgID} from 'shared/hooks/useOrg'
 
 const pageContentsClassName = `alerting-index alerting-index__${'check'}`
 const title = 'OpenTelemetry Collector'
@@ -21,7 +21,7 @@ const otclsPrefix = `/orgs/:orgID/otcls`
 
 const Header: React.FC = () => {
   return (
-    <Page.Header fullWidth>
+    <Page.Header fullWidth={false}>
       <Page.Title title={title} />
     </Page.Header>
   )
@@ -38,7 +38,7 @@ class OtclPage extends React.PureComponent<OtclPageProps> {
     return (
       <Page titleTag={title}>
         <Header />
-        <Page.ControlBar fullWidth>
+        <Page.ControlBar fullWidth={false}>
           <Page.ControlBarRight>
             <Button
               size={ComponentSize.Small}
@@ -51,8 +51,8 @@ class OtclPage extends React.PureComponent<OtclPageProps> {
         </Page.ControlBar>
 
         <Page.Contents
-          fullWidth
-          scrollable={false}
+          fullWidth={false}
+          scrollable={true}
           className={pageContentsClassName}
         >
           <Otcls />

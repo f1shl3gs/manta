@@ -4,7 +4,7 @@ import {useHistory} from 'react-router-dom'
 import OtclForm from './OtclForm'
 import {OtclOverlay} from './OtclOverlay'
 import {emptyOtcl, useOtcl, useOtcls} from '../state'
-import {useOrgID} from '../../shared/state/organization/organization'
+import {useOrgID} from 'shared/hooks/useOrg'
 import {useFetch} from 'use-http'
 
 const OtclCreate: React.FC = () => {

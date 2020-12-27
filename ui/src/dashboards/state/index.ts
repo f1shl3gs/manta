@@ -1,8 +1,8 @@
 import constate from 'constate'
 import {CachePolicies, useFetch} from 'use-http'
 
-import {Dashboards} from 'types'
-import {useOrgID} from 'shared/state/organization/organization'
+import {Dashboards} from 'types/Dashboard'
+import {useOrgID} from 'shared/hooks/useOrg'
 
 const [DashboardsProvider, useDashboards] = constate(() => {
   const orgID = useOrgID()

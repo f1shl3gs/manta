@@ -14,7 +14,7 @@ import CellContextItem from './CellContextItem'
 import CellContextDangerItem from './CellContextDangerItem'
 
 // Types
-import {Cell, ViewProperties} from 'types'
+import {Cell, ViewProperties} from 'types/Dashboard'
 import {useHistory} from 'react-router-dom'
 
 interface Props {

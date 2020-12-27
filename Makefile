@@ -29,8 +29,7 @@ proto:
 		-I="${GOPATH}/src/github.com/gogo/protobuf/protobuf" \
 		--gogofaster_out=plugins=deepcopy+grpc+storeobject,Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types:./ \
 		*.proto
-	# json:"properties,omitempty"
-	# sed -i 's/protobuf_oneof:"properties"/protobuf_oneof:"properties" json:"properties,omitempty"/g' types.pb.go
+
 mantad: $(GOSROUCES)
 	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 

@@ -1,8 +1,8 @@
-import React from 'react'
-import {ComponentColor, IconFont, ResourceCard} from '@influxdata/clockface'
-import {useHistory} from 'react-router-dom'
-import {useOrgID} from '../../shared/state/organization/organization'
-import Context from '../../components/context_menu/Context'
+import React from 'react';
+import { ComponentColor, IconFont, ResourceCard } from '@influxdata/clockface';
+import { useHistory } from 'react-router-dom';
+import { useOrgID } from 'shared/hooks/useOrg';
+import Context from 'components/context_menu/Context';
 
 interface Props {
   id: string
@@ -13,9 +13,9 @@ interface Props {
 }
 
 const DashboardCard: React.FC<Props> = (props) => {
-  const {id, name, desc, updatedAt, onDeleteDashboard} = props
-  const history = useHistory()
-  const orgID = useOrgID()
+  const { id, name, desc, updatedAt, onDeleteDashboard } = props;
+  const history = useHistory();
+  const orgID = useOrgID();
 
   const contextMenu = (): JSX.Element => {
     return (
@@ -34,8 +34,8 @@ const DashboardCard: React.FC<Props> = (props) => {
           />
         </Context.Menu>
       </Context>
-    )
-  }
+    );
+  };
 
   return (
     <ResourceCard key={`dashboard-id--${id}`} contextMenu={contextMenu()}>
@@ -52,7 +52,7 @@ const DashboardCard: React.FC<Props> = (props) => {
       />
       <ResourceCard.Meta>{`Last Modified: ${updatedAt}`}</ResourceCard.Meta>
     </ResourceCard>
-  )
-}
+  );
+};
 
-export default DashboardCard
+export default DashboardCard;

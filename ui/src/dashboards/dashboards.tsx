@@ -1,12 +1,12 @@
 import React from 'react'
 import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
 
-import SearchWidget from '../components/SearchWidget'
+import SearchWidget from 'components/SearchWidget'
 import DashboardCards from './components/DashboardCards'
-import {Dashboard} from 'types'
+import {Dashboard} from 'types/Dashboard'
 import {DashboardsProvider} from './state'
 import {useFetch} from 'use-http'
-import {useOrgID} from '../shared/state/organization/organization'
+import {useOrgID} from 'shared/hooks/useOrg'
 import {useHistory} from 'react-router-dom'
 
 const useCreateDash = () => {

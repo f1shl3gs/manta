@@ -4,7 +4,7 @@ import { Route, Switch, useParams, withRouter } from 'react-router-dom';
 import { SpinnerContainer, TechnoSpinner } from '@influxdata/clockface';
 import Otcl from 'otcls';
 
-import { OrgProvider } from 'shared/state/organization/organization';
+import { OrgProvider } from 'shared/hooks/useOrg';
 import Todo from 'components/Todo';
 import TracePage from 'traces';
 import remoteDataState from 'utils/rds';

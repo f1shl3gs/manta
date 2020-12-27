@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import constate from 'constate';
 
-import { Notification } from '../types/notification';
+import { Notification } from 'types/notification';
 
 const [NotificationProvider, useNotification] = constate(
   () => {

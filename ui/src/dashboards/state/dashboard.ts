@@ -2,7 +2,7 @@ import constate from 'constate';
 import { useParams } from 'react-router-dom';
 import { CachePolicies, useFetch } from 'use-http';
 
-import { Dashboard } from 'types';
+import { Dashboard } from 'types/Dashboard';
 import { Layout } from 'react-grid-layout';
 import { useCallback, useEffect, useState } from 'react';
 

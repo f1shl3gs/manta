@@ -1,9 +1,11 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import ReactGridLayout, { WidthProvider, Layout } from 'react-grid-layout';
-import { useCells } from '../state/dashboard';
-import { Cell } from '../../types';
+import { Cell } from 'types/Dashboard';
+
 import CellComponent from './CellComponent';
 import GradientBorder from './GradientBorder';
+
+import { useCells } from '../state/dashboard';
 
 const Grid = WidthProvider(ReactGridLayout);
 
@@ -41,7 +43,7 @@ const Cells: React.FC = () => {
     return () => {
       window.removeEventListener('resize', eventHandler);
     };
-  }, [])
+  }, []);
 
   return (
     <>

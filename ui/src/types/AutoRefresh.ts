@@ -1,3 +1,8 @@
+export enum AutoRefreshOptionType {
+  Option = 'option',
+  Header = 'header',
+}
+
 export enum AutoRefreshStatus {
   Active = 'active',
   Paused = 'paused',
@@ -10,6 +15,8 @@ export interface AutoRefresh {
 }
 
 export interface AutoRefreshOption {
+  id: string
   label: string
+  type: AutoRefreshOptionType,
   seconds: number
 }

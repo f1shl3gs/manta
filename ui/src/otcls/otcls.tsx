@@ -13,9 +13,9 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-import {useOrgID} from 'shared/state/organization/organization'
+import {useOrgID} from 'shared/hooks/useOrg'
 import {useOtcls} from './state'
-import {Otcl} from '../types'
+import {Otcl} from 'types/otcl'
 import {useFetch} from 'use-http'
 
 const Otcls: React.FC = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewProperties } from 'types';
+import { ViewProperties } from 'types/Dashboard';
 import LineOptions from './LineOptions';
 import { ViewProvider } from './useView';
 
