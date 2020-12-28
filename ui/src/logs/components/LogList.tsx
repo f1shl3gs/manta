@@ -218,35 +218,8 @@ const LogList = () => {
   };
 
   return (
-    /*<div
-      style={{
-        width: 'calc(100vw - 100px)',
-        height: 'calc(100vh - 100px)',
-        margin: '50px'
-      }}
-    >
-
-    </div>*/
     <Plot config={config} />
   );
 };
 
 export default LogList;
-
-/*
-<Table>
-  <Table.Header>
-    <Table.Row>
-      <Table.HeaderCell />
-      <Table.HeaderCell />
-    </Table.Row>
-  </Table.Header>
-  <Table.Body>
-    <Table.Row>
-      <Table.Cell />
-      <Table.Cell />
-    </Table.Row>
-  </Table.Body>
-  <Table.Footer />
-</Table>
-* */

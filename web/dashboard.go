@@ -33,6 +33,7 @@ func NewDashboardService(h *DashboardHandler) {
 	h.HandlerFunc(http.MethodPost, DashboardCellPrefix, h.handleAddCell)
 	h.HandlerFunc(http.MethodGet, DashboardCellIDPath, h.handleGetCell)
 	h.HandlerFunc(http.MethodPut, DashboardCellPrefix, h.handleReplaceDashboardCells)
+	h.HandlerFunc(http.MethodPost, DashboardIDPath, h.handleUpdate)
 }
 
 func (h *DashboardHandler) handleList(w http.ResponseWriter, r *http.Request) {
@@ -242,5 +243,42 @@ func (h *DashboardHandler) handleGetCell(w http.ResponseWriter, r *http.Request)
 
 	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
 		h.HandleHTTPError(ctx, err, w)
+	}
+}
+
+func decodeDashboardUpdate(r *http.Request) (manta.DashboardUpdate, error) {
+	var udp manta.DashboardUpdate
+
+	err := json.NewDecoder(r.Body).Decode(&udp)
+	if err != nil {
+		return manta.DashboardUpdate{}, errors.Wrap(err, "decode DashboardUpdate failed")
+	}
+
+	return udp, nil
+}
+
+func (h *DashboardHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	udp, err := decodeDashboardUpdate(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	dash, err := h.dashboardService.UpdateDashboard(ctx, id, udp)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, dash); err != nil {
+		logEncodingError(h.logger, r, err)
+		return
 	}
 }
