@@ -3,13 +3,13 @@ import React, { useMemo } from 'react';
 import moment from 'moment';
 
 // components
-import { Config, DEFAULT_TABLE_COLORS, fromRows, Plot } from '@influxdata/giraffe';
-import {TableGraphLayerConfig} from '@influxdata/giraffe/dist/types'
+import { Config, DEFAULT_TABLE_COLORS, fromRows, HoverTimeProvider, Plot } from '@influxdata/giraffe';
+import { TableGraphLayerConfig } from '@influxdata/giraffe/dist/types';
 
 // test data
 import testData from './query_range_resp.json';
 
-const csvData = `#group,false,false,true,true,false,false,true,true,true,true
+const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
 #default,_result,,,,,,,,,
 ,result,table,_start,_stop,_time,_value,_field,_measurement,cpu,host
@@ -72,7 +72,6 @@ const csvData = `#group,false,false,true,true,false,false,true,true,true,true
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:20Z,10.21021021021021,usage_system,cpu,cpu0,MBP15-TLUONG.local
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:30Z,11.4,usage_system,cpu,cpu0,MBP15-TLUONG.local
 `;
-
 type StreamResult = {
   stream: {
     [key: string]: string
@@ -129,38 +128,39 @@ interface Result {
 // maybe it will works in the future
 const LogList = () => {
   // todo: show the common labels
+  /*
 
-  const resp = testData as Resp;
+    const resp = testData as Resp;
 
-  // transformData
-  const result = resp.data.result as StreamResult[];
-  const rows = result.map((result: StreamResult) => {
-    const { stream, values } = result;
+    // transformData
+    const result = resp.data.result as StreamResult[];
+    const rows = result.map((result: StreamResult) => {
+      const { stream, values } = result;
 
-    return values.map(val => {
-      return {
-        ...stream,
-        time: val[0],
-        log: val[1]
-      };
-    });
-  }).flat();
+      return values.map(val => {
+        return {
+          ...stream,
+          time: val[0],
+          log: val[1]
+        };
+      });
+    }).flat();
 
-  const table = fromRows(rows);
-  console.log('table', table);
+    const table = fromRows(rows);
+    console.log('table', table);
+  */
 
+  const theme = 'dark';
+  const fixFirstColumn = false;
   const config: Config = {
-    // table,
-    // table: fromFlux(vcsData).table,
-    // fluxResponse: vcsData,
-    fluxResponse: csvData,
+    fluxResponse: tableCSV,
     layers: [
       {
         type: 'table',
         properties: {
           colors: DEFAULT_TABLE_COLORS,
           tableOptions: {
-            // fixFirstColumn,
+            fixFirstColumn,
             verticalTimeAxis: true
           },
           fieldOptions: [
@@ -205,20 +205,30 @@ const LogList = () => {
               visible: true
             }
           ],
-          timeFormat: 'YYYY-MM-DD HH:mm:ss',
+          timeFormat: 'YYYY/MM/DD HH:mm:ss',
           decimalPlaces: {
             digits: 3,
             isEnforced: true
           }
         },
         timeZone: 'Local',
-        tableTheme: 'dark'
+        tableTheme: theme
       } as TableGraphLayerConfig
     ]
   };
 
   return (
-    <Plot config={config} />
+    <HoverTimeProvider>
+      <div
+        style={{
+          width: 'calc(100vw - 100px)',
+          height: 'calc(100vh - 100px)',
+          margin: '50px'
+        }}
+      >
+        <Plot config={config} />
+      </div>
+    </HoverTimeProvider>
   );
 };
 
