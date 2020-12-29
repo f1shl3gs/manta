@@ -2,13 +2,20 @@
 
 import React from 'react';
 
-const enable = false
+const enable = true
 
 if (process.env.NODE_ENV === 'development' && enable) {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React, {
     trackAllPureComponents: true,
     trackHooks: true,
-    include: []
+    trackExtraHooks: [],
+    include: [
+      /DashboardHeader/,
+      /DashboardPage/
+    ],
+    exclude: [
+      /e/
+    ]
   });
 }

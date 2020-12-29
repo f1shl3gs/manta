@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CachePolicies, useFetch } from 'use-http';
 import ViewSwitcher from './ViewSwitcher';
 import moment from 'moment';
@@ -51,7 +51,7 @@ const TimeSeries: React.FC<Props> = props => {
   const { autoRefresh } = useAutoRefresh();
   const { timeRange } = useTimeRange();
   const url = `http://localhost:9090/api/v1/query_range`;
-  const { get } = useFetch(url, {
+  const { get, loading } = useFetch(url, {
     cachePolicy: CachePolicies.NO_CACHE
   });
 
@@ -74,7 +74,7 @@ const TimeSeries: React.FC<Props> = props => {
 
         setTable(fromRows(rows));
       });
-  }, [])
+  }, [timeRange])
 
   useEffect(() => {
     fetch()
@@ -97,23 +97,29 @@ const TimeSeries: React.FC<Props> = props => {
     suffix: '',
     base: '10',
     timeZone: 'Local',
-    timeFormat: 'YYYY-MM-DD HH:mm:ss'
+    timeFormat: 'YYYY/MM/DD HH:mm:ss'
   });
 
-  const config = {
-    table,
-    valueFormatters: {
-      [xColumn]: xFormatter
-    },
-    layers: [
-      {
-        type: 'line',
-        x: 'time',
-        y: 'value',
-        fill: ['job']
-      }
-    ]
-  } as Config;
+  const config = useMemo(() => {
+    return {
+      table,
+      valueFormatters: {
+        [xColumn]: xFormatter
+      },
+      layers: [
+        {
+          type: 'line',
+          x: 'time',
+          y: 'value',
+          fill: ['job']
+        }
+      ]
+    } as Config
+  }, [table])
+
+  if (loading) {
+    return null
+  }
 
   return (
     <Plot

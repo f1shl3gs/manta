@@ -1,50 +1,42 @@
+// Libraries
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+
+// Components
 import {
   Page,
   SpinnerContainer,
   TechnoSpinner
 } from '@influxdata/clockface';
-import { useFetch } from 'use-http';
-import { Route, Switch, useParams } from 'react-router-dom';
-import { useOrgID } from 'shared/hooks/useOrg';
-import { Dashboard } from 'types/Dashboard';
-import remoteDataState from '../../utils/rds';
-import { DashboardProvider } from '../state/dashboard';
-import Cells from './Cells';
 import ViewEditorOverlay from './ViewEditorOverlay';
 import DashboardHeader from './DashboardHeader';
 import DashboardEmpty from './DashboardEmpty';
-import { TimeRangeProvider } from '../../shared/useTimeRange';
-import { AutoRefreshProvider } from '../../shared/useAutoRefresh';
-import compose from '../../utils/compose';
+import Cells from './Cells';
+
+// Hooks
+import { TimeRangeProvider } from 'shared/useTimeRange';
+import { AutoRefreshProvider } from 'shared/useAutoRefresh';
+import { DashboardProvider, useDashboard } from './useDashboard';
 
 const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`;
 
 const DashboardPage: React.FC = () => {
-  const { dashboardID } = useParams<{ dashboardID: string }>();
-  const orgID = useOrgID();
-  const { data, error, loading } = useFetch<Dashboard>(
-    `/api/v1/dashboards/${dashboardID}?orgID=${orgID}`,
-    {},
-    []
-  );
-  const rds = remoteDataState(loading, error);
-
+  const { cells, remoteDataState } = useDashboard();
 
   return (
     <AutoRefreshProvider>
       <TimeRangeProvider>
-        <Page titleTag={'todo name'}>
-          <DashboardHeader />
+        <Page titleTag={'Dashboard'}>
+          <SpinnerContainer loading={remoteDataState} spinnerComponent={<TechnoSpinner />}>
+            <DashboardHeader />
 
-          <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
             <Page.Contents
               fullWidth={true}
               scrollable={true}
               className={'dashboard'}
             >
               {
-                !!data?.cells ? (
+                cells.length > 0 ? (
                   <Cells />
                 ) : (
                   <DashboardEmpty />

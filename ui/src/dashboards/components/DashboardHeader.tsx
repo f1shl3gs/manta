@@ -1,34 +1,30 @@
-import React, { useCallback } from 'react';
+// Libraries
+import React from 'react';
+
+// Components
 import { Button, ComponentColor, IconFont, Page } from '@influxdata/clockface';
 import RenamablePageTitle from 'components/RenamablePageTitle';
-import { useFetch } from 'use-http';
-import { useParams } from 'react-router-dom';
 import PresentationModeToggle from './PresentationModeToggle';
 import AutoRefreshDropdown from 'components/AutoRefreshDropdown/AutoRefreshDropdown';
 import TimeRangeDropdown from './TimeRangeDropdown';
-import { AutoRefreshDropdownOptions } from '../../constants/autoRefresh';
+
+// Hooks
+import { useDashboard } from './useDashboard';
+
+// Constants
+import { AutoRefreshDropdownOptions } from 'constants/autoRefresh';
 
 const DashboardHeader = () => {
-
-  const { dashboardID } = useParams<{ dashboardID: string }>();
-  const { post } = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {});
-  const addCell = useCallback(() => {
-    return post({
-      w: 4,
-      h: 4,
-      x: 0,
-      y: 0
-    });
-  }, []);
+  const { name, onRename, addCell } = useDashboard();
 
   return (
     <>
       <Page.Header fullWidth={true}>
         <RenamablePageTitle
           placeholder={'Name this dashboard'}
-          name={'name this'}
+          name={name}
           maxLength={90}
-          onRename={(name) => console.log('name')}
+          onRename={onRename}
         />
       </Page.Header>
       <Page.ControlBar fullWidth={true}>

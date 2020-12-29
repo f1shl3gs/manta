@@ -1,30 +1,30 @@
-import React from 'react'
-import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
+import React from 'react';
+import { Button, ComponentColor, IconFont, Page } from '@influxdata/clockface';
 
-import SearchWidget from 'components/SearchWidget'
-import DashboardCards from './components/DashboardCards'
-import {Dashboard} from 'types/Dashboard'
-import {DashboardsProvider} from './state'
-import {useFetch} from 'use-http'
-import {useOrgID} from 'shared/hooks/useOrg'
-import {useHistory} from 'react-router-dom'
+import SearchWidget from 'components/SearchWidget';
+import DashboardCards from './DashboardCards';
+import { Dashboard } from 'types/Dashboard';
+import { DashboardsProvider } from './useDashboards';
+import { useFetch } from 'use-http';
+import { useOrgID } from 'shared/hooks/useOrg';
+import { useHistory } from 'react-router-dom';
 
 const useCreateDash = () => {
-  const orgID = useOrgID()
+  const orgID = useOrgID();
 
-  const {post} = useFetch<Dashboard>(`/api/v1/dashboards?orgID=${orgID}`, {
+  const { post } = useFetch<Dashboard>(`/api/v1/dashboards?orgID=${orgID}`, {
     body: {
-      orgID,
-    },
-  })
+      orgID
+    }
+  });
 
-  return post
-}
+  return post;
+};
 
 const DashboardsIndex: React.FC = () => {
-  const create = useCreateDash()
-  const history = useHistory()
-  const orgID = useOrgID()
+  const create = useCreateDash();
+  const history = useHistory();
+  const orgID = useOrgID();
 
   return (
     <Page>
@@ -48,13 +48,13 @@ const DashboardsIndex: React.FC = () => {
             onClick={() => {
               create()
                 .then((resp) => {
-                  const path = `/orgs/${orgID}/dashboards/${resp.id}`
-                  console.log('path', path)
-                  history.push(path)
+                  const path = `/orgs/${orgID}/dashboards/${resp.id}`;
+                  console.log('path', path);
+                  history.push(path);
                 })
                 .catch((err) => {
-                  console.log('create dashboard failed', err)
-                })
+                  console.log('create dashboard failed', err);
+                });
             }}
           />
         </Page.ControlBarRight>
@@ -70,7 +70,7 @@ const DashboardsIndex: React.FC = () => {
         </DashboardsProvider>
       </Page.Contents>
     </Page>
-  )
-}
+  );
+};
 
-export default DashboardsIndex
+export default DashboardsIndex;

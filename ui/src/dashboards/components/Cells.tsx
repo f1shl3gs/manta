@@ -1,11 +1,10 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import ReactGridLayout, { WidthProvider, Layout } from 'react-grid-layout';
 import { Cell } from 'types/Dashboard';
 
 import CellComponent from './CellComponent';
 import GradientBorder from './GradientBorder';
-
-import { useCells } from '../state/dashboard';
+import { useDashboard } from './useDashboard';
 
 const Grid = WidthProvider(ReactGridLayout);
 
@@ -29,21 +28,16 @@ const eventHandler = () => {
 };
 
 const Cells: React.FC = () => {
-  const { cells, setCells } = useCells();
+  const { cells, setCells } = useDashboard();
+/*
 
-  /*useEffect(() => {
+  useEffect(() => {
     window.addEventListener('resize', eventHandler);
     return () => {
       window.removeEventListener('resize', eventHandler);
     };
-  });*/
-
-  useLayoutEffect(() => {
-    window.addEventListener('resize', eventHandler);
-    return () => {
-      window.removeEventListener('resize', eventHandler);
-    };
-  }, []);
+  });
+*/
 
   return (
     <>
@@ -60,7 +54,7 @@ const Cells: React.FC = () => {
         isDraggable
         isResizable
       >
-        {cells.map((cell) => (
+        {cells.map((cell: Cell) => (
           <div key={cell.id} className="cell">
             <CellComponent cell={cell} />
             <GradientBorder />
