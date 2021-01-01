@@ -1,7 +1,12 @@
+// Libraries
 import React from 'react';
+
+// Components
 import { FromFluxResult, Plot } from '@influxdata/giraffe';
+import XYPlot from '../../components/timeMachine/XYPlot';
+
+// Types
 import { ViewProperties } from 'types/Dashboard';
-import XYPlot from './XYPlot';
 
 interface Props {
   giraffeResult: Omit<FromFluxResult, 'schema'>
@@ -12,7 +17,8 @@ const ViewSwitcher: React.FC<Props> = props => {
   const {
     properties,
     giraffeResult: {
-      table
+      table,
+      fluxGroupKeyUnion
     }
   } = props;
 
@@ -21,10 +27,17 @@ const ViewSwitcher: React.FC<Props> = props => {
       return (
         <XYPlot
           table={table}
-          viewProperties={properties}>
+          groupKeyUnion={fluxGroupKeyUnion}
+        >
           {config => <Plot config={config} />}
         </XYPlot>
       );
+      
+    case 'gauge':
+      return (
+        <div>todo: Gauge</div>
+      );
+
     default:
       return <div>
         unknown

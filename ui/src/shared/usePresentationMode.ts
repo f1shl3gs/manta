@@ -10,7 +10,6 @@ const dispatchResizeEvent = () => {
     const ev = document.createEvent('HTMLEvents')
     ev.initEvent('resize', false, true)
     window.dispatchEvent(ev);
-    console.log('dispatched resize event')
   }, 50)
 };
 

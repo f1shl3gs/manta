@@ -25,8 +25,6 @@ const onClickOutside = () => console.log('onClickOutside')
 const ViewEditorOverlayHeader: React.FC<Props> = (props) => {
   const {name, onNameSet, onSave, onCancel} = props
 
-  console.log('veoh')
-
   return (
     <>
       <Page.Header fullWidth={true}>
@@ -41,10 +39,7 @@ const ViewEditorOverlayHeader: React.FC<Props> = (props) => {
 
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
-          {/* ViewTypeDropdown */}
-          {/* VisOptionsButton */}
-
-          <Button text={'ViewtypeDropdown'} />
+          <Button text={'ViewTypeDropdown'} />
           <VisOptionsButton />
         </Page.ControlBarLeft>
 

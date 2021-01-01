@@ -1,8 +1,9 @@
 package membership
 
 import (
-	"github.com/hashicorp/memberlist"
 	"time"
+
+	"github.com/hashicorp/memberlist"
 )
 
 type Metadata struct {

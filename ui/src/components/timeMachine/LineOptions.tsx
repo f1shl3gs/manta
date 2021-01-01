@@ -1,30 +1,33 @@
 import React from 'react';
 
-import { LinePosition } from '@influxdata/giraffe';
-import { Grid } from '@influxdata/clockface';
+import { Grid, Form, Dropdown } from '@influxdata/clockface';
 import ColumnSelector from '../ColumnSelector';
 
 import { useLineView } from './useView';
 
-import { Axes, ViewType, XYGeom } from 'types/Dashboard';
+import TimeFormatSetting from './TimeFormatSetting';
+import YAxisTitle from './YAxisTitle';
+import YAxisBase from './YAxisBase';
+import AxisAffixes from './AxisAffixes';
 
-interface X {
-  xColumn?: string
-  onSetXColumn: (c: string) => void
-  yColumn?: string
-  onSetYColumn: (c: string) => void
-  // todo: figure out what it is
-  numericColumns: string[]
-}
 
-interface Props extends X {
-  type: ViewType
-  axes: Axes
-  geom?: XYGeom
-  shadeBelow?: boolean
-  hoverDimension?: 'auto' | 'x' | 'y' | 'xy'
-  position: LinePosition
-}
+const dimensions = [
+  {
+    key: 'auto',
+    text: 'Auto'
+  },
+  {
+    key: 'x',
+    text: 'X'
+  }, {
+    key: 'y',
+    text: 'Y'
+  },
+  {
+    key: 'xy',
+    text: 'XY'
+  }
+];
 
 const LineOptions: React.FC = () => {
   const {
@@ -32,7 +35,23 @@ const LineOptions: React.FC = () => {
     onSetXColumn,
     yColumn,
     onSetYColumn,
-    numericColumns
+    numericColumns,
+    timeFormat,
+    onSetTimeFormat,
+    hoverDimension,
+    onSetHoverDimension,
+    axes: {
+      y: {
+        prefix = '',
+        suffix = '',
+        label = '',
+        base = ''
+      }
+    },
+    onSetYAxisLabel,
+    onSetYAxisBase,
+    onSetYAxisPrefix,
+    onSetYAxisSuffix
   } = useLineView();
 
   return (
@@ -52,7 +71,58 @@ const LineOptions: React.FC = () => {
           availableColumns={numericColumns}
           axisName={'y'}
         />
+
+        <Form.Element label={'Time Format'}>
+          <TimeFormatSetting
+            timeFormat={timeFormat}
+            onTimeFormatChange={onSetTimeFormat}
+          />
+        </Form.Element>
+
+        <h5 className={'view-options--header'}>Options</h5>
       </Grid.Column>
+
+      <Grid.Column>
+        <br />
+        <Form.Element label={'Hover Dimension'}>
+          <Dropdown
+            button={(active, onClick) => (
+              <Dropdown.Button active={active} onClick={onClick}>
+                {hoverDimension}
+              </Dropdown.Button>
+            )}
+            menu={onCollapse => (
+              <Dropdown.Menu onCollapse={onCollapse}>
+                {
+                  dimensions.map(item => (
+                    <Dropdown.Item
+                      id={item.key}
+                      value={item.key}
+                      onClick={onSetHoverDimension}
+                      selected={hoverDimension === item.key}
+                    >
+                      {item.text}
+                    </Dropdown.Item>
+                  ))
+                }
+              </Dropdown.Menu>
+            )}
+          />
+        </Form.Element>
+      </Grid.Column>
+
+      <Grid.Column>
+        <h5 className={'view-options--header'}>Y Axis</h5>
+      </Grid.Column>
+      <YAxisTitle label={label} onUpdateYAxisLabel={onSetYAxisLabel} />
+      <YAxisBase base={base} onSetYAxisBase={onSetYAxisBase} />
+      <AxisAffixes
+        prefix={prefix}
+        suffix={suffix}
+        axisName={'y'}
+        onSetAxisPrefix={onSetYAxisPrefix}
+        onSetAxisSuffix={onSetYAxisSuffix}
+      />
     </>
   );
 };

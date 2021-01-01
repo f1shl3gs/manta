@@ -9,7 +9,8 @@ import TimeMachineQueries from './TimeMachineQueries';
 import ViewOptions from './ViewOptions';
 
 // Types
-import { View } from 'types/Dashboard';
+import { View, ViewProperties, XYViewProperties } from 'types/Dashboard';
+import { ViewPropertiesProvider } from './useView';
 
 const INITIAL_RESIZER_HANDLE = 0.5;
 
@@ -29,9 +30,28 @@ const TimeMachine: React.FC<Props> = (props) => {
 
   const bottomContents = <TimeMachineQueries />;
 
+  const vp = {
+    type: 'xy',
+    xColumn: 'time',
+    yColumn: 'value',
+    axes: {
+      x: {
+
+      },
+      y: {
+
+      }
+    },
+    queries: [
+      {
+        text: 'aaa'
+      }
+    ]
+  } as XYViewProperties
+
   return (
-    <>
-      {isViewingVisOptions && <ViewOptions view={view.properties} />}
+    <ViewPropertiesProvider viewProperties={vp as ViewProperties}>
+      {isViewingVisOptions && <ViewOptions/>}
 
       <div className={containerClassName}>
         <DraggableResizer
@@ -41,7 +61,7 @@ const TimeMachine: React.FC<Props> = (props) => {
         >
           <DraggableResizer.Panel>
             <div className={'time-machine--top'}>
-              <TimeMachineVis />
+              <TimeMachineVis viewProperties={vp}/>
             </div>
           </DraggableResizer.Panel>
 
@@ -54,7 +74,7 @@ const TimeMachine: React.FC<Props> = (props) => {
           </DraggableResizer.Panel>
         </DraggableResizer>
       </div>
-    </>
+    </ViewPropertiesProvider>
   );
 };
 

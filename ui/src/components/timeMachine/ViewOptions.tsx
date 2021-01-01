@@ -2,15 +2,15 @@ import React from 'react'
 
 import {DapperScrollbars, Grid} from '@influxdata/clockface'
 
-import {ViewProperties} from 'types/Dashboard'
 import OptionsSwitcher from './OptionsSwitcher'
+import { useViewProperties } from './useView';
 
 interface Props {
-  view: ViewProperties
+
 }
 
 const ViewOptions: React.FC<Props> = (props) => {
-  const {view} = props
+  const {viewProperties} = useViewProperties();
 
   return (
     <div className={'view-options'}>
@@ -21,7 +21,7 @@ const ViewOptions: React.FC<Props> = (props) => {
         <div className={'view-options--container'}>
           <Grid>
             <Grid.Row>
-              <OptionsSwitcher view={view} />
+              <OptionsSwitcher view={viewProperties} />
             </Grid.Row>
           </Grid>
         </div>

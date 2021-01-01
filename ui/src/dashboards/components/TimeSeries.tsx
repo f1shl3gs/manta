@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CachePolicies, useFetch } from 'use-http';
-import ViewSwitcher from './ViewSwitcher';
+import ViewSwitcher from '../../shared/components/ViewSwitcher';
 import moment from 'moment';
 import { Config, fromRows, Plot, Table } from '@influxdata/giraffe';
-import XYPlot from './XYPlot';
+import XYPlot from '../../components/timeMachine/XYPlot';
 import { getFormatter } from '../../utils/vis';
 import { useAutoRefresh } from '../../shared/useAutoRefresh';
 import { AutoRefreshStatus } from '../../types/AutoRefresh';

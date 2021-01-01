@@ -1,5 +1,6 @@
 // Libraries
 import React, { useCallback } from 'react';
+import moment from 'moment';
 
 // Components
 import DashboardCard from './components/DashboardCard';
@@ -34,7 +35,7 @@ const DashboardCards: React.FC = () => {
             id={d.id}
             name={d.name}
             desc={d.desc}
-            updatedAt={d.updated}
+            updatedAt={moment(d.updated).fromNow()}
             onDeleteDashboard={onDeleteDashboard}
           />
         ))}

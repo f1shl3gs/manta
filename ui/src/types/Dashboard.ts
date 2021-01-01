@@ -3,6 +3,7 @@ export interface Axis {
   label?: string
   prefix?: string
   suffix?: string
+  base?: '' | '2' | '10'
 }
 
 export interface Axes {
@@ -22,6 +23,7 @@ export interface XYViewProperties {
   hoverDimension?: 'auto' | 'x' | 'y' | 'xy'
   position: 'overlaid' | 'stacked'
   geom: XYGeom
+  queries: DashboardQuery[]
 }
 
 export interface Legend {
@@ -41,6 +43,7 @@ export interface GaugeProperties {
   suffix: string
   legend: Legend
   decimalPlaces: DecimalPlaces
+  queries: DashboardQuery[]
 }
 
 export type ViewProperties = XYViewProperties | GaugeProperties
@@ -61,8 +64,7 @@ export interface View<T extends ViewProperties = ViewProperties>
 }
 
 export type NewView<T extends ViewProperties = ViewProperties> = Omit<View<T>,
-  'id'
->
+  'id'>
 
 export interface Cell {
   id: string
@@ -90,4 +92,12 @@ export interface Dashboard {
   cells: Cells
 }
 
+export interface DashboardQuery {
+  text: string
+}
+
 export type Dashboards = Dashboard[]
+
+export type Base = Axis['base']
+
+export type AxisScale = 'log' | 'linear'

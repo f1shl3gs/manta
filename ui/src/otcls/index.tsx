@@ -1,31 +1,31 @@
-import React, {useCallback} from 'react'
-import {Route, Switch, useHistory, useParams} from 'react-router-dom'
+import React, { useCallback } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import {
   Button,
   ComponentColor,
   ComponentSize,
   IconFont,
-  Page,
-} from '@influxdata/clockface'
-import Otcls from './otcls'
-import OtclEdit from './component/OtclEdit'
-import OtclCreate from './component/OtclCreate'
+  Page
+} from '@influxdata/clockface';
+import Otcls from './otcls';
+import OtclEdit from './component/OtclEdit';
+import OtclCreate from './component/OtclCreate';
 
-import {OtclProvider} from './state'
-import {useOrgID} from 'shared/hooks/useOrg'
+import { OtclProvider } from './state';
+import { useOrgID } from 'shared/hooks/useOrg';
 
-const pageContentsClassName = `alerting-index alerting-index__${'check'}`
-const title = 'OpenTelemetry Collector'
-const otclsPrefix = `/orgs/:orgID/otcls`
+const pageContentsClassName = `alerting-index alerting-index__${'check'}`;
+const title = 'OpenTelemetry Collector';
+const otclsPrefix = `/orgs/:orgID/otcls`;
 
 const Header: React.FC = () => {
   return (
     <Page.Header fullWidth={false}>
       <Page.Title title={title} />
     </Page.Header>
-  )
-}
+  );
+};
 
 type OtclPageProps = {
   onCreate: () => void
@@ -33,7 +33,7 @@ type OtclPageProps = {
 
 class OtclPage extends React.PureComponent<OtclPageProps> {
   render() {
-    const {onCreate} = this.props
+    const { onCreate } = this.props;
 
     return (
       <Page titleTag={title}>
@@ -58,16 +58,16 @@ class OtclPage extends React.PureComponent<OtclPageProps> {
           <Otcls />
         </Page.Contents>
       </Page>
-    )
+    );
   }
 }
 
 const Otcl: React.FC = () => {
-  const orgID = useOrgID()
-  const history = useHistory()
+  const orgID = useOrgID();
+  const history = useHistory();
   const onCreate = useCallback(() => {
-    history.push(`/orgs/${orgID}/otcls/new`)
-  }, [orgID])
+    history.push(`/orgs/${orgID}/otcls/new`);
+  }, [orgID]);
 
   return (
     <OtclProvider orgID={orgID}>
@@ -77,7 +77,7 @@ const Otcl: React.FC = () => {
         <Route path={`${otclsPrefix}/:otclID`} component={OtclEdit} />
       </Switch>
     </OtclProvider>
-  )
-}
+  );
+};
 
-export default Otcl
+export default Otcl;

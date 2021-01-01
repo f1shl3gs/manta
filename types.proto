@@ -348,12 +348,14 @@ message Axes {
 
 message GaugeView {
   string type = 1;
+
   Axes axes = 2 [(gogoproto.nullable) = false];
   repeated Query queries = 3 [(gogoproto.nullable) = false];
 }
 
 message XYView {
   string type = 1;
+
   Axes axes = 2 [(gogoproto.nullable) = false];
   repeated Query queries = 3 [(gogoproto.nullable) = false];
 
@@ -361,11 +363,16 @@ message XYView {
 }
 
 message SingleStatView {
-
+  string type = 1;
 }
 
 message LinePlusSingleStatView {
+  string type = 1;
+}
 
+message MarkdownView {
+  string type = 1;
+  string content = 2;
 }
 
 message Cell {
@@ -381,8 +388,9 @@ message Cell {
   oneof properties {
     GaugeView gauge = 8;
     XYView xy = 9 [(gogoproto.customname) = "XY"];
-    SingleStatView singleStatView = 10;
-    LinePlusSingleStatView linePlusSingleStatView = 11;
+    SingleStatView singleStat = 10;
+    LinePlusSingleStatView linePlusSingleStat = 11;
+    MarkdownView markdown = 12;
   };
 }
 

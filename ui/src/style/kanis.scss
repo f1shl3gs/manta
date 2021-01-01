@@ -20,6 +20,8 @@
 @import "src/dashboards/components/cells/Dashboards.scss";
 @import "src/dashboards/components/DashboardEmpty.scss";
 @import "src/dashboards/components/ViewEditorOverlay.scss";
+@import "src/style/codemirror/CodeMirror.scss";
+@import "src/style/codemirror/CodeMirrorTheme.scss";
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {
