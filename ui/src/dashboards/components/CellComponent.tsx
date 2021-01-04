@@ -14,7 +14,7 @@ const CellComponent: React.FC<Props> = ({cell}) => {
   return (
     <>
       <CellHeader name={cell.name || 'Name this Cell'} note={''}>
-        <CellContext cell={cell} view={cell.properties} />
+        <CellContext cell={cell} view={cell.viewProperties} />
       </CellHeader>
 
       <div className="cell--view">

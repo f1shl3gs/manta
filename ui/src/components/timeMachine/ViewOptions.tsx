@@ -3,7 +3,7 @@ import React from 'react'
 import {DapperScrollbars, Grid} from '@influxdata/clockface'
 
 import OptionsSwitcher from './OptionsSwitcher'
-import { useViewProperties } from './useView';
+import { useViewProperties } from '../../shared/useViewProperties';
 
 interface Props {
 

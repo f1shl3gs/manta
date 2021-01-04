@@ -1,7 +1,7 @@
 import constate from 'constate';
 import { CachePolicies, useFetch } from 'use-http';
 import { Dashboard } from '../types/Dashboard';
-import { useOrgID } from '../shared/hooks/useOrg';
+import { useOrgID } from '../shared/useOrg';
 import remoteDataState from '../utils/rds';
 
 const [DashboardsProvider, useDashboards] = constate(
@@ -15,7 +15,7 @@ const [DashboardsProvider, useDashboards] = constate(
 
     return {
       dashboards: data,
-      remoteDataState: remoteDataState(loading, error),
+      remoteDataState: remoteDataState(data, error, loading),
       refresh: get
     };
   },

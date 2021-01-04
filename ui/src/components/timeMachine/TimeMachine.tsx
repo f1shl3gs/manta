@@ -9,49 +9,26 @@ import TimeMachineQueries from './TimeMachineQueries';
 import ViewOptions from './ViewOptions';
 
 // Types
-import { View, ViewProperties, XYViewProperties } from 'types/Dashboard';
-import { ViewPropertiesProvider } from './useView';
+import { ViewProperties } from 'types/Dashboard';
+import { useViewOption, ViewOptionProvider } from '../../shared/useViewOption';
 
 const INITIAL_RESIZER_HANDLE = 0.5;
 
 interface Props {
-  isViewingVisOptions: boolean,
-  view: View
+  viewProperties: ViewProperties,
 }
 
 const TimeMachine: React.FC<Props> = (props) => {
-  const { isViewingVisOptions, view } = props;
-
+  const { isViewingVisOptions } = useViewOption();
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE]);
 
   const containerClassName = classnames('time-machine', {
     'time-machine--split': isViewingVisOptions
   });
 
-  const bottomContents = <TimeMachineQueries />;
-
-  const vp = {
-    type: 'xy',
-    xColumn: 'time',
-    yColumn: 'value',
-    axes: {
-      x: {
-
-      },
-      y: {
-
-      }
-    },
-    queries: [
-      {
-        text: 'aaa'
-      }
-    ]
-  } as XYViewProperties
-
   return (
-    <ViewPropertiesProvider viewProperties={vp as ViewProperties}>
-      {isViewingVisOptions && <ViewOptions/>}
+    <>
+      {isViewingVisOptions && <ViewOptions />}
 
       <div className={containerClassName}>
         <DraggableResizer
@@ -61,20 +38,20 @@ const TimeMachine: React.FC<Props> = (props) => {
         >
           <DraggableResizer.Panel>
             <div className={'time-machine--top'}>
-              <TimeMachineVis viewProperties={vp}/>
+              <TimeMachineVis />
             </div>
           </DraggableResizer.Panel>
 
           <DraggableResizer.Panel>
             <div className={'time-machine--bottom'}>
               <div className={'time-machine--bottom-contents'}>
-                {bottomContents}
+                <TimeMachineQueries />
               </div>
             </div>
           </DraggableResizer.Panel>
         </DraggableResizer>
       </div>
-    </ViewPropertiesProvider>
+    </>
   );
 };
 

@@ -26,7 +26,35 @@ func (udp DashboardUpdate) Apply(dash *Dashboard) {
 }
 
 type DashboardCellUpdate struct {
-	W, H, X, Y *int32
+	W, H, X, Y     *int32
+	ViewProperties isCell_ViewProperties
+}
+
+func (udp *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
+	var a struct {
+		W, H, X, Y     *int32
+		ViewProperties json.RawMessage `json:"viewProperties"`
+	}
+	{
+	}
+
+	err := json.Unmarshal(bytes, &a)
+	if err != nil {
+		return err
+	}
+
+	vp, err := unmarshalCellPropertiesJSON(a.ViewProperties)
+	if err != nil {
+		return err
+	}
+
+	udp.W = a.W
+	udp.H = a.H
+	udp.X = a.X
+	udp.Y = a.Y
+	udp.ViewProperties = vp
+
+	return nil
 }
 
 type ViewUpdate struct {
@@ -51,6 +79,10 @@ func (udp DashboardCellUpdate) Apply(cell *Cell) {
 
 	if udp.Y != nil {
 		cell.Y = *udp.Y
+	}
+
+	if udp.ViewProperties != nil {
+		cell.ViewProperties = udp.ViewProperties
 	}
 }
 
@@ -104,14 +136,14 @@ func (m *Cell) Validate() error {
 
 func (m *Cell) UnmarshalJSON(b []byte) error {
 	var c struct {
-		ID          ID              `json:"id"`
-		Name        string          `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-		Description string          `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-		W           int32           `protobuf:"varint,3,opt,name=w,proto3" json:"w,omitempty"`
-		H           int32           `protobuf:"varint,4,opt,name=h,proto3" json:"h,omitempty"`
-		X           int32           `protobuf:"varint,5,opt,name=x,proto3" json:"x,omitempty"`
-		Y           int32           `protobuf:"varint,6,opt,name=y,proto3" json:"y,omitempty"`
-		Properties  json.RawMessage `json:"properties"`
+		ID             ID              `json:"id"`
+		Name           string          `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+		Description    string          `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+		W              int32           `protobuf:"varint,3,opt,name=w,proto3" json:"w,omitempty"`
+		H              int32           `protobuf:"varint,4,opt,name=h,proto3" json:"h,omitempty"`
+		X              int32           `protobuf:"varint,5,opt,name=x,proto3" json:"x,omitempty"`
+		Y              int32           `protobuf:"varint,6,opt,name=y,proto3" json:"y,omitempty"`
+		ViewProperties json.RawMessage `json:"viewProperties"`
 	}
 
 	if err := json.Unmarshal(b, &c); err != nil {
@@ -127,20 +159,20 @@ func (m *Cell) UnmarshalJSON(b []byte) error {
 	m.X = c.X
 	m.Y = c.Y
 
-	if c.Properties == nil {
+	if c.ViewProperties == nil {
 		return nil
 	}
 
-	props, err := unmarshalCellPropertiesJSON(c.Properties)
+	props, err := unmarshalCellPropertiesJSON(c.ViewProperties)
 	if err != nil {
 		return err
 	}
 
-	m.Properties = props
+	m.ViewProperties = props
 	return nil
 }
 
-func unmarshalCellPropertiesJSON(b []byte) (isCell_Properties, error) {
+func unmarshalCellPropertiesJSON(b []byte) (isCell_ViewProperties, error) {
 	var t struct {
 		Type string `json:"type"`
 	}
@@ -151,7 +183,7 @@ func unmarshalCellPropertiesJSON(b []byte) (isCell_Properties, error) {
 
 	switch t.Type {
 	case "xy":
-		var xy XYView
+		var xy XYViewProperties
 		if err := json.Unmarshal(b, &xy); err != nil {
 			return nil, err
 		}

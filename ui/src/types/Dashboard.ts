@@ -77,7 +77,11 @@ export interface Cell {
   x?: number
   y?: number
 
-  properties: ViewProperties
+  minH?: number
+  minW?: number
+  maxW?: number
+
+  viewProperties: ViewProperties
 }
 
 export type Cells = Cell[]
@@ -93,7 +97,9 @@ export interface Dashboard {
 }
 
 export interface DashboardQuery {
+  name?: string
   text: string
+  hidden: boolean
 }
 
 export type Dashboards = Dashboard[]

@@ -6,7 +6,7 @@ import DashboardCards from './DashboardCards';
 import { Dashboard } from 'types/Dashboard';
 import { DashboardsProvider } from './useDashboards';
 import { useFetch } from 'use-http';
-import { useOrgID } from 'shared/hooks/useOrg';
+import { useOrgID } from 'shared/useOrg';
 import { useHistory } from 'react-router-dom';
 
 const useCreateDash = () => {

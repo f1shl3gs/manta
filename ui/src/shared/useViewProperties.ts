@@ -8,11 +8,35 @@ interface State {
   viewProperties: ViewProperties
 }
 
-const [ViewPropertiesProvider, useViewProperties] = constate(
+const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
   (initialState: State) => {
-    const [viewProperties, setViewProperties] = useState(initialState.viewProperties);
+
+    const [viewProperties, setViewProperties] = useState<ViewProperties>(() => {
+      console.log('initial state', initialState.viewProperties);
+      if (initialState.viewProperties === undefined) {
+        return {
+          type: 'xy',
+          xColumn: 'time',
+          yColumn: 'value',
+          axes: {
+            x: {},
+            y: {}
+          },
+          queries: [
+            {
+              text: '',
+              hidden: false
+            }
+          ]
+        } as ViewProperties;
+      }
+
+      return {
+        ...initialState.viewProperties
+      };
+    });
+
     const sm = useCallback((vp: ViewProperties) => {
-      console.log('set to', vp);
       setViewProperties(vp);
     }, [viewProperties]);
 
@@ -22,14 +46,25 @@ const [ViewPropertiesProvider, useViewProperties] = constate(
     };
   },
   // useViewProperties
-  value => value
+  value => value,
+  // useQueries
+  value => {
+    const {
+      viewProperties: {
+        queries = []
+      }
+    } = value;
+    // const { queries = [] } = viewProperties;
+
+    return {
+      queries
+    };
+  }
 );
 
 const useLineView = () => {
   const { viewProperties, setViewProperties } = useViewProperties();
   const properties = viewProperties as XYViewProperties;
-
-  console.log('reuse', properties);
 
   const onSetXColumn = useCallback((x: string) => {
     setViewProperties({
@@ -53,7 +88,7 @@ const useLineView = () => {
   }, [properties]);
 
   const onSetHoverDimension = useCallback((hoverDimension: 'x' | 'y' | 'xy' | 'auto') => {
-    console.log('on hover set', properties)
+    console.log('on hover set', properties);
 
     setViewProperties({
       ...properties,
@@ -73,8 +108,8 @@ const useLineView = () => {
             ...prev.axes.y,
             ...upd
           }
-        },
-      } as XYViewProperties
+        }
+      } as XYViewProperties;
     });
   }, []);
 
@@ -89,12 +124,12 @@ const useLineView = () => {
         }
       }
     });*/
-    updateYAxis({label})
+    updateYAxis({ label });
   }, [properties]);
 
   const onSetYAxisBase = useCallback((base: string) => {
-    console.log(properties)
-    updateYAxis({base})
+    console.log(properties);
+    updateYAxis({ base });
     /*setViewProperties({
       ...properties,
       axes: {
@@ -108,7 +143,7 @@ const useLineView = () => {
   }, [properties]);
 
   const onSetYAxisPrefix = useCallback((prefix: string) => {
-    updateYAxis({prefix})
+    updateYAxis({ prefix });
     /*setViewProperties({
       ...properties,
       axes: {
@@ -122,7 +157,7 @@ const useLineView = () => {
   }, [properties]);
 
   const onSetYAxisSuffix = useCallback((suffix: string) => {
-    updateYAxis({suffix})
+    updateYAxis({ suffix });
     /*setViewProperties({
       ...properties,
       axes: {

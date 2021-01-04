@@ -56,7 +56,7 @@ const [DashboardProvider, useDashboard] = constate(
       update,
       onRename,
       reload: get,
-      remoteDataState: remoteDataState(loading, error),
+      remoteDataState: remoteDataState(data, error, loading),
       setCells: resetCells
     };
   },

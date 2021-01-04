@@ -1,6 +1,7 @@
 package manta_test
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"testing"
@@ -11,43 +12,86 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPanel(t *testing.T) {
-	panel := &manta.Cell{
-		Name:        "xy",
-		Description: "desc",
-		W:           0,
-		H:           2,
-		X:           4,
-		Properties: &manta.XYView{
-			Queries: []manta.Query{
-				{},
-			},
-			Type:       "xy",
-			TimeFormat: "fff",
-			Axes:       manta.Axes{},
-		},
-		/*Properties: &manta.Panel_XY{
-			XY: &manta.XYView{
-				Type:       "xy",
-				TimeFormat: "fff",
-				Axes:       manta.Axes{},
-			},
+func TestCell(t *testing.T) {
+	var id manta.ID
+	err := id.DecodeFromString("0000000000002b67")
+	require.NoError(t, err)
+
+	xyViewProperties := &manta.XYViewProperties{
+		Type:       "xy",
+		TimeFormat: "fff",
+		Axes:       manta.Axes{},
+	}
+
+	cell := &manta.Cell{
+		ID:             id,
+		Name:           "xy",
+		Description:    "desc",
+		W:              0,
+		H:              2,
+		X:              4,
+		Y:              2,
+		ViewProperties: xyViewProperties,
+
+		/*ViewProperties: &manta.Cell_XY{
+			XY: xyViewProperties,
 		},*/
 	}
 
+	/*
+		fmt.Println("i", i)
+		size := m.ViewProperties.Size()
+		fmt.Println("size", size)
+		i -= size
+		fmt.Println("i-size", i)
+		fmt.Println("data size", len(dAtA[i:]))
+	*/
+
+	t.Run("proto marshal/unmarshal", func(t *testing.T) {
+		data, err := cell.Marshal()
+		require.NoError(t, err)
+		// whole xy: 963b4410663a48680e506c853bbc5b51
+		// original: 7c98a94789c0ef6144450350d350fc0a
+		// size: 36
+		// i 36
+		// size 17
+		// i-size 19
+		// data size 17
+
+		// whole xy: 963b4410663a48680e506c853bbc5b51
+		// custom:   7c98a94789c0ef6144450350d350fc0a
+		// size 36
+		// i 36
+		// size 17
+		// i-size 19
+		// data size 17
+		fmt.Printf("%x\n", md5.Sum(data))
+
+		unmarshal := true
+
+		if unmarshal {
+			var newCell manta.Cell
+			err = newCell.Unmarshal(data)
+			require.NoError(t, err)
+		}
+	})
+
 	t.Run("marshal", func(t *testing.T) {
-		txt, err := json.MarshalIndent(panel, "", "  ")
+		txt, err := json.MarshalIndent(cell, "", "  ")
 		require.NoError(t, err)
 		fmt.Println(string(txt))
 	})
 
 	t.Run("unmarshal", func(t *testing.T) {
 		txt := `{
+"id": "0000000000002b67",
   "name": "xy",
   "description": "desc",
   "x": 4,
   "h": 2,
-  "properties": {
+"y": 2,
+"w": 0,
+  "viewProperties": {
     "type": "xy",
     "axes": {
       "x": {},
@@ -59,11 +103,12 @@ func TestPanel(t *testing.T) {
     "timeFormat": "fff"
   }
 }`
+
 		p := &manta.Cell{}
 		err := json.Unmarshal([]byte(txt), p)
 		require.NoError(t, err)
 
-		require.Equal(t, panel, p)
+		require.Equal(t, cell, p)
 	})
 }
 

@@ -24,6 +24,7 @@ lint:
 proto:
 	# protobuf 3.12.3 is required
 	protoc \
+		--experimental_allow_proto3_optional \
 		-I=./ \
         -I="${GOPATH}/src" 	\
 		-I="${GOPATH}/src/github.com/gogo/protobuf/protobuf" \

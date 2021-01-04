@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react';
 import classnames from 'classnames';
+import { useFetch } from 'use-http';
 
 // Components
 import ErrorBoundary from 'shared/components/ErrorBoundary';
@@ -9,20 +10,13 @@ import EmptyQueryView from 'shared/components/EmptyQueryView';
 import ViewSwitcher from 'shared/components/ViewSwitcher';
 
 // Types
-import { ViewProperties } from 'types/Dashboard';
-import { useFetch } from 'use-http';
-import remoteDataState from '../../utils/rds';
-import { PromResp, transformPromResp } from '../../utils/transform';
+import remoteDataState from 'utils/rds';
+import { PromResp, transformPromResp } from 'utils/transform';
+import { useViewProperties } from 'shared/useViewProperties';
 
-interface Props {
-  viewProperties: ViewProperties
-}
-
-const TimeMachineVis: React.FC<Props> = props => {
-  const {
-    viewProperties
-  } = props;
-
+const TimeMachineVis: React.FC = () => {
+  const { viewProperties } = useViewProperties();
+  console.log('vp', viewProperties)
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': false
   });
@@ -32,9 +26,9 @@ const TimeMachineVis: React.FC<Props> = props => {
     loading,
     error
   } = useFetch<PromResp>(`http://localhost:9090/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=1609486814&end=1609490414&step=14`, {}, []);
-  const rds = remoteDataState(loading, error);
+  const rds = remoteDataState(data, error, loading);
 
-  const gr = transformPromResp(data)
+  const gr = transformPromResp(data);
 
   return (
     <div className={timeMachineViewClassName}>
@@ -42,7 +36,7 @@ const TimeMachineVis: React.FC<Props> = props => {
         <ViewLoadingSpinner loading={rds} />
         <EmptyQueryView
           loading={rds}
-          queries={viewProperties.queries}
+          queries={[]}
           // error={''}
         >
           <ViewSwitcher

@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 package manta;
 
@@ -16,94 +16,94 @@ enum MatchType {
 }
 
 message Matcher {
-  MatchType type = 1;
-  string name = 2;
-  string value = 3;
+  required MatchType type = 1;
+  required string name = 2;
+  required string value = 3;
 }
 
 message Organization {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // store some information about this node
   map<string, string> annotations = 4;
 
-  string name = 5;
-  string desc = 6;
+  required string name = 5;
+  required string desc = 6;
 }
 
 message Node {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  uint64 orgID = 4 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
+  required uint64 orgID = 4 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 
-  string address = 5;
-  string hostname = 6;
-  string env = 7;
-  string status = 8;
-  string region = 9;
+  required string address = 5;
+  required string hostname = 6;
+  required string env = 7;
+  required string status = 8;
+  required string region = 9;
 
   map<string, string> annotations = 10;
 }
 
 message NotificationEndpoint {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
+  required string name = 4;
+  required string desc = 5;
 
-  string url = 6;
-  string method = 7;
+  required string url = 6;
+  required string method = 7;
   map<string, string> headers = 8;
-  string content_template = 9;
+  required string content_template = 9;
 }
 
 message User {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string nickname = 5;
+  required string name = 4;
+  required string nickname = 5;
 
   map<string, string> annotations = 6;
 }
 
 message Template {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
+  required string name = 4;
+  required string desc = 5;
 
   repeated Matcher matchers = 6 [(gogoproto.nullable) = false];
 }
 
 message Resource {
-  string type = 1 [(gogoproto.casttype) = "ResourceType"];
-  uint64 id = 2 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "ID"];
-  uint64 org_id = 3 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
+  required string type = 1 [(gogoproto.casttype) = "ResourceType"];
+  required uint64 id = 2 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "ID"];
+  required uint64 org_id = 3 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 }
 
 message Permission {
-  string action = 1 [(gogoproto.casttype) = "Action"];
-  Resource resource = 2 [(gogoproto.nullable) = false];
+  required string action = 1 [(gogoproto.casttype) = "Action"];
+  required Resource resource = 2 [(gogoproto.nullable) = false];
 }
 
 message Authorization {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  uint64 uid = 4 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
-  string token = 5;
-  string status = 6;
+  required uint64 uid = 4 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
+  required string token = 5;
+  required string status = 6;
 
   // add more about permissions
   repeated Permission permissions = 7 [(gogoproto.nullable) = false];
@@ -111,82 +111,82 @@ message Authorization {
 
 // checks
 message Threshold {
-  string type = 1;
-  double value = 2;
+  required string type = 1;
+  optional double value = 2;
 
   // for inside and outside
-  double min = 3;
-  double max = 4;
+  optional double min = 3;
+  optional double max = 4;
 }
 
 message Condition {
-  string status = 1;
-  google.protobuf.Duration pending = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
-  Threshold threshold = 3 [(gogoproto.nullable) = false];
+  required string status = 1;
+  optional google.protobuf.Duration pending = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+  optional Threshold threshold = 3 [(gogoproto.nullable) = false];
 }
 
 message Check {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  uint64 orgID = 6 [(gogoproto.casttype) = "ID"];
-  string expr = 7;
-  string status = 8;
-  string cron = 9;
+  required string name = 4;
+  required string desc = 5;
+  required uint64 orgID = 6 [(gogoproto.casttype) = "ID"];
+  required string expr = 7;
+  required string status = 8;
+  required string cron = 9;
 
   repeated Condition conditions = 10 [(gogoproto.nullable) = false];
 
-  uint64 Datasource = 11 [(gogoproto.casttype) = "ID"];
+  required uint64 Datasource = 11 [(gogoproto.casttype) = "ID"];
 }
 
 message Alert {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string status = 4;
+  required string status = 4;
   map<string, string> labels = 5 [(gogoproto.casttype) = "github.com/f1shl3gs/manta/pkg/labelset.LabelSet", (gogoproto.castkey) = "github.com/f1shl3gs/manta/pkg/labelset.LabelName", (gogoproto.castvalue) = "github.com/f1shl3gs/manta/pkg/labelset.LabelValue"];
   map<string, string> annotations = 6;
-  google.protobuf.Timestamp startsAt = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp endsAt = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp startsAt = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp endsAt = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message Inhibition {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string name = 4;
+  required string desc = 5;
+  required uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 
   // after Expiration this inhibition will not works anymore
-  google.protobuf.Timestamp expiration = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp expiration = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // match event with labels, wildcard is support for value
   repeated Matcher matchers = 8;
 }
 
 message InhibitionStatus {
-  google.protobuf.Timestamp when = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  uint64 inhibitionID = 2 [(gogoproto.customname) = "InhibitionID", (gogoproto.casttype) = "ID"];
-  string name = 3;
-  string desc = 4;
+  required google.protobuf.Timestamp when = 1 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 inhibitionID = 2 [(gogoproto.customname) = "InhibitionID", (gogoproto.casttype) = "ID"];
+  required string name = 3;
+  required string desc = 4;
 }
 
 message Acknowledgement {
-  string username = 1;
-  string desc = 2;
+  required string username = 1;
+  required string desc = 2;
 
-  google.protobuf.Timestamp when = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp when = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message EventStatus {
   // pending, firing or resolve
-  string phase = 1;
+  required string phase = 1;
 
   // acknowledgements
   repeated Acknowledgement acks = 2 [(gogoproto.nullable) = false];
@@ -196,117 +196,117 @@ message EventStatus {
 }
 
 message Event {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp start = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp end = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp start = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp end = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4 ;
-  uint64 orgID = 5 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string name = 4 ;
+  required uint64 orgID = 5 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 
   map<string, string> labels = 6;
   map<string, string> annotations = 7;
 
-  EventStatus status = 8 [(gogoproto.nullable) = false];
+  optional EventStatus status = 8 [(gogoproto.nullable) = false];
 }
 
 message Notification {
   message Result {
-    string endpoint = 1;
-    string error = 2;
+    required string endpoint = 1;
+    required string error = 2;
   }
 
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  uint64 uid = 2 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required uint64 uid = 2 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   repeated uint64 events = 4;
   repeated Result results = 5 [(gogoproto.nullable) = false];
 }
 
 message Collection {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  uint64 orgID = 6 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
+  required string name = 4;
+  required string desc = 5;
+  required uint64 orgID = 6 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 
   // not decided now
-  string type = 7;
-  string content = 8;
+  required string type = 7;
+  required string content = 8;
 }
 
 message Task {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   // store some data for this task
   map<string, string> annotations = 4;
 
-  string type = 5;
-  string status = 6;
-  uint64 orgID = 7 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
-  uint64 ownerID = 8 [(gogoproto.customname) = "OwnerID", (gogoproto.casttype) = "ID"];
-  string cron = 9;
+  required string type = 5;
+  required string status = 6;
+  required uint64 orgID = 7 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required uint64 ownerID = 8 [(gogoproto.customname) = "OwnerID", (gogoproto.casttype) = "ID"];
+  required string cron = 9;
 
   // status
-  google.protobuf.Timestamp latestCompleted = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp latestScheduled = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp latestSuccess = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp latestFailure = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  string lastRunStatus = 14;
-  string lastRunError = 15;
+  required google.protobuf.Timestamp latestCompleted = 10 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp latestScheduled = 11 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp latestSuccess = 12 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp latestFailure = 13 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required string lastRunStatus = 14;
+  required string lastRunError = 15;
 }
 
 message RunLog {
-  uint64 runID = 1 [(gogoproto.casttype) = "ID"];
-  string time = 2;
-  string message = 3;
+  required uint64 runID = 1 [(gogoproto.casttype) = "ID"];
+  required string time = 2;
+  required string message = 3;
 }
 
 message Run {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  uint64 taskID = 2 [(gogoproto.casttype) = "ID"];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required uint64 taskID = 2 [(gogoproto.casttype) = "ID"];
 
-  google.protobuf.Timestamp scheduledFor = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp runAt = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp startedAt = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp finishedAt = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp scheduledFor = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp runAt = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp startedAt = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp finishedAt = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string status = 7;
+  required string status = 7;
   repeated RunLog logs = 8 [(gogoproto.nullable) = false];
 }
 
 message ScrapeTarget {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  uint64 orgID = 2 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
-  string target = 5;
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required uint64 orgID = 2 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string target = 5;
   map<string, string> labels = 6;
 }
 
 message Loki {
-  string url = 1;
+  required string url = 1;
 }
 
 message Jaeger {
-  string url = 1;
+  required string url = 1;
 }
 
 message Prometheus {
-  string url = 1;
+  required string url = 1;
 }
 
 message Datasource {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  string type = 6;
-  uint64 orgID = 7 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string name = 4;
+  required string desc = 5;
+  required string type = 6;
+  required uint64 orgID = 7 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 
   oneof config {
     Loki loki = 8;
@@ -317,127 +317,136 @@ message Datasource {
 
 // dashboard
 message Query {
-  string key = 1;
-  string expr = 2;
-  string legend = 3;
+  required string key = 1;
+  required string expr = 2;
+  required string legend = 3;
 }
 
 message YAxis {
-  string prefix = 1;
-  string suffix = 2;
-  string format = 3;
+  required string prefix = 1;
+  required string suffix = 2;
+  required string format = 3;
 }
 
 message XAxis {
-  string prefix = 1;
-  string suffix = 2;
-  string format = 3;
+  required string prefix = 1;
+  required string suffix = 2;
+  required string format = 3;
 }
 
 message Axis {
-  string Bounds = 1;
-  string label = 2;
-  string prefix = 3;
-  string suffix = 4;
+  required string Bounds = 1;
+  required string label = 2;
+  required string prefix = 3;
+  required string suffix = 4;
 }
 
 message Axes {
-  Axis x = 1 [(gogoproto.nullable) = false];
-  Axis y = 2 [(gogoproto.nullable) = false];
+  optional Axis x = 1 [(gogoproto.nullable) = false];
+  optional Axis y = 2 [(gogoproto.nullable) = false];
 }
 
-message GaugeView {
-  string type = 1;
+message GaugeViewProperties {
+  required string type = 1;
 
-  Axes axes = 2 [(gogoproto.nullable) = false];
+  optional Axes axes = 2 [(gogoproto.nullable) = false];
   repeated Query queries = 3 [(gogoproto.nullable) = false];
 }
 
-message XYView {
-  string type = 1;
+message XYViewProperties {
+  required string type = 1;
 
-  Axes axes = 2 [(gogoproto.nullable) = false];
+  optional Axes axes = 2 [(gogoproto.nullable) = false];
   repeated Query queries = 3 [(gogoproto.nullable) = false];
 
-  string timeFormat = 4;
+  required string timeFormat = 4;
+  required string xColumn = 5;
+  required string yColumn = 6;
+  required string hoverDimension = 7;
+  required string position = 8;
+  required string geom = 9;
 }
 
 message SingleStatView {
-  string type = 1;
+  required string type = 1;
 }
 
 message LinePlusSingleStatView {
-  string type = 1;
+  required string type = 1;
 }
 
 message MarkdownView {
-  string type = 1;
-  string content = 2;
+  required string type = 1;
+  required string content = 2;
 }
 
 message Cell {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
 
-  string name = 2;
-  string description = 3;
-  int32 x = 4 [(gogoproto.jsontag) = "x"];
-  int32 y = 5 [(gogoproto.jsontag) = "y"];
-  int32 w = 6;
-  int32 h = 7;
+  optional string name = 2;
+  optional string description = 3;
+  optional int32 x = 4 [(gogoproto.jsontag) = "x"];
+  optional int32 y = 5 [(gogoproto.jsontag) = "y"];
+  optional int32 w = 6;
+  optional int32 h = 7;
 
-  oneof properties {
-    GaugeView gauge = 8;
-    XYView xy = 9 [(gogoproto.customname) = "XY"];
-    SingleStatView singleStat = 10;
-    LinePlusSingleStatView linePlusSingleStat = 11;
-    MarkdownView markdown = 12;
+  optional int32 minH = 8 [(gogoproto.nullable) = true];
+  optional int32 minW = 9 [(gogoproto.nullable) = true];
+  optional int32 maxW = 10 [(gogoproto.nullable) = true];
+
+  oneof viewProperties {
+    GaugeViewProperties gauge = 11;
+    XYViewProperties xy = 12 [(gogoproto.customname) = "XY"];
+    SingleStatView singleStat = 13;
+    LinePlusSingleStatView linePlusSingleStat = 14;
+    MarkdownView markdown = 15;
   };
 }
 
 message Dashboard {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  optional string name = 4;
+  optional string desc = 5;
+  required uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 
   repeated Cell cells = 7 [(gogoproto.nullable) = false];
 }
 
 message Change {
-  string type = 1;
-  uint64 resource_id = 2 [(gogoproto.customname) = "ResourceID", (gogoproto.casttype) = "ID"];
-  string resource_type = 3;
-  uint64 organization_id = 4 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
-  string organization = 5;
-  uint64 user_id = 6 [(gogoproto.customname) = "UserID", (gogoproto.casttype) = "ID"];
-  string username = 7;
-  bytes data = 8;
-  google.protobuf.Timestamp time = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required string type = 1;
+  required uint64 resource_id = 2 [(gogoproto.customname) = "ResourceID", (gogoproto.casttype) = "ID"];
+  required string resource_type = 3;
+  required uint64 organization_id = 4 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string organization = 5;
+  required uint64 user_id = 6 [(gogoproto.customname) = "UserID", (gogoproto.casttype) = "ID"];
+  required string username = 7;
+  optional bytes data = 8;
+  required google.protobuf.Timestamp time = 9 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message UserResourceMapping {
-  uint64 user_id = 1 [(gogoproto.customname) = "UserID", (gogoproto.casttype) = "ID"];
-  string user_type = 2 [(gogoproto.customname) = "UserType", (gogoproto.casttype) = "string"];
-  int32 mapping_type = 3 [(gogoproto.customname) = "MappingType", (gogoproto.casttype) = "MappingType"];
-  string resource_type = 4 [(gogoproto.customname) = "ResourceType", (gogoproto.casttype) = "ResourceType"];
-  uint64 resource_id = 5 [(gogoproto.customname) = "ResourceID", (gogoproto.casttype) = "ID"];
+  required uint64 user_id = 1 [(gogoproto.customname) = "UserID", (gogoproto.casttype) = "ID"];
+  required string user_type = 2 [(gogoproto.customname) = "UserType", (gogoproto.casttype) = "string"];
+  required int32 mapping_type = 3 [(gogoproto.customname) = "MappingType", (gogoproto.casttype) = "MappingType"];
+  required string resource_type = 4 [(gogoproto.customname) = "ResourceType", (gogoproto.casttype) = "ResourceType"];
+  required uint64 resource_id = 5 [(gogoproto.customname) = "ResourceID", (gogoproto.casttype) = "ID"];
 }
 
 message Otcl {
-  uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
-  uint64 orgID = 6 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
+  required string name = 4;
+  required string desc = 5;
+  required uint64 orgID = 6 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 
   // not decided now
-  string type = 7;
-  string content = 8;
+  required string type = 7;
+  required string content = 8;
 }
 
 // todo: AlertAction

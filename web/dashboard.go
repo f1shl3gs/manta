@@ -34,6 +34,8 @@ func NewDashboardService(h *DashboardHandler) {
 	h.HandlerFunc(http.MethodGet, DashboardCellIDPath, h.handleGetCell)
 	h.HandlerFunc(http.MethodPut, DashboardCellPrefix, h.handleReplaceDashboardCells)
 	h.HandlerFunc(http.MethodPost, DashboardIDPath, h.handleUpdate)
+	h.HandlerFunc(http.MethodPatch, DashboardCellIDPath, h.handleUpdateCell)
+	h.HandlerFunc(http.MethodDelete, DashboardCellIDPath, h.handleDeleteCell)
 }
 
 func (h *DashboardHandler) handleList(w http.ResponseWriter, r *http.Request) {
@@ -281,4 +283,61 @@ func (h *DashboardHandler) handleUpdate(w http.ResponseWriter, r *http.Request) 
 		logEncodingError(h.logger, r, err)
 		return
 	}
+}
+
+func (h *DashboardHandler) handleUpdateCell(w http.ResponseWriter, r *http.Request) {
+	var (
+		udp manta.DashboardCellUpdate
+		ctx = r.Context()
+	)
+
+	dashboardID, err := idFromURI(r, "id")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cellID, err := idFromURI(r, "cellID")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&udp)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellID, udp)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *DashboardHandler) handleDeleteCell(w http.ResponseWriter, r *http.Request) {
+	var ctx = r.Context()
+
+	dashboardID, err := idFromURI(r, "id")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cellID, err := idFromURI(r, "cellID")
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.dashboardService.RemoveDashboardCell(ctx, dashboardID, cellID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

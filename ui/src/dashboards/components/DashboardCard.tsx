@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentColor, IconFont, ResourceCard } from '@influxdata/clockface';
 import { useHistory } from 'react-router-dom';
-import { useOrgID } from 'shared/hooks/useOrg';
+import { useOrgID } from 'shared/useOrg';
 import Context from 'components/context_menu/Context';
 
 interface Props {

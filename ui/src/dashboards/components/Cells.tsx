@@ -14,9 +14,10 @@ const LAYOUT_MARGIN = 4;
 const layout = (cells: Cell[]): Layout[] => {
   return cells.map((c) => {
     return {
+      ...c,
       i: c.id,
-      w: c.w || 3,
-      h: c.h || 3,
+      w: c.w || 0,
+      h: c.h || 0,
       x: c.x || 0,
       y: c.y || 0
     };
@@ -29,15 +30,17 @@ const eventHandler = () => {
 
 const Cells: React.FC = () => {
   const { cells, setCells } = useDashboard();
-/*
+  /*
 
-  useEffect(() => {
-    window.addEventListener('resize', eventHandler);
-    return () => {
-      window.removeEventListener('resize', eventHandler);
-    };
-  });
-*/
+    useEffect(() => {
+      window.addEventListener('resize', eventHandler);
+      return () => {
+        window.removeEventListener('resize', eventHandler);
+      };
+    });
+  */
+
+  console.log('layout', layout(cells));
 
   return (
     <>
@@ -49,10 +52,14 @@ const Cells: React.FC = () => {
         useCSSTransforms={false}
         containerPadding={[0, 0]}
         margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
-        onLayoutChange={(next) => setCells(next)}
+        onLayoutChange={(next) => {
+          console.log('next', next);
+          setCells(next);
+        }}
         draggableHandle={'.cell--draggable'}
         isDraggable
         isResizable
+        measureBeforeMount={true}
       >
         {cells.map((cell: Cell) => (
           <div key={cell.id} className="cell">

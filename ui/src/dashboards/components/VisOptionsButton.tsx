@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Button, ComponentColor, IconFont } from '@influxdata/clockface';
-import { useViewEditor } from './useViewEditor';
+import { useViewOption } from '../../shared/useViewOption';
 
 const VisOptionsButton: React.FC = () => {
-  const { isViewingVisOptions, onToggleVisOptions } = useViewEditor();
+  const { isViewingVisOptions, onToggleVisOptions } = useViewOption();
 
   const color = isViewingVisOptions ?
     ComponentColor.Primary : ComponentColor.Default;

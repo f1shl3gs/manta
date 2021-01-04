@@ -4,7 +4,7 @@ import { Route, Switch, useParams, withRouter } from 'react-router-dom';
 import { SpinnerContainer, TechnoSpinner } from '@influxdata/clockface';
 import Otcl from 'otcls';
 
-import { OrgProvider } from 'shared/hooks/useOrg';
+import { OrgProvider } from 'shared/useOrg';
 import Todo from 'components/Todo';
 import TracePage from 'traces';
 import remoteDataState from 'utils/rds';
@@ -18,7 +18,7 @@ const Org: React.FC = () => {
   const { orgID } = useParams<{ orgID: string }>();
 
   const { data, loading, error } = useFetch(`/api/v1/orgs/${orgID}`, {}, []);
-  const rds = remoteDataState(loading, error);
+  const rds = remoteDataState(data, error, loading);
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>

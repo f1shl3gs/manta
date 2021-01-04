@@ -14,7 +14,7 @@ const useEditor = () => {
   const {reload} = useOtcls()
   const history = useHistory()
   const {otcl, setOtcl} = useOtcl()
-  const {loading, error, patch} = useFetch(
+  const {data, loading, error, patch} = useFetch(
     `/api/v1/otcls/${otclID}`,
     {
       cachePolicy: CachePolicies.NO_CACHE,
@@ -35,7 +35,7 @@ const useEditor = () => {
         history.goBack()
       })
     },
-    rds: remoteDataState(loading, error),
+    rds: remoteDataState(data, error, loading),
   }
 }
 

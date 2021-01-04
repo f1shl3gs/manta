@@ -2,7 +2,12 @@
 import React, { useState } from 'react';
 
 // Components
-import { Controlled as ReactCodeMirror } from 'react-codemirror2';
+// import { Controlled as ReactCodeMirror } from 'react-codemirror2';
+import QueryTabs from './QueryTabs';
+import { FlexBox } from '@influxdata/clockface';
+import SubmitQueryButton from './SubmitQueryButton';
+import QueryEditor from './QueryEditor';
+import { QueriesProvider, useQueries } from './useQueries';
 
 // Constants
 const options = {
@@ -15,18 +20,23 @@ const options = {
 };
 
 const TimeMachineQueries: React.FC = () => {
-  const [content, setContent] = useState('');
 
   return (
-    <div style={{ height: '100%' }}>
-      <ReactCodeMirror
-        autoCursor={true}
-        autoScroll={true}
-        value={content}
-        options={options}
-        onBeforeChange={(editor, data, value) => setContent(value)}
-      />
-    </div>
+    <QueriesProvider>
+      <div className={'time-machine-queries'}>
+        <div className={'time-machine-queries--controls'}>
+          <QueryTabs />
+
+          <FlexBox>
+            <SubmitQueryButton />
+          </FlexBox>
+        </div>
+
+        <div className={'time-machine-queries--body'}>
+          <QueryEditor />
+        </div>
+      </div>
+    </QueriesProvider>
   );
 };
 

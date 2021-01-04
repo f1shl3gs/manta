@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, Form, Dropdown } from '@influxdata/clockface';
 import ColumnSelector from '../ColumnSelector';
 
-import { useLineView } from './useView';
+import { useLineView } from 'shared/useViewProperties';
 
 import TimeFormatSetting from './TimeFormatSetting';
 import YAxisTitle from './YAxisTitle';

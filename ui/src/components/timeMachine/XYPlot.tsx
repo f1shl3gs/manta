@@ -10,7 +10,7 @@ import {
 // Types
 import { XYViewProperties } from 'types/Dashboard';
 import { getFormatter } from '../../utils/vis';
-import { useLineView } from './useView';
+import { useLineView } from '../../shared/useViewProperties';
 
 interface Props {
   children: (config: Config) => JSX.Element

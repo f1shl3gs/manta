@@ -51,7 +51,7 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
     return {
       reload: value.reload,
       otcls: data,
-      rds: remoteDataState(loading, error),
+      rds: remoteDataState(data, error, loading),
     }
   },
   // useOtcl

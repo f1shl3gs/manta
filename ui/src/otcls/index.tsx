@@ -13,7 +13,7 @@ import OtclEdit from './component/OtclEdit';
 import OtclCreate from './component/OtclCreate';
 
 import { OtclProvider } from './state';
-import { useOrgID } from 'shared/hooks/useOrg';
+import { useOrgID } from 'shared/useOrg';
 
 const pageContentsClassName = `alerting-index alerting-index__${'check'}`;
 const title = 'OpenTelemetry Collector';

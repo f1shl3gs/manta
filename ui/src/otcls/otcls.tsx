@@ -16,7 +16,7 @@ import {
 } from '@influxdata/clockface';
 
 // Hooks
-import { useOrgID } from 'shared/hooks/useOrg';
+import { useOrgID } from 'shared/useOrg';
 import { useOtcls } from './state';
 import { useFetch } from 'use-http';
 import { useHistory } from 'react-router-dom';

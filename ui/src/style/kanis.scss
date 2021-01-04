@@ -22,6 +22,8 @@
 @import "src/dashboards/components/ViewEditorOverlay.scss";
 @import "src/style/codemirror/CodeMirror.scss";
 @import "src/style/codemirror/CodeMirrorTheme.scss";
+@import "src/components/timeMachine/Queries.scss";
+@import "src/components/timeMachine/QueryTab.scss";
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {
