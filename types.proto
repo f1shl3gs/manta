@@ -318,7 +318,7 @@ message Datasource {
 // dashboard
 message Query {
   required string key = 1;
-  required string expr = 2;
+  required string text = 2;
   required string legend = 3;
 }
 
@@ -335,7 +335,7 @@ message XAxis {
 }
 
 message Axis {
-  required string Bounds = 1;
+  required string bounds = 1;
   required string label = 2;
   required string prefix = 3;
   required string suffix = 4;
@@ -384,7 +384,7 @@ message Cell {
   required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
 
   optional string name = 2;
-  optional string description = 3;
+  optional string desc = 3;
   optional int32 x = 4 [(gogoproto.jsontag) = "x"];
   optional int32 y = 5 [(gogoproto.jsontag) = "y"];
   optional int32 w = 6;

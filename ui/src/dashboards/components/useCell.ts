@@ -8,19 +8,18 @@ import { Cell } from 'types/Dashboard';
 // Hooks
 import { useParams } from 'react-router-dom';
 import { CachePolicies, useFetch } from 'use-http';
-import remoteDataState from '../../utils/rds';
+import remoteDataState from 'utils/rds';
 
 const [CellProvider, useCell] = constate(
   () => {
     const [cell, setCell] = useState<Cell>();
 
     const { cellID, dashboardID } = useParams<{ cellID: string, dashboardID: string }>();
-    const { data, loading, error, patch, get } = useFetch(`/api/v1/dashboards/${dashboardID}/cells/${cellID}?a=b`, {
+    const { loading, error, patch, get } = useFetch(`/api/v1/dashboards/${dashboardID}/cells/${cellID}?a=b`, {
       cachePolicy: CachePolicies.NO_CACHE
     });
 
     useEffect(() => {
-      console.log('get')
       get()
         .then(resp => {
           if (resp.viewProperties === undefined) {
@@ -35,27 +34,29 @@ const [CellProvider, useCell] = constate(
               queries: [
                 {
                   text: '',
-                  hidden: false,
+                  hidden: false
                 }
               ]
-            }
+            };
           }
 
+          console.log('set done', resp);
           setCell(resp);
         })
         .catch(err => {
-          console.log('get failed ---- ', err)
+          console.log('get failed ---- ', err);
         })
         .finally(() => {
-          console.log('get done')
+
         });
     }, []);
 
     const updateCell = useCallback((next: Cell) => {
+      setCell(next);
       return patch(next);
     }, [cell]);
 
-    console.log('cell', cell)
+    console.log('rds', remoteDataState(cell, error, loading), 'cell', cell);
 
     return {
       cell,
@@ -63,7 +64,7 @@ const [CellProvider, useCell] = constate(
       loading,
       error,
       updateCell,
-      remoteDataState: remoteDataState(data, error, loading)
+      remoteDataState: remoteDataState(cell, error, loading)
     };
   },
   // useCell

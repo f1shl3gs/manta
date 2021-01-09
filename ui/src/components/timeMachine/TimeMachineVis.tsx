@@ -9,23 +9,27 @@ import ViewLoadingSpinner from 'shared/components/ViewLoadingSpinner';
 import EmptyQueryView from 'shared/components/EmptyQueryView';
 import ViewSwitcher from 'shared/components/ViewSwitcher';
 
+// Hooks
+import { useViewProperties } from 'shared/useViewProperties';
+import { useAutoRefresh } from '../../shared/useAutoRefresh';
+
 // Types
 import remoteDataState from 'utils/rds';
 import { PromResp, transformPromResp } from 'utils/transform';
-import { useViewProperties } from 'shared/useViewProperties';
+import { useQueries } from './useQueries';
 
 const TimeMachineVis: React.FC = () => {
   const { viewProperties } = useViewProperties();
-  console.log('vp', viewProperties)
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': false
   });
+  const { start, end, step } = useAutoRefresh();
 
   const {
     data,
     loading,
     error
-  } = useFetch<PromResp>(`http://localhost:9090/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=1609486814&end=1609490414&step=14`, {}, []);
+  } = useFetch<PromResp>(`http://localhost:9090/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=${start}&end=${end}&step=${step}`, {}, []);
   const rds = remoteDataState(data, error, loading);
 
   const gr = transformPromResp(data);
@@ -37,10 +41,11 @@ const TimeMachineVis: React.FC = () => {
         <EmptyQueryView
           loading={rds}
           queries={[]}
+          hasResults={gr?.table.length !== 0}
           // error={''}
         >
           <ViewSwitcher
-            giraffeResult={gr}
+            giraffeResult={gr!}
             properties={viewProperties}
           />
         </EmptyQueryView>

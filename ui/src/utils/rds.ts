@@ -1,4 +1,4 @@
-import {RemoteDataState} from '@influxdata/clockface'
+import { RemoteDataState } from '@influxdata/clockface';
 
 const remoteDataState = (data: any, error: any, loading: boolean) => {
   if (loading) {
@@ -11,9 +11,9 @@ const remoteDataState = (data: any, error: any, loading: boolean) => {
 
   if (data !== undefined) {
     return RemoteDataState.Done;
+  } else {
+    return RemoteDataState.Loading
   }
-
-  return RemoteDataState.NotStarted;
 };
 
 export default remoteDataState

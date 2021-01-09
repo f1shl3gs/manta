@@ -12,6 +12,7 @@ interface Props {
   errorMessage?: string
   fallbackNote?: string
   queries?: DashboardQuery[]
+  hasResults: boolean
 }
 
 const EmptyQueryView: React.FC<Props> = props => {
@@ -19,34 +20,42 @@ const EmptyQueryView: React.FC<Props> = props => {
     loading,
     queries,
     errorMessage,
-    fallbackNote
+    fallbackNote,
+    hasResults
   } = props;
 
   if (queries && !queries.length) {
     return <EmptyGraphMessage
       message={'Looks like you don’t have any queries. Be a lot cooler if you did!'}
-    />
+    />;
   }
 
-  if (errorMessage) {
+  if (errorMessage !== undefined) {
     return <EmptyGraphError
       message={errorMessage}
-    />
+    />;
   }
 
   if (loading === RemoteDataState.Loading) {
-    return <EmptyGraphMessage/>
+    return <EmptyGraphMessage />;
   }
 
   if (fallbackNote) {
-    return <div>{fallbackNote}</div>
+    return <div>{fallbackNote}</div>;
+  }
+
+  if (!hasResults) {
+    return <EmptyGraphMessage
+      message="No Results"
+      testID="empty-graph--no-results"
+    />;
   }
 
   return (
     <>
       {props.children}
     </>
-  )
-}
+  );
+};
 
-export default EmptyQueryView
+export default EmptyQueryView;

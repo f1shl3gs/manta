@@ -17,12 +17,13 @@ export type PromResp = {
   }
 }
 
-export const transformPromResp = (resp?: PromResp): FromFluxResult => {
+export const transformPromResp = (resp?: PromResp): FromFluxResult | undefined => {
   if (!resp) {
-    return {
-      table: fromRows([]),
-      fluxGroupKeyUnion: []
-    };
+    return undefined
+  }
+
+  if (resp.status !== 'success') {
+    return undefined
   }
 
   const rows = resp.data.result.map((item: Result) => {

@@ -24,8 +24,8 @@ const DashboardPage: React.FC = () => {
   const { cells, remoteDataState } = useDashboard();
 
   return (
-    <AutoRefreshProvider>
-      <TimeRangeProvider>
+    <TimeRangeProvider>
+      <AutoRefreshProvider>
         <Page titleTag={'Dashboard'}>
           <SpinnerContainer loading={remoteDataState} spinnerComponent={<TechnoSpinner />}>
             <DashboardHeader />
@@ -52,8 +52,8 @@ const DashboardPage: React.FC = () => {
             component={ViewEditorOverlay}
           />
         </Switch>
-      </TimeRangeProvider>
-    </AutoRefreshProvider>
+      </AutoRefreshProvider>
+    </TimeRangeProvider>
   );
 };
 

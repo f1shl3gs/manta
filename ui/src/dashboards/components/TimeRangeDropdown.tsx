@@ -63,7 +63,6 @@ const TimeRangeDropdown: React.FC = () => {
           <DateRangePicker
             timeRange={timeRange}
             onSetTimeRange={tr => {
-              console.log('tr', tr);
               setTimeRange(tr)
             }}
             onClose={() => {

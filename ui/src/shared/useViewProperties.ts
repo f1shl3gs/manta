@@ -12,7 +12,6 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
   (initialState: State) => {
 
     const [viewProperties, setViewProperties] = useState<ViewProperties>(() => {
-      console.log('initial state', initialState.viewProperties);
       if (initialState.viewProperties === undefined) {
         return {
           type: 'xy',

@@ -8,8 +8,6 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
   () => {
     const { viewProperties, setViewProperties } = useViewProperties();
     const { queries = [{text: '', hidden: false}] } = viewProperties;
-    console.log('viewProperties', viewProperties);
-    console.log('queries', queries)
 
     const setQueries = (queries: DashboardQuery[]) => {
       // @ts-ignore

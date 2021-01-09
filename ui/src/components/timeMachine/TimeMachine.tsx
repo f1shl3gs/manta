@@ -10,7 +10,8 @@ import ViewOptions from './ViewOptions';
 
 // Types
 import { ViewProperties } from 'types/Dashboard';
-import { useViewOption, ViewOptionProvider } from '../../shared/useViewOption';
+import { useViewOption } from 'shared/useViewOption';
+import { QueriesProvider } from './useQueries';
 
 const INITIAL_RESIZER_HANDLE = 0.5;
 
@@ -27,7 +28,7 @@ const TimeMachine: React.FC<Props> = (props) => {
   });
 
   return (
-    <>
+    <QueriesProvider>
       {isViewingVisOptions && <ViewOptions />}
 
       <div className={containerClassName}>
@@ -51,7 +52,7 @@ const TimeMachine: React.FC<Props> = (props) => {
           </DraggableResizer.Panel>
         </DraggableResizer>
       </div>
-    </>
+    </QueriesProvider>
   );
 };
 

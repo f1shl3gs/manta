@@ -1,16 +1,16 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import constate from 'constate';
 import { useParams } from 'react-router-dom';
 import { CachePolicies, useFetch } from 'use-http';
 
 import remoteDataState from '../../utils/rds';
-import { Cells } from '../../types/Dashboard';
+import { Cells, Dashboard } from '../../types/Dashboard';
 import { Layout } from 'react-grid-layout';
 
 const [DashboardProvider, useDashboard] = constate(
   () => {
     const { dashboardID } = useParams<{ dashboardID: string }>();
-    const { data, loading, error, get } = useFetch(`/api/v1/dashboards/${dashboardID}`, {
+    const { data, loading, error, get } = useFetch<Dashboard>(`/api/v1/dashboards/${dashboardID}`, {
       cachePolicy: CachePolicies.NO_CACHE
     }, []);
 
@@ -36,28 +36,31 @@ const [DashboardProvider, useDashboard] = constate(
 
     // resetCells
     const { put } = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {});
-    const resetCells = useCallback((layouts: Layout[]) => {
+    const onLayoutChange = useCallback((layouts: Layout[]) => {
       const cells = layouts.map((l) => {
+        const cell = data?.cells.find(item => item.id == l.i);
+
         return {
           id: l.i,
           x: l.x,
           y: l.y,
           w: l.w,
-          h: l.h
+          h: l.h,
+          viewProperties: cell?.viewProperties
         };
       });
 
       return put(cells);
-    }, []);
+    }, [data]);
 
     return {
       ...data,
       addCell,
       update,
       onRename,
+      onLayoutChange,
       reload: get,
       remoteDataState: remoteDataState(data, error, loading),
-      setCells: resetCells
     };
   },
   // useDashboard
