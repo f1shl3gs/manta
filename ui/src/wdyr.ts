@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const enable = true
+const enable = false
 
 if (process.env.NODE_ENV === 'development' && enable) {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -11,11 +11,8 @@ if (process.env.NODE_ENV === 'development' && enable) {
     trackHooks: true,
     trackExtraHooks: [],
     include: [
-      /DashboardHeader/,
-      /DashboardPage/
+      /RenamablePageTitle/,
     ],
-    exclude: [
-      /e/
-    ]
+    exclude: []
   });
 }

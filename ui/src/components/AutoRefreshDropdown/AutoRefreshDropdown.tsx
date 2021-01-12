@@ -50,7 +50,7 @@ interface Props {
 
 const AutoRefreshDropdown: React.FC<Props> = (props) => {
   const { options } = props;
-  const { autoRefresh, setAutoRefresh } = useAutoRefresh();
+  const { autoRefresh, setAutoRefresh, refresh } = useAutoRefresh();
   const [selected, setSelected] = useState(AutoRefreshDropdownOptions[3]);
   const paused = selected.seconds === 0;
   const dropdownWidthPixels = paused ? DROPDOWN_WIDTH_COLLAPSED : DROPDOWN_WIDTH_FULL;
@@ -114,6 +114,7 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
         <SquareButton
           icon={IconFont.Refresh}
           className={'autorefresh-dropdown--pause'}
+          onClick={refresh}
         />
       )}
     </div>

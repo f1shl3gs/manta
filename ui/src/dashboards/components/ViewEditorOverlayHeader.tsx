@@ -15,6 +15,7 @@ import { useCell } from './useCell';
 import { useViewProperties } from '../../shared/useViewProperties';
 import { Cell } from '../../types/Dashboard';
 import { useDashboard } from './useDashboard';
+import ViewTypeDropdown from '../../components/timeMachine/ViewTypeDropdown';
 
 const saveButtonClass = 'veo-header--save-cell-button';
 
@@ -67,7 +68,7 @@ const ViewEditorOverlayHeader: React.FC = (props) => {
 
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
-          <Button text={'ViewTypeDropdown'} />
+          <ViewTypeDropdown />
           <VisOptionsButton />
         </Page.ControlBarLeft>
 

@@ -7,7 +7,7 @@ import { useViewProperties } from 'shared/useViewProperties';
 const [QueriesProvider, useQueries, useActiveQuery] = constate(
   () => {
     const { viewProperties, setViewProperties } = useViewProperties();
-    const { queries = [{text: '', hidden: false}] } = viewProperties;
+    const { queries = [{ text: '', hidden: false }] } = viewProperties;
 
     const setQueries = (queries: DashboardQuery[]) => {
       // @ts-ignore

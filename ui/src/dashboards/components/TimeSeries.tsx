@@ -30,9 +30,6 @@ const TimeSeries: React.FC<Props> = props => {
   const url = `http://localhost:9090/api/v1/query_range`;
   const { get, loading, error } = useFetch(url, {
     cachePolicy: CachePolicies.NO_CACHE,
-    onError: () => {
-
-    }
   });
 
   const fetch = useCallback(() => {

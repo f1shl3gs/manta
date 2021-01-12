@@ -24,6 +24,7 @@ const TimeMachineVis: React.FC = () => {
     'time-machine--view__empty': false
   });
   const { start, end, step } = useAutoRefresh();
+  const {queries} = useQueries();
 
   const {
     data,
@@ -34,13 +35,15 @@ const TimeMachineVis: React.FC = () => {
 
   const gr = transformPromResp(data);
 
+  console.log('queries', queries)
+
   return (
     <div className={timeMachineViewClassName}>
       <ErrorBoundary>
         <ViewLoadingSpinner loading={rds} />
         <EmptyQueryView
           loading={rds}
-          queries={[]}
+          queries={queries}
           hasResults={gr?.table.length !== 0}
           // error={''}
         >

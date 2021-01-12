@@ -1,3 +1,5 @@
+import { DashboardColor } from './colors';
+
 export interface Axis {
   bounds?: string[]
   label?: string
@@ -36,7 +38,7 @@ export interface DecimalPlaces {
   digits?: number
 }
 
-export interface GaugeProperties {
+export interface GaugeViewProperties {
   type: 'gauge'
   note?: string
   prefix: string
@@ -44,9 +46,111 @@ export interface GaugeProperties {
   legend: Legend
   decimalPlaces: DecimalPlaces
   queries: DashboardQuery[]
+  colors: DashboardColor[]
 }
 
-export type ViewProperties = XYViewProperties | GaugeProperties
+export interface SingleStatViewProperties {
+  type: 'single-stat'
+  queries: DashboardQuery[]
+  colors: DashboardColor[]
+  note: string
+  showNoteWhenEmpty: boolean
+  prefix: string
+  tickPrefix: string
+  suffix: string
+  tickSuffix: string
+  legend: Legend
+  decimalPlaces: DecimalPlaces
+
+}
+
+export interface HistogramViewProperties {
+  type: 'histogram'
+  queries: DashboardQuery[]
+  note: string
+  showNoteWhenEmpty: boolean
+  xColumn: string
+  fillColumns: string[]
+  xDomain: number[]
+  xAxisLabel: string
+  position: 'overlaid' | 'stacked'
+}
+
+export interface MarkdownViewProperties {
+  type: 'markdown'
+  note: string
+
+  // we don't need this actually
+  queries: DashboardQuery[]
+}
+
+export interface BandViewProperties {
+  type: 'band'
+  timeFormat?: string
+  queries: DashboardQuery[]
+  note: string
+  showNoteWhenEmpty: boolean
+  axes: Axes
+  legend: Legend
+  xColumn?: string
+  hoverDimension?: 'auto' | 'x' | 'y' | 'xy'
+  geom: XYGeom
+}
+
+export interface TableViewProperties {
+  type: 'table'
+  queries: DashboardQuery[]
+  note: string
+  showNoteWhenEmpty: boolean
+  tableOptions: {
+    verticalTimeAxis?: boolean
+  }
+  timeFormat: string
+  decimalPlaces: DecimalPlaces
+}
+
+export interface ScatterViewProperties {
+  type: 'scatter'
+  timeFormat?: string
+  queries: DashboardQuery[]
+  note: string
+  showNoteWhenEmpty: boolean
+  xColumn: string
+  xPrefix: string
+  xSuffix: string
+  yColumn: string
+  yPrefix: string
+  ySuffix: string
+}
+
+export interface LinePlusSingleStatViewProperties {
+  type: 'line-plus-single-stat',
+  queries: DashboardQuery[]
+}
+
+export interface MosaicViewProperties {
+  type: 'mosaic'
+  queries: DashboardQuery[]
+}
+
+export interface HeatmapViewProperties {
+  type: 'heatmap'
+  queries: DashboardQuery[]
+}
+
+export type ViewProperties =
+  XYViewProperties |
+  GaugeViewProperties |
+  SingleStatViewProperties |
+  HistogramViewProperties |
+  MarkdownViewProperties |
+  BandViewProperties |
+  TableViewProperties |
+  ScatterViewProperties |
+  LinePlusSingleStatViewProperties |
+  MosaicViewProperties |
+  HeatmapViewProperties
+
 
 export type ViewType = ViewProperties['type']
 

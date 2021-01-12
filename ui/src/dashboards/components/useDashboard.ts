@@ -41,12 +41,12 @@ const [DashboardProvider, useDashboard] = constate(
         const cell = data?.cells.find(item => item.id == l.i);
 
         return {
+          ...cell,
           id: l.i,
           x: l.x,
           y: l.y,
           w: l.w,
-          h: l.h,
-          viewProperties: cell?.viewProperties
+          h: l.h
         };
       });
 
@@ -60,7 +60,7 @@ const [DashboardProvider, useDashboard] = constate(
       onRename,
       onLayoutChange,
       reload: get,
-      remoteDataState: remoteDataState(data, error, loading),
+      remoteDataState: remoteDataState(data, error, loading)
     };
   },
   // useDashboard

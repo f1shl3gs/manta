@@ -201,7 +201,30 @@ func unmarshalCellPropertiesJSON(b []byte) (isCell_ViewProperties, error) {
 		}
 
 		return &xy, nil
+	case "gauge":
+		var gauge GaugeViewProperties
+		if err := json.Unmarshal(b, &gauge); err != nil {
+			return nil, err
+		}
+
+		return &gauge, nil
+
+	case "single-stat":
+		var singleStat SingleStatViewProperties
+		if err := json.Unmarshal(b, &singleStat); err != nil {
+			return nil, err
+		}
+
+		return &singleStat, nil
+	case "line-plus-single-stat":
+		var lpss LinePlusSingleStatViewProperties
+		if err := json.Unmarshal(b, &lpss); err != nil {
+			return nil, err
+		}
+
+		return &lpss, nil
+
 	default:
-		return nil, errors.New("unknown type")
+		return nil, errors.New("unknown viewProperties type")
 	}
 }

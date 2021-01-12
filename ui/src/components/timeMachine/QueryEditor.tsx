@@ -20,7 +20,7 @@ const QueryEditor: React.FC = () => {
   return (
     <ReactCodeMirror
       autoScroll={true}
-      value={activeQuery.text}
+      value={activeQuery?.text || ''}
       options={options}
       onBeforeChange={(editor, data, value) => onSetText(value)}
     />

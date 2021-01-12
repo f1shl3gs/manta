@@ -7,6 +7,9 @@ import XYPlot from '../../components/timeMachine/XYPlot';
 
 // Types
 import { ViewProperties } from 'types/Dashboard';
+import GaugeChart from '../../components/timeMachine/GaugeChart';
+import SingleStat from '../../components/timeMachine/SingleStat';
+import LatestValueTransform from '../../components/timeMachine/LatestValueTransform';
 
 interface Props {
   giraffeResult: Omit<FromFluxResult, 'schema'>
@@ -32,12 +35,27 @@ const ViewSwitcher: React.FC<Props> = props => {
           {config => <Plot config={config} />}
         </XYPlot>
       );
-      
+
     case 'gauge':
       return (
-        <div>todo: Gauge</div>
+        <LatestValueTransform table={table}>
+          {latestValue => (
+            <GaugeChart value={latestValue} />
+          )}
+        </LatestValueTransform>
       );
-
+    case 'single-stat':
+      return (
+        <LatestValueTransform table={table}>
+          {latestValue => (
+            <SingleStat
+              stat={latestValue}
+              properties={properties}
+              theme={'dark'}
+            />
+          )}
+        </LatestValueTransform>
+      );
     default:
       return <div>
         unknown

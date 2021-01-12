@@ -16,7 +16,6 @@ interface Props {
 }
 
 const CellComponent: React.FC<Props> = ({ cell }) => {
-  console.log('render')
   return (
     <>
       <CellHeader name={cell.name || 'Name this Cell'} note={''}>

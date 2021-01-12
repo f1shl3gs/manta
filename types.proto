@@ -317,9 +317,10 @@ message Datasource {
 
 // dashboard
 message Query {
-  required string key = 1;
+  required string name = 1;
   required string text = 2;
-  required string legend = 3;
+  optional string legend = 3;
+  optional bool hidden = 4;
 }
 
 message YAxis {
@@ -346,6 +347,19 @@ message Axes {
   optional Axis y = 2 [(gogoproto.nullable) = false];
 }
 
+message DecimalPlaces {
+  optional bool isEnforced = 1;
+  optional int32 digits = 2;
+}
+
+message DashboardColor {
+  optional string id = 1;
+  optional string type = 2;
+  optional string hex = 3;
+  optional string name = 4;
+  optional int64 value = 5;
+}
+
 message GaugeViewProperties {
   required string type = 1;
 
@@ -367,12 +381,28 @@ message XYViewProperties {
   required string geom = 9;
 }
 
-message SingleStatView {
+message SingleStatViewProperties {
   required string type = 1;
+  optional string note = 2;
+  repeated Query queries = 3 [(gogoproto.nullable) = false];
+  optional string prefix = 4;
+  optional string suffix = 5;
+  optional string tickPrefix = 6;
+  optional string tickSuffix = 7;
+  optional bool showNoteWhenEmpty = 8;
+  repeated DashboardColor colors = 9 [(gogoproto.nullable) = false];
 }
 
-message LinePlusSingleStatView {
+message LinePlusSingleStatViewProperties {
   required string type = 1;
+  optional string note = 2;
+  repeated Query queries = 3 [(gogoproto.nullable) = false];
+  optional string prefix = 4;
+  optional string suffix = 5;
+  optional string tickPrefix = 6;
+  optional string tickSuffix = 7;
+  optional bool showNoteWhenEmpty = 8;
+  optional DecimalPlaces decimalPlaces = 9 [(gogoproto.nullable) = false];
 }
 
 message MarkdownView {
@@ -397,8 +427,8 @@ message Cell {
   oneof viewProperties {
     GaugeViewProperties gauge = 11;
     XYViewProperties xy = 12 [(gogoproto.customname) = "XY"];
-    SingleStatView singleStat = 13;
-    LinePlusSingleStatView linePlusSingleStat = 14;
+    SingleStatViewProperties singleStat = 13;
+    LinePlusSingleStatViewProperties linePlusSingleStat = 14;
     MarkdownView markdown = 15;
   };
 }

@@ -1,5 +1,5 @@
 import constate from 'constate';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AutoRefresh, AutoRefreshStatus } from 'types/AutoRefresh';
 import { useTimeRange } from './useTimeRange';
 import { TimeRange } from '../types/TimeRanges';
@@ -31,11 +31,17 @@ const calculateRange = (timeRange: TimeRange) => {
 const [AutoRefreshProvider, useAutoRefresh] = constate(
   () => {
     const { timeRange } = useTimeRange();
+
     const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>({
       status: AutoRefreshStatus.Active,
       interval: 15
     });
     const [state, setState] = useState(() => calculateRange(timeRange));
+    // const [manualRefresh, setManualRefresh] = useState(0);
+    const refresh = useCallback(() => {
+      // setManualRefresh(prevState => prevState + 1);
+      setState(prevState => calculateRange(timeRange));
+    }, [timeRange]);
 
     useEffect(() => {
       if (autoRefresh.status !== AutoRefreshStatus.Active) {
@@ -43,6 +49,11 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
       }
 
       const timer = setInterval(() => {
+        if (document.hidden) {
+          // no need to refresh
+          return;
+        }
+
         setState(prev => calculateRange(timeRange));
       }, autoRefresh.interval * 1000);
 
@@ -54,6 +65,8 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
     return {
       autoRefresh,
       setAutoRefresh,
+      // manualRefresh,
+      refresh,
       ...state
     };
   },
