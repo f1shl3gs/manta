@@ -475,7 +475,7 @@ message Otcl {
   required uint64 orgID = 6 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
 
   // not decided now
-  required string type = 7;
+  optional string type = 7;
   required string content = 8;
 }
 
