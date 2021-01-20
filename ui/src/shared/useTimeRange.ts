@@ -1,26 +1,23 @@
 // Libraries
-import { useState } from 'react';
-import constate from 'constate';
+import {useState} from 'react'
+import constate from 'constate'
 
 // Types
-import { TimeRange } from '../types/TimeRanges';
+import {TimeRange} from '../types/TimeRanges'
 
 // Constants
-import { pastHourTimeRange } from '../constants/timeRange';
+import {pastHourTimeRange} from '../constants/timeRange'
 
 const [TimeRangeProvider, useTimeRange] = constate(
   () => {
-    const [timeRange, setTimeRange] = useState<TimeRange>(pastHourTimeRange);
+    const [timeRange, setTimeRange] = useState<TimeRange>(pastHourTimeRange)
 
     return {
       timeRange,
-      setTimeRange
-    };
+      setTimeRange,
+    }
   },
-  value => value
-);
+  (value) => value
+)
 
-export {
-  TimeRangeProvider,
-  useTimeRange
-};
+export {TimeRangeProvider, useTimeRange}

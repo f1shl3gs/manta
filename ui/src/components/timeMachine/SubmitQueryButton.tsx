@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, ComponentColor } from '@influxdata/clockface';
+import React from 'react'
+import {Button, ComponentColor} from '@influxdata/clockface'
 
 const SubmitQueryButton: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const SubmitQueryButton: React.FC = () => {
       color={ComponentColor.Primary}
       onClick={() => console.log('submit')}
     />
-  );
-};
+  )
+}
 
-export default SubmitQueryButton;
+export default SubmitQueryButton

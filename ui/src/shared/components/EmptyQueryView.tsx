@@ -1,11 +1,11 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 // Types
-import { DashboardQuery } from 'types/Dashboard';
-import { RemoteDataState } from '@influxdata/clockface';
-import EmptyGraphMessage from './EmptyGraphMessage';
-import EmptyGraphError from './EmptyGraphError';
+import {DashboardQuery} from 'types/Dashboard'
+import {RemoteDataState} from '@influxdata/clockface'
+import EmptyGraphMessage from './EmptyGraphMessage'
+import EmptyGraphError from './EmptyGraphError'
 
 interface Props {
   loading: RemoteDataState
@@ -15,47 +15,41 @@ interface Props {
   hasResults: boolean
 }
 
-const EmptyQueryView: React.FC<Props> = props => {
-  const {
-    loading,
-    queries,
-    errorMessage,
-    fallbackNote,
-    hasResults
-  } = props;
+const EmptyQueryView: React.FC<Props> = (props) => {
+  const {loading, queries, errorMessage, fallbackNote, hasResults} = props
 
   if (queries && !queries.length) {
-    return <EmptyGraphMessage
-      message={'Looks like you don’t have any queries. Be a lot cooler if you did!'}
-    />;
+    return (
+      <EmptyGraphMessage
+        message={
+          'Looks like you don’t have any queries. Be a lot cooler if you did!'
+        }
+      />
+    )
   }
 
   if (errorMessage !== undefined) {
-    return <EmptyGraphError
-      message={errorMessage}
-    />;
+    return <EmptyGraphError message={errorMessage} />
   }
 
   if (loading === RemoteDataState.Loading) {
-    return <EmptyGraphMessage />;
+    return <EmptyGraphMessage />
   }
 
   if (fallbackNote) {
-    return <div>{fallbackNote}</div>;
+    return <div>{fallbackNote}</div>
   }
 
   if (!hasResults) {
-    return <EmptyGraphMessage
-      message="No Results"
-      testID="empty-graph--no-results"
-    />;
+    return (
+      <EmptyGraphMessage
+        message="No Results"
+        testID="empty-graph--no-results"
+      />
+    )
   }
 
-  return (
-    <>
-      {props.children}
-    </>
-  );
-};
+  return <>{props.children}</>
+}
 
-export default EmptyQueryView;
+export default EmptyQueryView

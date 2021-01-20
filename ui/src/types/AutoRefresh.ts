@@ -17,6 +17,6 @@ export interface AutoRefresh {
 export interface AutoRefreshOption {
   id: string
   label: string
-  type: AutoRefreshOptionType,
+  type: AutoRefreshOptionType
   seconds: number
 }

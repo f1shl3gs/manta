@@ -1,22 +1,19 @@
-import constate from 'constate';
-import { useCallback, useState } from 'react';
+import constate from 'constate'
+import {useCallback, useState} from 'react'
 
 const [ViewOptionProvider, useViewOption] = constate(
   () => {
-    const [isViewingVisOptions, setIsViewingVisOptions] = useState(false);
+    const [isViewingVisOptions, setIsViewingVisOptions] = useState(false)
     const onToggleVisOptions = useCallback(() => {
-      setIsViewingVisOptions(!isViewingVisOptions);
-    }, [isViewingVisOptions]);
+      setIsViewingVisOptions(!isViewingVisOptions)
+    }, [isViewingVisOptions])
 
     return {
       isViewingVisOptions,
-      onToggleVisOptions
-    };
+      onToggleVisOptions,
+    }
   },
-  value => value
-);
+  (value) => value
+)
 
-export {
-  ViewOptionProvider,
-  useViewOption
-};
+export {ViewOptionProvider, useViewOption}

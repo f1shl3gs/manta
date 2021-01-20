@@ -1,8 +1,8 @@
-import { SelectableDurationTimeRange } from 'types/TimeRanges';
+import {SelectableDurationTimeRange} from 'types/TimeRanges'
 
-export const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm';
+export const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm'
 
-export const CUSTOM_TIME_RANGE_LABEL = 'Custom Time Range' as 'Custom Time Range';
+export const CUSTOM_TIME_RANGE_LABEL = 'Custom Time Range' as 'Custom Time Range'
 
 export const pastFifteenMinTimeRange: SelectableDurationTimeRange = {
   seconds: 900,
@@ -11,8 +11,8 @@ export const pastFifteenMinTimeRange: SelectableDurationTimeRange = {
   label: 'Past 15m',
   duration: '15m',
   type: 'selectable-duration',
-  windowPeriod: 10000 // 10s
-};
+  windowPeriod: 10000, // 10s
+}
 
 export const pastHourTimeRange: SelectableDurationTimeRange = {
   seconds: 3600,
@@ -21,8 +21,8 @@ export const pastHourTimeRange: SelectableDurationTimeRange = {
   label: 'Past 1h',
   duration: '1h',
   type: 'selectable-duration',
-  windowPeriod: 10000 // 10s
-};
+  windowPeriod: 10000, // 10s
+}
 
 export const pastThirtyDaysTimeRange: SelectableDurationTimeRange = {
   seconds: 2592000,
@@ -31,8 +31,8 @@ export const pastThirtyDaysTimeRange: SelectableDurationTimeRange = {
   label: 'Past 30d',
   duration: '30d',
   type: 'selectable-duration',
-  windowPeriod: 3600000 // 1h
-};
+  windowPeriod: 3600000, // 1h
+}
 
 export const pastThirtyMinutesTimeRange: SelectableDurationTimeRange = {
   seconds: 1800,
@@ -41,8 +41,8 @@ export const pastThirtyMinutesTimeRange: SelectableDurationTimeRange = {
   label: 'Past 30m',
   duration: '30m',
   type: 'selectable-duration',
-  windowPeriod: 10
-};
+  windowPeriod: 10,
+}
 
 export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
   {
@@ -52,7 +52,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 5m',
     duration: '5m',
     type: 'selectable-duration',
-    windowPeriod: 10000 // 10s
+    windowPeriod: 10000, // 10s
   },
   pastFifteenMinTimeRange,
   pastThirtyMinutesTimeRange,
@@ -64,7 +64,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 6h',
     duration: '6h',
     type: 'selectable-duration',
-    windowPeriod: 60000 // 1m
+    windowPeriod: 60000, // 1m
   },
   {
     seconds: 43200,
@@ -73,7 +73,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 12h',
     duration: '12h',
     type: 'selectable-duration',
-    windowPeriod: 120000 // 2m
+    windowPeriod: 120000, // 2m
   },
   {
     seconds: 86400,
@@ -82,7 +82,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 24h',
     duration: '24h',
     type: 'selectable-duration',
-    windowPeriod: 240000 // 4m
+    windowPeriod: 240000, // 4m
   },
   {
     seconds: 172800,
@@ -91,7 +91,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 2d',
     duration: '2d',
     type: 'selectable-duration',
-    windowPeriod: 600000 // 10m
+    windowPeriod: 600000, // 10m
   },
   {
     seconds: 604800,
@@ -100,7 +100,7 @@ export const SELECTABLE_TIME_RANGES: SelectableDurationTimeRange[] = [
     label: 'Past 7d',
     duration: '7d',
     type: 'selectable-duration',
-    windowPeriod: 1800000 // 30 min
+    windowPeriod: 1800000, // 30 min
   },
-  pastThirtyDaysTimeRange
-];
+  pastThirtyDaysTimeRange,
+]

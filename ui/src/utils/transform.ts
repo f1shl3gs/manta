@@ -1,12 +1,10 @@
-import { FromFluxResult, fromRows } from '@influxdata/giraffe';
+import {FromFluxResult, fromRows} from '@influxdata/giraffe'
 
 export type Result = {
   metric: {
     [key: string]: string
   }
-  values: [
-    [number, string]
-  ]
+  values: [[number, string]]
 }
 
 export type PromResp = {
@@ -17,7 +15,9 @@ export type PromResp = {
   }
 }
 
-export const transformPromResp = (resp?: PromResp): FromFluxResult | undefined => {
+export const transformPromResp = (
+  resp?: PromResp
+): FromFluxResult | undefined => {
   if (!resp) {
     return undefined
   }
@@ -26,23 +26,27 @@ export const transformPromResp = (resp?: PromResp): FromFluxResult | undefined =
     return undefined
   }
 
-  const rows = resp.data.result.map((item: Result) => {
-    const { metric, values } = item;
+  const rows = resp.data.result
+    .map((item: Result) => {
+      const {metric, values} = item
 
-    return values.map(val => {
-      return {
-        ...metric,
-        time: val[0] * 1000,
-        value: Number(val[1])
-      };
-    });
-  }).flat();
+      return values.map((val) => {
+        return {
+          ...metric,
+          time: val[0] * 1000,
+          value: Number(val[1]),
+        }
+      })
+    })
+    .flat()
 
-  const table = fromRows(rows);
-  const groupKeys = table.columnKeys.filter(key => key !== 'time' && key !== 'value');
+  const table = fromRows(rows)
+  const groupKeys = table.columnKeys.filter(
+    (key) => key !== 'time' && key !== 'value'
+  )
 
   return {
     table,
-    fluxGroupKeyUnion: groupKeys
-  };
-};
+    fluxGroupKeyUnion: groupKeys,
+  }
+}

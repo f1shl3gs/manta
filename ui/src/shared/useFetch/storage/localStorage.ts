@@ -1,5 +1,5 @@
-import { serializeResponse } from '../utils'
-import { Cache } from '../types'
+import {serializeResponse} from '../utils'
+import {Cache} from '../types'
 
 const cacheName = 'useHTTPcache'
 
@@ -11,16 +11,16 @@ const getCache = () => {
     return {}
   }
 }
-const getLocalStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
+const getLocalStorage = ({cacheLife}: {cacheLife: number}): Cache => {
   const remove = async (...responseIDs: string[]) => {
     const cache = getCache()
-    responseIDs.forEach(id => delete cache[id])
+    responseIDs.forEach((id) => delete cache[id])
     localStorage.setItem(cacheName, JSON.stringify(cache))
   }
 
   const isExpired = (responseID: string) => {
     const cache = getCache()
-    const { expiration, response } = (cache[responseID] || {})
+    const {expiration, response} = cache[responseID] || {}
     const expired = expiration > 0 && expiration < Date.now()
     if (expired) remove(responseID)
     return expired || !response
@@ -31,11 +31,11 @@ const getLocalStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
   const get = async (responseID: string) => {
     if (isExpired(responseID)) return
     const cache = getCache()
-    const { body, headers, status, statusText } = cache[responseID].response
+    const {body, headers, status, statusText} = cache[responseID].response
     return new Response(body, {
       status,
       statusText,
-      headers: new Headers(headers || {})
+      headers: new Headers(headers || {}),
     })
   }
 
@@ -43,7 +43,7 @@ const getLocalStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
     const cache = getCache()
     cache[responseID] = {
       response: await serializeResponse(response),
-      expiration: Date.now() + cacheLife
+      expiration: Date.now() + cacheLife,
     }
     localStorage.setItem(cacheName, JSON.stringify(cache))
   }
@@ -53,11 +53,11 @@ const getLocalStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
   }
 
   return Object.defineProperties(getCache(), {
-    get: { value: get, writable: false },
-    set: { value: set, writable: false },
-    has: { value: has, writable: false },
-    delete: { value: remove, writable: false },
-    clear: { value: clear, writable: false }
+    get: {value: get, writable: false},
+    set: {value: set, writable: false},
+    has: {value: has, writable: false},
+    delete: {value: remove, writable: false},
+    clear: {value: clear, writable: false},
   })
 }
 

@@ -1,13 +1,14 @@
-import React from 'react';
+import React from 'react'
 
-import { Button, ComponentColor, IconFont } from '@influxdata/clockface';
-import { useViewOption } from '../../shared/useViewOption';
+import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
+import {useViewOption} from '../../shared/useViewOption'
 
 const VisOptionsButton: React.FC = () => {
-  const { isViewingVisOptions, onToggleVisOptions } = useViewOption();
+  const {isViewingVisOptions, onToggleVisOptions} = useViewOption()
 
-  const color = isViewingVisOptions ?
-    ComponentColor.Primary : ComponentColor.Default;
+  const color = isViewingVisOptions
+    ? ComponentColor.Primary
+    : ComponentColor.Default
 
   return (
     <Button
@@ -16,7 +17,7 @@ const VisOptionsButton: React.FC = () => {
       onClick={onToggleVisOptions}
       text={'Customize'}
     />
-  );
-};
+  )
+}
 
-export default VisOptionsButton;
+export default VisOptionsButton

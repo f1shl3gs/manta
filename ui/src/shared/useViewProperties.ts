@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
-import constate from 'constate';
+import {useCallback, useState} from 'react'
+import constate from 'constate'
 
-import { ViewProperties, XYViewProperties } from 'types/Dashboard';
-import { DEFAULT_TIME_FORMAT } from 'constants/timeFormat';
+import {ViewProperties, XYViewProperties} from 'types/Dashboard'
+import {DEFAULT_TIME_FORMAT} from 'constants/timeFormat'
 
 interface State {
   viewProperties: ViewProperties
@@ -10,7 +10,6 @@ interface State {
 
 const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
   (initialState: State) => {
-
     const [viewProperties, setViewProperties] = useState<ViewProperties>(() => {
       if (initialState.viewProperties === undefined) {
         return {
@@ -19,83 +18,96 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
           yColumn: 'value',
           axes: {
             x: {},
-            y: {}
+            y: {},
           },
           queries: [
             {
               text: '',
-              hidden: false
-            }
-          ]
-        } as ViewProperties;
+              hidden: false,
+            },
+          ],
+        } as ViewProperties
       }
 
       return {
-        ...initialState.viewProperties
-      };
-    });
+        ...initialState.viewProperties,
+      }
+    })
 
-    const sm = useCallback((vp: ViewProperties) => {
-      setViewProperties(vp);
-    }, [viewProperties]);
+    const sm = useCallback(
+      (vp: ViewProperties) => {
+        setViewProperties(vp)
+      },
+      [viewProperties]
+    )
 
     return {
       viewProperties,
-      setViewProperties: sm
-    };
+      setViewProperties: sm,
+    }
   },
   // useViewProperties
-  value => value,
+  (value) => value,
   // useQueries
-  value => {
+  (value) => {
     const {
-      viewProperties: {
-        queries = []
-      }
-    } = value;
+      viewProperties: {queries = []},
+    } = value
     // const { queries = [] } = viewProperties;
 
     return {
-      queries
-    };
+      queries,
+    }
   }
-);
+)
 
 const useLineView = () => {
-  const { viewProperties, setViewProperties } = useViewProperties();
-  const properties = viewProperties as XYViewProperties;
+  const {viewProperties, setViewProperties} = useViewProperties()
+  const properties = viewProperties as XYViewProperties
 
-  const onSetXColumn = useCallback((x: string) => {
-    setViewProperties({
-      ...properties,
-      xColumn: x
-    });
-  }, [properties]);
+  const onSetXColumn = useCallback(
+    (x: string) => {
+      setViewProperties({
+        ...properties,
+        xColumn: x,
+      })
+    },
+    [properties]
+  )
 
-  const onSetYColumn = useCallback((y: string) => {
-    setViewProperties({
-      ...properties,
-      yColumn: y
-    });
-  }, [properties]);
+  const onSetYColumn = useCallback(
+    (y: string) => {
+      setViewProperties({
+        ...properties,
+        yColumn: y,
+      })
+    },
+    [properties]
+  )
 
-  const onSetTimeFormat = useCallback((timeFormat: string) => {
-    setViewProperties({
-      ...properties,
-      timeFormat
-    });
-  }, [properties]);
+  const onSetTimeFormat = useCallback(
+    (timeFormat: string) => {
+      setViewProperties({
+        ...properties,
+        timeFormat,
+      })
+    },
+    [properties]
+  )
 
-  const onSetHoverDimension = useCallback((hoverDimension: 'x' | 'y' | 'xy' | 'auto') => {
-    console.log('on hover set', properties);
+  const onSetHoverDimension = useCallback(
+    (hoverDimension: 'x' | 'y' | 'xy' | 'auto') => {
+      console.log('on hover set', properties)
 
-    setViewProperties({
-      ...properties,
-      hoverDimension
-    });
-  }, [properties]);
+      setViewProperties({
+        ...properties,
+        hoverDimension,
+      })
+    },
+    [properties]
+  )
 
-  const updateYAxis = useCallback((upd: { [key: string]: string }) => {
+  const updateYAxis = useCallback((upd: {[key: string]: string}) => {
     // @ts-ignore
     setViewProperties((prev: XYViewProperties) => {
       return {
@@ -105,15 +117,16 @@ const useLineView = () => {
           x: prev.axes.x,
           y: {
             ...prev.axes.y,
-            ...upd
-          }
-        }
-      } as XYViewProperties;
-    });
-  }, []);
+            ...upd,
+          },
+        },
+      } as XYViewProperties
+    })
+  }, [])
 
-  const onSetYAxisLabel = useCallback((label: string) => {
-    /*setViewProperties({
+  const onSetYAxisLabel = useCallback(
+    (label: string) => {
+      /*setViewProperties({
       ...properties,
       axes: {
         x: properties.axes.x,
@@ -123,13 +136,16 @@ const useLineView = () => {
         }
       }
     });*/
-    updateYAxis({ label });
-  }, [properties]);
+      updateYAxis({label})
+    },
+    [properties]
+  )
 
-  const onSetYAxisBase = useCallback((base: string) => {
-    console.log(properties);
-    updateYAxis({ base });
-    /*setViewProperties({
+  const onSetYAxisBase = useCallback(
+    (base: string) => {
+      console.log(properties)
+      updateYAxis({base})
+      /*setViewProperties({
       ...properties,
       axes: {
         x: properties.axes.x,
@@ -139,11 +155,14 @@ const useLineView = () => {
         }
       }
     });*/
-  }, [properties]);
+    },
+    [properties]
+  )
 
-  const onSetYAxisPrefix = useCallback((prefix: string) => {
-    updateYAxis({ prefix });
-    /*setViewProperties({
+  const onSetYAxisPrefix = useCallback(
+    (prefix: string) => {
+      updateYAxis({prefix})
+      /*setViewProperties({
       ...properties,
       axes: {
         x: properties.axes.x,
@@ -153,11 +172,14 @@ const useLineView = () => {
         }
       }
     });*/
-  }, [properties]);
+    },
+    [properties]
+  )
 
-  const onSetYAxisSuffix = useCallback((suffix: string) => {
-    updateYAxis({ suffix });
-    /*setViewProperties({
+  const onSetYAxisSuffix = useCallback(
+    (suffix: string) => {
+      updateYAxis({suffix})
+      /*setViewProperties({
       ...properties,
       axes: {
         x: properties.axes.x,
@@ -167,7 +189,9 @@ const useLineView = () => {
         }
       }
     });*/
-  }, [properties]);
+    },
+    [properties]
+  )
 
   return {
     onSetXColumn,
@@ -183,12 +207,8 @@ const useLineView = () => {
     yColumn: properties.yColumn || 'value',
     numericColumns: ['time', 'value'] as string[],
     timeFormat: properties.timeFormat || DEFAULT_TIME_FORMAT,
-    axes: properties.axes
-  };
-};
+    axes: properties.axes,
+  }
+}
 
-export {
-  ViewPropertiesProvider,
-  useViewProperties,
-  useLineView
-};
+export {ViewPropertiesProvider, useViewProperties, useLineView}

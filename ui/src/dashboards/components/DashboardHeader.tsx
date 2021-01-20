@@ -1,21 +1,21 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 // Components
-import { Button, ComponentColor, IconFont, Page } from '@influxdata/clockface';
-import RenamablePageTitle from 'components/RenamablePageTitle';
-import PresentationModeToggle from './PresentationModeToggle';
-import AutoRefreshDropdown from 'components/AutoRefreshDropdown/AutoRefreshDropdown';
-import TimeRangeDropdown from './TimeRangeDropdown';
+import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
+import RenamablePageTitle from 'components/RenamablePageTitle'
+import PresentationModeToggle from './PresentationModeToggle'
+import AutoRefreshDropdown from 'components/AutoRefreshDropdown/AutoRefreshDropdown'
+import TimeRangeDropdown from './TimeRangeDropdown'
 
 // Hooks
-import { useDashboard } from './useDashboard';
+import {useDashboard} from './useDashboard'
 
 // Constants
-import { AutoRefreshDropdownOptions } from 'constants/autoRefresh';
+import {AutoRefreshDropdownOptions} from 'constants/autoRefresh'
 
 const DashboardHeader = () => {
-  const { name, onRename, addCell } = useDashboard();
+  const {name, onRename, addCell} = useDashboard()
 
   return (
     <>
@@ -50,7 +50,7 @@ const DashboardHeader = () => {
         </Page.ControlBarRight>
       </Page.ControlBar>
     </>
-  );
-};
+  )
+}
 
-export default DashboardHeader;
+export default DashboardHeader

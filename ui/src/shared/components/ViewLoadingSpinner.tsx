@@ -1,51 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import classnames from 'classnames';
+import React, {useEffect, useState} from 'react'
+import classnames from 'classnames'
 import {round} from 'lodash'
 
 import {
   ComponentSize,
   RemoteDataState,
-  TechnoSpinner
-} from '@influxdata/clockface';
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 interface Props {
   loading: RemoteDataState
 }
 
-const ViewLoadingSpinner: React.FC<Props> = ({ loading }) => {
-  const [timerActive, setTimerActive] = useState(false);
-  const [seconds, setSeconds] = useState(0);
+const ViewLoadingSpinner: React.FC<Props> = ({loading}) => {
+  const [timerActive, setTimerActive] = useState(false)
+  const [seconds, setSeconds] = useState(0)
 
   const timerElementClass = classnames('view-loading-spinner--timer', {
-    visible: seconds > 5
-  });
+    visible: seconds > 5,
+  })
 
   const resetTimer = () => {
-    setSeconds(0);
-    setTimerActive(false);
-  };
+    setSeconds(0)
+    setTimerActive(false)
+  }
 
   useEffect(() => {
     if (loading === RemoteDataState.Done || RemoteDataState.Error) {
-      resetTimer();
+      resetTimer()
     }
 
     if (loading === RemoteDataState.Loading) {
-      setTimerActive(true);
+      setTimerActive(true)
     }
-  }, [loading]);
+  }, [loading])
 
   useEffect(() => {
     if (!timerActive) {
-      return;
+      return
     }
 
     const interval = setInterval(() => {
-      setSeconds(seconds => seconds + 0.1);
-    }, 100);
+      setSeconds((seconds) => seconds + 0.1)
+    }, 100)
 
-    return () => clearInterval(interval);
-  }, [timerActive, seconds]);
+    return () => clearInterval(interval)
+  }, [timerActive, seconds])
 
   if (loading === RemoteDataState.Loading) {
     return (
@@ -53,10 +53,10 @@ const ViewLoadingSpinner: React.FC<Props> = ({ loading }) => {
         <TechnoSpinner diameterPixels={66} strokeWidth={ComponentSize.Medium} />
         <div className={timerElementClass}>{`${round(seconds, 1)}s`}</div>
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default ViewLoadingSpinner;
+export default ViewLoadingSpinner

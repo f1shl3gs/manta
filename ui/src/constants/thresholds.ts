@@ -1,11 +1,11 @@
 export const MAX_THRESHOLDS = 5
 export const MIN_THRESHOLDS = 2
 
-export const COLOR_TYPE_MIN = 'min';
-export const DEFAULT_VALUE_MIN = 0;
-export const COLOR_TYPE_MAX = 'max';
-export const DEFAULT_VALUE_MAX = 100;
-export const COLOR_TYPE_THRESHOLD = 'threshold';
+export const COLOR_TYPE_MIN = 'min'
+export const DEFAULT_VALUE_MIN = 0
+export const COLOR_TYPE_MAX = 'max'
+export const DEFAULT_VALUE_MAX = 100
+export const COLOR_TYPE_THRESHOLD = 'threshold'
 
 export const BASE_THRESHOLD_ID = 'base'
 export const THRESHOLD_TYPE_TEXT = 'text'

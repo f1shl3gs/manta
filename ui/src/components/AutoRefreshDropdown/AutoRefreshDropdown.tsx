@@ -1,74 +1,77 @@
 // Libraries
-import React, { useCallback, useState } from 'react';
-import classnames from 'classnames';
+import React, {useCallback, useState} from 'react'
+import classnames from 'classnames'
 
 // Components
 import {
   ComponentStatus,
   Dropdown,
   IconFont,
-  SquareButton
-} from '@influxdata/clockface';
+  SquareButton,
+} from '@influxdata/clockface'
 
 // Hooks
-import { useAutoRefresh } from 'shared/useAutoRefresh';
+import {useAutoRefresh} from 'shared/useAutoRefresh'
 
 // Types
 import {
   AutoRefresh,
   AutoRefreshOption,
   AutoRefreshOptionType,
-  AutoRefreshStatus
-} from 'types/AutoRefresh';
+  AutoRefreshStatus,
+} from 'types/AutoRefresh'
 
 // Constants
 import {
   AutoRefreshDropdownOptions,
   DROPDOWN_WIDTH_FULL,
-  DROPDOWN_WIDTH_COLLAPSED
-} from 'constants/autoRefresh';
+  DROPDOWN_WIDTH_COLLAPSED,
+} from 'constants/autoRefresh'
 
 const dropdownIcon = (autoRefresh: AutoRefresh): IconFont => {
   if (autoRefresh.status === AutoRefreshStatus.Paused) {
-    return IconFont.Pause;
+    return IconFont.Pause
   }
 
-  return IconFont.Refresh;
-};
+  return IconFont.Refresh
+}
 
 const dropdownStatus = (autoRefresh: AutoRefresh): ComponentStatus => {
   if (autoRefresh.status === AutoRefreshStatus.Disabled) {
-    return ComponentStatus.Disabled;
+    return ComponentStatus.Disabled
   }
 
-  return ComponentStatus.Default;
-};
+  return ComponentStatus.Default
+}
 
 interface Props {
   options: AutoRefreshOption[]
 }
 
 const AutoRefreshDropdown: React.FC<Props> = (props) => {
-  const { options } = props;
-  const { autoRefresh, setAutoRefresh, refresh } = useAutoRefresh();
-  const [selected, setSelected] = useState(AutoRefreshDropdownOptions[3]);
-  const paused = selected.seconds === 0;
-  const dropdownWidthPixels = paused ? DROPDOWN_WIDTH_COLLAPSED : DROPDOWN_WIDTH_FULL;
+  const {options} = props
+  const {autoRefresh, setAutoRefresh, refresh} = useAutoRefresh()
+  const [selected, setSelected] = useState(AutoRefreshDropdownOptions[3])
+  const paused = selected.seconds === 0
+  const dropdownWidthPixels = paused
+    ? DROPDOWN_WIDTH_COLLAPSED
+    : DROPDOWN_WIDTH_FULL
   const dropdownClassname = classnames('autorefresh-dropdown', {
-    paused: paused
-  });
+    paused: paused,
+  })
   const onSelectAutoRefreshOption = useCallback((opt: AutoRefreshOption) => {
-    setSelected(opt);
+    setSelected(opt)
     setAutoRefresh({
-      status: opt.seconds !== 0 ? AutoRefreshStatus.Active : AutoRefreshStatus.Paused,
-      interval: opt.seconds
-    });
-  }, []);
+      status:
+        opt.seconds !== 0 ? AutoRefreshStatus.Active : AutoRefreshStatus.Paused,
+      interval: opt.seconds,
+    })
+  }, [])
 
   return (
     <div className={dropdownClassname}>
       <Dropdown
-        style={{ width: `${dropdownWidthPixels}px` }}
+        style={{width: `${dropdownWidthPixels}px`}}
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -82,7 +85,7 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
         menu={(onCollapse) => (
           <Dropdown.Menu
             onCollapse={onCollapse}
-            style={{ width: `${DROPDOWN_WIDTH_FULL}px` }}
+            style={{width: `${DROPDOWN_WIDTH_FULL}px`}}
           >
             {options.map((option) => {
               if (option.type === AutoRefreshOptionType.Header) {
@@ -92,7 +95,7 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
                     id={option.id}
                     text={option.label}
                   />
-                );
+                )
               }
 
               return (
@@ -104,7 +107,7 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
                 >
                   {option.label}
                 </Dropdown.Item>
-              );
+              )
             })}
           </Dropdown.Menu>
         )}
@@ -118,7 +121,7 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AutoRefreshDropdown;
+export default AutoRefreshDropdown

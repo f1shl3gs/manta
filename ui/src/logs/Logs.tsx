@@ -7,7 +7,7 @@ const Title = 'Logs'
 
 const Header: React.FC = () => {
   return (
-    <Page.Header fullWidth={true} >
+    <Page.Header fullWidth={true}>
       <Page.Title title={Title} />
     </Page.Header>
   )
@@ -39,7 +39,7 @@ const Logs: React.FC = () => {
         </Page.ControlBarRight>
       </Page.ControlBar>
 
-      <Page.Contents  >
+      <Page.Contents>
         <LogList />
       </Page.Contents>
     </Page>

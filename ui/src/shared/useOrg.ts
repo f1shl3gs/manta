@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import constate from 'constate'
 
-import {Organization} from 'types/organization'
+import {Organization} from 'types/Organization'
 
 type State = {
   initialOrg: Organization

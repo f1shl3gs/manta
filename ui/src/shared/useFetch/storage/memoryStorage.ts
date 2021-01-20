@@ -1,7 +1,7 @@
-import { Cache } from '../types'
+import {Cache} from '../types'
 
 let inMemoryStorage: any = {}
-const getMemoryStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
+const getMemoryStorage = ({cacheLife}: {cacheLife: number}): Cache => {
   const remove = async (...responseIDs: string[]) => {
     for (const responseID of responseIDs) {
       delete inMemoryStorage[responseID]
@@ -23,7 +23,8 @@ const getMemoryStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
 
   const set = async (responseID: string, res: Response) => {
     inMemoryStorage[responseID] = res
-    inMemoryStorage[`${responseID}:ts`] = cacheLife > 0 ? Date.now() + cacheLife : 0
+    inMemoryStorage[`${responseID}:ts`] =
+      cacheLife > 0 ? Date.now() + cacheLife : 0
   }
 
   const has = async (responseID: string) => !isExpired(responseID)
@@ -33,11 +34,11 @@ const getMemoryStorage = ({ cacheLife }: { cacheLife: number }): Cache => {
   }
 
   return Object.defineProperties(inMemoryStorage, {
-    get: { value: get, writable: false, configurable: true },
-    set: { value: set, writable: false, configurable: true },
-    has: { value: has, writable: false, configurable: true },
-    delete: { value: remove, writable: false, configurable: true },
-    clear: { value: clear, writable: false, configurable: true }
+    get: {value: get, writable: false, configurable: true},
+    set: {value: set, writable: false, configurable: true},
+    has: {value: has, writable: false, configurable: true},
+    delete: {value: remove, writable: false, configurable: true},
+    clear: {value: clear, writable: false, configurable: true},
   })
 }
 

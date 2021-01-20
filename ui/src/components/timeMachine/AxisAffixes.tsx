@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useCallback } from 'react';
-import { Columns, FormElement, Grid, Input } from '@influxdata/clockface';
+import React, {ChangeEvent, useCallback} from 'react'
+import {Columns, FormElement, Grid, Input} from '@influxdata/clockface'
 
 interface Props {
   prefix: string
@@ -9,19 +9,15 @@ interface Props {
   onSetAxisSuffix: (suffix: string) => void
 }
 
-const AxisAffixes: React.FC<Props> = props => {
-  const {
-    prefix, suffix, axisName,
-    onSetAxisPrefix,
-    onSetAxisSuffix
-  } = props;
+const AxisAffixes: React.FC<Props> = (props) => {
+  const {prefix, suffix, axisName, onSetAxisPrefix, onSetAxisSuffix} = props
 
   const onPrefixChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
-    onSetAxisPrefix(ev.target.value);
-  }, []);
+    onSetAxisPrefix(ev.target.value)
+  }, [])
   const onSuffixChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
-    onSetAxisSuffix(ev.target.value);
-  }, []);
+    onSetAxisSuffix(ev.target.value)
+  }, [])
 
   return (
     <>
@@ -37,7 +33,7 @@ const AxisAffixes: React.FC<Props> = props => {
         </FormElement>
       </Grid.Column>
     </>
-  );
-};
+  )
+}
 
-export default AxisAffixes;
+export default AxisAffixes

@@ -1,33 +1,33 @@
-import React from 'react';
+import React from 'react'
 
-import { Grid, Form, Dropdown } from '@influxdata/clockface';
-import ColumnSelector from '../ColumnSelector';
+import {Grid, Form, Dropdown} from '@influxdata/clockface'
+import ColumnSelector from '../ColumnSelector'
 
-import { useLineView } from 'shared/useViewProperties';
+import {useLineView} from 'shared/useViewProperties'
 
-import TimeFormatSetting from './TimeFormatSetting';
-import YAxisTitle from './YAxisTitle';
-import YAxisBase from './YAxisBase';
-import AxisAffixes from './AxisAffixes';
-
+import TimeFormatSetting from './TimeFormatSetting'
+import YAxisTitle from './YAxisTitle'
+import YAxisBase from './YAxisBase'
+import AxisAffixes from './AxisAffixes'
 
 const dimensions = [
   {
     key: 'auto',
-    text: 'Auto'
+    text: 'Auto',
   },
   {
     key: 'x',
-    text: 'X'
-  }, {
+    text: 'X',
+  },
+  {
     key: 'y',
-    text: 'Y'
+    text: 'Y',
   },
   {
     key: 'xy',
-    text: 'XY'
-  }
-];
+    text: 'XY',
+  },
+]
 
 const LineOptions: React.FC = () => {
   const {
@@ -41,18 +41,13 @@ const LineOptions: React.FC = () => {
     hoverDimension,
     onSetHoverDimension,
     axes: {
-      y: {
-        prefix = '',
-        suffix = '',
-        label = '',
-        base = ''
-      }
+      y: {prefix = '', suffix = '', label = '', base = ''},
     },
     onSetYAxisLabel,
     onSetYAxisBase,
     onSetYAxisPrefix,
-    onSetYAxisSuffix
-  } = useLineView();
+    onSetYAxisSuffix,
+  } = useLineView()
 
   return (
     <>
@@ -91,20 +86,18 @@ const LineOptions: React.FC = () => {
                 {hoverDimension}
               </Dropdown.Button>
             )}
-            menu={onCollapse => (
+            menu={(onCollapse) => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {
-                  dimensions.map(item => (
-                    <Dropdown.Item
-                      id={item.key}
-                      value={item.key}
-                      onClick={onSetHoverDimension}
-                      selected={hoverDimension === item.key}
-                    >
-                      {item.text}
-                    </Dropdown.Item>
-                  ))
-                }
+                {dimensions.map((item) => (
+                  <Dropdown.Item
+                    id={item.key}
+                    value={item.key}
+                    onClick={onSetHoverDimension}
+                    selected={hoverDimension === item.key}
+                  >
+                    {item.text}
+                  </Dropdown.Item>
+                ))}
               </Dropdown.Menu>
             )}
           />
@@ -124,7 +117,7 @@ const LineOptions: React.FC = () => {
         onSetAxisSuffix={onSetYAxisSuffix}
       />
     </>
-  );
-};
+  )
+}
 
-export default LineOptions;
+export default LineOptions

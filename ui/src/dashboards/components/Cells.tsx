@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import ReactGridLayout, { WidthProvider, Layout } from 'react-grid-layout';
-import { Cell } from 'types/Dashboard';
+import React, {useEffect} from 'react'
+import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
+import {Cell} from 'types/Dashboard'
 
-import CellComponent from './CellComponent';
-import GradientBorder from './GradientBorder';
-import { useDashboard } from './useDashboard';
+import CellComponent from './CellComponent'
+import GradientBorder from './GradientBorder'
+import {useDashboard} from './useDashboard'
 
-const Grid = WidthProvider(ReactGridLayout);
+const Grid = WidthProvider(ReactGridLayout)
 
-const DASHBOARD_LAYOUT_ROW_HEIGHT = 83.5;
-const LAYOUT_MARGIN = 4;
+const DASHBOARD_LAYOUT_ROW_HEIGHT = 83.5
+const LAYOUT_MARGIN = 4
 
 const layout = (cells: Cell[]): Layout[] => {
   return cells.map((c) => {
@@ -28,17 +28,17 @@ const layout = (cells: Cell[]): Layout[] => {
       maxW: undefined,
       minH: undefined,
       minW: undefined,
-      resizeHandles: undefined
-    };
-  });
-};
+      resizeHandles: undefined,
+    }
+  })
+}
 
 const eventHandler = () => {
-  console.log('resized event received');
-};
+  console.log('resized event received')
+}
 
 const Cells: React.FC = () => {
-  const { cells, onLayoutChange } = useDashboard();
+  const {cells, onLayoutChange} = useDashboard()
 
   // useEffect(() => {
   //   window.addEventListener('resize', eventHandler);
@@ -69,7 +69,7 @@ const Cells: React.FC = () => {
         </div>
       ))}
     </Grid>
-  );
-};
+  )
+}
 
-export default Cells;
+export default Cells

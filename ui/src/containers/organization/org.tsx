@@ -1,24 +1,24 @@
-import React from 'react';
-import { Route, Switch, useParams, withRouter } from 'react-router-dom';
+import React from 'react'
+import {Route, Switch, useParams, withRouter} from 'react-router-dom'
 
-import { SpinnerContainer, TechnoSpinner } from '@influxdata/clockface';
-import Otcl from 'otcls';
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import Otcl from 'otcls'
 
-import { OrgProvider } from 'shared/useOrg';
-import Todo from 'components/Todo';
-import TracePage from 'traces';
-import remoteDataState from 'utils/rds';
-import { useFetch } from 'use-http';
-import Logs from 'logs/Logs';
-import DashboardsIndex from '../../dashboards/dashboards';
-import DashboardPage from '../../dashboards/components/DashboardPage';
+import {OrgProvider} from 'shared/useOrg'
+import Todo from 'components/Todo'
+import TracePage from 'traces'
+import remoteDataState from 'utils/rds'
+import {useFetch} from 'use-http'
+import Logs from 'logs/Logs'
+import DashboardsIndex from '../../dashboards/dashboards'
+import DashboardPage from '../../dashboards/components/DashboardPage'
 
 const Org: React.FC = () => {
-  const orgPath = '/orgs/:orgID';
-  const { orgID } = useParams<{ orgID: string }>();
+  const orgPath = '/orgs/:orgID'
+  const {orgID} = useParams<{orgID: string}>()
 
-  const { data, loading, error } = useFetch(`/api/v1/orgs/${orgID}`, {}, []);
-  const rds = remoteDataState(data, error, loading);
+  const {data, loading, error} = useFetch(`/api/v1/orgs/${orgID}`, {}, [])
+  const rds = remoteDataState(data, error, loading)
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
@@ -38,7 +38,7 @@ const Org: React.FC = () => {
         </Switch>
       </OrgProvider>
     </SpinnerContainer>
-  );
-};
+  )
+}
 
-export default withRouter(Org);
+export default withRouter(Org)

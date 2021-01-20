@@ -1252,10 +1252,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.4.1.tgz#67c61d89782dea07a149dd35e45b9eb13ad63a5f"
-  integrity sha1-Z8YdiXgt6gehSd015FuesTrWOl8=
+"@influxdata/clockface@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.5.0.tgz#ff4e93da185c97185298b1bdd8ae5fc08e444e9b"
+  integrity sha1-/06T2hhclxhSmLG92K5fwI5ETps=
 
 "@influxdata/giraffe@^2.0.0":
   version "2.0.0"
@@ -4851,8 +4851,8 @@ escodegen@^1.14.1:
 
 eslint-config-react-app@^6.0.0:
   version "6.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-react-app/-/eslint-config-react-app-6.0.0.tgz#ccff9fc8e36b322902844cbd79197982be355a0e"
-  integrity sha512-bpoAAC+YRfzq0dsTk+6v9aHm/uqnDwayNAXleMypGl6CpxI9oXXscVHo4fk3eJPIn+rsbtNetB4r/ZIidFIE8A==
+  resolved "https://registry.npm.taobao.org/eslint-config-react-app/download/eslint-config-react-app-6.0.0.tgz?cache=0&sync_timestamp=1603462431679&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Feslint-config-react-app%2Fdownload%2Feslint-config-react-app-6.0.0.tgz#ccff9fc8e36b322902844cbd79197982be355a0e"
+  integrity sha1-zP+fyONrMikChEy9eRl5gr41Wg4=
   dependencies:
     confusing-browser-globals "^1.0.10"
 
@@ -4925,8 +4925,8 @@ eslint-plugin-jsx-a11y@^6.3.1:
 
 eslint-plugin-react-hooks@^4.2.0:
   version "4.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
-  integrity sha512-623WEiZJqxR7VdxFCKLI6d6LLpwJkGPYKODnkH3D7WpOG5KM8yWueBd8TLsNAetEJNF5iJmolaAKO3F8yzyVBQ==
+  resolved "https://registry.npm.taobao.org/eslint-plugin-react-hooks/download/eslint-plugin-react-hooks-4.2.0.tgz?cache=0&sync_timestamp=1610380781552&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Feslint-plugin-react-hooks%2Fdownload%2Feslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
+  integrity sha1-jCKcJo1GiVYzTJQ7tF/IYCgPVVY=
 
 eslint-plugin-react@^7.21.5:
   version "7.21.5"

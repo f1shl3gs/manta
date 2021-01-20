@@ -1,21 +1,21 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 // Components
-import CellHeader from './CellHeader';
-import CellContext from './CellContext';
-import TimeSeries from './TimeSeries';
-import { ViewPropertiesProvider } from 'shared/useViewProperties';
+import CellHeader from './CellHeader'
+import CellContext from './CellContext'
+import TimeSeries from './TimeSeries'
+import {ViewPropertiesProvider} from 'shared/useViewProperties'
 
 // Types
-import { Cell } from 'types/Dashboard';
-import ErrorBoundary from '../../shared/components/ErrorBoundary';
+import {Cell} from 'types/Dashboard'
+import ErrorBoundary from '../../shared/components/ErrorBoundary'
 
 interface Props {
   cell: Cell
 }
 
-const CellComponent: React.FC<Props> = ({ cell }) => {
+const CellComponent: React.FC<Props> = ({cell}) => {
   return (
     <>
       <CellHeader name={cell.name || 'Name this Cell'} note={''}>
@@ -31,7 +31,7 @@ const CellComponent: React.FC<Props> = ({ cell }) => {
         </ViewPropertiesProvider>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CellComponent;
+export default CellComponent

@@ -1,13 +1,13 @@
 // Libraries
-import React  from 'react';
+import React from 'react'
 
 // Constants
-import { generateThresholdsListHexs } from 'constants/colorOperations';
+import {generateThresholdsListHexs} from 'constants/colorOperations'
 
 // Types
-import { SingleStatViewProperties } from '../../types/Dashboard';
+import {SingleStatViewProperties} from '../../types/Dashboard'
 
-import { formatStatValue } from './Gauge';
+import {formatStatValue} from './Gauge'
 
 interface Props {
   stat: number
@@ -15,22 +15,19 @@ interface Props {
   properties: SingleStatViewProperties
 }
 
-const SingleStat: React.FC<Props> = props => {
-  const { stat, theme, properties } = props;
-  const { colors, prefix, suffix, decimalPlaces } = properties;
+const SingleStat: React.FC<Props> = (props) => {
+  const {stat, theme, properties} = props
+  const {colors, prefix, suffix, decimalPlaces} = properties
 
-  const { bgColor: backgroundColor, textColor } = generateThresholdsListHexs({
+  const {bgColor: backgroundColor, textColor} = generateThresholdsListHexs({
     colors,
     lastValue: stat,
-    cellType: 'single-stat'
-  });
+    cellType: 'single-stat',
+  })
 
-  const formattedValue = formatStatValue(stat, { decimalPlaces, prefix, suffix });
+  const formattedValue = formatStatValue(stat, {decimalPlaces, prefix, suffix})
   return (
-    <div
-      className={'single-stat'}
-      style={{ backgroundColor }}
-    >
+    <div className={'single-stat'} style={{backgroundColor}}>
       <svg
         width={'100%'}
         height={'100%'}
@@ -43,13 +40,13 @@ const SingleStat: React.FC<Props> = props => {
           x={'50%'}
           dominantBaseline={'middle'}
           textAnchor={'middle'}
-          style={{ fill: textColor }}
+          style={{fill: textColor}}
         >
           {formattedValue}
         </text>
       </svg>
     </div>
-  );
-};
+  )
+}
 
-export default SingleStat;
+export default SingleStat

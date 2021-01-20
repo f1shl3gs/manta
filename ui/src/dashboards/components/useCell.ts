@@ -1,27 +1,33 @@
 // Libraries
-import constate from 'constate';
-import { useCallback, useEffect, useState } from 'react';
+import constate from 'constate'
+import {useCallback, useEffect, useState} from 'react'
 
 // Types
-import { Cell } from 'types/Dashboard';
+import {Cell} from 'types/Dashboard'
 
 // Hooks
-import { useParams } from 'react-router-dom';
-import { CachePolicies, useFetch } from 'use-http';
-import remoteDataState from 'utils/rds';
+import {useParams} from 'react-router-dom'
+import {CachePolicies, useFetch} from 'use-http'
+import remoteDataState from 'utils/rds'
 
 const [CellProvider, useCell] = constate(
   () => {
-    const [cell, setCell] = useState<Cell>();
+    const [cell, setCell] = useState<Cell>()
 
-    const { cellID, dashboardID } = useParams<{ cellID: string, dashboardID: string }>();
-    const { loading, error, patch, get } = useFetch(`/api/v1/dashboards/${dashboardID}/cells/${cellID}?a=b`, {
-      cachePolicy: CachePolicies.NO_CACHE
-    });
+    const {cellID, dashboardID} = useParams<{
+      cellID: string
+      dashboardID: string
+    }>()
+    const {loading, error, patch, get} = useFetch(
+      `/api/v1/dashboards/${dashboardID}/cells/${cellID}?a=b`,
+      {
+        cachePolicy: CachePolicies.NO_CACHE,
+      }
+    )
 
     useEffect(() => {
       get()
-        .then(resp => {
+        .then((resp) => {
           if (resp.viewProperties === undefined) {
             resp.viewProperties = {
               type: 'xy',
@@ -29,34 +35,35 @@ const [CellProvider, useCell] = constate(
               yColumn: 'value',
               axes: {
                 x: {},
-                y: {}
+                y: {},
               },
               queries: [
                 {
                   text: '',
-                  hidden: false
-                }
-              ]
-            };
+                  hidden: false,
+                },
+              ],
+            }
           }
 
-          console.log('set done', resp);
-          setCell(resp);
+          console.log('set done', resp)
+          setCell(resp)
         })
-        .catch(err => {
-          console.log('get failed ---- ', err);
+        .catch((err) => {
+          console.log('get failed ---- ', err)
         })
-        .finally(() => {
+        .finally(() => {})
+    }, [])
 
-        });
-    }, []);
+    const updateCell = useCallback(
+      (next: Cell) => {
+        setCell(next)
+        return patch(next)
+      },
+      [cell]
+    )
 
-    const updateCell = useCallback((next: Cell) => {
-      setCell(next);
-      return patch(next);
-    }, [cell]);
-
-    console.log('rds', remoteDataState(cell, error, loading), 'cell', cell);
+    console.log('rds', remoteDataState(cell, error, loading), 'cell', cell)
 
     return {
       cell,
@@ -64,14 +71,11 @@ const [CellProvider, useCell] = constate(
       loading,
       error,
       updateCell,
-      remoteDataState: remoteDataState(cell, error, loading)
-    };
+      remoteDataState: remoteDataState(cell, error, loading),
+    }
   },
   // useCell
-  value => value
-);
+  (value) => value
+)
 
-export {
-  CellProvider,
-  useCell
-};
+export {CellProvider, useCell}

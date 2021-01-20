@@ -1,24 +1,25 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 // Components
-import QueryTab from './QueryTab';
-import { ComponentColor, ComponentSize, IconFont, SquareButton } from '@influxdata/clockface';
+import QueryTab from './QueryTab'
+import {
+  ComponentColor,
+  ComponentSize,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
 
 // Hooks
-import { useQueries } from './useQueries';
+import {useQueries} from './useQueries'
 
 const QueryTabs: React.FC = () => {
-  const { queries, setActiveIndex, addQuery } = useQueries();
+  const {queries, setActiveIndex, addQuery} = useQueries()
 
   return (
     <div className={'time-machine-queries--tabs'}>
       {queries.map((query, index) => (
-        <QueryTab
-          key={index}
-          queryIndex={index}
-          query={query}
-        />
+        <QueryTab key={index} queryIndex={index} query={query} />
       ))}
 
       <SquareButton
@@ -29,7 +30,7 @@ const QueryTabs: React.FC = () => {
         onClick={addQuery}
       />
     </div>
-  );
-};
+  )
+}
 
-export default QueryTabs;
+export default QueryTabs

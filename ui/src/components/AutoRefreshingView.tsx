@@ -1,5 +1,5 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 interface Props {
   id: string
@@ -7,8 +7,7 @@ interface Props {
 }
 
 const AutoRefreshingView: React.FC<Props> = (props) => {
+  return <div>RefreshView</div>
+}
 
-  return <div>RefreshView</div>;
-};
-
-export default AutoRefreshingView;
+export default AutoRefreshingView

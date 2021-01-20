@@ -1,31 +1,31 @@
 // Libraries
-import React, { useState } from 'react';
-import classnames from 'classnames';
+import React, {useState} from 'react'
+import classnames from 'classnames'
 
 // Components
-import { DraggableResizer, Orientation } from '@influxdata/clockface';
-import TimeMachineVis from './TimeMachineVis';
-import TimeMachineQueries from './TimeMachineQueries';
-import ViewOptions from './ViewOptions';
+import {DraggableResizer, Orientation} from '@influxdata/clockface'
+import TimeMachineVis from './TimeMachineVis'
+import TimeMachineQueries from './TimeMachineQueries'
+import ViewOptions from './ViewOptions'
 
 // Types
-import { ViewProperties } from 'types/Dashboard';
-import { useViewOption } from 'shared/useViewOption';
-import { QueriesProvider } from './useQueries';
+import {ViewProperties} from 'types/Dashboard'
+import {useViewOption} from 'shared/useViewOption'
+import {QueriesProvider} from './useQueries'
 
-const INITIAL_RESIZER_HANDLE = 0.5;
+const INITIAL_RESIZER_HANDLE = 0.5
 
 interface Props {
-  viewProperties: ViewProperties,
+  viewProperties: ViewProperties
 }
 
 const TimeMachine: React.FC<Props> = (props) => {
-  const { isViewingVisOptions } = useViewOption();
-  const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE]);
+  const {isViewingVisOptions} = useViewOption()
+  const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 
   const containerClassName = classnames('time-machine', {
-    'time-machine--split': isViewingVisOptions
-  });
+    'time-machine--split': isViewingVisOptions,
+  })
 
   return (
     <QueriesProvider>
@@ -53,7 +53,7 @@ const TimeMachine: React.FC<Props> = (props) => {
         </DraggableResizer>
       </div>
     </QueriesProvider>
-  );
-};
+  )
+}
 
-export default TimeMachine;
+export default TimeMachine

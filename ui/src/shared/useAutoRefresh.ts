@@ -1,79 +1,83 @@
-import constate from 'constate';
-import { useCallback, useEffect, useState } from 'react';
-import { AutoRefresh, AutoRefreshStatus } from 'types/AutoRefresh';
-import { useTimeRange } from './useTimeRange';
-import { TimeRange } from '../types/TimeRanges';
-import moment from 'moment';
+// Libraries
+import constate from 'constate'
+import {useCallback, useEffect, useState} from 'react'
+import moment from 'moment'
+
+// Types
+import {TimeRange} from '../types/TimeRanges'
+import {AutoRefresh, AutoRefreshStatus} from 'types/AutoRefresh'
+
+// Hooks
+import {useTimeRange} from './useTimeRange'
 
 const calculateRange = (timeRange: TimeRange) => {
   switch (timeRange.type) {
     case 'selectable-duration':
-      const end = moment().unix();
-      const start = end - timeRange.seconds;
+      const end = moment().unix()
+      const start = end - timeRange.seconds
 
       return {
         start,
         end,
-        step: 14
-      };
+        step: 14,
+      }
 
     default:
-      const now = moment().unix();
+      const now = moment().unix()
 
       return {
         start: now - 3600,
         end: now,
-        step: 14
-      };
+        step: 14,
+      }
   }
-};
+}
 
 const [AutoRefreshProvider, useAutoRefresh] = constate(
   () => {
-    const { timeRange } = useTimeRange();
+    const {timeRange} = useTimeRange()
 
     const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>({
       status: AutoRefreshStatus.Active,
-      interval: 15
-    });
-    const [state, setState] = useState(() => calculateRange(timeRange));
+      interval: 15,
+    })
+    const [state, setState] = useState(() => calculateRange(timeRange))
     // const [manualRefresh, setManualRefresh] = useState(0);
     const refresh = useCallback(() => {
       // setManualRefresh(prevState => prevState + 1);
-      setState(prevState => calculateRange(timeRange));
-    }, [timeRange]);
+      setState((prevState) => calculateRange(timeRange))
+    }, [timeRange])
 
     useEffect(() => {
+      setState((prevState) => calculateRange(timeRange))
+
       if (autoRefresh.status !== AutoRefreshStatus.Active) {
-        return;
+        return
       }
 
       const timer = setInterval(() => {
         if (document.hidden) {
           // no need to refresh
-          return;
+          return
         }
 
-        setState(prev => calculateRange(timeRange));
-      }, autoRefresh.interval * 1000);
+        setState((prev) => calculateRange(timeRange))
+      }, autoRefresh.interval * 1000)
 
       return () => {
-        clearInterval(timer);
-      };
-    }, [autoRefresh, timeRange]);
+        clearInterval(timer)
+      }
+    }, [autoRefresh, timeRange])
 
     return {
       autoRefresh,
       setAutoRefresh,
       // manualRefresh,
       refresh,
-      ...state
-    };
+      ...state,
+    }
   },
-  value => value
-);
+  (value) => value
+)
 
-export {
-  AutoRefreshProvider,
-  useAutoRefresh
-};
+export {AutoRefreshProvider, useAutoRefresh}

@@ -1,52 +1,61 @@
-import React, { useRef, useState } from 'react';
+// Libraries
+import React, {useRef, useState} from 'react'
+import moment from 'moment'
+
+// Components
 import {
   Appearance,
   Dropdown,
   Popover,
   PopoverInteraction,
-  PopoverPosition
-} from '@influxdata/clockface';
+  PopoverPosition,
+} from '@influxdata/clockface'
+import DateRangePicker from 'shared/components/DateRangePicker/DateRangePicker'
+
+// Hooks
+import {useTimeRange} from 'shared/useTimeRange'
+
+// Types
+import {TimeRange} from 'types/TimeRanges'
+
+// Constants
 import {
   CUSTOM_TIME_RANGE_LABEL,
-  pastHourTimeRange,
-  SELECTABLE_TIME_RANGES, TIME_RANGE_FORMAT
-} from 'constants/timeRange';
-import { TimeRange } from 'types/TimeRanges';
-import DateRangePicker from 'shared/components/DateRangePicker/DateRangePicker';
-import moment from 'moment';
-import { useTimeRange } from '../../shared/useTimeRange';
+  SELECTABLE_TIME_RANGES,
+  TIME_RANGE_FORMAT,
+} from 'constants/timeRange'
 
 const getTimeRangeLabel = (timeRange: TimeRange): string => {
   if (timeRange.type === 'selectable-duration') {
-    return timeRange.label;
+    return timeRange.label
   }
 
   if (timeRange.type === 'duration') {
-    return timeRange.lower;
+    return timeRange.lower
   }
 
   if (timeRange.type === 'custom') {
     return `${moment(timeRange.lower).format(TIME_RANGE_FORMAT)} - ${moment(
       timeRange.upper
-    ).format(TIME_RANGE_FORMAT)}`;
+    ).format(TIME_RANGE_FORMAT)}`
   }
 
-  return 'unknown';
-};
+  return 'unknown'
+}
 
 const TimeRangeDropdown: React.FC = () => {
-  const { timeRange, setTimeRange } = useTimeRange();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const timeRangeLabel = getTimeRangeLabel(timeRange);
+  const {timeRange, setTimeRange} = useTimeRange()
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  const timeRangeLabel = getTimeRangeLabel(timeRange)
 
   const dropdownWidth = (): number => {
     if (timeRange.type === 'custom') {
-      return 250;
+      return 250
     }
 
-    return 100;
-  };
+    return 100
+  }
 
   return (
     <>
@@ -62,11 +71,11 @@ const TimeRangeDropdown: React.FC = () => {
         contents={() => (
           <DateRangePicker
             timeRange={timeRange}
-            onSetTimeRange={tr => {
+            onSetTimeRange={(tr) => {
               setTimeRange(tr)
             }}
             onClose={() => {
-              console.log('close');
+              console.log('close')
             }}
           />
         )}
@@ -74,16 +83,16 @@ const TimeRangeDropdown: React.FC = () => {
 
       <div ref={dropdownRef}>
         <Dropdown
-          style={{ width: `${dropdownWidth()}px` }}
+          style={{width: `${dropdownWidth()}px`}}
           button={(active, onClick) => (
             <Dropdown.Button active={active} onClick={onClick}>
               {timeRangeLabel}
             </Dropdown.Button>
           )}
-          menu={onCollapse => (
+          menu={(onCollapse) => (
             <Dropdown.Menu
               onCollapse={onCollapse}
-              style={{ width: `${dropdownWidth() + 50}px` }}
+              style={{width: `${dropdownWidth() + 50}px`}}
             >
               <Dropdown.Divider
                 key={'Time Range'}
@@ -101,7 +110,7 @@ const TimeRangeDropdown: React.FC = () => {
                 {CUSTOM_TIME_RANGE_LABEL}
               </Dropdown.Item>
 
-              {SELECTABLE_TIME_RANGES.map(item => {
+              {SELECTABLE_TIME_RANGES.map((item) => {
                 const {label} = item
 
                 return (
@@ -116,14 +125,14 @@ const TimeRangeDropdown: React.FC = () => {
                   >
                     {label}
                   </Dropdown.Item>
-                );
+                )
               })}
             </Dropdown.Menu>
           )}
         />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default TimeRangeDropdown;
+export default TimeRangeDropdown

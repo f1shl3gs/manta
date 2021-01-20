@@ -1,6 +1,6 @@
 // libraries
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import {Link} from 'react-router-dom'
 
 // components
 import {
@@ -8,9 +8,9 @@ import {
   Icon,
   IconFont,
   InfluxDBCloudLogo,
-  TreeNav
-} from '@influxdata/clockface';
-import { usePresentationMode } from '../shared/usePresentationMode';
+  TreeNav,
+} from '@influxdata/clockface'
+import {usePresentationMode} from '../shared/usePresentationMode'
 
 export interface NavItemLink {
   type: 'link' | 'href'
@@ -21,13 +21,13 @@ const getNavItemActivation = (
   keywords: string[],
   location: string
 ): boolean => {
-  const ignoreOrgAndOrgID = 3;
-  const parentPath = location.split('/').slice(ignoreOrgAndOrgID);
+  const ignoreOrgAndOrgID = 3
+  const parentPath = location.split('/').slice(ignoreOrgAndOrgID)
   if (!parentPath.length) {
-    parentPath.push('me');
+    parentPath.push('me')
   }
-  return keywords.some((path) => parentPath.includes(path));
-};
+  return keywords.some((path) => parentPath.includes(path))
+}
 
 export interface NavSubItem {
   id: string
@@ -48,7 +48,7 @@ interface NavItem {
 }
 
 const generateNavItems = (orgID: string): NavItem[] => {
-  const orgPrefix = `/orgs/${orgID}`;
+  const orgPrefix = `/orgs/${orgID}`
 
   return [
     {
@@ -59,9 +59,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'OTcl',
       link: {
         type: 'link',
-        location: `${orgPrefix}/otcls`
+        location: `${orgPrefix}/otcls`,
       },
-      activeKeywords: ['otcls']
+      activeKeywords: ['otcls'],
     },
     {
       id: 'logs',
@@ -71,9 +71,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Logs',
       link: {
         type: 'link',
-        location: `${orgPrefix}/logs`
+        location: `${orgPrefix}/logs`,
       },
-      activeKeywords: ['logs']
+      activeKeywords: ['logs'],
     },
     {
       id: 'metrics',
@@ -83,9 +83,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Metrics',
       link: {
         type: 'link',
-        location: `${orgPrefix}/metrics`
+        location: `${orgPrefix}/metrics`,
       },
-      activeKeywords: ['metrics']
+      activeKeywords: ['metrics'],
     },
     {
       id: 'traces',
@@ -95,9 +95,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Traces',
       link: {
         type: 'link',
-        location: `${orgPrefix}/traces`
+        location: `${orgPrefix}/traces`,
       },
-      activeKeywords: ['traces']
+      activeKeywords: ['traces'],
     },
     {
       id: 'data-explorer',
@@ -107,9 +107,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Explore',
       link: {
         type: 'link',
-        location: `${orgPrefix}/data-explorer`
+        location: `${orgPrefix}/data-explorer`,
       },
-      activeKeywords: ['data-explorer']
+      activeKeywords: ['data-explorer'],
     },
     {
       id: 'dashboards',
@@ -119,9 +119,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       shortLabel: 'Boards',
       link: {
         type: 'link',
-        location: `${orgPrefix}/dashboards`
+        location: `${orgPrefix}/dashboards`,
       },
-      activeKeywords: ['dashboards']
+      activeKeywords: ['dashboards'],
     },
     {
       id: 'tasks',
@@ -130,9 +130,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Tasks',
       link: {
         type: 'link',
-        location: `${orgPrefix}/tasks`
+        location: `${orgPrefix}/tasks`,
       },
-      activeKeywords: ['tasks']
+      activeKeywords: ['tasks'],
     },
     {
       id: 'alerting',
@@ -141,7 +141,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Alerts',
       link: {
         type: 'link',
-        location: `${orgPrefix}/alerting`
+        location: `${orgPrefix}/alerting`,
       },
       activeKeywords: ['alerting'],
       menu: [
@@ -151,10 +151,10 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Alert History',
           link: {
             type: 'link',
-            location: `${orgPrefix}/alert-history`
-          }
-        }
-      ]
+            location: `${orgPrefix}/alert-history`,
+          },
+        },
+      ],
     },
     {
       id: 'settings',
@@ -163,7 +163,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       label: 'Settings',
       link: {
         type: 'link',
-        location: `${orgPrefix}/settings/variables`
+        location: `${orgPrefix}/settings/variables`,
       },
       activeKeywords: ['settings'],
       menu: [
@@ -173,8 +173,8 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Variables',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/variables`
-          }
+            location: `${orgPrefix}/settings/variables`,
+          },
         },
         {
           id: 'templates',
@@ -182,8 +182,8 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Templates',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/templates`
-          }
+            location: `${orgPrefix}/settings/templates`,
+          },
         },
         {
           id: 'labels',
@@ -191,24 +191,24 @@ const generateNavItems = (orgID: string): NavItem[] => {
           label: 'Labels',
           link: {
             type: 'link',
-            location: `${orgPrefix}/settings/labels`
-          }
-        }
-      ]
-    }
-  ];
-};
+            location: `${orgPrefix}/settings/labels`,
+          },
+        },
+      ],
+    },
+  ]
+}
 
 // todo: set it manully, test only
-const navItems = generateNavItems('06b88c483da3d000');
+const navItems = generateNavItems('06b88c483da3d000')
 
 const Nav: React.FC = () => {
-  const orgID = '06b88c483da3d000';
-  const orgPrefix = `/orgs/${orgID}`;
+  const orgID = '06b88c483da3d000'
+  const orgPrefix = `/orgs/${orgID}`
 
-  const { inPresentationMode } = usePresentationMode();
+  const {inPresentationMode} = usePresentationMode()
   if (inPresentationMode) {
-    return null;
+    return null
   }
 
   return (
@@ -229,11 +229,11 @@ const Nav: React.FC = () => {
       {navItems.map((item) => {
         const linkElement = (classname: string): JSX.Element => {
           if (item.link.type === 'href') {
-            return <a href={item.link.location} className={classname} />;
+            return <a href={item.link.location} className={classname} />
           }
 
-          return <Link to={item.link.location} className={classname} />;
-        };
+          return <Link to={item.link.location} className={classname} />
+        }
 
         return (
           <TreeNav.Item
@@ -259,13 +259,13 @@ const Nav: React.FC = () => {
                           href={menuItem.link.location}
                           className={className}
                         />
-                      );
+                      )
                     }
 
                     return (
                       <Link to={menuItem.link.location} className={className} />
-                    );
-                  };
+                    )
+                  }
 
                   return (
                     <TreeNav.SubItem
@@ -279,15 +279,15 @@ const Nav: React.FC = () => {
                       label={menuItem.label}
                       linkElement={linkElement}
                     />
-                  );
+                  )
                 })}
               </TreeNav.SubMenu>
             )}
           </TreeNav.Item>
-        );
+        )
       })}
     </TreeNav>
-  );
-};
+  )
+}
 
-export default Nav;
+export default Nav

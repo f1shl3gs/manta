@@ -1,17 +1,17 @@
 // Libraries
-import React, { PureComponent, CSSProperties } from 'react';
+import React, {PureComponent, CSSProperties} from 'react'
 
 // Components
-import DatePicker from './DatePicker';
+import DatePicker from './DatePicker'
 
 // Types
-import { TimeRange } from 'types/TimeRanges';
+import {TimeRange} from 'types/TimeRanges'
 import {
   Button,
   ClickOutside,
   ComponentColor,
-  ComponentSize
-} from '@influxdata/clockface';
+  ComponentSize,
+} from '@influxdata/clockface'
 
 interface Props {
   timeRange: TimeRange
@@ -33,19 +33,19 @@ interface State {
 
 class DateRangePicker extends PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props);
+    super(props)
 
     const {
-      timeRange: { lower, upper }
-    } = props;
+      timeRange: {lower, upper},
+    } = props
 
     // @ts-ignore
-    this.state = { lower, upper };
+    this.state = {lower, upper}
   }
 
   public render() {
-    const { onClose } = this.props;
-    const { upper, lower } = this.state;
+    const {onClose} = this.props
+    const {upper, lower} = this.state
 
     return (
       <ClickOutside onClickOutside={onClose}>
@@ -78,50 +78,50 @@ class DateRangePicker extends PureComponent<Props, State> {
           />
         </div>
       </ClickOutside>
-    );
+    )
   }
 
   private get stylePosition(): CSSProperties {
-    const { position } = this.props;
+    const {position} = this.props
 
     if (!position) {
       return {
         top: `${window.innerHeight / 2}px`,
         left: `${window.innerWidth / 2}px`,
-        transform: `translate(-50%, -50%)`
-      };
+        transform: `translate(-50%, -50%)`,
+      }
     }
 
     const style = Object.entries(position).reduce((acc, [k, v]) => {
-      const obj = { ...acc };
+      const obj = {...acc}
       // @ts-ignore
       if (isNaN(+v)) {
         // @ts-ignore
-        obj[k] = v;
+        obj[k] = v
       } else {
         // @ts-ignore
-        obj[k] = `${v}px`;
+        obj[k] = `${v}px`
       }
-      return obj;
-    }, {});
+      return obj
+    }, {})
 
-    return style;
+    return style
   }
 
   private handleSetTimeRange = (): void => {
-    const { onSetTimeRange } = this.props;
-    const { upper, lower } = this.state;
+    const {onSetTimeRange} = this.props
+    const {upper, lower} = this.state
 
-    onSetTimeRange({ lower, upper, type: 'custom' });
-  };
+    onSetTimeRange({lower, upper, type: 'custom'})
+  }
 
   private handleSelectLower = (lower: string): void => {
-    this.setState({ lower });
-  };
+    this.setState({lower})
+  }
 
   private handleSelectUpper = (upper: string): void => {
-    this.setState({ upper });
-  };
+    this.setState({upper})
+  }
 }
 
-export default DateRangePicker;
+export default DateRangePicker

@@ -1,4 +1,4 @@
-import { InfluxColors } from '@influxdata/clockface';
+import {InfluxColors} from '@influxdata/clockface'
 
 export interface GaugeTheme {
   degree: number
@@ -40,8 +40,8 @@ export const GAUGE_THEME_LIGHT: GaugeTheme = {
   // drawn if the value for the needle is greater than the gauge max. It is
   // expressed as a percentage of the circumference of a circle, e.g. 0.5 means
   // draw halfway around the gauge from the max value
-  overflowDelta: 0.03
-};
+  overflowDelta: 0.03,
+}
 
 export const GAUGE_THEME_DARK: GaugeTheme = {
   degree: (5 / 4) * Math.PI,
@@ -64,5 +64,5 @@ export const GAUGE_THEME_DARK: GaugeTheme = {
   // drawn if the value for the needle is greater than the gauge max. It is
   // expressed as a percentage of the circumference of a circle, e.g. 0.5 means
   // draw halfway around the gauge from the max value
-  overflowDelta: 0.03
-};
+  overflowDelta: 0.03,
+}

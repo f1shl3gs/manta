@@ -1,22 +1,22 @@
 // Libraries
-import React from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import React from 'react'
+import {Route, Switch, withRouter} from 'react-router-dom'
 
 // Components
-import { AppWrapper } from '@influxdata/clockface';
-import Nav from 'layout/nav';
-import Org from 'containers/organization/org';
-import { usePresentationMode } from './shared/usePresentationMode';
+import {AppWrapper} from '@influxdata/clockface'
+import Nav from 'layout/nav'
+import Org from 'containers/organization/org'
+import {usePresentationMode} from './shared/usePresentationMode'
 
 // Styles
-import './App.css';
+import './App.css'
 
 const createOrg: React.FC = () => {
-  return <div>create org</div>;
-};
+  return <div>create org</div>
+}
 
 const App: React.FC = () => {
-  const { inPresentationMode } = usePresentationMode();
+  const {inPresentationMode} = usePresentationMode()
 
   return (
     <AppWrapper presentationMode={inPresentationMode} className="dark">
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         <Route path="/orgs/:orgID" component={Org} />
       </Switch>
     </AppWrapper>
-  );
-};
+  )
+}
 
-export default withRouter(App);
+export default withRouter(App)

@@ -1,10 +1,10 @@
 // Libraries
-import React, { Component, ComponentType, ErrorInfo } from 'react';
+import React, {Component, ComponentType, ErrorInfo} from 'react'
 
 // Components
-import DefaultErrorMessage from './DefaultErrorMessage';
+import DefaultErrorMessage from './DefaultErrorMessage'
 
-export type ErrorMessageComponent = ComponentType<{ error: Error }>
+export type ErrorMessageComponent = ComponentType<{error: Error}>
 
 interface ErrorBoundaryProps {
   errorComponent: ErrorMessageComponent
@@ -15,12 +15,12 @@ interface ErrorBoundaryState {
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  public static defaultProps = { errorComponent: DefaultErrorMessage };
+  public static defaultProps = {errorComponent: DefaultErrorMessage}
 
-  public state: ErrorBoundaryState = { error: null };
+  public state: ErrorBoundaryState = {error: null}
 
   public static getDerivedStateFromError(error: Error) {
-    return { error };
+    return {error}
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -30,14 +30,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   public render() {
-    const { error } = this.state;
+    const {error} = this.state
 
     if (error) {
-      return <this.props.errorComponent error={error} />;
+      return <this.props.errorComponent error={error} />
     }
 
-    return this.props.children;
+    return this.props.children
   }
 }
 
-export default ErrorBoundary;
+export default ErrorBoundary

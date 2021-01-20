@@ -1,16 +1,12 @@
-import React, { useEffect } from 'react';
-import TimeSeries from './TimeSeries';
-import { useAutoRefresh } from '../../shared/useAutoRefresh';
+import React, {useEffect} from 'react'
+import TimeSeries from './TimeSeries'
+import {useAutoRefresh} from '../../shared/useAutoRefresh'
 
 const RefreshingView: React.FC = () => {
-  const { autoRefresh } = useAutoRefresh();
-  useEffect(() => {
+  const {autoRefresh} = useAutoRefresh()
+  useEffect(() => {})
 
-  })
+  return <TimeSeries />
+}
 
-  return (
-    <TimeSeries />
-  );
-};
-
-export default RefreshingView;
+export default RefreshingView

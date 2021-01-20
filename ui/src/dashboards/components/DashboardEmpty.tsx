@@ -1,5 +1,11 @@
-import React from 'react';
-import { Button, ComponentColor, ComponentSize, EmptyState, IconFont } from '@influxdata/clockface';
+import React from 'react'
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  EmptyState,
+  IconFont,
+} from '@influxdata/clockface'
 
 const DashboardEmpty = () => {
   return (
@@ -22,7 +28,7 @@ const DashboardEmpty = () => {
         />
       </EmptyState>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardEmpty;
+export default DashboardEmpty

@@ -1,9 +1,9 @@
 // Libraries
-import React from 'react';
+import React from 'react'
 
 // Components
-import { Controlled as ReactCodeMirror } from 'react-codemirror2';
-import { useActiveQuery } from './useQueries';
+import {Controlled as ReactCodeMirror} from 'react-codemirror2'
+import {useActiveQuery} from './useQueries'
 
 // Constants
 const options = {
@@ -11,11 +11,11 @@ const options = {
   lineNumber: true,
   autoRefresh: true,
   theme: 'time-machine',
-  completeSingle: false
-};
+  completeSingle: false,
+}
 
 const QueryEditor: React.FC = () => {
-  const { activeQuery, onSetText } = useActiveQuery();
+  const {activeQuery, onSetText} = useActiveQuery()
 
   return (
     <ReactCodeMirror
@@ -24,7 +24,7 @@ const QueryEditor: React.FC = () => {
       options={options}
       onBeforeChange={(editor, data, value) => onSetText(value)}
     />
-  );
-};
+  )
+}
 
-export default QueryEditor;
+export default QueryEditor

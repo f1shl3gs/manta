@@ -1,13 +1,19 @@
 // libraries
-import React, { useMemo } from 'react';
-import moment from 'moment';
+import React, {useMemo} from 'react'
+import moment from 'moment'
 
 // components
-import { Config, DEFAULT_TABLE_COLORS, fromRows, HoverTimeProvider, Plot } from '@influxdata/giraffe';
-import { TableGraphLayerConfig } from '@influxdata/giraffe/dist/types';
+import {
+  Config,
+  DEFAULT_TABLE_COLORS,
+  fromRows,
+  HoverTimeProvider,
+  Plot,
+} from '@influxdata/giraffe'
+import {TableGraphLayerConfig} from '@influxdata/giraffe/dist/types'
 
 // test data
-import testData from './query_range_resp.json';
+import testData from './query_range_resp.json'
 
 const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
@@ -71,7 +77,7 @@ const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:10Z,10.6,usage_system,cpu,cpu0,MBP15-TLUONG.local
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:20Z,10.21021021021021,usage_system,cpu,cpu0,MBP15-TLUONG.local
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:30Z,11.4,usage_system,cpu,cpu0,MBP15-TLUONG.local
-`;
+`
 type StreamResult = {
   stream: {
     [key: string]: string
@@ -100,27 +106,25 @@ type TableRow = {
 }
 
 const transformData = (ss: StreamResult[]) => {
-  const rows = new Array<TableRow>();
+  const rows = new Array<TableRow>()
 
   ss.forEach((stream) => {
     stream.values.forEach((pair) => {
       rows.push({
         ts: moment(Number(pair[0]) / 1000 / 1000).format(),
-        msg: pair[1]
-      });
-    });
-  });
+        msg: pair[1],
+      })
+    })
+  })
 
-  return rows;
-};
+  return rows
+}
 
 interface Result {
   stream: {
     [key: string]: string
   }
-  values: [
-    [string, string]
-  ]
+  values: [[string, string]]
 }
 
 // Notice: it is worked now, i don't know what happened
@@ -150,8 +154,8 @@ const LogList = () => {
     console.log('table', table);
   */
 
-  const theme = 'dark';
-  const fixFirstColumn = false;
+  const theme = 'dark'
+  const fixFirstColumn = false
   const config: Config = {
     fluxResponse: tableCSV,
     layers: [
@@ -161,61 +165,61 @@ const LogList = () => {
           colors: DEFAULT_TABLE_COLORS,
           tableOptions: {
             fixFirstColumn,
-            verticalTimeAxis: true
+            verticalTimeAxis: true,
           },
           fieldOptions: [
             {
               displayName: '_start',
               internalName: '_start',
-              visible: true
+              visible: true,
             },
             {
               displayName: '_stop',
               internalName: '_stop',
-              visible: true
+              visible: true,
             },
             {
               displayName: '_time',
               internalName: '_time',
-              visible: true
+              visible: true,
             },
             {
               displayName: '_value',
               internalName: '_value',
-              visible: true
+              visible: true,
             },
             {
               displayName: '_field',
               internalName: '_field',
-              visible: true
+              visible: true,
             },
             {
               displayName: '_measurement',
               internalName: '_measurement',
-              visible: true
+              visible: true,
             },
             {
               displayName: 'cpu',
               internalName: 'cpu',
-              visible: true
+              visible: true,
             },
             {
               displayName: 'host',
               internalName: 'host',
-              visible: true
-            }
+              visible: true,
+            },
           ],
           timeFormat: 'YYYY/MM/DD HH:mm:ss',
           decimalPlaces: {
             digits: 3,
-            isEnforced: true
-          }
+            isEnforced: true,
+          },
         },
         timeZone: 'Local',
-        tableTheme: theme
-      } as TableGraphLayerConfig
-    ]
-  };
+        tableTheme: theme,
+      } as TableGraphLayerConfig,
+    ],
+  }
 
   return (
     <HoverTimeProvider>
@@ -223,13 +227,13 @@ const LogList = () => {
         style={{
           width: 'calc(100vw - 100px)',
           height: 'calc(100vh - 100px)',
-          margin: '50px'
+          margin: '50px',
         }}
       >
         <Plot config={config} />
       </div>
     </HoverTimeProvider>
-  );
-};
+  )
+}
 
-export default LogList;
+export default LogList

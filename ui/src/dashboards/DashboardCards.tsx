@@ -1,33 +1,33 @@
 // Libraries
-import React, { useCallback } from 'react';
-import moment from 'moment';
+import React, {useCallback} from 'react'
+import moment from 'moment'
 
 // Components
-import DashboardCard from './components/DashboardCard';
+import DashboardCard from './components/DashboardCard'
 
 // Hooks
-import { useDashboards } from './useDashboards';
-import { useFetch } from 'use-http';
+import {useDashboards} from './useDashboards'
+import {useFetch} from 'use-http'
 
 const DashboardCards: React.FC = () => {
-  const { dashboards, refresh } = useDashboards();
+  const {dashboards, refresh} = useDashboards()
 
-  const { del } = useFetch(`/api/v1/dashboards`, {});
+  const {del} = useFetch(`/api/v1/dashboards`, {})
   const onDeleteDashboard = useCallback(
     (id: string) => {
       del(id)
         .then(() => {
-          refresh();
+          refresh()
         })
         .catch((err) => {
-          console.log('delete dashboard err', err);
-        });
+          console.log('delete dashboard err', err)
+        })
     },
     [del]
-  );
+  )
 
   return (
-    <div style={{ height: '100%', display: 'grid' }}>
+    <div style={{height: '100%', display: 'grid'}}>
       <div className={'dashboards-card-grid'}>
         {dashboards?.map((d) => (
           <DashboardCard
@@ -41,7 +41,7 @@ const DashboardCards: React.FC = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardCards;
+export default DashboardCards

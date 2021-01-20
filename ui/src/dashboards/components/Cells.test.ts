@@ -1,4 +1,4 @@
-import {isEqual} from 'lodash';
+import {isEqual} from 'lodash'
 
 describe('Grid', () => {
   it('isEqual', () => {
@@ -9,8 +9,8 @@ describe('Grid', () => {
       static: false,
       w: 12,
       x: 0,
-      y: 0
-    };
+      y: 0,
+    }
 
     const next = {
       h: 4,
@@ -27,9 +27,9 @@ describe('Grid', () => {
       static: false,
       w: 12,
       x: 0,
-      y: 0
-    };
+      y: 0,
+    }
 
     console.log(isEqual(prev, next))
-  });
-});
+  })
+})

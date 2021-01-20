@@ -1,26 +1,19 @@
-import { useCallback, useState } from 'react';
-import constate from 'constate';
+import constate from 'constate'
+import {useCallback, useState} from 'react'
 
-import { Notification } from 'types/notification';
+import {Notification} from 'types/Notification'
 
-const [NotificationProvider, useNotification] = constate(
-  () => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+const [NotificationProvider, useNotification] = constate(() => {
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
-    const info = useCallback((msg: string) => {
+  const info = useCallback((msg: string) => {}, [notifications])
 
-    }, [notifications]);
-
-    return {
-      notifications,
-      notification: {
-        info
-      }
-    };
+  return {
+    notifications,
+    notification: {
+      info,
+    },
   }
-);
+})
 
-export {
-  NotificationProvider,
-  useNotification
-};
+export {NotificationProvider, useNotification}

@@ -1,4 +1,4 @@
-import { DashboardColor } from './colors';
+import {DashboardColor} from './Colors'
 
 export interface Axis {
   bounds?: string[]
@@ -61,7 +61,6 @@ export interface SingleStatViewProperties {
   tickSuffix: string
   legend: Legend
   decimalPlaces: DecimalPlaces
-
 }
 
 export interface HistogramViewProperties {
@@ -124,7 +123,7 @@ export interface ScatterViewProperties {
 }
 
 export interface LinePlusSingleStatViewProperties {
-  type: 'line-plus-single-stat',
+  type: 'line-plus-single-stat'
   queries: DashboardQuery[]
 }
 
@@ -139,18 +138,17 @@ export interface HeatmapViewProperties {
 }
 
 export type ViewProperties =
-  XYViewProperties |
-  GaugeViewProperties |
-  SingleStatViewProperties |
-  HistogramViewProperties |
-  MarkdownViewProperties |
-  BandViewProperties |
-  TableViewProperties |
-  ScatterViewProperties |
-  LinePlusSingleStatViewProperties |
-  MosaicViewProperties |
-  HeatmapViewProperties
-
+  | XYViewProperties
+  | GaugeViewProperties
+  | SingleStatViewProperties
+  | HistogramViewProperties
+  | MarkdownViewProperties
+  | BandViewProperties
+  | TableViewProperties
+  | ScatterViewProperties
+  | LinePlusSingleStatViewProperties
+  | MosaicViewProperties
+  | HeatmapViewProperties
 
 export type ViewType = ViewProperties['type']
 
@@ -167,8 +165,10 @@ export interface View<T extends ViewProperties = ViewProperties>
   dashboardID?: string
 }
 
-export type NewView<T extends ViewProperties = ViewProperties> = Omit<View<T>,
-  'id'>
+export type NewView<T extends ViewProperties = ViewProperties> = Omit<
+  View<T>,
+  'id'
+>
 
 export interface Cell {
   id: string

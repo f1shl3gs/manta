@@ -7,26 +7,26 @@
 */
 
 // Components
-@import "src/components/AutoRefreshDropdown/AutoRefreshDropdown.scss";
-@import "src/components/context_menu/ContextMenu.scss";
-@import "src/components/RenamablePageTitle.scss";
-@import "src/components/timeMachine/TimeMachine.scss";
-@import "src/components/timeMachine/TimeMachineQueries.scss";
-@import "src/components/timeMachine/ViewOptions.scss";
-@import "src/components/timeMachine/Queries.scss";
-@import "src/components/timeMachine/QueryTab.scss";
-@import "src/components/timeMachine/ViewTypeDropdown.scss";
-@import "src/dashboards/components/DashboardCardsGrid.scss";
-@import "src/dashboards/components/GradientBorder.scss";
-@import "src/dashboards/components/cells/Cell.scss";
-@import "src/dashboards/components/cells/react-grid-layout.scss";
-@import "src/dashboards/components/cells/Dashboards.scss";
-@import "src/dashboards/components/DashboardEmpty.scss";
-@import "src/dashboards/components/ViewEditorOverlay.scss";
-@import "src/style/codemirror/CodeMirror.scss";
-@import "src/style/codemirror/CodeMirrorTheme.scss";
-@import "src/shared/components/EmptyGraphError.scss";
-@import "src/components/timeMachine/SingleStat.scss";
+@import 'src/components/AutoRefreshDropdown/AutoRefreshDropdown.scss';
+@import 'src/components/context_menu/ContextMenu.scss';
+@import 'src/components/RenamablePageTitle.scss';
+@import 'src/components/timeMachine/TimeMachine.scss';
+@import 'src/components/timeMachine/TimeMachineQueries.scss';
+@import 'src/components/timeMachine/ViewOptions.scss';
+@import 'src/components/timeMachine/Queries.scss';
+@import 'src/components/timeMachine/QueryTab.scss';
+@import 'src/components/timeMachine/ViewTypeDropdown.scss';
+@import 'src/dashboards/components/DashboardCardsGrid.scss';
+@import 'src/dashboards/components/GradientBorder.scss';
+@import 'src/dashboards/components/cells/Cell.scss';
+@import 'src/dashboards/components/cells/react-grid-layout.scss';
+@import 'src/dashboards/components/cells/Dashboards.scss';
+@import 'src/dashboards/components/DashboardEmpty.scss';
+@import 'src/dashboards/components/ViewEditorOverlay.scss';
+@import 'src/style/codemirror/CodeMirror.scss';
+@import 'src/style/codemirror/CodeMirrorTheme.scss';
+@import 'src/shared/components/EmptyGraphError.scss';
+@import 'src/components/timeMachine/SingleStat.scss';
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

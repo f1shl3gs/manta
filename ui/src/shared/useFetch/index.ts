@@ -1,4 +1,4 @@
-export { default } from './useFetch'
+export {default} from './useFetch'
 export * from './useFetch'
 export * from './Provider'
 export * from './FetchContext'

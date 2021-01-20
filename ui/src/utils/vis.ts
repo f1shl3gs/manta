@@ -1,6 +1,14 @@
-import { TimeZone } from './timeZone';
-import { binaryPrefixFormatter, siPrefixFormatter, timeFormatter } from '@influxdata/giraffe';
-import { DEFAULT_TIME_FORMAT, FORMAT_OPTIONS, resolveTimeFormat } from '../constants/timeFormat';
+import {TimeZone} from './timeZone'
+import {
+  binaryPrefixFormatter,
+  siPrefixFormatter,
+  timeFormatter,
+} from '@influxdata/giraffe'
+import {
+  DEFAULT_TIME_FORMAT,
+  FORMAT_OPTIONS,
+  resolveTimeFormat,
+} from '../constants/timeFormat'
 
 export type ColumnType = 'number' | 'string' | 'time' | 'boolean'
 

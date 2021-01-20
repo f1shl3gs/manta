@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"strconv"
 
-	"go.uber.org/zap"
-
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/labelset"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 	"github.com/f1shl3gs/manta/query"
 	"github.com/f1shl3gs/manta/query/promql"
+	"go.uber.org/zap"
 )
 
 // Checker should be implement as a Executor's handler

@@ -1,4 +1,4 @@
-import { IconFont } from '@influxdata/clockface';
+import {IconFont} from '@influxdata/clockface'
 
 export enum NotificationStyle {
   Error = 'error',

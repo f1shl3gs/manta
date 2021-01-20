@@ -1,42 +1,45 @@
-import React, { createRef, useState } from 'react';
-import classnames from 'classnames';
-import { DashboardQuery } from '../../types/Dashboard';
-import { ComponentColor, Icon, IconFont, RightClick } from '@influxdata/clockface';
-import QueryTabName from './QueryTabName';
-import { useActiveQuery, useQueries } from './useQueries';
+import React, {createRef, useState} from 'react'
+import classnames from 'classnames'
+import {DashboardQuery} from '../../types/Dashboard'
+import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
+import QueryTabName from './QueryTabName'
+import {useActiveQuery, useQueries} from './useQueries'
 
 interface Props {
   queryIndex: number
   query: DashboardQuery
 }
 
-const QueryTab: React.FC<Props> = props => {
-  const { query, queryIndex } = props;
-  const { activeIndex } = useActiveQuery();
-  const { removeQuery, setActiveIndex, queries } = useQueries();
+const QueryTab: React.FC<Props> = (props) => {
+  const {query, queryIndex} = props
+  const {activeIndex} = useActiveQuery()
+  const {removeQuery, setActiveIndex, queries} = useQueries()
 
-  const [editing, setEditing] = useState(false);
-  const triggerRef = createRef<HTMLDivElement>();
+  const [editing, setEditing] = useState(false)
+  const triggerRef = createRef<HTMLDivElement>()
   const queryTabClass = classnames('query-tab', {
     'query-tab__active': queryIndex === activeIndex,
-    'query-tab__hidden': query.hidden
-  });
+    'query-tab__hidden': query.hidden,
+  })
   const hideButton = () => {
     if (editing) {
-      return null;
+      return null
     }
 
-    const icon = query.hidden ? IconFont.EyeClosed : IconFont.EyeOpen;
+    const icon = query.hidden ? IconFont.EyeClosed : IconFont.EyeOpen
     return (
-      <div className={'query-tab--hide'} onClick={() => console.log('toggle view')}>
+      <div
+        className={'query-tab--hide'}
+        onClick={() => console.log('toggle view')}
+      >
         <Icon glyph={icon} />
       </div>
-    );
-  };
+    )
+  }
 
   const removeButton = () => {
     if (editing) {
-      return null;
+      return null
     }
 
     if (queries.length == 1) {
@@ -44,11 +47,14 @@ const QueryTab: React.FC<Props> = props => {
     }
 
     return (
-      <div className={'query-tab--close'} onClick={() => removeQuery(queryIndex)}>
+      <div
+        className={'query-tab--close'}
+        onClick={() => removeQuery(queryIndex)}
+      >
         <Icon glyph={IconFont.Remove} />
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -56,10 +62,10 @@ const QueryTab: React.FC<Props> = props => {
         className={queryTabClass}
         onClick={() => {
           if (queryIndex === activeIndex) {
-            return;
+            return
           }
-          
-          setActiveIndex(queryIndex);
+
+          setActiveIndex(queryIndex)
         }}
         ref={triggerRef}
       >
@@ -83,7 +89,7 @@ const QueryTab: React.FC<Props> = props => {
         </RightClick.MenuItem>
       </RightClick>
     </>
-  );
-};
+  )
+}
 
-export default QueryTab;
+export default QueryTab

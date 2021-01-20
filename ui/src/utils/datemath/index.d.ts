@@ -17,20 +17,20 @@
  * under the License.
  */
 
-import moment from 'moment';
-export type Unit = 'ms' | 's' | 'm' | 'h' | 'd' | 'w' | 'M' | 'y';
+import moment from 'moment'
+export type Unit = 'ms' | 's' | 'm' | 'h' | 'd' | 'w' | 'M' | 'y'
 
 declare const datemath: {
   unitsMap: {
     [k in Unit]: {
-      weight: number;
-      type: 'calendar' | 'fixed' | 'mixed';
-      base: number;
-    };
-  };
-  units: Unit[];
-  unitsAsc: Unit[];
-  unitsDesc: Unit[];
+      weight: number
+      type: 'calendar' | 'fixed' | 'mixed'
+      base: number
+    }
+  }
+  units: Unit[]
+  unitsAsc: Unit[]
+  unitsDesc: Unit[]
 
   /**
    * Parses a string into a moment object. The string can be something like "now - 15m".
@@ -40,12 +40,12 @@ declare const datemath: {
   parse(
     input: string,
     options?: {
-      roundUp?: boolean;
-      forceNow?: Date;
-      momentInstance?: typeof moment;
+      roundUp?: boolean
+      forceNow?: Date
+      momentInstance?: typeof moment
     }
-  ): moment.Moment | undefined;
-};
+  ): moment.Moment | undefined
+}
 
 // eslint-disable-next-line import/no-default-export
-export default datemath;
+export default datemath

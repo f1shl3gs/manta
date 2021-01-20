@@ -1,4 +1,4 @@
-import { ViewType } from 'types/Dashboard';
+import {ViewType} from 'types/Dashboard'
 
 interface VisType {
   type: ViewType
@@ -8,46 +8,45 @@ interface VisType {
 export const VIS_TYPES: VisType[] = [
   {
     type: 'band',
-    name: 'Band Plot'
+    name: 'Band Plot',
   },
   {
     type: 'xy',
-    name: 'Graph'
+    name: 'Graph',
   },
   {
     type: 'line-plus-single-stat',
-    name: 'Graph + Single Stat'
+    name: 'Graph + Single Stat',
   },
   {
     type: 'heatmap',
-    name: 'Heatmap'
+    name: 'Heatmap',
   },
   {
     type: 'mosaic',
-    name: 'Mosaic'
+    name: 'Mosaic',
   },
   {
     type: 'histogram',
-    name: 'Histogram'
+    name: 'Histogram',
   },
   {
     type: 'single-stat',
-    name: 'Single Stat'
+    name: 'Single Stat',
   },
   {
     type: 'gauge',
-    name: 'Gauge'
+    name: 'Gauge',
   },
   {
     type: 'table',
-    name: 'Table'
+    name: 'Table',
   },
   {
     type: 'scatter',
-    name: 'Scatter'
-  }
-];
-
+    name: 'Scatter',
+  },
+]
 
 const GRAPHIC_SVGS = {
   heatmap: (
@@ -1159,9 +1158,7 @@ c2.2-2.6,6.4-2.3,8.2,0.6l15,24.6c0.9,1.5,2.5,2.4,4.3,2.4h9.3"
       </svg>
     </div>
   ),
-  markdown: (
-    <div>MD</div>
-  ),
+  markdown: <div>MD</div>,
   map: (
     <div className="vis-graphic" data-testid="vis-graphic--mosaic">
       <svg
@@ -1216,8 +1213,8 @@ c2.2-2.6,6.4-2.3,8.2,0.6l15,24.6c0.9,1.5,2.5,2.4,4.3,2.4h9.3"
         />
       </svg>
     </div>
-  )
-};
+  ),
+}
 
 interface VisGraphic {
   type: ViewType
@@ -1225,13 +1222,12 @@ interface VisGraphic {
   graphic: JSX.Element
 }
 
-export const VIS_GRAPHICS: VisGraphic[] = VIS_TYPES
-  .map(
-    ({ type, name }): VisGraphic => {
-      return {
-        type,
-        name,
-        graphic: GRAPHIC_SVGS[type]
-      };
+export const VIS_GRAPHICS: VisGraphic[] = VIS_TYPES.map(
+  ({type, name}): VisGraphic => {
+    return {
+      type,
+      name,
+      graphic: GRAPHIC_SVGS[type],
     }
-  );
+  }
+)

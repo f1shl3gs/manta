@@ -1,11 +1,11 @@
 // Libraries
-import React  from 'react';
+import React from 'react'
 
 // Components
-import { FlexBox } from '@influxdata/clockface';
-import QueryTabs from './QueryTabs';
-import SubmitQueryButton from './SubmitQueryButton';
-import QueryEditor from './QueryEditor';
+import {FlexBox} from '@influxdata/clockface'
+import QueryTabs from './QueryTabs'
+import SubmitQueryButton from './SubmitQueryButton'
+import QueryEditor from './QueryEditor'
 
 const TimeMachineQueries: React.FC = () => {
   return (
@@ -22,7 +22,7 @@ const TimeMachineQueries: React.FC = () => {
         <QueryEditor />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TimeMachineQueries;
+export default TimeMachineQueries

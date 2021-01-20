@@ -1,6 +1,6 @@
 // Libraries
-import React, { useCallback } from 'react';
-import moment from 'moment';
+import React, {useCallback} from 'react'
+import moment from 'moment'
 
 // Components
 import {
@@ -12,23 +12,23 @@ import {
   ResourceCard,
   ResourceList,
   SpinnerContainer,
-  TechnoSpinner
-} from '@influxdata/clockface';
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 // Hooks
-import { useOrgID } from 'shared/useOrg';
-import { useOtcls } from './state';
-import { useFetch } from 'use-http';
-import { useHistory } from 'react-router-dom';
+import {useOrgID} from 'shared/useOrg'
+import {useOtcls} from './state'
+import {useFetch} from 'use-http'
+import {useHistory} from 'react-router-dom'
 
 // Types
-import { Otcl } from 'types/otcl';
+import {Otcl} from 'types/otcl'
 
 const Otcls: React.FC = () => {
-  const orgID = useOrgID();
-  const history = useHistory();
-  const { otcls, rds, reload } = useOtcls();
-  const { del } = useFetch(`/api/v1/otcls`, {});
+  const orgID = useOrgID()
+  const history = useHistory()
+  const {otcls, rds, reload} = useOtcls()
+  const {del} = useFetch(`/api/v1/otcls`, {})
 
   const context = useCallback((id: string): JSX.Element => {
     return (
@@ -40,16 +40,16 @@ const Otcls: React.FC = () => {
         onClick={() => {
           del(`${id}`)
             .then(() => {
-              console.log('delete', id, 'success');
-              reload();
+              console.log('delete', id, 'success')
+              reload()
             })
             .catch(() => {
-              console.log('failed');
-            });
+              console.log('failed')
+            })
         }}
       />
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
@@ -68,7 +68,7 @@ const Otcls: React.FC = () => {
               <ResourceCard.Name
                 name={item.name}
                 onClick={() => {
-                  history.push(`/orgs/${orgID}/otcls/${item.id}`);
+                  history.push(`/orgs/${orgID}/otcls/${item.id}`)
                 }}
               />
               <ResourceCard.Meta>
@@ -80,7 +80,7 @@ const Otcls: React.FC = () => {
         </ResourceList.Body>
       </ResourceList>
     </SpinnerContainer>
-  );
-};
+  )
+}
 
-export default Otcls;
+export default Otcls
