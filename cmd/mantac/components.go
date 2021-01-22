@@ -24,7 +24,6 @@ import (
 	"go.opentelemetry.io/collector/processor/resourceprocessor"
 	"go.opentelemetry.io/collector/processor/samplingprocessor/probabilisticsamplerprocessor"
 	"go.opentelemetry.io/collector/processor/spanprocessor"
-	"go.opentelemetry.io/collector/receiver/fluentforwardreceiver"
 	"go.opentelemetry.io/collector/receiver/hostmetricsreceiver"
 	"go.opentelemetry.io/collector/receiver/jaegerreceiver"
 	"go.opentelemetry.io/collector/receiver/kafkareceiver"
@@ -33,6 +32,7 @@ import (
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
 	"go.opentelemetry.io/collector/receiver/zipkinreceiver"
 
+	"github.com/f1shl3gs/manta/collector/receiver/kmsgreceiver"
 	"github.com/f1shl3gs/manta/collector/receiver/promtailreceiver"
 )
 
@@ -56,7 +56,7 @@ func Components() (
 
 	receivers, err := component.MakeReceiverFactoryMap(
 		jaegerreceiver.NewFactory(),
-		fluentforwardreceiver.NewFactory(),
+		// fluentforwardreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		prometheusreceiver.NewFactory(),
 		opencensusreceiver.NewFactory(),
@@ -64,6 +64,7 @@ func Components() (
 		hostmetricsreceiver.NewFactory(),
 		kafkareceiver.NewFactory(),
 		promtailreceiver.NewFactory(),
+		kmsgreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)

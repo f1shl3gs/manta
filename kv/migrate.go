@@ -32,6 +32,7 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 		otclOrgIndex,
 		dashboardBucket,
 		dashboardOrgIndexBucket,
+		keyringBucket,
 	} {
 		err := kv.CreateBucket(ctx, bucket)
 		if err != nil {
