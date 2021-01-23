@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Switch, useParams, withRouter} from 'react-router-dom'
+import {Redirect, Route, Switch, useParams, withRouter} from 'react-router-dom'
 
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import Otcl from 'otcls'
@@ -10,8 +10,8 @@ import TracePage from 'traces'
 import remoteDataState from 'utils/rds'
 import {useFetch} from 'use-http'
 import Logs from 'logs/Logs'
-import DashboardsIndex from '../../dashboards/dashboards'
-import DashboardPage from '../../dashboards/components/DashboardPage'
+import DashboardsIndex from 'dashboards/dashboards'
+import DashboardPage from 'dashboards/components/DashboardPage'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -24,6 +24,9 @@ const Org: React.FC = () => {
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
       <OrgProvider initialOrg={data}>
         <Switch>
+          {/* todo: memorize the path with localStorage? */}
+          <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
+
           <Route path={`${orgPath}/otcls`} component={Otcl} />
           <Route path={`${orgPath}/traces`} component={TracePage} />
           <Route path={`${orgPath}/metrics`} component={Todo} />

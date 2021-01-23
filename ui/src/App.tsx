@@ -21,6 +21,7 @@ const App: React.FC = () => {
   return (
     <AppWrapper presentationMode={inPresentationMode} className="dark">
       <Nav />
+
       <Switch>
         <Route path="/orgs/new" component={createOrg} />
         <Route path="/orgs/:orgID" component={Org} />
