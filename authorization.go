@@ -40,6 +40,22 @@ type AuthorizationService interface {
 // ResourceType is an enum defining all resource types that have a permission model in platform
 type ResourceType string
 
+const (
+	AuthorizationsResourceType = ResourceType("authorizations")
+	DashboardsResourceType     = ResourceType("dashboards")
+	OrganizationsResourceType  = ResourceType("organizations")
+	OtclResourceType           = ResourceType("otcl")
+	UsersResourceType          = ResourceType("users")
+)
+
+var AllResourceTypes = []ResourceType{
+	AuthorizationsResourceType,
+	DashboardsResourceType,
+	OrganizationsResourceType,
+	OtclResourceType,
+	UsersResourceType,
+}
+
 // Action is an enum defining all possible resource operations
 type Action string
 
@@ -87,24 +103,24 @@ func (p Permission) matches(perm Permission) bool {
 		return false
 	}
 
-	if p.Resource.OrgID == 0 && p.Resource.ID == 0 {
+	if p.Resource.OrgID == nil && p.Resource.ID == nil {
 		return true
 	}
 
-	if p.Resource.OrgID != 0 && perm.Resource.OrgID != 0 && p.Resource.ID != 0 && perm.Resource.ID != 0 {
+	if p.Resource.OrgID != nil && perm.Resource.OrgID != nil && p.Resource.ID != nil && perm.Resource.ID != nil {
 		if p.Resource.OrgID != perm.Resource.OrgID && p.Resource.ID == perm.Resource.ID {
 			fmt.Printf("match used: p.Resource.OrgID=%s perm.Resource.OrgID=%s p.Resource.ID=%s",
 				p.Resource.OrgID, perm.Resource.OrgID, p.Resource.ID)
 		}
 	}
 
-	if p.Resource.OrgID != 0 {
-		if perm.Resource.OrgID != 0 {
+	if p.Resource.OrgID != nil {
+		if perm.Resource.OrgID != nil {
 			if p.Resource.OrgID == perm.Resource.OrgID {
-				if p.Resource.ID == 0 {
+				if p.Resource.ID == nil {
 					return true
 				}
-				if perm.Resource.ID != 0 {
+				if perm.Resource.ID != nil {
 					return p.Resource.ID == perm.Resource.ID
 				}
 			}
@@ -112,9 +128,9 @@ func (p Permission) matches(perm Permission) bool {
 		}
 	}
 
-	if p.Resource.ID != 0 {
+	if p.Resource.ID != nil {
 		pID := p.Resource.ID
-		if perm.Resource.ID != 0 {
+		if perm.Resource.ID != nil {
 			permID := perm.Resource.ID
 			if pID == permID {
 				return true
@@ -136,11 +152,103 @@ func PermissionAllowed(perm Permission, ps []Permission) bool {
 }
 
 type Authorizer interface {
-	Permissions()
-
-	ID() ID
+	Identifier() ID
 
 	GetUserID() ID
 
 	Kind() string
+
+	PermissionSet() PermissionSet
+}
+
+func (a *Authorization) Identifier() ID {
+	return a.ID
+}
+
+func (a *Authorization) GetUserID() ID {
+	return a.UID
+}
+
+func (a *Authorization) Kind() string {
+	return "auth"
+}
+
+func (a *Authorization) PermissionSet() PermissionSet {
+	return a.Permissions
+}
+
+// OwnerPermissions are the default permissions for those who own a resource
+func OwnerPermissions(orgID ID) []Permission {
+	var ps []Permission
+
+	for _, r := range AllResourceTypes {
+		for _, a := range actions {
+			if r == OrganizationsResourceType {
+				ps = append(ps, Permission{
+					Action: a,
+					Resource: Resource{
+						Type: r,
+						ID:   &orgID,
+					},
+				})
+
+				continue
+			}
+
+			ps = append(ps, Permission{
+				Action: a,
+				Resource: Resource{
+					Type:  r,
+					OrgID: &orgID,
+				},
+			})
+		}
+	}
+
+	return ps
+}
+
+// MemberPermissions are the default permissions for those who can see a resource
+func MemberPermissions(orgID ID) []Permission {
+	var ps []Permission
+
+	for _, r := range AllResourceTypes {
+		if r == OrganizationsResourceType {
+			ps = append(ps, Permission{
+				Action: ReadAction,
+				Resource: Resource{
+					Type: r,
+					ID:   &orgID,
+				},
+			})
+			continue
+		}
+
+		ps = append(ps, Permission{
+			Action: ReadAction,
+			Resource: Resource{
+				Type:  r,
+				OrgID: &orgID,
+			},
+		})
+	}
+
+	return ps
+}
+
+// MePermissions is the permission to read/write user itself
+func MePermissions(userID ID) []Permission {
+	var ps []Permission
+
+	for _, a := range actions {
+		ps = append(ps, Permission{
+			Action: a,
+			Resource: Resource{
+				Type: UsersResourceType,
+				ID:   &userID,
+			},
+		})
+	}
+
+	return ps
 }

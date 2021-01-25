@@ -12,6 +12,9 @@ type Keyring interface {
 	// for encryption and the first key tried for decryption
 	PrimaryKey(ctx context.Context) ([]byte, error)
 
+	// Key returns the key find by the ID
+	Key(ctx context.Context, id ID) ([]byte, error)
+
 	// Keys returns all the keys, primary key is included
 	Keys(ctx context.Context) ([][]byte, error)
 

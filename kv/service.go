@@ -4,6 +4,7 @@ import (
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/snowflake"
 	"github.com/f1shl3gs/manta/resource"
+	"github.com/f1shl3gs/manta/token"
 	"go.uber.org/zap"
 )
 
@@ -18,8 +19,9 @@ type Service struct {
 
 func NewService(logger *zap.Logger, kv Store) *Service {
 	return &Service{
-		kv:     kv,
-		logger: logger.With(zap.String("service", "kv")),
-		idGen:  snowflake.NewIDGenerator(),
+		kv:       kv,
+		logger:   logger.With(zap.String("service", "kv")),
+		idGen:    snowflake.NewIDGenerator(),
+		tokenGen: token.NewGenerator(0),
 	}
 }

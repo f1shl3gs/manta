@@ -9,7 +9,7 @@ import (
 )
 
 func TestGen(t *testing.T) {
-	gen := NewTokenGenerator(0)
+	gen := NewGenerator(0)
 	token, err := gen.Token()
 	require.NoError(t, err)
 	require.Equal(t, len(token) == base64.URLEncoding.EncodedLen(defaultTokenSize), true)
@@ -17,7 +17,7 @@ func TestGen(t *testing.T) {
 }
 
 func BenchmarkGen(b *testing.B) {
-	gen := NewTokenGenerator(0)
+	gen := NewGenerator(0)
 
 	b.ReportAllocs()
 	b.ResetTimer()
@@ -28,3 +28,13 @@ func BenchmarkGen(b *testing.B) {
 		}
 	}
 }
+
+/*
+goos: linux
+goarch: amd64
+pkg: github.com/f1shl3gs/manta/token
+cpu: AMD Ryzen 9 3950X 16-Core Processor
+BenchmarkGen
+BenchmarkGen-32    	  514182	      2306 ns/op	     256 B/op	       3 allocs/op
+PASS
+*/

@@ -292,6 +292,7 @@ func (l *Launcher) Run() error {
 			DatasourceService:    service,
 			TemplateService:      service,
 			UserService:          service,
+			PasswordService:      service,
 			AuthorizationService: service,
 			OtclService:          service,
 			DashboardService:     service,

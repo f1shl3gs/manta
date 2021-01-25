@@ -3,29 +3,27 @@ package token
 import (
 	"crypto/rand"
 	"encoding/base64"
-
-	"github.com/f1shl3gs/manta"
 )
 
 const defaultTokenSize = 64
 
-type tokenGenerator struct {
+type Generator struct {
 	size int
 }
 
-func NewTokenGenerator(size int) manta.TokenGenerator {
+func NewGenerator(size int) *Generator {
 	if size == 0 {
 		size = defaultTokenSize
 	}
 
-	return &tokenGenerator{size: size}
+	return &Generator{size: size}
 }
 
-func (t *tokenGenerator) Token() (string, error) {
-	b := make([]byte, t.size)
-	if _, err := rand.Read(b); err != nil {
+func (g *Generator) Token() (string, error) {
+	src := make([]byte, g.size)
+	if _, err := rand.Read(src); err != nil {
 		return "", err
 	}
 
-	return base64.URLEncoding.EncodeToString(b), nil
+	return base64.URLEncoding.EncodeToString(src), nil
 }

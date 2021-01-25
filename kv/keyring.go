@@ -3,6 +3,9 @@ package kv
 import (
 	"bytes"
 	"context"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 var (
@@ -52,6 +55,41 @@ func (s *Service) PrimaryKey(ctx context.Context) ([]byte, error) {
 	})
 
 	return key, err
+}
+
+func (s *Service) Key(ctx context.Context, id manta.ID) ([]byte, error) {
+	var (
+		key []byte
+		err error
+	)
+
+	err = s.kv.View(ctx, func(tx Tx) error {
+		key, err = s.key(ctx, tx, id)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return key, nil
+}
+
+func (s *Service) key(ctx context.Context, tx Tx, id manta.ID) ([]byte, error) {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
+	key, err := id.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(keyringBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	return b.Get(key)
 }
 
 func (s *Service) Keys(ctx context.Context) ([][]byte, error) {

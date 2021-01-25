@@ -33,6 +33,7 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 		dashboardBucket,
 		dashboardOrgIndexBucket,
 		keyringBucket,
+		passwordBucket,
 	} {
 		err := kv.CreateBucket(ctx, bucket)
 		if err != nil {

@@ -214,7 +214,7 @@ func (s *Service) putOrganization(ctx context.Context, tx Tx, org *manta.Organiz
 
 	// check name conflict
 	if _, err = b.Get(fk); err != ErrKeyNotFound {
-		return ErrKeyConflict
+		return manta.ErrOrgAlreadyExist
 	}
 
 	if err = b.Put(fk, pk); err != nil {

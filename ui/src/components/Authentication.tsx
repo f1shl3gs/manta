@@ -1,6 +1,8 @@
 import React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Provider} from 'use-http'
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {AuthenticationProvider, useAuth} from '../shared/useAuthentication'
 
 interface Props {
   children: React.ReactNode
@@ -27,7 +29,21 @@ const Authentication: React.FC<Props> = (props) => {
     },
   }
 
-  return <Provider options={options}>{children}</Provider>
+  const {data, loading} = useAuth()
+
+  console.log('data', data)
+
+  return (
+    <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
+      {children}
+    </SpinnerContainer>
+  )
 }
 
-export default Authentication
+const wrapped: React.FC = ({children}) => (
+  <AuthenticationProvider>
+    <Authentication>{children}</Authentication>
+  </AuthenticationProvider>
+)
+
+export default wrapped

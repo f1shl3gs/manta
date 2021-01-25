@@ -28,6 +28,7 @@ type Backend struct {
 	DashboardService     manta.DashboardService
 	TemplateService      manta.TemplateService
 	UserService          manta.UserService
+	PasswordService      manta.PasswordService
 	AuthorizationService manta.AuthorizationService
 }
 
@@ -74,6 +75,10 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 			mux.ServeHTTP(w, r)
 		})
 	}
+
+	userService(logger, router, backend.UserService)
+
+	NewSetupHandler(router, logger, backend)
 
 	// datasource
 	DatasourceService(logger, router, backend.DatasourceService)

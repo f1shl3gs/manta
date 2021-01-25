@@ -87,8 +87,8 @@ message Template {
 
 message Resource {
   required string type = 1 [(gogoproto.casttype) = "ResourceType"];
-  required uint64 id = 2 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "ID"];
-  required uint64 org_id = 3 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
+  optional uint64 id = 2 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "ID", (gogoproto.nullable) = true];
+  optional uint64 org_id = 3 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID", (gogoproto.nullable) = true];
 }
 
 message Permission {

@@ -12,6 +12,31 @@ tags:
     description: OpenTelemetry Collector
 
 paths:
+  /setup:
+    post:
+      operationId: Setup
+      tags:
+        - Setup
+      summary: Setup the service
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      requestBody:
+        description: User and Organization to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnBoardingRequest"
+      responses:
+        201:
+          description: Initial success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /orgs:
     get:
       operationId: GetOrgs
@@ -193,6 +218,17 @@ components:
           description: Message is a human-readable message.
           type: string
       required: [ code, message ]
+
+    OnBoardingRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        org:
+          type: string
+
 
     Organization:
       type: object
