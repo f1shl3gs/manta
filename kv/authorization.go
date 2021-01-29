@@ -2,6 +2,7 @@ package kv
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/f1shl3gs/manta"
@@ -114,6 +115,86 @@ func (s *Service) findAuthorizationByToken(ctx context.Context, tx Tx, token str
 	}
 
 	return a, nil
+}
+
+func (s *Service) FindAuthorizations(ctx context.Context, filter manta.AuthorizationFilter) ([]*manta.Authorization, error) {
+	var (
+		as  []*manta.Authorization
+		err error
+	)
+
+	err = s.kv.View(ctx, func(tx Tx) error {
+		as, err = s.findAuthorizations(ctx, tx, filter)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return as, nil
+}
+
+func (s *Service) findAuthorizations(ctx context.Context, tx Tx, filter manta.AuthorizationFilter) ([]*manta.Authorization, error) {
+	if filter.UserID != nil {
+		return s.findAuthorizationsByUser(ctx, tx, *filter.UserID)
+	}
+
+	return nil, errors.New("not implement yet")
+}
+
+func (s *Service) findAuthorizationsByUser(ctx context.Context, tx Tx, uid manta.ID) ([]*manta.Authorization, error) {
+	prefix, err := uid.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(authorizationUserIndexBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := b.ForwardCursor(prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	keys := make([][]byte, 0)
+	err = WalkCursor(ctx, c, func(k, v []byte) error {
+		keys = append(keys, v)
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	b, err = tx.Bucket(authorizationBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	values, err := b.GetBatch(keys...)
+	if err != nil {
+		return nil, err
+	}
+
+	list := make([]*manta.Authorization, 0, len(keys))
+	for _, v := range values {
+		if v == nil {
+			continue
+		}
+
+		a := &manta.Authorization{}
+		err = a.Unmarshal(v)
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, a)
+	}
+
+	return list, nil
 }
 
 func (s *Service) CreateAuthorization(ctx context.Context, a *manta.Authorization) error {

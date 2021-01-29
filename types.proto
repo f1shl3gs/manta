@@ -33,22 +33,6 @@ message Organization {
   required string desc = 6;
 }
 
-message Node {
-  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-
-  required uint64 orgID = 4 [(gogoproto.casttype) = "ID", (gogoproto.customname) = "OrgID"];
-
-  required string address = 5;
-  required string hostname = 6;
-  required string env = 7;
-  required string status = 8;
-  required string region = 9;
-
-  map<string, string> annotations = 10;
-}
-
 message NotificationEndpoint {
   required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
@@ -69,9 +53,7 @@ message User {
   required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   required string name = 4;
-  required string nickname = 5;
-
-  map<string, string> annotations = 6;
+  required string status = 5;
 }
 
 message Template {
@@ -168,6 +150,14 @@ message Inhibition {
 
   // match event with labels, wildcard is support for value
   repeated Matcher matchers = 8;
+}
+
+message Session {
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required google.protobuf.Timestamp expiresAt = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  required uint64 user_id = 4 [(gogoproto.customname) = "UID", (gogoproto.casttype) = "ID"];
+  repeated Permission permissions = 5 [(gogoproto.nullable) = false];
 }
 
 message InhibitionStatus {

@@ -40,7 +40,7 @@ func (s *Service) findUserByID(ctx context.Context, tx Tx, id manta.ID) (*manta.
 		return nil, err
 	}
 
-	b, err := tx.Bucket(key)
+	b, err := tx.Bucket(userBucket)
 	if err != nil {
 		return nil, err
 	}
@@ -176,8 +176,20 @@ func (s *Service) createUser(ctx context.Context, tx Tx, user *manta.User) error
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	user.ID = s.idGen.ID()
+	// check user name index
+	b, err := tx.Bucket(userNameIndexBucket)
+	if err != nil {
+		return err
+	}
 
+	if _, err = b.Get([]byte(user.Name)); err == nil {
+		return manta.ErrUserAlreadyExist
+	} else if err != ErrKeyNotFound {
+		return err
+	}
+
+	// initial user
+	user.ID = s.idGen.ID()
 	now := time.Now()
 	user.Created = now
 	user.Updated = now

@@ -21,6 +21,9 @@ lint:
 	go fmt ./...
 	golangci-lint run ./...
 
+test:
+	go test ./...
+
 proto:
 	# protobuf 3.12.3 is required
 	protoc \
@@ -28,7 +31,7 @@ proto:
 		-I=./ \
         -I="${GOPATH}/src" 	\
 		-I="${GOPATH}/src/github.com/gogo/protobuf/protobuf" \
-		--gogofaster_out=plugins=deepcopy+grpc+storeobject,Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types:./ \
+		--gogofaster_out=plugins=grpc,Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types:./ \
 		*.proto
 
 mantad: $(GOSROUCES)

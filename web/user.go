@@ -2,11 +2,10 @@ package web
 
 import (
 	"encoding/json"
-	"net/http"
-	"time"
-
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/authz"
 	"go.uber.org/zap"
+	"net/http"
 )
 
 const (
@@ -36,16 +35,16 @@ func userService(logger *zap.Logger, router *Router, svc manta.UserService) {
 }
 
 func (h *UserHandler) viewerHandler(w http.ResponseWriter, r *http.Request) {
-	u := &manta.User{
-		ID:          1,
-		Created:     time.Time{},
-		Updated:     time.Time{},
-		Name:        "foo",
-		Nickname:    "foo bar",
-		Annotations: nil,
+	ctx := r.Context()
+
+	authorizer := authz.FromContext(ctx)
+	u, err := h.userService.FindUserByID(ctx, authorizer.GetUserID())
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
 	}
 
-	err := encodeResponse(r.Context(), w, http.StatusOK, u)
+	err = encodeResponse(r.Context(), w, http.StatusOK, u)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}

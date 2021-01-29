@@ -56,10 +56,10 @@ func NewTestBolt(t TestingT, noSync bool) (*bolt.KVStore, func()) {
 	}
 }
 
-func NewTestService(t TestingT) (*kv.Service, func()) {
+func NewTestService(t TestingT, opts ...kv.Option) (*kv.Service, func()) {
 	store, closer := NewTestBolt(t, true)
 
-	svc := kv.NewService(zaptest.NewLogger(t), store)
+	svc := kv.NewService(zaptest.NewLogger(t), store, opts...)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"github.com/f1shl3gs/manta/authorization"
 	"net/http"
 	"net/http/pprof"
 
@@ -20,7 +21,6 @@ type Backend struct {
 
 	OtclService          manta.OtclService
 	BackupService        manta.BackupService
-	NodeService          manta.NodeService
 	OrganizationService  manta.OrganizationService
 	CheckService         manta.CheckService
 	TaskService          manta.TaskService
@@ -30,6 +30,8 @@ type Backend struct {
 	UserService          manta.UserService
 	PasswordService      manta.PasswordService
 	AuthorizationService manta.AuthorizationService
+	Keyring              manta.Keyring
+	SessionService       manta.SessionService
 }
 
 func New(logger *zap.Logger, backend *Backend) http.Handler {
@@ -80,6 +82,10 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 
 	NewSetupHandler(router, logger, backend)
 
+	NewSessionHandler(router, logger, backend.UserService, backend.PasswordService, backend.SessionService)
+
+	NewKeyringHandler(router, logger, backend.Keyring)
+
 	// datasource
 	DatasourceService(logger, router, backend.DatasourceService)
 
@@ -98,7 +104,23 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	h := middlewares.Log(logger, router)
 	h = Trace(h)
 
-	return h
+	ah := &AuthenticationHandler{
+		logger:               logger,
+		AuthorizationService: backend.AuthorizationService,
+		UserService:          backend.UserService,
+		Keyring:              backend.Keyring,
+		handler:              h,
+		errorHandler:         router,
+		noAuthRouter:         httprouter.New(),
+		tokenParser:          authorization.NewTokenParser(backend.Keyring),
+		SessionService:       backend.SessionService,
+	}
+
+	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/signin")
+	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/signout")
+	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/setup")
+
+	return ah
 }
 
 func Trace(next http.Handler) http.Handler {

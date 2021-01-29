@@ -8,6 +8,20 @@ import (
 	"github.com/f1shl3gs/manta"
 )
 
+type Claims struct {
+	jwt.StandardClaims
+
+	UserID manta.ID `json:"uid"`
+}
+
+type JwtService interface {
+	// Parse parse the input jwt text and return the user id
+	Parse(ctx context.Context, text string) (manta.ID, error)
+
+	// Sign
+	Sign(ctx context.Context, uid manta.ID) error
+}
+
 type Token struct {
 	jwt.StandardClaims
 
@@ -44,6 +58,15 @@ func (token *Token) Kind() string {
 type TokenParser struct {
 	keyring manta.Keyring
 	parser  *jwt.Parser
+}
+
+func NewTokenParser(keyring manta.Keyring) *TokenParser {
+	return &TokenParser{
+		keyring: keyring,
+		parser: &jwt.Parser{
+			ValidMethods: []string{jwt.SigningMethodHS256.Alg()},
+		},
+	}
 }
 
 func (t *TokenParser) Parse(v string) (*Token, error) {

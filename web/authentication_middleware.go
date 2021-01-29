@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"errors"
+	"github.com/f1shl3gs/manta/authz"
 	"net/http"
 
 	"github.com/f1shl3gs/manta"
@@ -25,6 +26,7 @@ type AuthenticationHandler struct {
 	AuthorizationService manta.AuthorizationService
 	UserService          manta.UserService
 	Keyring              manta.Keyring
+	SessionService       manta.SessionService
 
 	noAuthRouter *httprouter.Router
 	handler      http.Handler
@@ -46,8 +48,8 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	switch probeAuthType(r) {
 	case "token":
-	case "jwt":
-		authorizer, err = h.extractJWT(ctx, r)
+	case "session":
+		authorizer, err = h.extractSession(ctx, r)
 	default:
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -63,15 +65,51 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	span.SetTag("user_id", authorizer.GetUserID().String())
 
+	ctx = authz.SetAuthorizer(ctx, authorizer)
+	r = r.WithContext(ctx)
 	h.handler.ServeHTTP(w, r)
 }
 
+func (h *AuthenticationHandler) RegisterNoAuthRoute(method, path string) {
+	h.noAuthRouter.HandlerFunc(method, path, func(w http.ResponseWriter, r *http.Request) {})
+}
+
 func probeAuthType(r *http.Request) string {
-	return "jwt"
+	if v := r.Header.Get("Authorization"); v != "" {
+		return "token"
+	}
+
+	for _, c := range r.Cookies() {
+		if c.Name == SessionCookieKey {
+			return "session"
+		}
+	}
+
+	return ""
+}
+
+func (h *AuthenticationHandler) extractSession(ctx context.Context, r *http.Request) (manta.Authorizer, error) {
+	c, err := r.Cookie(SessionCookieKey)
+	if err != nil {
+		return nil, err
+	}
+
+	var id manta.ID
+	err = id.DecodeFromString(c.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	session, err := h.SessionService.FindSession(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
 }
 
 func (h *AuthenticationHandler) extractJWT(ctx context.Context, r *http.Request) (manta.Authorizer, error) {
-	c, err := r.Cookie("jwt")
+	c, err := r.Cookie("mjwt")
 	if err != nil {
 		return nil, err
 	}

@@ -12,6 +12,7 @@ import {PresentationModeProvider} from './shared/usePresentationMode'
 import Authentication from './components/Authentication'
 import Signin from './components/Signin'
 import NotFound from './components/NotFound'
+import {AuthenticationProvider} from './shared/useAuthentication'
 
 ReactDOM.render(
   /*<React.StrictMode>
@@ -19,15 +20,17 @@ ReactDOM.render(
   </React.StrictMode>,*/
 
   <BrowserRouter>
-    <Authentication>
-      <PresentationModeProvider>
-        <Switch>
-          <Route exact path="/signin" component={Signin} />
-          <Route path="/" component={App} />
-          <Route component={NotFound} />
-        </Switch>
-      </PresentationModeProvider>
-    </Authentication>
+    <AuthenticationProvider>
+      <Authentication>
+        <PresentationModeProvider>
+          <Switch>
+            <Route exact path="/signin" component={Signin} />
+            <Route path="/" component={App} />
+            <Route component={NotFound} />
+          </Switch>
+        </PresentationModeProvider>
+      </Authentication>
+    </AuthenticationProvider>
   </BrowserRouter>,
   document.getElementById('root')
 )

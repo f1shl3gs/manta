@@ -20,12 +20,29 @@ type UpdateAuthorization struct {
 	Status *string
 }
 
+func (udp *UpdateAuthorization) Apply(auth *Authorization) {
+	if udp.Token != nil {
+		auth.Token = *udp.Token
+	}
+
+	if udp.Status != nil {
+		auth.Status = *udp.Status
+	}
+}
+
+type AuthorizationFilter struct {
+	OrgID  *ID
+	UserID *ID
+}
+
 type AuthorizationService interface {
 	// FindAuthorizationByID returns a single authorization by id
 	FindAuthorizationByID(ctx context.Context, id ID) (*Authorization, error)
 
 	// FindAuthorizationByToken returns a single authorization by token
 	FindAuthorizationByToken(ctx context.Context, token string) (*Authorization, error)
+
+	FindAuthorizations(ctx context.Context, filter AuthorizationFilter) ([]*Authorization, error)
 
 	// CreateAuthorization create a new Authorization and sets a.UserID and a.Token
 	CreateAuthorization(ctx context.Context, a *Authorization) error

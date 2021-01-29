@@ -4,6 +4,13 @@ import (
 	"context"
 )
 
+var (
+	ErrUserAlreadyExist = &Error{
+		Code: EInvalid,
+		Msg:  "user already exist",
+	}
+)
+
 // UserFilter represents a set of filter that restrict the returned results.
 type UserFilter struct {
 	ID   *ID

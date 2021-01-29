@@ -2,18 +2,14 @@ package launcher
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"os"
-	"runtime/debug"
 	"time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/checks"
-	"github.com/f1shl3gs/manta/control"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
@@ -24,11 +20,6 @@ import (
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
 	"github.com/f1shl3gs/manta/task/mock"
 	"github.com/f1shl3gs/manta/web"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -38,11 +29,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/health"
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/status"
 )
 
 type Launcher struct {
@@ -216,76 +202,10 @@ func (l *Launcher) Run() error {
 	}
 
 	{
-		gl := logger.With(zap.String("service", "grpc"))
-		// grpc service
-		// Shared options for the logger, with a custom gRPC code to file level function.
-		opts := []grpc_recovery.Option{
-			grpc_recovery.WithRecoveryHandler(func(p interface{}) (err error) {
-				gl.Error("grpc handler panicked",
-					zap.Any("error", p))
-				fmt.Println(string(debug.Stack()))
-				return status.Errorf(codes.Unknown, "panic triggered: %v", p)
-			}),
-		}
-
-		svr := grpc.NewServer(
-			grpc_middleware.WithUnaryServerChain(
-				grpc_recovery.UnaryServerInterceptor(opts...),
-				grpc_prometheus.UnaryServerInterceptor,
-				otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer()),
-				grpc_validator.UnaryServerInterceptor(),
-			),
-			grpc_middleware.WithStreamServerChain(
-				grpc_recovery.StreamServerInterceptor(opts...),
-				grpc_prometheus.StreamServerInterceptor,
-				otgrpc.OpenTracingStreamServerInterceptor(opentracing.GlobalTracer()),
-				grpc_validator.StreamServerInterceptor(),
-			),
-		)
-
-		grpc_prometheus.Register(svr)
-
-		ctl := control.New(logger)
-		ctl.NodeService = service
-		ctl.OrganizationService = service
-		ctl.CheckService = checkService
-		manta.RegisterControlServer(svr, ctl)
-
-		// todo: use our own healthz implement
-		hc := health.NewServer()
-		hc.SetServingStatus("manta", healthpb.HealthCheckResponse_SERVING)
-		healthpb.RegisterHealthServer(svr, hc)
-
-		listener, err := net.Listen("tcp", l.GrpcAddress)
-		if err != nil {
-			return err
-		}
-
-		group.Go(func() error {
-			errCh := make(chan error)
-			go func() {
-				logger.Info("start grpc service",
-					zap.String("listen", l.GrpcAddress))
-				errCh <- svr.Serve(listener)
-			}()
-
-			select {
-			case <-ctx.Done():
-				svr.GracefulStop()
-				logger.Info("shutdown grpc server success")
-				return nil
-			case err := <-errCh:
-				return errors.Wrap(err, "grpc server exit")
-			}
-		})
-	}
-
-	{
 		// http service
 		hl := logger.With(zap.String("service", "http"))
 		handler := web.New(hl, &web.Backend{
 			BackupService:        store,
-			NodeService:          service,
 			OrganizationService:  service,
 			CheckService:         checkService,
 			TaskService:          service,
@@ -296,6 +216,8 @@ func (l *Launcher) Run() error {
 			AuthorizationService: service,
 			OtclService:          service,
 			DashboardService:     service,
+			Keyring:              service,
+			SessionService:       service,
 		})
 
 		group.Go(func() error {

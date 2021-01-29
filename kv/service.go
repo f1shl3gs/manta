@@ -17,11 +17,25 @@ type Service struct {
 	audit    resource.Logger
 }
 
-func NewService(logger *zap.Logger, kv Store) *Service {
-	return &Service{
+type Option func(service *Service)
+
+func WithIDGenerator(idGen manta.IDGenerator) Option {
+	return func(svc *Service) {
+		svc.idGen = idGen
+	}
+}
+
+func NewService(logger *zap.Logger, kv Store, opts ...Option) *Service {
+	svc := &Service{
 		kv:       kv,
 		logger:   logger.With(zap.String("service", "kv")),
 		idGen:    snowflake.NewIDGenerator(),
 		tokenGen: token.NewGenerator(0),
 	}
+
+	for _, fn := range opts {
+		fn(svc)
+	}
+
+	return svc
 }

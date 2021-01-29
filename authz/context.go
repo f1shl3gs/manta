@@ -1,4 +1,4 @@
-package authorizer
+package authz
 
 import (
 	"context"

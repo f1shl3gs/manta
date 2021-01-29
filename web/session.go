@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
@@ -10,6 +11,8 @@ import (
 const (
 	signinPath  = "/api/v1/signin"
 	signoutPath = "/api/v1/signout"
+
+	SessionCookieKey = "session"
 )
 
 type SessionHandler struct {
@@ -18,14 +21,26 @@ type SessionHandler struct {
 	logger          *zap.Logger
 	userService     manta.UserService
 	passwordService manta.PasswordService
+	sessionService  manta.SessionService
 }
 
-func NewSessionHandler(logger *zap.Logger, userService manta.UserService) *SessionHandler {
+func NewSessionHandler(
+	router *Router,
+	logger *zap.Logger,
+	userService manta.UserService,
+	passwordService manta.PasswordService,
+	sessionService manta.SessionService,
+) *SessionHandler {
 	h := &SessionHandler{
-		logger: logger,
+		Router:          router,
+		logger:          logger,
+		userService:     userService,
+		passwordService: passwordService,
+		sessionService:  sessionService,
 	}
 
 	h.HandlerFunc(http.MethodPost, signinPath, h.handleSignin)
+	h.HandlerFunc(http.MethodDelete, signinPath, h.handleSignout)
 
 	return h
 }
@@ -68,7 +83,62 @@ func (h *SessionHandler) handleSignin(w http.ResponseWriter, r *http.Request) {
 
 	err = h.passwordService.ComparePassword(ctx, u.ID, sr.Password)
 	if err != nil {
+		if err == manta.ErrPasswordNotMatch {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
+
+	session, err := h.sessionService.CreateSession(ctx, u.ID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.encodeCookie(ctx, w, session.ID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+	}
+}
+
+func (h *SessionHandler) handleSignout(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+		id  manta.ID
+	)
+
+	c, err := r.Cookie(SessionCookieKey)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = id.DecodeFromString(c.Value)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.sessionService.RevokeSession(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *SessionHandler) encodeCookie(ctx context.Context, w http.ResponseWriter, id manta.ID) error {
+	http.SetCookie(w, &http.Cookie{
+		Name:     SessionCookieKey,
+		Value:    id.String(),
+		HttpOnly: true,
+		// Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	})
+
+	return nil
 }

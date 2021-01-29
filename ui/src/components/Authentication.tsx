@@ -1,16 +1,17 @@
 import React from 'react'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {Provider} from 'use-http'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import {AuthenticationProvider, useAuth} from '../shared/useAuthentication'
+import {useAuth} from '../shared/useAuthentication'
 
 interface Props {
   children: React.ReactNode
 }
 
-const Authentication: React.FC<Props> = (props) => {
+const Authentication: React.FC<Props> = ({children}) => {
   const history = useHistory()
-  const {children} = props
+  const location = useLocation()
+
   const options = {
     interceptors: {
       // @ts-ignore
@@ -20,7 +21,9 @@ const Authentication: React.FC<Props> = (props) => {
         }
 
         if (response.status === 401) {
-          history.push('/signin')
+          history.push(
+            `/signin?returnTo=${encodeURIComponent(location.pathname)}`
+          )
           return
         }
 
@@ -29,21 +32,15 @@ const Authentication: React.FC<Props> = (props) => {
     },
   }
 
-  const {data, loading} = useAuth()
-
-  console.log('data', data)
+  const {loading} = useAuth()
 
   return (
-    <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
-      {children}
-    </SpinnerContainer>
+    <Provider options={options}>
+      <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
+        {children}
+      </SpinnerContainer>
+    </Provider>
   )
 }
 
-const wrapped: React.FC = ({children}) => (
-  <AuthenticationProvider>
-    <Authentication>{children}</Authentication>
-  </AuthenticationProvider>
-)
-
-export default wrapped
+export default Authentication

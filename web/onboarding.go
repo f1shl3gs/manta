@@ -48,6 +48,8 @@ func (h *SetupHandler) onBoarding(w http.ResponseWriter, r *http.Request) {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *SetupHandler) decodeOnBoardingRequest(r *http.Request) (*manta.OnBoardingRequest, error) {

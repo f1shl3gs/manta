@@ -6,9 +6,6 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 	for _, bucket := range [][]byte{
 		organizationBucket,
 		organizationNameIndexBucket,
-		nodeBucket,
-		nodeOrgIndexBucket,
-		nodeAddressIndexBucket,
 		checkBucket,
 		checkOrgIndexBucket,
 		datasourceBucket,
@@ -17,6 +14,7 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 		notificationEndpointBucket,
 		notificationEndpointNameIndexBucket,
 		authorizationBucket,
+		authorizationUserIndexBucket,
 		authorizationTokenIndexBucket,
 		taskBucket,
 		taskOrgIndexBucket,
@@ -34,6 +32,7 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 		dashboardOrgIndexBucket,
 		keyringBucket,
 		passwordBucket,
+		sessionBucket,
 	} {
 		err := kv.CreateBucket(ctx, bucket)
 		if err != nil {

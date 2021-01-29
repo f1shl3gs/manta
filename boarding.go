@@ -3,6 +3,7 @@ package manta
 import (
 	"context"
 	"errors"
+
 	"github.com/f1shl3gs/manta/token"
 )
 
@@ -132,6 +133,6 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) e
 		UID:         user.ID,
 		Status:      "active",
 		Token:       token,
-		Permissions: OwnerPermissions(org.ID),
+		Permissions: append(OwnerPermissions(org.ID), MePermissions(user.ID)...),
 	})
 }
