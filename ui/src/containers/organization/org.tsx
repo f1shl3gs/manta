@@ -7,11 +7,12 @@ import Otcl from 'otcls'
 import {OrgProvider} from 'shared/useOrg'
 import Todo from 'components/Todo'
 import TracePage from 'traces'
-import remoteDataState from 'utils/rds'
-import {useFetch} from 'use-http'
 import Logs from 'logs/Logs'
 import DashboardsIndex from 'dashboards/dashboards'
 import DashboardPage from 'dashboards/components/DashboardPage'
+import Nav from 'layout/Nav'
+import {useFetch} from 'use-http'
+import remoteDataState from 'utils/rds'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -23,6 +24,8 @@ const Org: React.FC = () => {
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
       <OrgProvider initialOrg={data}>
+        <Nav />
+
         <Switch>
           {/* todo: memorize the path with localStorage? */}
           <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />

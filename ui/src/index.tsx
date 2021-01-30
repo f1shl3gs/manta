@@ -10,9 +10,9 @@ import 'style/kanis.scss'
 import '@influxdata/clockface/dist/index.css'
 import {PresentationModeProvider} from './shared/usePresentationMode'
 import Authentication from './components/Authentication'
-import Signin from './components/Signin'
 import NotFound from './components/NotFound'
 import {AuthenticationProvider} from './shared/useAuthentication'
+import {OrgsProvider} from './shared/useOrgs'
 
 ReactDOM.render(
   /*<React.StrictMode>
@@ -23,11 +23,12 @@ ReactDOM.render(
     <AuthenticationProvider>
       <Authentication>
         <PresentationModeProvider>
-          <Switch>
-            <Route exact path="/signin" component={Signin} />
-            <Route path="/" component={App} />
-            <Route component={NotFound} />
-          </Switch>
+          <OrgsProvider>
+            <Switch>
+              <Route path="/" component={App} />
+              <Route component={NotFound} />
+            </Switch>
+          </OrgsProvider>
         </PresentationModeProvider>
       </Authentication>
     </AuthenticationProvider>

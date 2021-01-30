@@ -103,6 +103,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	// tracing
 	h := middlewares.Log(logger, router)
 	h = Trace(h)
+	h = middlewares.Metrics(prometheus.DefaultRegisterer, h)
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -119,6 +120,8 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/signin")
 	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/signout")
 	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/setup")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/metrics")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof/*all")
 
 	return ah
 }

@@ -11,6 +11,8 @@ import {
   TreeNav,
 } from '@influxdata/clockface'
 import {usePresentationMode} from '../shared/usePresentationMode'
+import UserWidget from './UserWidget'
+import {useOrgID} from '../shared/useOrg'
 
 export interface NavItemLink {
   type: 'link' | 'href'
@@ -199,12 +201,10 @@ const generateNavItems = (orgID: string): NavItem[] => {
   ]
 }
 
-// todo: set it manully, test only
-const navItems = generateNavItems('06b88c483da3d000')
-
 const Nav: React.FC = () => {
-  const orgID = '06b88c483da3d000'
+  const orgID = useOrgID()
   const orgPrefix = `/orgs/${orgID}`
+  const navItems = generateNavItems(orgID)
 
   const {inPresentationMode} = usePresentationMode()
   if (inPresentationMode) {
@@ -225,6 +225,7 @@ const Nav: React.FC = () => {
           )}
         />
       }
+      userElement={<UserWidget />}
     >
       {navItems.map((item) => {
         const linkElement = (classname: string): JSX.Element => {
