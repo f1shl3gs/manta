@@ -22,7 +22,7 @@ const TimeSeries: React.FC<Props> = (props) => {
   const {viewProperties} = useViewProperties()
   const {start, end, step} = useAutoRefresh()
   const {queries} = viewProperties
-  const [errMsg, setErrMsg] = useState()
+  const [errMsg, setErrMsg] = useState<string | undefined>()
   const [result, setResult] = useState<
     Omit<FromFluxResult, 'schema'> | undefined
   >(() => {
@@ -35,6 +35,9 @@ const TimeSeries: React.FC<Props> = (props) => {
   const url = `http://localhost:9090/api/v1/query_range`
   const {get, loading, error} = useFetch(url, {
     cachePolicy: CachePolicies.NO_CACHE,
+    onError: ({error}) => {
+      setErrMsg(error.message)
+    },
   })
 
   const fetch = useCallback(() => {
@@ -43,6 +46,10 @@ const TimeSeries: React.FC<Props> = (props) => {
         queries[0].text
       )}&start=${start}&end=${end}&step=${step}`
     ).then((resp) => {
+      if (resp === undefined) {
+        return
+      }
+
       if (resp.status !== 'success') {
         setErrMsg(resp.error)
         return
@@ -59,10 +66,17 @@ const TimeSeries: React.FC<Props> = (props) => {
   return (
     <ErrorBoundary>
       <QueriesProvider>
-        {/*{result ? <ViewSwitcher properties={viewProperties} giraffeResult={result} /> : <EmptyQueryView/>}*/}
+        {/*{result ? (
+          <ViewSwitcher properties={viewProperties} giraffeResult={result} />
+        ) : (
+          <EmptyQueryView
+            hasResults={result !== undefined}
+            loading={remoteDataState(result, error, loading)}
+          />
+        )}*/}
         <EmptyQueryView
           queries={queries}
-          hasResults={result?.table.length !== 0}
+          hasResults={result !== undefined}
           loading={remoteDataState(result, error, loading)}
           errorMessage={errMsg}
         >

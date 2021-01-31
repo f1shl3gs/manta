@@ -160,89 +160,84 @@ const TracePage: React.FC = () => {
   }
 
   return (
-    <>
-      <Page titleTag={'Trace'}>
-        <Page.Header fullWidth={true}>
-          <Page.Title title={'Traces'}></Page.Title>
-        </Page.Header>
-        <Page.Contents
-          fullWidth={true}
-          scrollable={false}
-          className={pageContentsClassName}
-        >
-          <TracePageHeader
-            canCollapse={false}
-            clearSearch={useCallback(() => {}, [])}
-            focusUiFindMatches={useCallback(() => {}, [])}
-            hideMap={false}
-            hideSummary={false}
-            nextResult={useCallback(() => {}, [])}
-            onSlimViewClicked={useCallback(() => setSlim(!slim), [])}
-            onTraceGraphViewClicked={useCallback(() => {}, [])}
-            prevResult={useCallback(() => {}, [])}
-            resultCount={0}
-            slimView={slim}
-            textFilter={null}
-            trace={traceProp}
-            traceGraphView={false}
-            updateNextViewRangeTime={updateNextViewRangeTime}
-            updateViewRangeTime={updateViewRangeTime}
-            viewRange={viewRange}
-            searchValue={search}
-            onSearchValueChange={setSearch}
-            hideSearchButtons={true}
-          />
+    <Page titleTag={'Trace'}>
+      <Page.Header fullWidth={true}>
+        <Page.Title title={'Traces'}></Page.Title>
+      </Page.Header>
+      <Page.Contents
+        fullWidth={true}
+        scrollable={false}
+        className={pageContentsClassName}
+      >
+        <TracePageHeader
+          canCollapse={false}
+          clearSearch={useCallback(() => {}, [])}
+          focusUiFindMatches={useCallback(() => {}, [])}
+          hideMap={false}
+          hideSummary={false}
+          nextResult={useCallback(() => {}, [])}
+          onSlimViewClicked={useCallback(() => setSlim(!slim), [])}
+          onTraceGraphViewClicked={useCallback(() => {}, [])}
+          prevResult={useCallback(() => {}, [])}
+          resultCount={0}
+          slimView={slim}
+          textFilter={null}
+          trace={traceProp}
+          traceGraphView={false}
+          updateNextViewRangeTime={updateNextViewRangeTime}
+          updateViewRangeTime={updateViewRangeTime}
+          viewRange={viewRange}
+          searchValue={search}
+          onSearchValueChange={setSearch}
+          hideSearchButtons={true}
+        />
 
-          <TraceTimelineViewer
-            registerAccessors={useCallback(() => {}, [])}
-            scrollToFirstVisibleSpan={useCallback(() => {}, [])}
-            findMatchesIDs={spanFindMatches}
-            trace={traceProp}
-            traceTimeline={traceTimeline}
-            updateNextViewRangeTime={updateNextViewRangeTime}
-            updateViewRangeTime={updateViewRangeTime}
-            viewRange={viewRange}
-            focusSpan={useCallback(() => {}, [])}
-            createLinkToExternalSpan={useCallback(() => '', [])}
-            setSpanNameColumnWidth={setSpanNameColumnWidth}
-            collapseAll={collapseAll}
-            collapseOne={collapseOne}
-            expandAll={expandAll}
-            expandOne={expandOne}
-            childrenToggle={childrenToggle}
-            clearShouldScrollToFirstUiFindMatch={useCallback(() => {}, [])}
-            detailLogItemToggle={detailLogItemToggle}
-            detailLogsToggle={detailLogsToggle}
-            detailWarningsToggle={detailWarningsToggle}
-            detailStackTracesToggle={detailStackTracesToggle}
-            detailReferencesToggle={detailReferencesToggle}
-            detailProcessToggle={detailProcessToggle}
-            detailTagsToggle={detailTagsToggle}
-            detailToggle={toggleDetail}
-            setTrace={useCallback(
-              (
-                trace: Trace | null | undefined,
-                uiFind: string | null | undefined
-              ) => {},
-              []
-            )}
-            addHoverIndentGuideId={addHoverIndentGuideId}
-            removeHoverIndentGuideId={removeHoverIndentGuideId}
-            linksGetter={useCallback(
-              (
-                span: TraceSpan,
-                items: TraceKeyValuePair[],
-                itemIndex: number
-              ) => [] as TraceLink[],
-              []
-            )}
-            uiFind={search}
-            // @ts-ignore
-            createSpanLink={createSpanLink}
-          />
-        </Page.Contents>
-      </Page>
-    </>
+        <TraceTimelineViewer
+          registerAccessors={useCallback(() => {}, [])}
+          scrollToFirstVisibleSpan={useCallback(() => {}, [])}
+          findMatchesIDs={spanFindMatches}
+          trace={traceProp}
+          traceTimeline={traceTimeline}
+          updateNextViewRangeTime={updateNextViewRangeTime}
+          updateViewRangeTime={updateViewRangeTime}
+          viewRange={viewRange}
+          focusSpan={useCallback(() => {}, [])}
+          createLinkToExternalSpan={useCallback(() => '', [])}
+          setSpanNameColumnWidth={setSpanNameColumnWidth}
+          collapseAll={collapseAll}
+          collapseOne={collapseOne}
+          expandAll={expandAll}
+          expandOne={expandOne}
+          childrenToggle={childrenToggle}
+          clearShouldScrollToFirstUiFindMatch={useCallback(() => {}, [])}
+          detailLogItemToggle={detailLogItemToggle}
+          detailLogsToggle={detailLogsToggle}
+          detailWarningsToggle={detailWarningsToggle}
+          detailStackTracesToggle={detailStackTracesToggle}
+          detailReferencesToggle={detailReferencesToggle}
+          detailProcessToggle={detailProcessToggle}
+          detailTagsToggle={detailTagsToggle}
+          detailToggle={toggleDetail}
+          setTrace={useCallback(
+            (
+              trace: Trace | null | undefined,
+              uiFind: string | null | undefined
+            ) => {},
+            []
+          )}
+          addHoverIndentGuideId={addHoverIndentGuideId}
+          removeHoverIndentGuideId={removeHoverIndentGuideId}
+          linksGetter={useCallback(
+            (span: TraceSpan, items: TraceKeyValuePair[], itemIndex: number) =>
+              [] as TraceLink[],
+            []
+          )}
+          uiFind={search}
+          // @ts-ignore
+          createSpanLink={createSpanLink}
+        />
+      </Page.Contents>
+    </Page>
   )
 }
 

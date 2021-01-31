@@ -314,22 +314,23 @@ message Query {
 }
 
 message YAxis {
-  required string prefix = 1;
-  required string suffix = 2;
-  required string format = 3;
+  optional string prefix = 1;
+  optional string suffix = 2;
+  optional string format = 3;
 }
 
 message XAxis {
-  required string prefix = 1;
-  required string suffix = 2;
-  required string format = 3;
+  optional string prefix = 1;
+  optional string suffix = 2;
+  optional string format = 3;
 }
 
 message Axis {
-  required string bounds = 1;
-  required string label = 2;
-  required string prefix = 3;
-  required string suffix = 4;
+  optional string bounds = 1;
+  optional string label = 2;
+  optional string prefix = 3;
+  optional string suffix = 4;
+  optional string base = 5;
 }
 
 message Axes {

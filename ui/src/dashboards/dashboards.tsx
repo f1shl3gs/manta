@@ -27,7 +27,7 @@ const DashboardsIndex: React.FC = () => {
   const orgID = useOrgID()
 
   return (
-    <Page>
+    <Page titleTag={'Dashboards'}>
       <Page.Header fullWidth={false}>
         <Page.Title title={'Dashboards'} />
         {/* rateLimitAlert? */}

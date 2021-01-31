@@ -2,10 +2,10 @@ package kv
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/pkg/tracing"
 	"time"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 var (

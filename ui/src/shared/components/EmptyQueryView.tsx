@@ -9,10 +9,10 @@ import EmptyGraphError from './EmptyGraphError'
 
 interface Props {
   loading: RemoteDataState
+  hasResults: boolean
   errorMessage?: string
   fallbackNote?: string
   queries?: DashboardQuery[]
-  hasResults: boolean
 }
 
 const EmptyQueryView: React.FC<Props> = (props) => {

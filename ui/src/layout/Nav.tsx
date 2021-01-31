@@ -102,6 +102,18 @@ const generateNavItems = (orgID: string): NavItem[] => {
       activeKeywords: ['traces'],
     },
     {
+      id: 'profile',
+      testID: 'nav-item-profile',
+      icon: IconFont.Erlenmeyer,
+      label: 'Profile',
+      shortLabel: 'Prof',
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/profile`,
+      },
+      activeKeywords: ['profile'],
+    },
+    {
       id: 'data-explorer',
       testID: 'nav-item-data-explorer',
       icon: IconFont.GraphLine,

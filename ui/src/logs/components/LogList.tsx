@@ -156,6 +156,7 @@ const LogList = () => {
 
   const theme = 'dark'
   const fixFirstColumn = false
+  const timeFormat = 'DD/MM/YYYY HH:mm:ss.sss'
   const config: Config = {
     fluxResponse: tableCSV,
     layers: [
@@ -209,7 +210,7 @@ const LogList = () => {
               visible: true,
             },
           ],
-          timeFormat: 'YYYY/MM/DD HH:mm:ss',
+          timeFormat,
           decimalPlaces: {
             digits: 3,
             isEnforced: true,
@@ -220,7 +221,6 @@ const LogList = () => {
       } as TableGraphLayerConfig,
     ],
   }
-
   return (
     <HoverTimeProvider>
       <div

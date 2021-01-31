@@ -13,6 +13,9 @@ import DashboardPage from 'dashboards/components/DashboardPage'
 import Nav from 'layout/Nav'
 import {useFetch} from 'use-http'
 import remoteDataState from 'utils/rds'
+import ProfilePage from '../../profile/ProfilePage'
+import PluginsIndex from '../../plugins/PluginsIndex'
+import PluginDetailsView from '../../plugins/PluginDetailsView'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -30,11 +33,20 @@ const Org: React.FC = () => {
           {/* todo: memorize the path with localStorage? */}
           <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
 
+          <Route exact path={`${orgPath}/plugins`} component={PluginsIndex} />
+          <Route
+            exact
+            path={`${orgPath}/plugins/:id`}
+            component={PluginDetailsView}
+          />
+
           <Route path={`${orgPath}/otcls`} component={Otcl} />
+
           <Route path={`${orgPath}/traces`} component={TracePage} />
           <Route path={`${orgPath}/metrics`} component={Todo} />
           <Route path={`${orgPath}/logs`} component={Logs} />
           <Route path={`${orgPath}/alerting`} component={Todo} />
+          <Route path={`${orgPath}/profile`} component={ProfilePage} />
 
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}

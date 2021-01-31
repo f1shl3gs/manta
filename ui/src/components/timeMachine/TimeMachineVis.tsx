@@ -1,7 +1,6 @@
 // Libraries
 import React from 'react'
 import classnames from 'classnames'
-import {useFetch} from 'use-http'
 
 // Components
 import ErrorBoundary from 'shared/components/ErrorBoundary'
@@ -12,11 +11,12 @@ import ViewSwitcher from 'shared/components/ViewSwitcher'
 // Hooks
 import {useViewProperties} from 'shared/useViewProperties'
 import {useAutoRefresh} from '../../shared/useAutoRefresh'
+import {useQueries} from './useQueries'
+import {useFetch} from 'use-http'
 
-// Types
+// Utils
 import remoteDataState from 'utils/rds'
 import {PromResp, transformPromResp} from 'utils/transform'
-import {useQueries} from './useQueries'
 
 const TimeMachineVis: React.FC = () => {
   const {viewProperties} = useViewProperties()
@@ -35,8 +35,6 @@ const TimeMachineVis: React.FC = () => {
 
   const gr = transformPromResp(data)
 
-  console.log('queries', queries)
-
   return (
     <div className={timeMachineViewClassName}>
       <ErrorBoundary>
@@ -45,7 +43,7 @@ const TimeMachineVis: React.FC = () => {
           loading={rds}
           queries={queries}
           hasResults={gr?.table.length !== 0}
-          // error={''}
+          errorMessage={error !== undefined ? error.message : undefined}
         >
           <ViewSwitcher giraffeResult={gr!} properties={viewProperties} />
         </EmptyQueryView>

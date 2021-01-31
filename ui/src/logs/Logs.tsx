@@ -7,7 +7,7 @@ const Title = 'Logs'
 
 const Header: React.FC = () => {
   return (
-    <Page.Header fullWidth={true}>
+    <Page.Header fullWidth={false}>
       <Page.Title title={Title} />
     </Page.Header>
   )
@@ -17,9 +17,9 @@ const Logs: React.FC = () => {
   const {query, setQuery} = useQuery()
 
   return (
-    <Page titleTag={'logs'}>
+    <Page titleTag={Title}>
       <Header />
-      <Page.ControlBar fullWidth>
+      <Page.ControlBar fullWidth={false}>
         <Page.ControlBarLeft>
           <Button text={'Signature'} />
         </Page.ControlBarLeft>

@@ -11,8 +11,8 @@ type DashboardFilter struct {
 }
 
 type DashboardUpdate struct {
-	Name *string `json:"name,empty"`
-	Desc *string `json:"desc,empty"`
+	Name *string `json:"name,omitempty"`
+	Desc *string `json:"desc,omitempty"`
 }
 
 func (udp DashboardUpdate) Apply(dash *Dashboard) {
