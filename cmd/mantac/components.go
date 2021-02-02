@@ -1,109 +1,78 @@
+// Copyright 2020 OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenterror"
-	"go.opentelemetry.io/collector/exporter/fileexporter"
-	"go.opentelemetry.io/collector/exporter/jaegerexporter"
-	"go.opentelemetry.io/collector/exporter/kafkaexporter"
-	"go.opentelemetry.io/collector/exporter/loggingexporter"
-	"go.opentelemetry.io/collector/exporter/opencensusexporter"
-	"go.opentelemetry.io/collector/exporter/otlpexporter"
-	"go.opentelemetry.io/collector/exporter/prometheusexporter"
-	"go.opentelemetry.io/collector/exporter/prometheusremotewriteexporter"
-	"go.opentelemetry.io/collector/exporter/zipkinexporter"
-	"go.opentelemetry.io/collector/extension/fluentbitextension"
-	"go.opentelemetry.io/collector/extension/healthcheckextension"
-	"go.opentelemetry.io/collector/extension/pprofextension"
-	"go.opentelemetry.io/collector/extension/zpagesextension"
-	"go.opentelemetry.io/collector/processor/attributesprocessor"
-	"go.opentelemetry.io/collector/processor/batchprocessor"
-	"go.opentelemetry.io/collector/processor/filterprocessor"
-	"go.opentelemetry.io/collector/processor/memorylimiter"
-	"go.opentelemetry.io/collector/processor/queuedprocessor"
-	"go.opentelemetry.io/collector/processor/resourceprocessor"
-	"go.opentelemetry.io/collector/processor/samplingprocessor/probabilisticsamplerprocessor"
-	"go.opentelemetry.io/collector/processor/spanprocessor"
-	"go.opentelemetry.io/collector/receiver/hostmetricsreceiver"
-	"go.opentelemetry.io/collector/receiver/jaegerreceiver"
-	"go.opentelemetry.io/collector/receiver/kafkareceiver"
-	"go.opentelemetry.io/collector/receiver/opencensusreceiver"
-	"go.opentelemetry.io/collector/receiver/otlpreceiver"
-	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
-	"go.opentelemetry.io/collector/receiver/zipkinreceiver"
+	"go.opentelemetry.io/collector/service/defaultcomponents"
 
-	"github.com/f1shl3gs/manta/collector/receiver/kmsgreceiver"
-	"github.com/f1shl3gs/manta/collector/receiver/promtailreceiver"
+	// extensions
+
+	// receivers
+
+	// exporters
+	elasticexporter "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticexporter"
+	// processors
 )
 
-// Components returns the default set of components used by the
-// OpenTelemetry collector.
-func Components() (
-	component.Factories,
-	error,
-) {
+func components() (component.Factories, error) {
 	var errs []error
+	var err error
+	var factories component.Factories
+	factories, err = defaultcomponents.Components()
+	if err != nil {
+		return component.Factories{}, err
+	}
 
-	extensions, err := component.MakeExtensionFactoryMap(
-		healthcheckextension.NewFactory(),
-		pprofextension.NewFactory(),
-		zpagesextension.NewFactory(),
-		fluentbitextension.NewFactory(),
-	)
+	extensions := []component.ExtensionFactory{}
+	for _, ext := range factories.Extensions {
+		extensions = append(extensions, ext)
+	}
+	factories.Extensions, err = component.MakeExtensionFactoryMap(extensions...)
 	if err != nil {
 		errs = append(errs, err)
 	}
 
-	receivers, err := component.MakeReceiverFactoryMap(
-		jaegerreceiver.NewFactory(),
-		// fluentforwardreceiver.NewFactory(),
-		zipkinreceiver.NewFactory(),
-		prometheusreceiver.NewFactory(),
-		opencensusreceiver.NewFactory(),
-		otlpreceiver.NewFactory(),
-		hostmetricsreceiver.NewFactory(),
-		kafkareceiver.NewFactory(),
-		promtailreceiver.NewFactory(),
-		kmsgreceiver.NewFactory(),
-	)
+	receivers := []component.ReceiverFactory{}
+	for _, rcv := range factories.Receivers {
+		receivers = append(receivers, rcv)
+	}
+	factories.Receivers, err = component.MakeReceiverFactoryMap(receivers...)
 	if err != nil {
 		errs = append(errs, err)
 	}
 
-	exporters, err := component.MakeExporterFactoryMap(
-		opencensusexporter.NewFactory(),
-		prometheusexporter.NewFactory(),
-		prometheusremotewriteexporter.NewFactory(),
-		loggingexporter.NewFactory(),
-		zipkinexporter.NewFactory(),
-		jaegerexporter.NewFactory(),
-		fileexporter.NewFactory(),
-		otlpexporter.NewFactory(),
-		kafkaexporter.NewFactory(),
-	)
+	exporters := []component.ExporterFactory{
+		elasticexporter.NewFactory(),
+	}
+	for _, exp := range factories.Exporters {
+		exporters = append(exporters, exp)
+	}
+	factories.Exporters, err = component.MakeExporterFactoryMap(exporters...)
 	if err != nil {
 		errs = append(errs, err)
 	}
 
-	processors, err := component.MakeProcessorFactoryMap(
-		attributesprocessor.NewFactory(),
-		resourceprocessor.NewFactory(),
-		queuedprocessor.NewFactory(),
-		batchprocessor.NewFactory(),
-		memorylimiter.NewFactory(),
-		probabilisticsamplerprocessor.NewFactory(),
-		spanprocessor.NewFactory(),
-		filterprocessor.NewFactory(),
-	)
+	processors := []component.ProcessorFactory{}
+	for _, pr := range factories.Processors {
+		processors = append(processors, pr)
+	}
+	factories.Processors, err = component.MakeProcessorFactoryMap(processors...)
 	if err != nil {
 		errs = append(errs, err)
-	}
-
-	factories := component.Factories{
-		Extensions: extensions,
-		Receivers:  receivers,
-		Processors: processors,
-		Exporters:  exporters,
 	}
 
 	return factories, componenterror.CombineErrors(errs)

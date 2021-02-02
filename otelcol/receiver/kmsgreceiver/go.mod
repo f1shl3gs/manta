@@ -2,7 +2,7 @@ module github.com/f1shl3gs/manta/collector/receiver/kmsgreceiver
 
 go 1.15
 
-require go.opentelemetry.io/collector v0.15.0
+require go.opentelemetry.io/collector v0.19.0
 
 // Same as Cortex, we can't upgrade to grpc 1.30.0 until go.etcd.io/etcd will support it.
 replace google.golang.org/grpc => google.golang.org/grpc v1.29.1

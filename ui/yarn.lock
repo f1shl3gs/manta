@@ -9952,10 +9952,10 @@ react-codemirror2@^7.2.1:
   resolved "https://registry.npm.taobao.org/react-codemirror2/download/react-codemirror2-7.2.1.tgz#38dab492fcbe5fb8ebf5630e5bb7922db8d3a10c"
   integrity sha1-ONq0kvy+X7jr9WMOW7eSLbjToQw=
 
-react-copy-to-clipboard@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.npm.taobao.org/react-copy-to-clipboard/download/react-copy-to-clipboard-5.0.2.tgz#d82a437e081e68dfca3761fbd57dbf2abdda1316"
-  integrity sha1-2CpDfggeaN/KN2H71X2/Kr3aExY=
+react-copy-to-clipboard@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.npm.taobao.org/react-copy-to-clipboard/download/react-copy-to-clipboard-5.0.3.tgz#2a0623b1115a1d8c84144e9434d3342b5af41ab4"
+  integrity sha1-KgYjsRFaHYyEFE6UNNM0K1r0GrQ=
   dependencies:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"

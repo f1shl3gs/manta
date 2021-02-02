@@ -3,7 +3,7 @@ import React from 'react'
 
 // Components
 import {Page, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown, {Renderer} from 'react-markdown'
 import OTCLPluginsExplainer from './OTCLPluginsExplainer'
 
 // Hooks
@@ -18,6 +18,12 @@ import placeholderLogo from 'plugins/graphics/placeholderLogo.svg'
 
 // Utils
 import remoteDataState from '../utils/rds'
+import PluginCodeSnippet from './PluginCodeSnippet'
+
+//@ts-ignore
+const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  <PluginCodeSnippet code={props.value} language={props.language} />
+)
 
 const PluginDetailsView: React.FC = () => {
   const {id} = useParams<{id: string}>()
@@ -45,7 +51,12 @@ const PluginDetailsView: React.FC = () => {
 
             <div className={'write-data--details-content markdown-format'}>
               <OTCLPluginsExplainer />
-              <ReactMarkdown source={data} />
+
+              <ReactMarkdown
+                source={data}
+                // @ts-ignore
+                renderers={{code: codeRenderer}}
+              />
             </div>
           </div>
         </SpinnerContainer>
