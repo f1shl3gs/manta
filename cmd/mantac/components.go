@@ -1,17 +1,3 @@
-// Copyright 2020 OpenTelemetry Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package main
 
 import (
@@ -19,13 +5,11 @@ import (
 	"go.opentelemetry.io/collector/component/componenterror"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
 
-	// extensions
-
-	// receivers
-
-	// exporters
-	elasticexporter "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticexporter"
-	// processors
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/elasticexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/hostobserver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/k8sobserver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor"
 )
 
 func components() (component.Factories, error) {
@@ -37,7 +21,11 @@ func components() (component.Factories, error) {
 		return component.Factories{}, err
 	}
 
-	extensions := []component.ExtensionFactory{}
+	extensions := []component.ExtensionFactory{
+		hostobserver.NewFactory(),
+		k8sobserver.NewFactory(),
+	}
+
 	for _, ext := range factories.Extensions {
 		extensions = append(extensions, ext)
 	}
@@ -66,7 +54,10 @@ func components() (component.Factories, error) {
 		errs = append(errs, err)
 	}
 
-	processors := []component.ProcessorFactory{}
+	processors := []component.ProcessorFactory{
+		routingprocessor.NewFactory(),
+		resourcedetectionprocessor.NewFactory(),
+	}
 	for _, pr := range factories.Processors {
 		processors = append(processors, pr)
 	}

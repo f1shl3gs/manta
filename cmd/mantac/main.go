@@ -32,7 +32,7 @@ func main() {
 
 	info := component.ApplicationStartInfo{
 		ExeName:  "mantac",
-		LongName: "Custom otel collector",
+		LongName: "otel collector",
 		Version:  "1.0.0",
 	}
 

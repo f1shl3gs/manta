@@ -13,6 +13,3 @@ replace k8s.io/client-go => k8s.io/client-go v0.19.2
 replace github.com/Azure/azure-sdk-for-go => github.com/Azure/azure-sdk-for-go v36.2.0+incompatible
 
 replace github.com/prometheus/prometheus v2.5.0+incompatible => github.com/prometheus/prometheus v1.8.2-0.20201014093524-73e2ce1bd643
-
-// github.com/f1shl3gs/manta/collector/receiver/kmsgreceiver
-// github.com/f1shl3gs/manta/collector/receiver/kmsgreceiver
