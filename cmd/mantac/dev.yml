@@ -1,4 +1,6 @@
 extensions:
+  pprof:
+    endpoint: 0.0.0.0:1234
   zpages:
     endpoint: 0.0.0.0:55679
 
@@ -21,11 +23,19 @@ exporters:
     endpoint: 0.0.0.0:8889
   prometheusremotewrite:
     endpoint: http://localhost:10080/receive
+    headers:
+      X-Scope-OrgID: foo
 
 service:
   pipelines:
     metrics:
-      receivers: [hostmetrics]
-      exporters: [prometheus, logging, prometheusremotewrite]
+      receivers:
+        - hostmetrics
+      exporters:
+        - prometheus
+        - logging
+        - prometheusremotewrite
 
-  extensions: [zpages]
+  extensions:
+    - zpages
+    - pprof

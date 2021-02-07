@@ -5,10 +5,12 @@ import moment from 'moment'
 // Components
 import {
   Button,
+  ButtonShape,
   Columns,
   ComponentColor,
   ComponentSize,
   EmptyState,
+  FlexBox,
   Grid,
   IconFont,
   ResourceCard,
@@ -16,6 +18,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import CopyButton from '../shared/components/CopyButton'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
@@ -35,22 +38,37 @@ const Otcls: React.FC = () => {
 
   const context = useCallback((id: string): JSX.Element => {
     return (
-      <Button
-        icon={IconFont.Trash}
-        text="Delete"
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Danger}
-        onClick={() => {
-          del(`${id}`)
-            .then(() => {
-              console.log('delete', id, 'success')
-              reload()
-            })
-            .catch(() => {
-              console.log('failed')
-            })
-        }}
-      />
+      <FlexBox margin={ComponentSize.Small}>
+        <FlexBox.Child>
+          <Button
+            icon={IconFont.Trash}
+            text="Delete"
+            size={ComponentSize.ExtraSmall}
+            color={ComponentColor.Danger}
+            onClick={() => {
+              del(`${id}`)
+                .then(() => {
+                  console.log('delete', id, 'success')
+                  reload()
+                })
+                .catch(() => {
+                  console.log('failed')
+                })
+            }}
+          />
+        </FlexBox.Child>
+
+        <FlexBox.Child>
+          <CopyButton
+            shape={ButtonShape.Default}
+            textToCopy={`${window.location.protocol}//${window.location.hostname}/api/v1/otcls/${id}`}
+            buttonText={'Copy Otcl config url'}
+            color={ComponentColor.Default}
+            contentName={'cn'}
+            size={ComponentSize.ExtraSmall}
+          />
+        </FlexBox.Child>
+      </FlexBox>
     )
   }, [])
 

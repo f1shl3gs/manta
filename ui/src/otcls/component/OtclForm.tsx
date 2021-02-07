@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   Button,
   ButtonType,
@@ -9,7 +9,7 @@ import {
   Grid,
   Input,
 } from '@influxdata/clockface'
-import {UnControlled as ReactCodeMirror} from 'react-codemirror2'
+import {Controlled as ReactCodeMirror} from 'react-codemirror2'
 import {useOtcl} from 'otcls/state'
 
 import 'codemirror/lib/codemirror.css'
@@ -44,6 +44,7 @@ const OtclForm: React.FC<Props> = (props) => {
   const {onSubmit, onDismiss} = props
 
   const {otcl, setOtcl} = useOtcl()
+  // const [content, setContent] = useState(otcl.content)
 
   return (
     <Form onSubmit={onSubmit}>
@@ -112,12 +113,12 @@ const OtclForm: React.FC<Props> = (props) => {
                 autoCursor
                 options={options}
                 value={otcl.content}
-                onChange={(editor, data, value) => {
+                onBeforeChange={(_, d_, v) =>
                   setOtcl({
                     ...otcl,
-                    content: value,
+                    content: v,
                   })
-                }}
+                }
               />
             )}
           </Form.ValidationElement>

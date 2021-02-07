@@ -62,7 +62,7 @@ func main() {
 			return
 		}
 
-		tenant := r.Header.Get("tenant_id")
+		tenant := r.Header.Get("X-Scope-OrgID")
 		if tenant == "" {
 			tenant = "_default"
 		}
