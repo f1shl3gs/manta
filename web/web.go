@@ -1,7 +1,6 @@
 package web
 
 import (
-	"github.com/f1shl3gs/manta/authorization"
 	"net/http"
 	"net/http/pprof"
 
@@ -12,6 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/authorization"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 	"github.com/f1shl3gs/manta/web/middlewares"
 )
@@ -122,6 +122,9 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/setup")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/metrics")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof/*all")
+
+	// test only
+	ah.RegisterNoAuthRoute(http.MethodGet, "/api/v1/otcls/:id")
 
 	return ah
 }

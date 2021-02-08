@@ -1,5 +1,5 @@
 // Libraries
-import React, {useCallback} from 'react'
+import React from 'react'
 import moment from 'moment'
 
 // Components
@@ -36,7 +36,7 @@ const Otcls: React.FC = () => {
   const {otcls = [], rds, reload} = useOtcls()
   const {del} = useFetch(`/api/v1/otcls`, {})
 
-  const context = useCallback((id: string): JSX.Element => {
+  const context = (id: string): JSX.Element => {
     return (
       <FlexBox margin={ComponentSize.Small}>
         <FlexBox.Child>
@@ -70,7 +70,7 @@ const Otcls: React.FC = () => {
         </FlexBox.Child>
       </FlexBox>
     )
-  }, [])
+  }
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>

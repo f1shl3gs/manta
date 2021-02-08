@@ -3,16 +3,17 @@ package main
 import (
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/tracing"
-	"github.com/f1shl3gs/manta/storage/ingest"
+	mantastorage "github.com/f1shl3gs/manta/storage"
+	"github.com/f1shl3gs/manta/storage/storagepb/prompb"
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/snappy"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/prompb"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/prometheus/prometheus/tsdb"
 	"go.uber.org/zap"
+
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -29,7 +30,7 @@ func main() {
 		WALCompression:    true,
 	}
 
-	store := ingest.NewMultiTSDB("data", logger, prometheus.DefaultRegisterer, tsdbOpts, labels.FromStrings("foo", "bar"), "tenant_id", nil, false)
+	store := mantastorage.NewMultiTSDB("data", logger, prometheus.DefaultRegisterer, tsdbOpts, labels.FromStrings("foo", "bar"), "tenant_id", nil, false)
 	err := store.Open()
 	if err != nil {
 		panic(err)
@@ -38,6 +39,15 @@ func main() {
 	defer store.Close()
 
 	http.Handle("/metrics", promhttp.Handler())
+
+	/*	http.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query().Get("query")
+
+		dbs := store.TSDBStores()
+		for _, d := range dbs {
+			d.Series()
+		}
+	})*/
 
 	http.HandleFunc("/receive", func(w http.ResponseWriter, r *http.Request) {
 		span, ctx := tracing.StartSpanFromContext(r.Context())

@@ -1,8 +1,7 @@
-package ingest
+package storage
 
 import (
 	"context"
-	"github.com/thanos-io/thanos/pkg/store/labelpb"
 	"os"
 	"path"
 	"path/filepath"
@@ -19,6 +18,7 @@ import (
 	"github.com/thanos-io/thanos/pkg/receive"
 	"github.com/thanos-io/thanos/pkg/shipper"
 	"github.com/thanos-io/thanos/pkg/store"
+	"github.com/thanos-io/thanos/pkg/store/labelpb"
 	"github.com/thanos-io/thanos/pkg/store/storepb"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
