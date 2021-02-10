@@ -272,7 +272,7 @@ message Run {
 message ScrapeTarget {
   required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   required uint64 orgID = 2 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
-  required string target = 5;
+  repeated string targets = 5;
   map<string, string> labels = 6;
 }
 

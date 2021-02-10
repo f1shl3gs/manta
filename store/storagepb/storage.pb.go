@@ -6,6 +6,7 @@ package storage
 import (
 	context "context"
 	fmt "fmt"
+	prompb "github.com/f1shl3gs/manta/store/storagepb/prompb"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	types "github.com/gogo/protobuf/types"
@@ -15,7 +16,6 @@ import (
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	prompb "prompb"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

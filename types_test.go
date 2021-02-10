@@ -26,7 +26,7 @@ func TestCell(t *testing.T) {
 	cell := &manta.Cell{
 		ID:             id,
 		Name:           "xy",
-		Description:    "desc",
+		Desc:           "desc",
 		W:              0,
 		H:              2,
 		X:              4,

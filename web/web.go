@@ -32,6 +32,7 @@ type Backend struct {
 	AuthorizationService manta.AuthorizationService
 	Keyring              manta.Keyring
 	SessionService       manta.SessionService
+	ScrapeService        manta.ScraperTargetService
 }
 
 func New(logger *zap.Logger, backend *Backend) http.Handler {
@@ -97,6 +98,8 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	}
 
 	NewDashboardService(dh)
+
+	NewScrapeHandler(logger, router, backend.ScrapeService)
 
 	// and more
 

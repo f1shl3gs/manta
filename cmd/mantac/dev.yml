@@ -24,7 +24,7 @@ exporters:
   prometheusremotewrite:
     endpoint: http://localhost:10080/receive
     headers:
-      X-Scope-OrgID: foo
+      X-Scope-OrgID: 5ca1ab1eba5eba11
 
 service:
   pipelines:

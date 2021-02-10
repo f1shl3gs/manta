@@ -56,7 +56,17 @@ func orgIDFromRequest(r *http.Request) (manta.ID, error) {
 		txt = r.URL.Query().Get("orgID")
 	)
 
-	return id, id.DecodeFromString(txt)
+	err := id.DecodeFromString(txt)
+	if err != nil {
+		return 0, &manta.Error{
+			Code: manta.EInvalid,
+			Msg:  "invalid orgID from url",
+			Op:   "decode orgID",
+			Err:  err,
+		}
+	}
+
+	return id, nil
 }
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, code int, res interface{}) error {

@@ -1,7 +1,12 @@
-package storage
+package store
 
+/*
 import (
 	"context"
+	"github.com/f1shl3gs/manta"
+	"github.com/thanos-io/thanos/pkg/runutil"
+	"github.com/thanos-io/thanos/pkg/store/storepb"
+	"github.com/thanos-io/thanos/pkg/testutil"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -14,17 +19,15 @@ import (
 	"github.com/prometheus/prometheus/tsdb"
 	"go.uber.org/zap/zaptest"
 	"golang.org/x/sync/errgroup"
-
-	"github.com/thanos-io/thanos/pkg/runutil"
-	"github.com/thanos-io/thanos/pkg/store/labelpb"
-	"github.com/thanos-io/thanos/pkg/store/storepb"
-	"github.com/thanos-io/thanos/pkg/testutil"
 )
 
 func TestMultiTSDB(t *testing.T) {
 	dir, err := ioutil.TempDir("", "test_multitsdb")
 	testutil.Ok(t, err)
 	defer func() { testutil.Ok(t, os.RemoveAll(dir)) }()
+
+	tenantFoo := manta.ID(1)
+	tenantBar := manta.ID(2)
 
 	t.Run("run fresh", func(t *testing.T) {
 		logger := zaptest.NewLogger(t)
@@ -37,8 +40,6 @@ func TestMultiTSDB(t *testing.T) {
 				NoLockfile:        true,
 			},
 			labels.FromStrings("replica", "01"),
-			"tenant_id",
-			nil,
 			false,
 		)
 		defer func() { testutil.Ok(t, m.Close()) }()
@@ -46,7 +47,7 @@ func TestMultiTSDB(t *testing.T) {
 		testutil.Ok(t, m.Flush())
 		testutil.Ok(t, m.Open())
 
-		app, err := m.TenantAppendable("foo")
+		app, err := m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -54,8 +55,8 @@ func TestMultiTSDB(t *testing.T) {
 
 		var a storage.Appender
 		testutil.Ok(t, runutil.Retry(1*time.Second, ctx.Done(), func() error {
-			a, err = app.Appender(context.Background())
-			return err
+			a = app.Appender(context.Background())
+			return nil
 		}))
 
 		_, err = a.Add(labels.FromStrings("a", "1", "b", "2"), 1, 2.41241)
@@ -67,21 +68,21 @@ func TestMultiTSDB(t *testing.T) {
 		testutil.Ok(t, a.Commit())
 
 		// Check if not leaking.
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
 
 		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		app, err = m.TenantAppendable("bar")
+		app, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
 
 		testutil.Ok(t, runutil.Retry(1*time.Second, ctx.Done(), func() error {
-			a, err = app.Appender(context.Background())
+			a = app.Appender(context.Background())
 			return err
 		}))
 
@@ -104,8 +105,6 @@ func TestMultiTSDB(t *testing.T) {
 				RetentionDuration: int64(6 * time.Hour / time.Millisecond),
 				NoLockfile:        true,
 			},
-			labels.FromStrings("replica", "01"),
-			"tenant_id",
 			nil,
 			false,
 		)
@@ -115,23 +114,23 @@ func TestMultiTSDB(t *testing.T) {
 		testutil.Ok(t, m.Open())
 
 		// Get appender just for test.
-		app, err := m.TenantAppendable("foo")
+		app, err := m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
 		testutil.Ok(t, runutil.Retry(1*time.Second, ctx.Done(), func() error {
-			_, err := app.Appender(context.Background())
+			_ := app.Appender(context.Background())
 			return err
 		}))
 
 		// Check if not leaking.
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
-		_, err = m.TenantAppendable("foo")
+		_, err = m.TenantAppendable(tenantFoo)
 		testutil.Ok(t, err)
 
 		testMulitTSDBSeries(t, m)
@@ -254,3 +253,4 @@ func (s *storeSeriesServer) Send(r *storepb.SeriesResponse) error {
 func (s *storeSeriesServer) Context() context.Context {
 	return s.ctx
 }
+*/

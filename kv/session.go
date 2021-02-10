@@ -84,7 +84,12 @@ func (s *Service) FindSession(ctx context.Context, id manta.ID) (*manta.Session,
 		return nil, err
 	}
 
-	return session, nil
+	now := time.Now()
+	if session.ExpiresAt.After(now) {
+		return session, nil
+	}
+
+	return nil, manta.ErrSessionExpired
 }
 
 func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.Session, error) {

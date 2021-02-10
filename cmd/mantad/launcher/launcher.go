@@ -218,6 +218,7 @@ func (l *Launcher) Run() error {
 			DashboardService:     service,
 			Keyring:              service,
 			SessionService:       service,
+			ScrapeService:        service,
 		})
 
 		group.Go(func() error {

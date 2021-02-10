@@ -51,12 +51,17 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	case "session":
 		authorizer, err = h.extractSession(ctx, r)
 	default:
-		w.WriteHeader(http.StatusUnauthorized)
+		h.handleUnauthorized(w, r, nil)
+		return
+	}
+
+	if err == manta.ErrSessionExpired {
+		h.handleUnauthorized(w, r, err)
 		return
 	}
 
 	if err != nil {
-		h.handleUnauthorized(ctx, w, err)
+		h.errorHandler.HandleHTTPError(ctx, err, w)
 		return
 	}
 
@@ -122,7 +127,12 @@ func (h *AuthenticationHandler) extractJWT(ctx context.Context, r *http.Request)
 	return h.AuthorizationService.FindAuthorizationByID(ctx, t.Identifier())
 }
 
-func (h *AuthenticationHandler) handleUnauthorized(ctx context.Context, w http.ResponseWriter, err error) {
-	h.logger.Info("unauthorized", zap.Error(err))
-	h.errorHandler.HandleHTTPError(ctx, err, w)
+func (h *AuthenticationHandler) handleUnauthorized(w http.ResponseWriter, r *http.Request, err error) {
+	h.logger.Info("unauthorized http request",
+		zap.String("remote", r.RemoteAddr),
+		zap.String("method", r.Method),
+		zap.String("path", r.URL.Path),
+		zap.Error(err))
+
+	w.WriteHeader(http.StatusUnauthorized)
 }

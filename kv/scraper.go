@@ -124,7 +124,7 @@ func (s *Service) findScraperTargets(ctx context.Context, tx Tx, filter manta.Sc
 				return nil, err
 			}
 
-			targets[i] = target
+			targets = append(targets, target)
 		}
 
 		return targets, nil
@@ -185,5 +185,43 @@ func (s *Service) updateScraperTarget(ctx context.Context, tx Tx, id manta.ID, u
 }
 
 func (s *Service) DeleteScraperTarget(ctx context.Context, id manta.ID) error {
-	panic("implement me")
+	return s.kv.Update(ctx, func(tx Tx) error {
+		return s.deleteScraperTarget(ctx, tx, id)
+	})
+}
+
+func (s *Service) deleteScraperTarget(ctx context.Context, tx Tx, id manta.ID) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
+	span.LogKV("id", id.String())
+
+	st, err := s.findScraperTargetByID(ctx, tx, id)
+	if err != nil {
+		return err
+	}
+
+	pk, err := id.Encode()
+	if err != nil {
+		return err
+	}
+
+	b, err := tx.Bucket(scraperTargetBucket)
+	if err != nil {
+		return err
+	}
+
+	err = b.Delete(pk)
+	if err != nil {
+		return err
+	}
+
+	// delete orgID index
+	fk, _ := st.OrgID.Encode()
+	b, err = tx.Bucket(scraperTargetOrgIDBucket)
+	if err != nil {
+		return err
+	}
+
+	return b.Delete(fk)
 }
