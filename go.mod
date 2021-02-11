@@ -23,7 +23,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/common v0.15.0
-	github.com/prometheus/prometheus v1.8.2-0.20201119142752-3ad25a6dc3d9
+	github.com/prometheus/prometheus v1.8.2-0.20201119181812-c8f810083d3f
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

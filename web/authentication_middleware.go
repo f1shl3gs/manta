@@ -51,7 +51,7 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	case "session":
 		authorizer, err = h.extractSession(ctx, r)
 	default:
-		h.handleUnauthorized(w, r, nil)
+		h.handleUnauthorized(w, r, errors.New("no authorization info"))
 		return
 	}
 

@@ -23,6 +23,11 @@ func (r *recordableHTTPResponse) Write(data []byte) (int, error) {
 	return n, err
 }
 
+func (r *recordableHTTPResponse) WriteHeader(statusCode int) {
+	r.status = statusCode
+	r.ResponseWriter.WriteHeader(statusCode)
+}
+
 func (r *recordableHTTPResponse) Status() int {
 	if r.status == 0 {
 		return http.StatusOK

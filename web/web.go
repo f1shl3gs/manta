@@ -13,11 +13,14 @@ import (
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorization"
 	"github.com/f1shl3gs/manta/pkg/tracing"
+	"github.com/f1shl3gs/manta/store"
 	"github.com/f1shl3gs/manta/web/middlewares"
 )
 
 type Backend struct {
 	manta.HTTPErrorHandler
+
+	TenantStorage store.TenantStorage
 
 	OtclService          manta.OtclService
 	BackupService        manta.BackupService
@@ -101,12 +104,15 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 
 	NewScrapeHandler(logger, router, backend.ScrapeService)
 
+	NewQueryHandler(logger, router, backend.TenantStorage)
+
 	// and more
 
 	// tracing
 	h := middlewares.Log(logger, router)
 	h = Trace(h)
 	h = middlewares.Metrics(prometheus.DefaultRegisterer, h)
+	// h = middlewares.Gzip(h)
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -125,6 +131,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	ah.RegisterNoAuthRoute(http.MethodPost, "/api/v1/setup")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/metrics")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof/*all")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof")
 
 	// test only
 	ah.RegisterNoAuthRoute(http.MethodGet, "/api/v1/otcls/:id")

@@ -13,6 +13,7 @@ import {useViewProperties} from 'shared/useViewProperties'
 import {useAutoRefresh} from '../../shared/useAutoRefresh'
 import {useQueries} from './useQueries'
 import {useFetch} from 'use-http'
+import {useOrgID} from '../../shared/useOrg'
 
 // Utils
 import remoteDataState from 'utils/rds'
@@ -25,9 +26,10 @@ const TimeMachineVis: React.FC = () => {
   })
   const {start, end, step} = useAutoRefresh()
   const {queries} = useQueries()
+  const orgID = useOrgID()
 
   const {data, loading, error} = useFetch<PromResp>(
-    `http://localhost:9090/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=${start}&end=${end}&step=${step}`,
+    `/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=${start}&end=${end}&step=${step}&orgID=${orgID}`,
     {},
     []
   )

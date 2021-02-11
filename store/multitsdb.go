@@ -35,15 +35,12 @@ type MultiTSDB struct {
 }
 
 func (m *MultiTSDB) TenantStorage(ctx context.Context, id manta.ID) (storage.Storage, error) {
-	m.mtx.RLock()
-	defer m.mtx.RUnlock()
-
-	ts := m.tenants[id]
-	if ts == nil {
-		return nil, ErrUnknownTenantStorage
+	t, err := m.getOrLoadTenant(id, true)
+	if err != nil {
+		return nil, err
 	}
 
-	return ts.readyS.Get(), nil
+	return t.readyS.Get(), nil
 }
 
 func NewMultiTSDB(

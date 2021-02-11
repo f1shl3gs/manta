@@ -6,12 +6,16 @@ import {CachePolicies, useFetch} from 'use-http'
 import ViewSwitcher from 'shared/components/ViewSwitcher'
 import EmptyQueryView from 'shared/components/EmptyQueryView'
 import ErrorBoundary from 'shared/components/ErrorBoundary'
-
 import {QueriesProvider} from 'components/timeMachine/useQueries'
 import {useViewProperties} from 'shared/useViewProperties'
 import {transformPromResp} from 'utils/transform'
 import {useAutoRefresh} from 'shared/useAutoRefresh'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
+
+// Hooks
+import {useOrgID} from '../../shared/useOrg'
+
+// Utils
 import remoteDataState from 'utils/rds'
 
 interface Props {
@@ -22,6 +26,7 @@ const TimeSeries: React.FC<Props> = (props) => {
   const {viewProperties} = useViewProperties()
   const {start, end, step} = useAutoRefresh()
   const {queries} = viewProperties
+  const orgID = useOrgID()
   const [errMsg, setErrMsg] = useState<string | undefined>()
   const [result, setResult] = useState<
     Omit<FromFluxResult, 'schema'> | undefined
@@ -32,7 +37,7 @@ const TimeSeries: React.FC<Props> = (props) => {
     }
   })
 
-  const url = `http://localhost:9090/api/v1/query_range`
+  const url = `/api/v1/query_range`
   const {get, loading, error} = useFetch(url, {
     cachePolicy: CachePolicies.NO_CACHE,
     onError: ({error}) => {
@@ -44,7 +49,7 @@ const TimeSeries: React.FC<Props> = (props) => {
     get(
       `?query=${encodeURI(
         queries[0].text
-      )}&start=${start}&end=${end}&step=${step}`
+      )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
     ).then((resp) => {
       if (resp === undefined) {
         return
@@ -57,7 +62,7 @@ const TimeSeries: React.FC<Props> = (props) => {
 
       setResult(transformPromResp(resp))
     })
-  }, [start, end, step])
+  }, [start, end, step, orgID])
 
   useEffect(() => {
     fetch()

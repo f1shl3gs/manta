@@ -2,10 +2,25 @@ package launcher
 
 import (
 	"context"
+	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/config"
+	"github.com/prometheus/prometheus/discovery/targetgroup"
+	"github.com/prometheus/prometheus/scrape"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/prometheus/tsdb"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
+	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
@@ -13,6 +28,7 @@ import (
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
+	"github.com/f1shl3gs/manta/store"
 	"github.com/f1shl3gs/manta/task/backend"
 	"github.com/f1shl3gs/manta/task/backend/coordinator"
 	"github.com/f1shl3gs/manta/task/backend/executor"
@@ -20,15 +36,6 @@ import (
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
 	"github.com/f1shl3gs/manta/task/mock"
 	"github.com/f1shl3gs/manta/web"
-	"github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
-	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"golang.org/x/sync/errgroup"
 )
 
 type Launcher struct {
@@ -55,6 +62,9 @@ type Launcher struct {
 	// scheduler
 	noopSchedule bool
 	WorkerLimit  int
+
+	// storage
+	StorageDir string
 }
 
 func (l *Launcher) Options() []Option {
@@ -98,6 +108,12 @@ func (l *Launcher) Options() []Option {
 			DestP:   &l.noopSchedule,
 			Flag:    "scheduler.noop",
 			Default: false,
+		},
+		{
+			DestP:   &l.StorageDir,
+			Flag:    "storage.dir",
+			Default: "data",
+			Desc:    "storage is disabled by default",
 		},
 	}
 }
@@ -148,23 +164,182 @@ func (l *Launcher) Run() error {
 		defer closer.Close()
 	}
 
+	// init tsdb storage
+	// for now only local TenantStorage is available, aka MultiTSDB
+	var tenantStorage store.TenantStorage
+	{
+		tsdbOpts := &tsdb.Options{
+			MinBlockDuration:  int64(2 * time.Hour / time.Millisecond),
+			MaxBlockDuration:  int64(2 * time.Hour / time.Millisecond),
+			RetentionDuration: int64(4 * time.Hour / time.Millisecond),
+			NoLockfile:        false,
+			WALCompression:    true,
+		}
+
+		multitsdb := store.NewMultiTSDB(l.StorageDir, logger, prometheus.DefaultRegisterer, tsdbOpts, nil, false)
+		err = multitsdb.Open()
+		if err != nil {
+			return err
+		}
+
+		defer func() {
+			logger.Info("starting flush storage")
+			start := time.Now()
+			err = multitsdb.Flush()
+			if err != nil {
+				logger.Error("flush storage failed",
+					zap.Error(err))
+			} else {
+				logger.Error("flush storage success",
+					zap.Duration("time", time.Since(start)))
+			}
+
+			err = multitsdb.Close()
+			if err != nil {
+				logger.Error("close storage failed",
+					zap.Error(err))
+			}
+		}()
+
+		tenantStorage = multitsdb
+	}
+
 	// starting services
 	ctx := signals.WithStandardSignals(context.Background())
 	group, ctx := errgroup.WithContext(ctx)
 
-	store := bolt.NewKVStore(logger, l.BoltPath)
-	if err = store.Open(ctx); err != nil {
+	kvStore := bolt.NewKVStore(logger, l.BoltPath)
+	if err = kvStore.Open(ctx); err != nil {
 		return err
 	}
-	defer store.Close()
+	defer kvStore.Close()
 
-	if err = kv.Initial(ctx, store); err != nil {
+	if err = kv.Initial(ctx, kvStore); err != nil {
 		return err
 	}
 
-	service := kv.NewService(logger, store)
+	service := kv.NewService(logger, kvStore)
 
-	prometheus.MustRegister(store)
+	prometheus.MustRegister(kvStore)
+
+	// scrape service
+	{
+		// todo: implement multi scrape targets as multi job
+		//   and call ApplyConfig when sync
+
+		var scrapeTargetService manta.ScraperTargetService = service
+		syncTargetsCh := func(orgID manta.ID) chan map[string][]*targetgroup.Group {
+			ch := make(chan map[string][]*targetgroup.Group)
+
+			go func() {
+				ticker := time.NewTicker(time.Minute)
+				defer ticker.Stop()
+
+				for {
+					// sync tset as soon as possible
+					targets, err := scrapeTargetService.FindScraperTargets(ctx, manta.ScraperTargetFilter{OrgID: &orgID})
+					if err != nil {
+						logger.Warn("find scrape targets failed",
+							zap.Error(err))
+					} else {
+						tset := make(map[string][]*targetgroup.Group)
+						for _, t := range targets {
+							labelSet := model.LabelSet{}
+							for k, v := range t.Labels {
+								labelSet[model.LabelName(k)] = model.LabelValue(v)
+							}
+
+							targetLs := make([]model.LabelSet, 0, len(t.Targets))
+
+							for _, addr := range t.Targets {
+								targetLs = append(targetLs, model.LabelSet{
+									model.AddressLabel: model.LabelValue(addr),
+								})
+							}
+
+							tset[orgID.String()] = []*targetgroup.Group{
+								{
+									Source:  t.ID.String(),
+									Labels:  labelSet,
+									Targets: targetLs,
+								},
+							}
+						}
+
+						select {
+						case <-ctx.Done():
+							return
+						case ch <- tset:
+						}
+					}
+
+					select {
+					case <-ctx.Done():
+						return
+					case <-ticker.C:
+					}
+				}
+			}()
+
+			return ch
+		}
+
+		orgs, _, err := service.FindOrganizations(ctx, manta.OrganizationFilter{})
+		if err != nil {
+			return err
+		}
+
+		scrapeManagers := make([]*scrape.Manager, 0, len(orgs))
+
+		for _, org := range orgs {
+			db, err := tenantStorage.TenantStorage(ctx, org.ID)
+			if err != nil {
+				return err
+			}
+
+			kl := log.NewZapToGokitLogAdapter(logger.With(
+				zap.String("service", "scrape"),
+				zap.String("tenant", org.ID.String())))
+
+			mgr := scrape.NewManager(kl, db)
+			err = mgr.ApplyConfig(&config.Config{
+				GlobalConfig: config.GlobalConfig{
+					ScrapeInterval: model.Duration(15 * time.Second),
+					ScrapeTimeout:  model.Duration(10 * time.Second),
+				},
+				ScrapeConfigs: []*config.ScrapeConfig{
+					{
+						JobName:        org.ID.String(),
+						ScrapeInterval: model.Duration(15 * time.Second),
+						ScrapeTimeout:  model.Duration(10 * time.Second),
+						MetricsPath:    "/metrics",
+						Scheme:         "http",
+					},
+				},
+			})
+			if err != nil {
+				return err
+			}
+
+			orgID := org.ID
+			group.Go(func() error {
+				errCh := make(chan error)
+				go func() {
+					errCh <- mgr.Run(syncTargetsCh(orgID))
+				}()
+
+				select {
+				case <-ctx.Done():
+					mgr.Stop()
+					return nil
+				case err := <-errCh:
+					return err
+				}
+			})
+
+			scrapeManagers = append(scrapeManagers, mgr)
+		}
+	}
 
 	// checks
 	checker := checks.NewChecker(
@@ -205,7 +380,7 @@ func (l *Launcher) Run() error {
 		// http service
 		hl := logger.With(zap.String("service", "http"))
 		handler := web.New(hl, &web.Backend{
-			BackupService:        store,
+			BackupService:        kvStore,
 			OrganizationService:  service,
 			CheckService:         checkService,
 			TaskService:          service,
@@ -219,6 +394,7 @@ func (l *Launcher) Run() error {
 			Keyring:              service,
 			SessionService:       service,
 			ScrapeService:        service,
+			TenantStorage:        tenantStorage,
 		})
 
 		group.Go(func() error {
@@ -236,17 +412,17 @@ func (l *Launcher) Run() error {
 
 			select {
 			case <-ctx.Done():
-				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-				defer cancel()
+				/*				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+								defer cancel()
 
-				err = server.Shutdown(ctx)
-				if err != nil {
-					logger.Error("shutdown http server failed",
-						zap.Error(err))
-				} else {
-					logger.Info("shutdown http server success")
-				}
-
+								err = server.Shutdown(ctx)
+								if err != nil {
+									logger.Error("shutdown http server failed",
+										zap.Error(err))
+								} else {
+									logger.Info("shutdown http server success")
+								}
+				*/
 				return nil
 			case err := <-errCh:
 				logger.Error("http service exit on error",
