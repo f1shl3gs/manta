@@ -3,14 +3,15 @@ package web
 import (
 	"context"
 	"errors"
-	"github.com/f1shl3gs/manta/authz"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorization"
+	"github.com/f1shl3gs/manta/authz"
 	"github.com/f1shl3gs/manta/pkg/tracing"
-	"github.com/julienschmidt/httprouter"
-	"go.uber.org/zap"
 )
 
 const tokenScheme = "Bearer "
@@ -108,6 +109,14 @@ func (h *AuthenticationHandler) extractSession(ctx context.Context, r *http.Requ
 	session, err := h.SessionService.FindSession(ctx, id)
 	if err != nil {
 		return nil, err
+	}
+
+	if err == manta.ErrSessionExpired {
+		revokeErr := h.SessionService.RevokeSession(ctx, id)
+		if revokeErr != nil {
+			h.logger.Warn("clean up expired session failed",
+				zap.Error(err))
+		}
 	}
 
 	return session, nil

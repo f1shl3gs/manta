@@ -46,7 +46,7 @@ const OtclEdit: React.FC = () => {
   const onDismiss = useCallback(() => history.goBack(), [])
 
   return (
-    <OtclOverlay title="Update Otcl Config" onDismiss={onDismiss}>
+    <OtclOverlay title="Edit Otcl Config" onDismiss={onDismiss}>
       <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
         <OtclForm onSubmit={submit} onDismiss={onDismiss} />
       </SpinnerContainer>

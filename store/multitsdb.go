@@ -34,7 +34,16 @@ type MultiTSDB struct {
 	tenants map[manta.ID]*Tenant
 }
 
-func (m *MultiTSDB) TenantStorage(ctx context.Context, id manta.ID) (storage.Storage, error) {
+func (m *MultiTSDB) Queryable(ctx context.Context, id manta.ID) (storage.Queryable, error) {
+	t, err := m.getOrLoadTenant(id, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return t.readyS.Get(), nil
+}
+
+func (m *MultiTSDB) Appendable(ctx context.Context, id manta.ID) (storage.Appendable, error) {
 	t, err := m.getOrLoadTenant(id, true)
 	if err != nil {
 		return nil, err

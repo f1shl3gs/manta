@@ -2,10 +2,6 @@ package launcher
 
 import (
 	"context"
-	"github.com/prometheus/common/model"
-	"github.com/prometheus/prometheus/config"
-	"github.com/prometheus/prometheus/discovery/targetgroup"
-	"github.com/prometheus/prometheus/scrape"
 	"io"
 	"net/http"
 	"os"
@@ -14,6 +10,10 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/config"
+	"github.com/prometheus/prometheus/discovery/targetgroup"
+	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/tsdb"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
@@ -228,7 +228,7 @@ func (l *Launcher) Run() error {
 		//   and call ApplyConfig when sync
 
 		var scrapeTargetService manta.ScraperTargetService = service
-		syncTargetsCh := func(orgID manta.ID) chan map[string][]*targetgroup.Group {
+		syncTargetsCh := func(orgID manta.ID, mgr *scrape.Manager) chan map[string][]*targetgroup.Group {
 			ch := make(chan map[string][]*targetgroup.Group)
 
 			go func() {
@@ -242,28 +242,46 @@ func (l *Launcher) Run() error {
 						logger.Warn("find scrape targets failed",
 							zap.Error(err))
 					} else {
+						scf := &config.Config{
+							GlobalConfig: config.GlobalConfig{
+								ScrapeInterval: model.Duration(15 * time.Second),
+								ScrapeTimeout:  model.Duration(10 * time.Second),
+							},
+						}
+
 						tset := make(map[string][]*targetgroup.Group)
-						for _, t := range targets {
+						for _, tg := range targets {
+							scf.ScrapeConfigs = append(scf.ScrapeConfigs, &config.ScrapeConfig{
+								JobName:        tg.Name,
+								ScrapeInterval: model.Duration(15 * time.Second),
+								ScrapeTimeout:  model.Duration(10 * time.Second),
+								MetricsPath:    "/metrics",
+								Scheme:         "http",
+							})
+
 							labelSet := model.LabelSet{}
-							for k, v := range t.Labels {
+							for k, v := range tg.Labels {
 								labelSet[model.LabelName(k)] = model.LabelValue(v)
 							}
 
-							targetLs := make([]model.LabelSet, 0, len(t.Targets))
+							targetLs := make([]model.LabelSet, 0, len(tg.Targets))
 
-							for _, addr := range t.Targets {
+							for _, addr := range tg.Targets {
 								targetLs = append(targetLs, model.LabelSet{
 									model.AddressLabel: model.LabelValue(addr),
 								})
 							}
 
-							tset[orgID.String()] = []*targetgroup.Group{
-								{
-									Source:  t.ID.String(),
-									Labels:  labelSet,
-									Targets: targetLs,
-								},
-							}
+							tset[tg.Name] = append(tset[tg.Name], &targetgroup.Group{
+								Source:  tg.ID.String(),
+								Labels:  labelSet,
+								Targets: targetLs,
+							})
+						}
+
+						err := mgr.ApplyConfig(scf)
+						if err != nil {
+							logger.Warn("apply scrape config failed")
 						}
 
 						select {
@@ -289,10 +307,8 @@ func (l *Launcher) Run() error {
 			return err
 		}
 
-		scrapeManagers := make([]*scrape.Manager, 0, len(orgs))
-
 		for _, org := range orgs {
-			db, err := tenantStorage.TenantStorage(ctx, org.ID)
+			app, err := tenantStorage.Appendable(ctx, org.ID)
 			if err != nil {
 				return err
 			}
@@ -301,31 +317,12 @@ func (l *Launcher) Run() error {
 				zap.String("service", "scrape"),
 				zap.String("tenant", org.ID.String())))
 
-			mgr := scrape.NewManager(kl, db)
-			err = mgr.ApplyConfig(&config.Config{
-				GlobalConfig: config.GlobalConfig{
-					ScrapeInterval: model.Duration(15 * time.Second),
-					ScrapeTimeout:  model.Duration(10 * time.Second),
-				},
-				ScrapeConfigs: []*config.ScrapeConfig{
-					{
-						JobName:        org.ID.String(),
-						ScrapeInterval: model.Duration(15 * time.Second),
-						ScrapeTimeout:  model.Duration(10 * time.Second),
-						MetricsPath:    "/metrics",
-						Scheme:         "http",
-					},
-				},
-			})
-			if err != nil {
-				return err
-			}
-
 			orgID := org.ID
 			group.Go(func() error {
+				mgr := scrape.NewManager(kl, app)
 				errCh := make(chan error)
 				go func() {
-					errCh <- mgr.Run(syncTargetsCh(orgID))
+					errCh <- mgr.Run(syncTargetsCh(orgID, mgr))
 				}()
 
 				select {
@@ -336,8 +333,6 @@ func (l *Launcher) Run() error {
 					return err
 				}
 			})
-
-			scrapeManagers = append(scrapeManagers, mgr)
 		}
 	}
 
@@ -412,17 +407,17 @@ func (l *Launcher) Run() error {
 
 			select {
 			case <-ctx.Done():
-				/*				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-								defer cancel()
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
 
-								err = server.Shutdown(ctx)
-								if err != nil {
-									logger.Error("shutdown http server failed",
-										zap.Error(err))
-								} else {
-									logger.Info("shutdown http server success")
-								}
-				*/
+				err = server.Shutdown(ctx)
+				if err != nil {
+					logger.Error("shutdown http server failed",
+						zap.Error(err))
+				} else {
+					logger.Info("shutdown http server success")
+				}
+
 				return nil
 			case err := <-errCh:
 				logger.Error("http service exit on error",

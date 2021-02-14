@@ -39,7 +39,20 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 			return err
 		}
 	}
+	/*
+		err := kv.Update(ctx, func(tx Tx) error {
+			err := deleteAll(ctx, tx, scraperTargetBucket)
+			if err != nil {
+				return err
+			}
 
+			return deleteAll(ctx, tx, scraperTargetOrgIDBucket)
+		})
+
+		if err != nil {
+			panic(err)
+		}
+	*/
 	/*err := kv.Update(ctx, func(tx Tx) error {
 		b, err := tx.Bucket(dashboardBucket)
 		if err != nil {
@@ -79,4 +92,20 @@ func Initial(ctx context.Context, kv SchemaStore) error {
 	}*/
 
 	return nil
+}
+
+func deleteAll(ctx context.Context, tx Tx, bucket []byte) error {
+	b, err := tx.Bucket(bucket)
+	if err != nil {
+		return err
+	}
+
+	c, err := b.ForwardCursor(nil)
+	if err != nil {
+		return err
+	}
+
+	return WalkCursor(ctx, c, func(k, v []byte) error {
+		return b.Delete(k)
+	})
 }

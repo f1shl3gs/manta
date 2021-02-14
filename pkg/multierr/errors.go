@@ -47,7 +47,7 @@ type chain []error
 
 // Error implements the error interface
 func (e chain) Error() string {
-	return e[0].Error()
+	return listFormatFunc(e)
 }
 
 // listFormatFunc is a basic formatter that outputs the number of errors

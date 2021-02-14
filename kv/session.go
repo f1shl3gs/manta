@@ -7,6 +7,11 @@ import (
 	"github.com/f1shl3gs/manta"
 )
 
+const (
+	// todo: make tll configurable
+	defaultSessionTTL = 12 * time.Hour
+)
+
 var (
 	sessionBucket = []byte("session")
 )
@@ -39,7 +44,7 @@ func (s *Service) createSession(ctx context.Context, tx Tx, uid manta.ID) (*mant
 	session := &manta.Session{
 		ID:        s.idGen.ID(),
 		Created:   now,
-		ExpiresAt: now.Add(time.Hour),
+		ExpiresAt: now.Add(defaultSessionTTL),
 		UID:       uid,
 	}
 

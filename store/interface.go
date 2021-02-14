@@ -13,5 +13,7 @@ var (
 )
 
 type TenantStorage interface {
-	TenantStorage(ctx context.Context, id manta.ID) (storage.Storage, error)
+	Queryable(ctx context.Context, id manta.ID) (storage.Queryable, error)
+
+	Appendable(ctx context.Context, id manta.ID) (storage.Appendable, error)
 }

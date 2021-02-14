@@ -34,7 +34,6 @@ func TestGolden(t *testing.T) {
 	for i, v := range golden100 {
 		if g := Hash(uint64(i), 100); g != v {
 			t.Errorf("golden100 failed: Hash(%v, 100)=%v, want %v\n", i, g, v)
-
 		}
 	}
 

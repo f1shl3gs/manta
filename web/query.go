@@ -124,13 +124,13 @@ func (h *QueryHandler) handleInstantQuery(w http.ResponseWriter, r *http.Request
 
 	ts, err := parseTimeParam(r, "time", h.now())
 
-	s, err := h.tenantStorage.TenantStorage(ctx, orgID)
+	queryable, err := h.tenantStorage.Queryable(ctx, orgID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	qry, err := h.engine.NewInstantQuery(s, r.FormValue("query"), ts)
+	qry, err := h.engine.NewInstantQuery(queryable, r.FormValue("query"), ts)
 	if err != nil {
 		h.HandleHTTPError(ctx, &manta.Error{
 			Code: manta.EInvalid,
@@ -203,7 +203,7 @@ func (h *QueryHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	s, err := h.tenantStorage.TenantStorage(ctx, orgID)
+	queryable, err := h.tenantStorage.Queryable(ctx, orgID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 	}
@@ -211,7 +211,7 @@ func (h *QueryHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request) 
 	qs := r.FormValue("query")
 	span.LogKV("query", qs)
 
-	qry, err := h.engine.NewRangeQuery(s, qs, start, end, step)
+	qry, err := h.engine.NewRangeQuery(queryable, qs, start, end, step)
 	if err != nil {
 		h.handleInvalidParam(ctx, w, r, errors.Wrap(err, "invalid query"))
 		return
