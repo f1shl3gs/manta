@@ -16,6 +16,7 @@ import CellContextDangerItem from './CellContextDangerItem'
 // Types
 import {Cell, ViewProperties} from 'types/Dashboard'
 import {useHistory} from 'react-router-dom'
+import {useDashboard} from './useDashboard'
 
 interface Props {
   cell: Cell
@@ -24,8 +25,8 @@ interface Props {
 
 const CellContext: React.FC<Props> = (props) => {
   const {cell} = props
-
   const history = useHistory()
+  const {deleteCell, reload} = useDashboard()
 
   const handleEditCell = (): void => {
     const {pathname} = history.location
@@ -37,7 +38,13 @@ const CellContext: React.FC<Props> = (props) => {
   }
 
   const handleDeleteCell = () => {
-    console.log('delete cell')
+    deleteCell(cell.id)
+      .then(() => {
+        reload()
+      })
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   const popoverContents = (onHide?: () => void): JSX.Element => {

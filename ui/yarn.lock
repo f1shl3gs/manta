@@ -1257,10 +1257,10 @@
   resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.5.0.tgz#ff4e93da185c97185298b1bdd8ae5fc08e444e9b"
   integrity sha1-/06T2hhclxhSmLG92K5fwI5ETps=
 
-"@influxdata/giraffe@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.0.1.tgz#243b5b420feadb0588fdc87c1d87935071efc16e"
-  integrity sha1-JDtbQg/q2wWI/ch8HYeTUHHvwW4=
+"@influxdata/giraffe@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.1.0.tgz#7cd7792b2a8c04b228aa7a8b4ef4aa1fcf71fda5"
+  integrity sha1-fNd5KyqMBLIoqnqLTvSqH89x/aU=
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

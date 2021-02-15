@@ -41,6 +41,7 @@ const XYPlot: React.FC<Props> = (props) => {
     timeFormat,
     xColumn,
     yColumn,
+    hoverDimension,
     axes: {
       x: {label: xAxisLabel, prefix: xTickPrefix, suffix: xTickSuffix},
       y: {
@@ -70,15 +71,16 @@ const XYPlot: React.FC<Props> = (props) => {
 
   const config: Config = {
     table,
+    xAxisLabel,
+    yAxisLabel,
     // @ts-ignore
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
     },
-    xAxisLabel,
-    yAxisLabel,
     layers: [
       {
+        hoverDimension,
         type: 'line',
         x: xColumn,
         y: yColumn,

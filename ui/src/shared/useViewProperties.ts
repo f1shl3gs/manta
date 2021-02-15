@@ -1,7 +1,7 @@
 import {useCallback, useState} from 'react'
 import constate from 'constate'
 
-import {ViewProperties, XYViewProperties} from 'types/Dashboard'
+import {DashboardQuery, ViewProperties, XYViewProperties} from 'types/Dashboard'
 import {DEFAULT_TIME_FORMAT} from 'constants/timeFormat'
 
 interface State {
@@ -20,12 +20,7 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
             x: {},
             y: {},
           },
-          queries: [
-            {
-              text: '',
-              hidden: false,
-            },
-          ],
+          queries: [] as DashboardQuery[],
         } as ViewProperties
       }
 
@@ -72,7 +67,7 @@ const useLineView = () => {
         xColumn: x,
       })
     },
-    [properties]
+    [properties, setViewProperties]
   )
 
   const onSetYColumn = useCallback(
@@ -82,7 +77,7 @@ const useLineView = () => {
         yColumn: y,
       })
     },
-    [properties]
+    [properties, setViewProperties]
   )
 
   const onSetTimeFormat = useCallback(
@@ -92,105 +87,65 @@ const useLineView = () => {
         timeFormat,
       })
     },
-    [properties]
+    [properties, setViewProperties]
   )
 
   const onSetHoverDimension = useCallback(
     (hoverDimension: 'x' | 'y' | 'xy' | 'auto') => {
-      console.log('on hover set', properties)
-
       setViewProperties({
         ...properties,
         hoverDimension,
       })
     },
-    [properties]
+    [properties, setViewProperties]
   )
 
-  const updateYAxis = useCallback((upd: {[key: string]: string}) => {
-    // @ts-ignore
-    setViewProperties((prev: XYViewProperties) => {
-      return {
-        ...prev,
+  const updateYAxis = useCallback(
+    (upd: {[key: string]: string}) => {
+      // @ts-ignore
+      setViewProperties((prev: XYViewProperties) => {
+        return {
+          ...prev,
 
-        axes: {
-          x: prev.axes.x,
-          y: {
-            ...prev.axes.y,
-            ...upd,
+          axes: {
+            x: prev.axes.x,
+            y: {
+              ...prev.axes.y,
+              ...upd,
+            },
           },
-        },
-      } as XYViewProperties
-    })
-  }, [])
+        } as XYViewProperties
+      })
+    },
+    [setViewProperties]
+  )
 
   const onSetYAxisLabel = useCallback(
     (label: string) => {
-      /*setViewProperties({
-      ...properties,
-      axes: {
-        x: properties.axes.x,
-        y: {
-          ...properties.axes.y,
-          label
-        }
-      }
-    });*/
       updateYAxis({label})
     },
-    [properties]
+    [updateYAxis]
   )
 
   const onSetYAxisBase = useCallback(
     (base: string) => {
-      console.log(properties)
       updateYAxis({base})
-      /*setViewProperties({
-      ...properties,
-      axes: {
-        x: properties.axes.x,
-        y: {
-          ...properties.axes.y,
-          base
-        }
-      }
-    });*/
     },
-    [properties]
+    [updateYAxis]
   )
 
   const onSetYAxisPrefix = useCallback(
     (prefix: string) => {
       updateYAxis({prefix})
-      /*setViewProperties({
-      ...properties,
-      axes: {
-        x: properties.axes.x,
-        y: {
-          ...properties.axes.y,
-          prefix
-        }
-      }
-    });*/
     },
-    [properties]
+    [updateYAxis]
   )
 
   const onSetYAxisSuffix = useCallback(
     (suffix: string) => {
       updateYAxis({suffix})
-      /*setViewProperties({
-      ...properties,
-      axes: {
-        x: properties.axes.x,
-        y: {
-          ...properties.axes.y,
-          suffix
-        }
-      }
-    });*/
     },
-    [properties]
+    [updateYAxis]
   )
 
   return {

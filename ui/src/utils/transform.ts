@@ -15,6 +15,35 @@ export type PromResp = {
   }
 }
 
+export interface Row {
+  [key: string]: string | number
+}
+
+export const transformToRows = (resp: PromResp, legend: string): Row[] => {
+  if (!resp) {
+    return []
+  }
+
+  if (resp.status !== 'success') {
+    return []
+  }
+
+  return resp.data.result
+    .map((item: Result) => {
+      const {metric, values} = item
+
+      return values.map((val) => {
+        return {
+          ...metric,
+          legend,
+          time: val[0] * 1000,
+          value: Number(val[1]),
+        }
+      })
+    })
+    .flat()
+}
+
 export const transformPromResp = (
   resp?: PromResp
 ): FromFluxResult | undefined => {

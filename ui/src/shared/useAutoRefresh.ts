@@ -10,16 +10,24 @@ import {AutoRefresh, AutoRefreshStatus} from 'types/AutoRefresh'
 // Hooks
 import {useTimeRange} from './useTimeRange'
 
+const MAX_POINT = 1024
+const MIN_STEP = 14
+
 const calculateRange = (timeRange: TimeRange) => {
   switch (timeRange.type) {
     case 'selectable-duration':
       const end = moment().unix()
       const start = end - timeRange.seconds
 
+      let step = (end - start) / MAX_POINT
+      if (step < MIN_STEP) {
+        step = MIN_STEP
+      }
+
       return {
         start,
         end,
-        step: 14,
+        step,
       }
 
     default:

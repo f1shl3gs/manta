@@ -3,7 +3,8 @@ package manta
 import (
 	"context"
 	"encoding/json"
-	"errors"
+
+	"github.com/pkg/errors"
 )
 
 type DashboardFilter struct {
@@ -180,8 +181,19 @@ func (m *Cell) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	if validator, ok := props.(Validator); ok {
+		err = validator.Validate()
+		if err != nil {
+			return errors.Wrap(err, "invalid ViewProperties")
+		}
+	}
+
 	m.ViewProperties = props
 	return nil
+}
+
+type Validator interface {
+	Validate() error
 }
 
 func unmarshalCellPropertiesJSON(b []byte) (isCell_ViewProperties, error) {
@@ -227,4 +239,36 @@ func unmarshalCellPropertiesJSON(b []byte) (isCell_ViewProperties, error) {
 	default:
 		return nil, errors.New("unknown viewProperties type")
 	}
+}
+
+func (m *XYViewProperties) Validate() error {
+	if len(m.Queries) == 0 {
+		return errors.New("queries of XYViewProperties is required")
+	}
+
+	return nil
+}
+
+func (m *GaugeViewProperties) Validate() error {
+	if len(m.Queries) == 0 {
+		return errors.New("queries is required")
+	}
+
+	return nil
+}
+
+func (m *SingleStatViewProperties) Validate() error {
+	if len(m.Queries) == 0 {
+		return errors.New("queries is required")
+	}
+
+	return nil
+}
+
+func (m *LinePlusSingleStatViewProperties) Validate() error {
+	if len(m.Queries) == 0 {
+		return errors.New("queries is required")
+	}
+
+	return nil
 }

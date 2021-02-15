@@ -38,8 +38,20 @@ const [DashboardProvider, useDashboard] = constate(
         h: 4,
         x: 0,
         y: 0,
+      }).then(() => {
+        // refresh
+        get()
       })
-    }, [])
+    }, [get])
+
+    // delete cell by id
+    const {del} = useFetch(`/api/v1/dashboards/${dashboardID}/cells/`, {})
+    const deleteCell = useCallback(
+      (cellID: string) => {
+        return del(cellID)
+      },
+      [del]
+    )
 
     // resetCells
     const {put} = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {})
@@ -69,6 +81,7 @@ const [DashboardProvider, useDashboard] = constate(
       update,
       onRename,
       onLayoutChange,
+      deleteCell,
       reload: get,
       remoteDataState: remoteDataState(data, error, loading),
     }

@@ -19,7 +19,7 @@ const [CellProvider, useCell] = constate(
       dashboardID: string
     }>()
     const {loading, error, patch, get} = useFetch(
-      `/api/v1/dashboards/${dashboardID}/cells/${cellID}?a=b`,
+      `/api/v1/dashboards/${dashboardID}/cells/${cellID}`,
       {
         cachePolicy: CachePolicies.NO_CACHE,
       }
@@ -33,6 +33,7 @@ const [CellProvider, useCell] = constate(
               type: 'xy',
               xColumn: 'time',
               yColumn: 'value',
+              hoverDimension: 'auto',
               axes: {
                 x: {},
                 y: {},

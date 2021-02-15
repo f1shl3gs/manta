@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 import {Cell} from 'types/Dashboard'
 
@@ -48,7 +48,6 @@ const Cells: React.FC = () => {
   // });
 
   return (
-    /* <ScrollDetector component="dashboard" /> */
     <Grid
       cols={12}
       layout={layout(cells)}

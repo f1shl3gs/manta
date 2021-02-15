@@ -1,23 +1,23 @@
 // Libraries
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import {fromRows} from '@influxdata/giraffe'
 import classnames from 'classnames'
 
 // Components
 import ErrorBoundary from 'shared/components/ErrorBoundary'
-import ViewLoadingSpinner from 'shared/components/ViewLoadingSpinner'
 import EmptyQueryView from 'shared/components/EmptyQueryView'
 import ViewSwitcher from 'shared/components/ViewSwitcher'
 
 // Hooks
 import {useViewProperties} from 'shared/useViewProperties'
-import {useAutoRefresh} from '../../shared/useAutoRefresh'
+import {useAutoRefresh} from 'shared/useAutoRefresh'
 import {useQueries} from './useQueries'
 import {useFetch} from 'use-http'
-import {useOrgID} from '../../shared/useOrg'
+import {useOrgID} from 'shared/useOrg'
 
 // Utils
-import remoteDataState from 'utils/rds'
-import {PromResp, transformPromResp} from 'utils/transform'
+import {Row, transformToRows} from 'utils/transform'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const TimeMachineVis: React.FC = () => {
   const {viewProperties} = useViewProperties()
@@ -28,24 +28,68 @@ const TimeMachineVis: React.FC = () => {
   const {queries} = useQueries()
   const orgID = useOrgID()
 
-  const {data, loading, error} = useFetch<PromResp>(
-    `/api/v1/query_range?query=rate%28process_cpu_seconds_total%5B1m%5D%29+*+100&start=${start}&end=${end}&step=${step}&orgID=${orgID}`,
-    {},
-    []
+  const [queryResults, setQueryResults] = useState(
+    () => new Array<Row[]>(queries.length)
   )
-  const rds = remoteDataState(data, error, loading)
 
-  const gr = transformPromResp(data)
+  useEffect(() => {
+    setQueryResults(new Array<Row[]>(queries.length))
+  }, [queries])
+
+  const {get} = useFetch(`/api/v1`)
+  useEffect(() => {
+    queries.forEach((q, index) => {
+      if (q.hidden) {
+        return
+      }
+
+      get(
+        `/query_range?query=${encodeURI(
+          q.text
+        )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
+      )
+        .then((resp) => {
+          // merge
+          setQueryResults((prev) => {
+            const next = prev
+            next[index] = transformToRows(resp, q.name || `Query ${index}`)
+            return next
+          })
+        })
+        .catch((err) => {
+          console.error('err', err)
+        })
+    })
+  }, [queries, get, orgID])
+
+  const transformer = (results: Row[][]) => {
+    const table = fromRows(
+      results.flat().sort((a, b) => Number(a['time']) - Number(b['time']))
+    )
+    const groupKeys = table.columnKeys.filter(
+      (key) => key !== 'time' && key !== 'value'
+    )
+
+    return {
+      table,
+      fluxGroupKeyUnion: groupKeys,
+    }
+  }
+
+  const gr = transformer(queryResults)
+
+  console.log('qrs', queryResults)
+  console.log('gr', gr)
 
   return (
     <div className={timeMachineViewClassName}>
       <ErrorBoundary>
-        <ViewLoadingSpinner loading={rds} />
+        {/*<ViewLoadingSpinner loading={rds} />*/}
         <EmptyQueryView
-          loading={rds}
+          loading={RemoteDataState.Done}
           queries={queries}
           hasResults={gr?.table.length !== 0}
-          errorMessage={error !== undefined ? error.message : undefined}
+          errorMessage={undefined}
         >
           <ViewSwitcher giraffeResult={gr!} properties={viewProperties} />
         </EmptyQueryView>
