@@ -16,6 +16,7 @@ import remoteDataState from 'utils/rds'
 import ProfilePage from '../../profile/ProfilePage'
 import PluginsIndex from '../../plugins/PluginsIndex'
 import PluginDetailsView from '../../plugins/PluginDetailsView'
+import AlertsPage from '../../alerts/AlertsPage'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -32,7 +33,6 @@ const Org: React.FC = () => {
         <Switch>
           {/* todo: memorize the path with localStorage? */}
           <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
-
           <Route exact path={`${orgPath}/plugins`} component={PluginsIndex} />
           <Route
             exact
@@ -40,19 +40,39 @@ const Org: React.FC = () => {
             component={PluginDetailsView}
           />
 
+          {/* OpenTelemetry Collectors */}
           <Route path={`${orgPath}/otcls`} component={Otcl} />
 
+          {/* Alerts */}
+          <Route exact path={`${orgPath}/alerts`} component={AlertsPage} />
+          <Route path={`${orgPath}/alerts/checks`} component={Todo} />
+          <Route
+            path={`${orgPath}/alerts/notificationEndpoints`}
+            component={Todo}
+          />
+
+          {/* Traces */}
           <Route path={`${orgPath}/traces`} component={TracePage} />
+
+          {/* Metrics */}
           <Route path={`${orgPath}/metrics`} component={Todo} />
+
+          {/* Logs */}
           <Route path={`${orgPath}/logs`} component={Logs} />
-          <Route path={`${orgPath}/alerting`} component={Todo} />
+
+          {/* Profile */}
           <Route path={`${orgPath}/profile`} component={ProfilePage} />
 
+          {/* Dashboards */}
+          <Route
+            exact
+            path={`${orgPath}/dashboards`}
+            component={DashboardsIndex}
+          />
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardPage}
           />
-          <Route path={`${orgPath}/dashboards`} component={DashboardsIndex} />
         </Switch>
       </OrgProvider>
     </SpinnerContainer>

@@ -49,7 +49,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 	// todo: interpolate
 	expr := c.Expr
 
-	querier, err := checker.querierFromDatasource(ctx, c.Datasource)
+	querier, err := checker.querierFromDatasource(ctx, 0)
 	if err != nil {
 		return err
 	}

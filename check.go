@@ -9,9 +9,39 @@ type CheckFilter struct {
 }
 
 type CheckUpdate struct {
-	Name        *string
-	Description *string
-	Status      *string
+	Name   *string `json:"name"`
+	Desc   *string `json:"desc"`
+	Status *string `json:"status"`
+}
+
+func (upd *CheckUpdate) Validate() error {
+	if upd.Name != nil {
+		if *upd.Name == "" {
+			return &Error{Code: EInvalid, Op: "validate check's Name", Msg: "Name cannot be empty"}
+		}
+	}
+
+	if upd.Status != nil {
+		if *upd.Status != "active" && *upd.Status != "inactive" {
+			return &Error{Code: EInvalid, Op: "validate check's Status", Msg: "status is not active nor inactive"}
+		}
+	}
+
+	return nil
+}
+
+func (upd *CheckUpdate) Apply(check *Check) {
+	if upd.Name != nil {
+		check.Name = *upd.Name
+	}
+
+	if upd.Desc != nil {
+		check.Desc = *upd.Desc
+	}
+
+	if upd.Status != nil {
+		check.Status = *upd.Status
+	}
 }
 
 type CheckService interface {

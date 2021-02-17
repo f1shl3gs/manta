@@ -21,8 +21,11 @@ type SessionService interface {
 	// RevokeSession delete the session
 	RevokeSession(ctx context.Context, id ID) error
 
-	//
+	// RenewSession renew the session and update the ExpireAt
 	RenewSession(ctx context.Context, id ID, expiration time.Time) error
+
+	// todo: clean up the sessions which will never be used,
+	//   whose ExpireAt > Now + TTL
 }
 
 func (s *Session) Identifier() ID {

@@ -96,7 +96,7 @@ message Threshold {
   required string type = 1;
   optional double value = 2;
 
-  // for inside and outside
+  // for inside and outside only
   optional double min = 3;
   optional double max = 4;
 }
@@ -113,15 +113,13 @@ message Check {
   required google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   required string name = 4;
-  required string desc = 5;
+  optional string desc = 5;
   required uint64 orgID = 6 [(gogoproto.casttype) = "ID"];
   required string expr = 7;
   required string status = 8;
   required string cron = 9;
 
   repeated Condition conditions = 10 [(gogoproto.nullable) = false];
-
-  required uint64 Datasource = 11 [(gogoproto.casttype) = "ID"];
 }
 
 message Alert {

@@ -44,7 +44,11 @@ func idFromParams(params httprouter.Params, key string) (manta.ID, error) {
 	)
 
 	if err := id.DecodeFromString(raw); err != nil {
-		return 0, err
+		return 0, &manta.Error{
+			Code: manta.EInvalid,
+			Op:   "decode id",
+			Err:  err,
+		}
 	}
 
 	return id, nil

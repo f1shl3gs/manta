@@ -64,6 +64,17 @@ const generateNavItems = (orgID: string): NavItem[] => {
         location: `${orgPrefix}/otcls`,
       },
       activeKeywords: ['otcls'],
+      menu: [
+        {
+          id: 'scrapers',
+          testID: 'nav-subitem-scrapers',
+          label: 'Scrapers',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/otcls/scrapers`,
+          },
+        },
+      ],
     },
     {
       id: 'logs',
@@ -138,34 +149,32 @@ const generateNavItems = (orgID: string): NavItem[] => {
       activeKeywords: ['dashboards'],
     },
     {
-      id: 'tasks',
-      testID: 'nav-item-tasks',
-      icon: IconFont.Calendar,
-      label: 'Tasks',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/tasks`,
-      },
-      activeKeywords: ['tasks'],
-    },
-    {
-      id: 'alerting',
+      id: 'alerts',
       testID: 'nav-item-alerting',
       icon: IconFont.Bell,
       label: 'Alerts',
       link: {
         type: 'link',
-        location: `${orgPrefix}/alerting`,
+        location: `${orgPrefix}/alerts/checks`,
       },
-      activeKeywords: ['alerting'],
+      activeKeywords: ['alerts'],
       menu: [
         {
-          id: 'history',
-          testID: 'nav-subitem-history',
-          label: 'Alert History',
+          id: 'checks',
+          testID: 'nav-subitem-checks',
+          label: 'Checks',
           link: {
             type: 'link',
-            location: `${orgPrefix}/alert-history`,
+            location: `${orgPrefix}/alerts/checks`,
+          },
+        },
+        {
+          id: 'notificationEndpoints',
+          testID: 'nav-subitem-checks',
+          label: 'notificationEndpoints',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/alerts/notificationEndpoints`,
           },
         },
       ],

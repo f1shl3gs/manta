@@ -258,8 +258,8 @@ func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpda
 			check.Name = *u.Name
 		}
 
-		if u.Description != nil {
-			check.Desc = *u.Description
+		if u.Desc != nil {
+			check.Desc = *u.Desc
 		}
 
 		if u.Status != nil {

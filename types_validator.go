@@ -58,10 +58,6 @@ func (m *Check) Validate() error {
 		return invalidField("cron", err)
 	}
 
-	if m.Datasource == 0 {
-		return invalidField("datasource", ErrFieldMustBeSet)
-	}
-
 	// todo: validate conditions
 
 	return nil

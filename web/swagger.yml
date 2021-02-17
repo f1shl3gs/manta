@@ -178,6 +178,64 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+  /checks:
+    get:
+      operationId: ListChecks
+      tags:
+        - Checks
+      summary: List al Checks
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: query
+          name: orgID
+          description: List checks with this orgID
+          required: false
+
+      responses:
+        200:
+          description: Check List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checks"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      operationId: CreateChecks
+      tags:
+        - Checks
+      summary: Create a new Check
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      requestBody:
+        description: Check to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Check"
+      responses:
+        204:
+          description: Create Check success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /checks/{id}:
+    delete:
+      operationId: DeleteCheck
+      tags:
+        - Checks
+      summary: Delete Check by id
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          required: true
+      responses:
+        204:
+          description: Delete check by id success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
 components:
   parameters:
     TraceSpan:
@@ -299,6 +357,72 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Otcl"
+
+    Threshold:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - gt
+            - lt
+            - eq
+            - inside
+            - outside
+        value:
+          type: number
+        min:
+          type: number
+        max:
+          type: number
+
+    Condition:
+      type: object
+      properties:
+        status:
+          type: string
+        pending:
+          type: string
+        threshold:
+          $ref: "#/components/schemas/Threshold"
+
+
+    Check:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+        desc:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+        orgID:
+          type: string
+        expr:
+          type: string
+        conditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Condition"
+    Checks:
+      type: array
+      items:
+        $ref: "#/components/schemas/Check"
 
   responses:
     UnexpectedError:

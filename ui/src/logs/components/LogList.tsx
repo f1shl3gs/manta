@@ -225,9 +225,8 @@ const LogList = () => {
     <HoverTimeProvider>
       <div
         style={{
-          width: 'calc(100vw - 100px)',
-          height: 'calc(100vh - 100px)',
-          margin: '50px',
+          width: '100%',
+          height: '100%',
         }}
       >
         <Plot config={config} />

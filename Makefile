@@ -7,7 +7,7 @@ GIT_SHA 	:= $(shell git rev-parse --short HEAD)
 GIT_BRANCE 	:= $(shell git rev-parse --abbrev-ref HEAD)
 BUILD_DATE 	:= $(shell date --rfc-3339 ns)
 LDFLAGS    	:= "-s -w -X manta/version.Version=${VERSION} -X manta/version.GitSHA=${GIT_SHA} -X manta/version.GitBranch=${GIT_BRANCE}"
-GO			:= go1.16beta1
+GO			:= go
 
 export GOOS=$(shell go env GOOS)
 export GOBUILD=${GO} build -ldflags ${LDFLAGS}
@@ -34,7 +34,7 @@ proto:
 		--gogofaster_out=plugins=grpc,Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types:./ \
 		*.proto
 
-mantad: $(GOSROUCES)
+mantad: $(GOSROUCES) $(UISOURCES) deps
 	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 
 manta: $(GOSROUCES)

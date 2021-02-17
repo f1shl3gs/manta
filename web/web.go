@@ -106,6 +106,8 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 
 	NewQueryHandler(logger, router, backend.TenantStorage)
 
+	NewChecksHandler(logger, router, backend.CheckService)
+
 	// and more
 
 	// tracing
