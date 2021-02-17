@@ -1,6 +1,9 @@
+// Libraries
 import React, {useState} from 'react'
-import {ComponentSize, Orientation, Tabs} from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
+
+// Components
+import {ComponentSize, Orientation, Tabs} from '@influxdata/clockface'
 
 interface Props {
   tabs: {

@@ -6,7 +6,7 @@ VERSION 	:= 0.9.0
 GIT_SHA 	:= $(shell git rev-parse --short HEAD)
 GIT_BRANCE 	:= $(shell git rev-parse --abbrev-ref HEAD)
 BUILD_DATE 	:= $(shell date --rfc-3339 ns)
-LDFLAGS    	:= "-s -w -X manta/version.Version=${VERSION} -X manta/version.GitSHA=${GIT_SHA} -X manta/version.GitBranch=${GIT_BRANCE}"
+LDFLAGS    	:= "-extldflags '-static' -s -w -X manta/version.Version=${VERSION} -X manta/version.GitSHA=${GIT_SHA} -X manta/version.GitBranch=${GIT_BRANCE}"
 GO			:= go
 
 export GOOS=$(shell go env GOOS)
@@ -37,6 +37,4 @@ proto:
 mantad: $(GOSROUCES) $(UISOURCES) deps
 	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 
-manta: $(GOSROUCES)
-	$(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 

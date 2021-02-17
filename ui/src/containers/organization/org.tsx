@@ -44,12 +44,7 @@ const Org: React.FC = () => {
           <Route path={`${orgPath}/otcls`} component={Otcl} />
 
           {/* Alerts */}
-          <Route exact path={`${orgPath}/alerts`} component={AlertsPage} />
-          <Route path={`${orgPath}/alerts/checks`} component={Todo} />
-          <Route
-            path={`${orgPath}/alerts/notificationEndpoints`}
-            component={Todo}
-          />
+          <Route path={`${orgPath}/alerts`} component={AlertsPage} />
 
           {/* Traces */}
           <Route path={`${orgPath}/traces`} component={TracePage} />

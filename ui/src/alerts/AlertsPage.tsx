@@ -1,10 +1,15 @@
 // Libraries
 import React from 'react'
+import {Route, Switch} from 'react-router-dom'
 
 // Components
-import {Orientation, Page, Tabs} from '@influxdata/clockface'
+import {Page, Tabs} from '@influxdata/clockface'
 import AlertsNavigation from './AlertsNavigation'
-import {useOrgID} from '../shared/useOrg'
+import ChecksIndex from './ChecksIndex'
+
+// Hooks
+import {useOrgID} from 'shared/useOrg'
+import {ChecksProvider} from './useChecks'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
 
@@ -19,11 +24,15 @@ const tabs = [
   },
 ]
 
+const dummy: React.FC = () => {
+  return <div>Dummy</div>
+}
+
 const AlertsPage: React.FC = (props) => {
-  const {children} = props
   const activeColumn = 'checks'
   const orgID = useOrgID()
   const pageContentsClassName = `alerting-index alerting-index__${activeColumn}`
+  const pagePrefix = `/orgs/${orgID}/alerts`
 
   return (
     <Page titleTag={'Alerts | Checks'}>
@@ -36,10 +45,18 @@ const AlertsPage: React.FC = (props) => {
         scrollable={false}
         className={pageContentsClassName}
       >
-        <AlertsNavigation prefix={`/${orgID}/alerts`} tabs={tabs} />
-        <Tabs.Container orientation={Orientation.Horizontal}>
-          {children}
-        </Tabs.Container>
+        <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
+        <Tabs.TabContents>
+          <Switch>
+            <ChecksProvider>
+              <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
+            </ChecksProvider>
+            <Route
+              path={`${pagePrefix}/notificationEndpoints`}
+              component={dummy}
+            />
+          </Switch>
+        </Tabs.TabContents>
       </Page.Contents>
     </Page>
   )

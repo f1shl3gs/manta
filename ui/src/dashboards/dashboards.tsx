@@ -1,13 +1,19 @@
+// Libraries
 import React from 'react'
-import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
 
-import SearchWidget from 'components/SearchWidget'
+// Components
+import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
 import DashboardCards from './DashboardCards'
-import {Dashboard} from 'types/Dashboard'
+import SearchWidget from '../shared/components/SearchWidget'
+
+// Hooks
 import {DashboardsProvider} from './useDashboards'
 import {useFetch} from 'use-http'
 import {useOrgID} from 'shared/useOrg'
-import {useHistory} from 'react-router-dom'
+
+// Types
+import {Dashboard} from 'types/Dashboard'
 
 const useCreateDash = () => {
   const orgID = useOrgID()
@@ -36,6 +42,7 @@ const DashboardsIndex: React.FC = () => {
       <Page.ControlBar fullWidth={false}>
         <Page.ControlBarLeft>
           <SearchWidget
+            search={'v'}
             placeholder={'Filter dashboards...'}
             onSearch={(v) => console.log('v', v)}
           />
