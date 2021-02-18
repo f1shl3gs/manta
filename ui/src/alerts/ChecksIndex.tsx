@@ -2,9 +2,6 @@ import React, {useState} from 'react'
 import {useChecks} from './useChecks'
 import TabbedPageHeader from '../shared/components/TabbedPageHeader'
 import SearchWidget from '../shared/components/SearchWidget'
-import ResourceSortDropdown, {
-  SortTypes,
-} from '../shared/components/ResourceSortDropdown'
 import {
   Button,
   ComponentColor,
@@ -13,6 +10,10 @@ import {
   Page,
   Sort,
 } from '@influxdata/clockface'
+import FilterList from '../shared/components/FilterList'
+import {Check} from '../types/Check'
+import ResourceSortDropdown from '../shared/components/ResourceSortDropdown'
+import {SortTypes} from '../types/Sort'
 
 const ChecksIndex: React.FC = () => {
   const {checks, remoteDataState} = useChecks()
@@ -62,6 +63,14 @@ const ChecksIndex: React.FC = () => {
   return (
     <>
       <TabbedPageHeader left={leftHeader} right={rightHeader} />
+
+      <FilterList<Check>
+        list={checks}
+        search={''}
+        searchKeys={['name', 'desc']}
+      >
+        {filtered => filtered.map((item) => <div>{item.name}</div>)}
+      </FilterList>
     </>
   )
 }

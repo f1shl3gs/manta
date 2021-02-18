@@ -4,6 +4,30 @@ import (
 	"context"
 )
 
+const (
+	OK   = "ok"
+	Info = "info"
+	Warn = "warn"
+	High = "high"
+	Crit = "crit"
+)
+
+var SeverityValue = map[string]int{
+	OK:   0,
+	Info: 1,
+	Warn: 2,
+	High: 3,
+	Crit: 4,
+}
+
+var Severities = []string{
+	OK,
+	Info,
+	Warn,
+	High,
+	Crit,
+}
+
 type CheckFilter struct {
 	OrgID *ID
 }
@@ -66,3 +90,28 @@ type CheckService interface {
 	// DeleteCheck delete a single check by ID
 	DeleteCheck(ctx context.Context, id ID) error
 }
+
+// ThresholdType is the Condition's Threshold
+type ThresholdType string
+
+const (
+	NoDate    = "nodata"
+	GreatThan = "gt"
+	Equal     = "eq"
+	NotEqual  = "ne"
+	LessThan  = "lt"
+	Inside    = "inside"
+	Outside   = "outside"
+)
+
+var (
+	thresholdTypes = []string{
+		NoDate,
+		GreatThan,
+		Equal,
+		NotEqual,
+		LessThan,
+		Inside,
+		Outside,
+	}
+)

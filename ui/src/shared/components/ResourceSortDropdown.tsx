@@ -4,13 +4,8 @@ import React, {MouseEvent} from 'react'
 // Components
 import {Dropdown, Sort} from '@influxdata/clockface'
 
-type SortKey = 'created' | 'updated'
-
-export enum SortTypes {
-  String = 'string',
-  Date = 'date',
-  Float = 'float',
-}
+// Types
+import {SortKey, SortTypes} from '../../types/Sort'
 
 export interface SortDropdownItem {
   label: string
