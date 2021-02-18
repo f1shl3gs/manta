@@ -27,7 +27,7 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
 
 const PluginDetailsView: React.FC = () => {
   const {id} = useParams<{id: string}>()
-  const p = OTCL_PLUGINS.find((item) => item.id === id)
+  const p = OTCL_PLUGINS.find(item => item.id === id)
 
   const {name, markdown, image} = p!
 

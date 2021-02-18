@@ -7,7 +7,7 @@ import {useViewProperties} from '../../shared/useViewProperties'
 
 interface Props {}
 
-const ViewOptions: React.FC<Props> = (props) => {
+const ViewOptions: React.FC<Props> = props => {
   const {viewProperties} = useViewProperties()
 
   return (

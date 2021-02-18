@@ -9,9 +9,9 @@ interface Props<T> {
   children: (list: T[]) => any
 }
 
-const FilterList: <T>(props: Props<T>) => React.ReactElement<Props<T>> = (
-  props
-) => {
+const FilterList: <T>(
+  props: Props<T>
+) => React.ReactElement<Props<T>> = props => {
   const {list, children} = props
 
   const filtered = () => {

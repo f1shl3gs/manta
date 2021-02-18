@@ -21,7 +21,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(
       setInPresentationMode(!inPresentationMode)
       dispatchResizeEvent()
     }, [inPresentationMode])
-    const escapePresentationMode = useCallback((event) => {
+    const escapePresentationMode = useCallback(event => {
       if (event.key === 'Escape' || event.keyCode === escapeKeyCode) {
         setInPresentationMode(false)
         dispatchResizeEvent()
@@ -47,7 +47,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(
       togglePresentationMode: toggle,
     }
   },
-  (value) => value
+  value => value
 )
 
 export {PresentationModeProvider, usePresentationMode}

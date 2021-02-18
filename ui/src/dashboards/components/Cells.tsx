@@ -12,7 +12,7 @@ const DASHBOARD_LAYOUT_ROW_HEIGHT = 83.5
 const LAYOUT_MARGIN = 4
 
 const layout = (cells: Cell[]): Layout[] => {
-  return cells.map((c) => {
+  return cells.map(c => {
     return {
       i: c.id,
       w: c.w || 0,

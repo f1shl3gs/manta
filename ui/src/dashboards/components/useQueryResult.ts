@@ -41,7 +41,7 @@ const useQueryResult = (
           q.text
         )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
       )
-        .then((resp) => {
+        .then(resp => {
           set[index] = transformToRows(resp, q.name || `Query ${index}`)
           const table = fromRows(
             set.flat().sort((a, b) => {
@@ -51,11 +51,11 @@ const useQueryResult = (
           setResult({
             table,
             fluxGroupKeyUnion: table.columnKeys.filter(
-              (key) => key !== 'time' && key !== 'value'
+              key => key !== 'time' && key !== 'value'
             ),
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.error('query failed', err)
         })
     })

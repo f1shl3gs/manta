@@ -13,7 +13,7 @@ const [ViewOptionProvider, useViewOption] = constate(
       onToggleVisOptions,
     }
   },
-  (value) => value
+  value => value
 )
 
 export {ViewOptionProvider, useViewOption}

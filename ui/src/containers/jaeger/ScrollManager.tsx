@@ -166,7 +166,7 @@ export default class ScrollManager {
     const childrenAreHidden = _collapsed ? new Set(_collapsed) : null
     // use empty Map as fallback to make flow happy
     const spansMap: Map<string, TraceSpan> = childrenAreHidden
-      ? new Map(spans.map((s) => [s.spanID, s] as [string, TraceSpan]))
+      ? new Map(spans.map(s => [s.spanID, s] as [string, TraceSpan]))
       : new Map()
     const boundary = direction < 0 ? -1 : spans.length
     let nextSpanIndex: number | undefined
@@ -197,7 +197,7 @@ export default class ScrollManager {
           spansMap
         )
         if (isHidden) {
-          parentIDs.forEach((id) => childrenAreHidden.add(id))
+          parentIDs.forEach(id => childrenAreHidden.add(id))
           continue
         }
       }
@@ -218,7 +218,7 @@ export default class ScrollManager {
             spansMap
           )
           if (isHidden) {
-            parentIDs.forEach((id) => childrenAreHidden.add(id))
+            parentIDs.forEach(id => childrenAreHidden.add(id))
             nextSpanIndex--
           }
           isFallbackHidden = isHidden

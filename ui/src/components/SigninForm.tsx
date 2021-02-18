@@ -47,7 +47,7 @@ const SigninForm: React.FC = () => {
               <Input
                 name={'username'}
                 value={username}
-                onChange={(ev) => setUsername(ev.target.value)}
+                onChange={ev => setUsername(ev.target.value)}
                 size={ComponentSize.Medium}
                 autoFocus={true}
               />
@@ -59,7 +59,7 @@ const SigninForm: React.FC = () => {
               <Input
                 name={'password'}
                 value={password}
-                onChange={(ev) => setPassword(ev.target.value)}
+                onChange={ev => setPassword(ev.target.value)}
                 size={ComponentSize.Medium}
                 type={InputType.Password}
               />

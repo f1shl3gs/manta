@@ -15,7 +15,7 @@ interface Props {
   queries?: DashboardQuery[]
 }
 
-const EmptyQueryView: React.FC<Props> = (props) => {
+const EmptyQueryView: React.FC<Props> = props => {
   const {loading, queries, errorMessage, fallbackNote, hasResults} = props
 
   if (queries && !queries.length) {

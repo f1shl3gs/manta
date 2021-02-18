@@ -12,7 +12,7 @@ const [OrgProvider, useOrgID] = constate(
     const [org] = useState<Organization>(state.initialOrg)
     return {org}
   },
-  (value) => value.org.id
+  value => value.org.id
 )
 
 export {OrgProvider, useOrgID}

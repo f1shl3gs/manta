@@ -40,7 +40,7 @@ type Props = {
   onDismiss: () => void
 }
 
-const OtclForm: React.FC<Props> = (props) => {
+const OtclForm: React.FC<Props> = props => {
   const {onSubmit, onDismiss} = props
 
   const {otcl, setOtcl} = useOtcl()
@@ -56,11 +56,11 @@ const OtclForm: React.FC<Props> = (props) => {
               value={otcl.name || ''}
               validationFunc={notEmpty}
             >
-              {(status) => (
+              {status => (
                 <Input
                   value={otcl.name}
                   name="name"
-                  onChange={(ev) => {
+                  onChange={ev => {
                     const next = {
                       ...otcl,
                       name: ev.target.value,
@@ -83,11 +83,11 @@ const OtclForm: React.FC<Props> = (props) => {
               value={otcl.desc || ''}
               validationFunc={notEmpty}
             >
-              {(status) => (
+              {status => (
                 <Input
                   value={otcl.desc || ''}
                   name="desc"
-                  onChange={(ev) => {
+                  onChange={ev => {
                     setOtcl({
                       ...otcl,
                       desc: ev.target.value,

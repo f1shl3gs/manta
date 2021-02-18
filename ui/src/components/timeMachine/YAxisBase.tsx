@@ -51,14 +51,14 @@ const options: {
   },
 ]
 
-const YAxisBase: React.FC<Props> = (props) => {
+const YAxisBase: React.FC<Props> = props => {
   const {base, onSetYAxisBase} = props
 
   return (
     <Grid.Column widthXS={Columns.Twelve}>
       <Form.Element label={'Y-Value Unit Prefix'}>
         <SelectGroup shape={ButtonShape.StretchToFit}>
-          {options.map((item) => (
+          {options.map(item => (
             <SelectGroup.Option
               key={item.id}
               name={item.name}

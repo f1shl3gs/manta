@@ -57,8 +57,8 @@ const [DashboardProvider, useDashboard] = constate(
     const {put} = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {})
     const onLayoutChange = useCallback(
       (layouts: Layout[]) => {
-        const cells = layouts.map((l) => {
-          const cell = data?.cells.find((item) => item.id == l.i)
+        const cells = layouts.map(l => {
+          const cell = data?.cells.find(item => item.id == l.i)
 
           return {
             ...cell,
@@ -87,7 +87,7 @@ const [DashboardProvider, useDashboard] = constate(
     }
   },
   // useDashboard
-  (value) => {
+  value => {
     return {
       ...value,
       cells: value.cells || ([] as Cells),

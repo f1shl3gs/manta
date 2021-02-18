@@ -7,7 +7,6 @@ import {
   ComponentColor,
   ComponentStatus,
   IconFont,
-  Page,
   Sort,
 } from '@influxdata/clockface'
 import FilterList from '../shared/components/FilterList'
@@ -39,7 +38,7 @@ const ChecksIndex: React.FC = () => {
       <SearchWidget
         search={st}
         placeholder={'Filter Checks...'}
-        onSearch={(v) => console.log('v', v)}
+        onSearch={v => console.log('v', v)}
       />
       <ResourceSortDropdown
         sortKey={'updated'}
@@ -69,7 +68,7 @@ const ChecksIndex: React.FC = () => {
         search={''}
         searchKeys={['name', 'desc']}
       >
-        {filtered => filtered.map((item) => <div>{item.name}</div>)}
+        {filtered => filtered.map(item => <div>{item.name}</div>)}
       </FilterList>
     </>
   )

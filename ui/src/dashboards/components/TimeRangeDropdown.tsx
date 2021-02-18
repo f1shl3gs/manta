@@ -71,7 +71,7 @@ const TimeRangeDropdown: React.FC = () => {
         contents={() => (
           <DateRangePicker
             timeRange={timeRange}
-            onSetTimeRange={(tr) => {
+            onSetTimeRange={tr => {
               setTimeRange(tr)
             }}
             onClose={() => {
@@ -89,7 +89,7 @@ const TimeRangeDropdown: React.FC = () => {
               {timeRangeLabel}
             </Dropdown.Button>
           )}
-          menu={(onCollapse) => (
+          menu={onCollapse => (
             <Dropdown.Menu
               onCollapse={onCollapse}
               style={{width: `${dropdownWidth() + 50}px`}}
@@ -110,7 +110,7 @@ const TimeRangeDropdown: React.FC = () => {
                 {CUSTOM_TIME_RANGE_LABEL}
               </Dropdown.Item>
 
-              {SELECTABLE_TIME_RANGES.map((item) => {
+              {SELECTABLE_TIME_RANGES.map(item => {
                 const {label} = item
 
                 return (

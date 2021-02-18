@@ -9,7 +9,7 @@ interface Props {
   onSetAxisSuffix: (suffix: string) => void
 }
 
-const AxisAffixes: React.FC<Props> = (props) => {
+const AxisAffixes: React.FC<Props> = props => {
   const {prefix, suffix, axisName, onSetAxisPrefix, onSetAxisSuffix} = props
 
   const onPrefixChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {

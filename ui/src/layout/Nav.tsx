@@ -28,7 +28,7 @@ const getNavItemActivation = (
   if (!parentPath.length) {
     parentPath.push('me')
   }
-  return keywords.some((path) => parentPath.includes(path))
+  return keywords.some(path => parentPath.includes(path))
 }
 
 export interface NavSubItem {
@@ -241,14 +241,14 @@ const Nav: React.FC = () => {
           icon={<Icon glyph={IconFont.CuboNav} />}
           label={<InfluxDBCloudLogo cloud={false} />}
           color={ComponentColor.Secondary}
-          linkElement={(className) => (
+          linkElement={className => (
             <Link className={className} to={orgPrefix} />
           )}
         />
       }
       userElement={<UserWidget />}
     >
-      {navItems.map((item) => {
+      {navItems.map(item => {
         const linkElement = (classname: string): JSX.Element => {
           if (item.link.type === 'href') {
             return <a href={item.link.location} className={classname} />
@@ -273,7 +273,7 @@ const Nav: React.FC = () => {
           >
             {Boolean(item.menu) && (
               <TreeNav.SubMenu>
-                {item.menu?.map((menuItem) => {
+                {item.menu?.map(menuItem => {
                   const linkElement = (className: string): JSX.Element => {
                     if (menuItem.link.type === 'href') {
                       return (

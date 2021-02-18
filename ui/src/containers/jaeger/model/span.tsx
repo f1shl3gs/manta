@@ -21,7 +21,7 @@ import {TraceSpan} from '../types'
  */
 export function getParent(span: TraceSpan) {
   const parentRef = span.references
-    ? span.references.find((ref) => ref.refType === 'CHILD_OF')
+    ? span.references.find(ref => ref.refType === 'CHILD_OF')
     : null
   return parentRef ? parentRef.span : null
 }

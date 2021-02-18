@@ -19,7 +19,7 @@ interface Props {
   viewProperties: ViewProperties
 }
 
-const TimeMachine: React.FC<Props> = (props) => {
+const TimeMachine: React.FC<Props> = props => {
   const {isViewingVisOptions} = useViewOption()
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 

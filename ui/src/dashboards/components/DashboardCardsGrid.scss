@@ -68,21 +68,16 @@ $dashboard-card-quarter: calc(25% - #{$dashboard-grid-gap});
 
 @media screen and (min-width: $cf-grid--breakpoint-md) {
   .dashboards-card-grid {
-    grid-template-columns: minmax($dashboard-card-third, 1fr) minmax(
-        $dashboard-card-third,
-        1fr
-      ) minmax($dashboard-card-third, 1fr);
+    grid-template-columns:
+      minmax($dashboard-card-third, 1fr) minmax($dashboard-card-third, 1fr)
+      minmax($dashboard-card-third, 1fr);
   }
 }
 
 @media screen and (min-width: $cf-grid--breakpoint-lg) {
   .dashboards-card-grid {
-    grid-template-columns: minmax($dashboard-card-quarter, 1fr) minmax(
-        $dashboard-card-quarter,
-        1fr
-      ) minmax($dashboard-card-quarter, 1fr) minmax(
-        $dashboard-card-quarter,
-        1fr
-      );
+    grid-template-columns:
+      minmax($dashboard-card-quarter, 1fr) minmax($dashboard-card-quarter, 1fr)
+      minmax($dashboard-card-quarter, 1fr) minmax($dashboard-card-quarter, 1fr);
   }
 }

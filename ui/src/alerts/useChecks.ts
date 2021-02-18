@@ -19,7 +19,7 @@ const [ChecksProvider, useChecks] = constate(
       checks: data || [],
     }
   },
-  (value) => value
+  value => value
 )
 
 export {ChecksProvider, useChecks}

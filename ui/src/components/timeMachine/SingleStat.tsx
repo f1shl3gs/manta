@@ -15,7 +15,7 @@ interface Props {
   properties: SingleStatViewProperties
 }
 
-const SingleStat: React.FC<Props> = (props) => {
+const SingleStat: React.FC<Props> = props => {
   const {stat, theme, properties} = props
   const {colors, prefix, suffix, decimalPlaces} = properties
 

@@ -25,7 +25,7 @@ interface Props {
   onClick?: () => void
 }
 
-const CopyButton: React.FC<Props> = (props) => {
+const CopyButton: React.FC<Props> = props => {
   const {
     textToCopy,
     color,

@@ -8,7 +8,7 @@ interface Props {
 }
 
 // todo: implement it
-const LatestValueTransform: React.FC<Props> = (props) => {
+const LatestValueTransform: React.FC<Props> = props => {
   const {children, table} = props
   const valueColData = table.getColumn('value', 'number') as number[]
   if (valueColData.length === 0) {

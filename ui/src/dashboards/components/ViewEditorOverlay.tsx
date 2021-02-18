@@ -17,14 +17,14 @@ import {ViewOptionProvider} from 'shared/useViewOption'
 
 interface Props {}
 
-const ViewEditorOverlay: React.FC<Props> = (props) => {
+const ViewEditorOverlay: React.FC<Props> = props => {
   const {cell, remoteDataState} = useCell()
 
   return (
     <Overlay
       visible={true}
       className={'veo-overlay'}
-      onEscape={(visible) => {
+      onEscape={visible => {
         console.log('on escape')
       }}
     >

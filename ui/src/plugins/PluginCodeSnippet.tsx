@@ -6,7 +6,7 @@ interface Props {
   language: string
 }
 
-const PluginCodeSnippet: React.FC<Props> = (props) => {
+const PluginCodeSnippet: React.FC<Props> = props => {
   const {code, language} = props
 
   return <CodeSnippet copyText={code} label={language} />

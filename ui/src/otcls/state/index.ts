@@ -25,7 +25,7 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
     const [mutated, setMutated] = useState<number>(0)
     const [otcl, setOtcl] = useState<Otcl>(emptyOtcl)
     const reload = useCallback(() => {
-      setMutated((mutated) => mutated + 1)
+      setMutated(mutated => mutated + 1)
     }, [])
 
     return {
@@ -37,7 +37,7 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
     }
   },
   // useOtcls
-  (value) => {
+  value => {
     const {orgID, mutated} = value
 
     const {data, error, loading} = useFetch(
@@ -55,7 +55,7 @@ const [OtclProvider, useOtcls, useOtcl] = constate(
     }
   },
   // useOtcl
-  (value) => {
+  value => {
     return {
       otcl: value.otcl,
       setOtcl: value.setOtcl,

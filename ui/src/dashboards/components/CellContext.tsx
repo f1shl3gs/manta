@@ -23,7 +23,7 @@ interface Props {
   view: ViewProperties
 }
 
-const CellContext: React.FC<Props> = (props) => {
+const CellContext: React.FC<Props> = props => {
   const {cell} = props
   const history = useHistory()
   const {deleteCell, reload} = useDashboard()
@@ -42,7 +42,7 @@ const CellContext: React.FC<Props> = (props) => {
       .then(() => {
         reload()
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err)
       })
   }

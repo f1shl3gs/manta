@@ -16,7 +16,7 @@ interface Props {
   groupKeyUnion: string[]
 }
 
-const XYPlot: React.FC<Props> = (props) => {
+const XYPlot: React.FC<Props> = props => {
   const {children, table, groupKeyUnion} = props
 
   /*

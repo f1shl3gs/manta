@@ -16,7 +16,7 @@ const OTCLPluginsIndex: React.FC = () => {
 
       <Page.Contents fullWidth={false} scrollable={true}>
         <SquareGrid cardSize={'170px'} gutter={ComponentSize.Small}>
-          {OTCL_PLUGINS.map((item) => (
+          {OTCL_PLUGINS.map(item => (
             <PluginCard
               key={item.id}
               id={item.id}

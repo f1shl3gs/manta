@@ -53,11 +53,11 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
     // const [manualRefresh, setManualRefresh] = useState(0);
     const refresh = useCallback(() => {
       // setManualRefresh(prevState => prevState + 1);
-      setState((prevState) => calculateRange(timeRange))
+      setState(prevState => calculateRange(timeRange))
     }, [timeRange])
 
     useEffect(() => {
-      setState((prevState) => calculateRange(timeRange))
+      setState(prevState => calculateRange(timeRange))
 
       if (autoRefresh.status !== AutoRefreshStatus.Active) {
         return
@@ -69,7 +69,7 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
           return
         }
 
-        setState((prev) => calculateRange(timeRange))
+        setState(prev => calculateRange(timeRange))
       }, autoRefresh.interval * 1000)
 
       return () => {
@@ -85,7 +85,7 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
       ...state,
     }
   },
-  (value) => value
+  value => value
 )
 
 export {AutoRefreshProvider, useAutoRefresh}

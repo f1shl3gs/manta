@@ -14,7 +14,7 @@ const getCache = () => {
 const getLocalStorage = ({cacheLife}: {cacheLife: number}): Cache => {
   const remove = async (...responseIDs: string[]) => {
     const cache = getCache()
-    responseIDs.forEach((id) => delete cache[id])
+    responseIDs.forEach(id => delete cache[id])
     localStorage.setItem(cacheName, JSON.stringify(cache))
   }
 

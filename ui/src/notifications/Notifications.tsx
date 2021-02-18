@@ -7,7 +7,7 @@ import {useNotification} from '../shared/useNotification'
 const Notifications = () => {
   const {notifications} = useNotification()
 
-  return notifications.map((item) => {
+  return notifications.map(item => {
     const {id, message, link} = item
 
     return (

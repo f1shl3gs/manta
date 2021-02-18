@@ -10,7 +10,7 @@ interface Props {
   onSearch: (k: string) => void
 }
 
-const SearchWidget: React.FC<Props> = (props) => {
+const SearchWidget: React.FC<Props> = props => {
   const {search, placeholder, onSearch} = props
 
   return (
@@ -18,9 +18,9 @@ const SearchWidget: React.FC<Props> = (props) => {
       icon={IconFont.Search}
       placeholder={placeholder}
       value={search}
-      onChange={(ev) => onSearch(ev.target.value)}
+      onChange={ev => onSearch(ev.target.value)}
       // @ts-ignore
-      onBlur={(ev) => onSearch(ev.target.value)}
+      onBlur={ev => onSearch(ev.target.value)}
       className={'search-widget-input'}
     />
   )

@@ -7,7 +7,7 @@ type Props = {
   children: React.ReactNode
 }
 
-const OtclOverlay: React.FC<Props> = (props) => {
+const OtclOverlay: React.FC<Props> = props => {
   const {title, children, onDismiss} = props
 
   return (

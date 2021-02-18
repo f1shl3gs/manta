@@ -105,7 +105,7 @@ export default memo(function TracePageSearchBar(
   return (
     <div className={styles.TracePageSearchBar}>
       <Input
-        onChange={(ev) => onSearchValueChange(ev.target.value)}
+        onChange={ev => onSearchValueChange(ev.target.value)}
         value={searchValue}
       />
       <Button onClick={focusUiFindMatches} text={'focusuifindmatches'}>

@@ -18,7 +18,7 @@ interface Props {
   bodySize?: ComponentSize
 }
 
-const OtclExplainer: React.FC<Props> = (props) => {
+const OtclExplainer: React.FC<Props> = props => {
   const {textAlign = 'inherit', hasOtcls = false, bodySize} = props
 
   return (

@@ -11,12 +11,12 @@ interface Props {
   onTimeFormatChange: (format: string) => void
 }
 
-const TimeFormatSetting: React.FC<Props> = (props) => {
+const TimeFormatSetting: React.FC<Props> = props => {
   const {timeFormat, onTimeFormatChange} = props
 
   return (
     <SelectDropdown
-      options={FORMAT_OPTIONS.map((option) => option.text)}
+      options={FORMAT_OPTIONS.map(option => option.text)}
       selectedOption={resolveTimeFormat(timeFormat)}
       onSelect={onTimeFormatChange}
     />

@@ -14,7 +14,7 @@ type Props = {
   onChange?: (v: string) => void
 }
 
-const OtclOverlay: React.FC<Props> = (props) => {
+const OtclOverlay: React.FC<Props> = props => {
   const {value = '', onChange, onDismiss} = props
 
   const options = {
@@ -44,7 +44,7 @@ const OtclOverlay: React.FC<Props> = (props) => {
             autoCursor
             options={options}
             value={value}
-            onChange={(val) => {
+            onChange={val => {
               if (onChange !== undefined) {
                 onChange(val)
               }

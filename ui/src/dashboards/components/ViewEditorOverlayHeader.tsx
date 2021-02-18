@@ -28,7 +28,7 @@ interface Props {
 
 const onClickOutside = () => console.log('onClickOutside')
 
-const ViewEditorOverlayHeader: React.FC = (props) => {
+const ViewEditorOverlayHeader: React.FC = props => {
   const history = useHistory()
   const {cell, updateCell} = useCell()
   const {reload} = useDashboard()

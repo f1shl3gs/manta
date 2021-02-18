@@ -86,9 +86,9 @@ const LineOptions: React.FC = () => {
                 {hoverDimension}
               </Dropdown.Button>
             )}
-            menu={(onCollapse) => (
+            menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dimensions.map((item) => (
+                {dimensions.map(item => (
                   <Dropdown.Item
                     id={item.key}
                     value={item.key}

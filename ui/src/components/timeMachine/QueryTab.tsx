@@ -10,7 +10,7 @@ interface Props {
   query: DashboardQuery
 }
 
-const QueryTab: React.FC<Props> = (props) => {
+const QueryTab: React.FC<Props> = props => {
   const {query, queryIndex} = props
   const {activeIndex} = useActiveQuery()
   const {removeQuery, setActiveIndex, queries} = useQueries()

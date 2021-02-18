@@ -74,14 +74,14 @@ const defaultSingleStatViewProperties: SingleStatViewProperties = {
   },
 }
 
-const ViewTypeDropdown: React.FC = (props) => {
+const ViewTypeDropdown: React.FC = props => {
   const [viewType, setViewType] = useState<ViewType>('xy')
   const {setViewProperties} = useViewProperties()
 
   const getViewTypeGraphic = (viewType: ViewType) => {
     // @ts-ignore
     const {graphic, name} = VIS_GRAPHICS.find(
-      (graphic) => graphic.type === viewType
+      graphic => graphic.type === viewType
     )
 
     return (
@@ -93,18 +93,18 @@ const ViewTypeDropdown: React.FC = (props) => {
   }
 
   const dropdownItems = () => {
-    return VIS_GRAPHICS.filter((g) => {
+    return VIS_GRAPHICS.filter(g => {
       if (g.type === 'mosaic') {
         return false
       }
 
       return g.type !== 'band'
-    }).map((g) => (
+    }).map(g => (
       <Dropdown.Item
         key={`view-type--${g.type}`}
         id={`${g.type}`}
         value={g.type}
-        onClick={(value) => {
+        onClick={value => {
           setViewType(value)
           if (value === 'gauge') {
             setViewProperties(defaultGaugeViewProperties as ViewProperties)
@@ -132,7 +132,7 @@ const ViewTypeDropdown: React.FC = (props) => {
           {getViewTypeGraphic(viewType)}
         </Dropdown.Button>
       )}
-      menu={(onCollapse) => (
+      menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse} theme={DropdownMenuTheme.Onyx}>
           {dropdownItems()}
         </Dropdown.Menu>

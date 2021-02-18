@@ -51,9 +51,9 @@ describe('multi resp', () => {
   it('merge', () => {
     let resps = [s1, s2]
     let rows = []
-    resps.forEach((resp) => {
-      resp.data.result.map((series) => {
-        series.values.forEach((sample) => {
+    resps.forEach(resp => {
+      resp.data.result.map(series => {
+        series.values.forEach(sample => {
           rows.push({
             ...series.metric,
             time: sample[0],

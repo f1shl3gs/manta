@@ -41,7 +41,7 @@ const ViewLoadingSpinner: React.FC<Props> = ({loading}) => {
     }
 
     const interval = setInterval(() => {
-      setSeconds((seconds) => seconds + 0.1)
+      setSeconds(seconds => seconds + 0.1)
     }, 100)
 
     return () => clearInterval(interval)

@@ -42,9 +42,9 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
     }
   },
   // useViewProperties
-  (value) => value,
+  value => value,
   // useQueries
-  (value) => {
+  value => {
     const {
       viewProperties: {queries = []},
     } = value

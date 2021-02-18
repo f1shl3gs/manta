@@ -48,15 +48,15 @@ const TimeMachineVis: React.FC = () => {
           q.text
         )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
       )
-        .then((resp) => {
+        .then(resp => {
           // merge
-          setQueryResults((prev) => {
+          setQueryResults(prev => {
             const next = prev
             next[index] = transformToRows(resp, q.name || `Query ${index}`)
             return next
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.error('err', err)
         })
     })
@@ -67,7 +67,7 @@ const TimeMachineVis: React.FC = () => {
       results.flat().sort((a, b) => Number(a['time']) - Number(b['time']))
     )
     const groupKeys = table.columnKeys.filter(
-      (key) => key !== 'time' && key !== 'value'
+      key => key !== 'time' && key !== 'value'
     )
 
     return {

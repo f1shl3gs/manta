@@ -160,7 +160,7 @@ function SpanBar(props: TInnerProps) {
   const triggerRef: RefObject<ButtonRef> = useRef(null)
 
   // group logs based on timestamps
-  const logGroups = _groupBy(span.logs, (log) => {
+  const logGroups = _groupBy(span.logs, log => {
     const posPercent = getViewedBounds(log.timestamp, log.timestamp).start
     // round to the nearest 0.2%
     return toPercent(Math.round(posPercent * 500) / 500)
@@ -193,7 +193,7 @@ function SpanBar(props: TInnerProps) {
         </div>
       </div>
       <div>
-        {Object.keys(logGroups).map((positionKey) => (
+        {Object.keys(logGroups).map(positionKey => (
           /*<UIPopover
             key={positionKey}
             arrowPointAtCenter

@@ -141,14 +141,14 @@ class Gauge extends Component<Props> {
     // Distill out max and min values
     const minValue = Number(
       _.get(
-        colors.find((color) => color.type === COLOR_TYPE_MIN),
+        colors.find(color => color.type === COLOR_TYPE_MIN),
         'value',
         DEFAULT_VALUE_MIN
       )
     )
     const maxValue = Number(
       _.get(
-        colors.find((color) => color.type === COLOR_TYPE_MAX),
+        colors.find(color => color.type === COLOR_TYPE_MAX),
         'value',
         DEFAULT_VALUE_MAX
       )
@@ -194,7 +194,7 @@ class Gauge extends Component<Props> {
   //@ts-ignore
   private drawGradientGauge = (ctx, xc, yc, r, gradientThickness) => {
     const {colors} = this.props
-    const sortedColors = _.sortBy(colors, (color) => Number(color.value))
+    const sortedColors = _.sortBy(colors, color => Number(color.value))
 
     const arcStart = Math.PI * 0.75
     const arcEnd = arcStart + Math.PI * 1.5
@@ -227,7 +227,7 @@ class Gauge extends Component<Props> {
     gradientThickness
   ) => {
     const {colors} = this.props
-    const sortedColors = _.sortBy(colors, (color) => Number(color.value))
+    const sortedColors = _.sortBy(colors, color => Number(color.value))
 
     const trueValueRange = Math.abs(maxValue - minValue)
     const totalArcLength = Math.PI * 1.5
@@ -356,7 +356,7 @@ class Gauge extends Component<Props> {
       suffix = ''
     }
 
-    const labels = tickValues.map((tick) =>
+    const labels = tickValues.map(tick =>
       formatStatValue(tick, {decimalPlaces, prefix, suffix})
     )
 

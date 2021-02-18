@@ -9,7 +9,7 @@ const [QueryProvider, useQuery] = constate(
       setQuery,
     }
   },
-  (value) => value
+  value => value
 )
 
 export {QueryProvider, useQuery}

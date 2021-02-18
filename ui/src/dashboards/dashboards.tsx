@@ -44,7 +44,7 @@ const DashboardsIndex: React.FC = () => {
           <SearchWidget
             search={'v'}
             placeholder={'Filter dashboards...'}
-            onSearch={(v) => console.log('v', v)}
+            onSearch={v => console.log('v', v)}
           />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
@@ -54,12 +54,12 @@ const DashboardsIndex: React.FC = () => {
             color={ComponentColor.Primary}
             onClick={() => {
               create()
-                .then((resp) => {
+                .then(resp => {
                   const path = `/orgs/${orgID}/dashboards/${resp.id}`
                   console.log('path', path)
                   history.push(path)
                 })
-                .catch((err) => {
+                .catch(err => {
                   console.log('create dashboard failed', err)
                 })
             }}

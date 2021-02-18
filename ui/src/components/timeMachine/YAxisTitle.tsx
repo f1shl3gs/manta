@@ -6,7 +6,7 @@ interface Props {
   onUpdateYAxisLabel: (label: string) => void
 }
 
-const YAxisTitle: React.FC<Props> = (props) => {
+const YAxisTitle: React.FC<Props> = props => {
   const {label, onUpdateYAxisLabel} = props
   const onChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
     onUpdateYAxisLabel(ev.target.value)

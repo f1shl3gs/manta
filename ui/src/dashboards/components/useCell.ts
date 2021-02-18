@@ -27,7 +27,7 @@ const [CellProvider, useCell] = constate(
 
     useEffect(() => {
       get()
-        .then((resp) => {
+        .then(resp => {
           if (resp.viewProperties === undefined) {
             resp.viewProperties = {
               type: 'xy',
@@ -50,7 +50,7 @@ const [CellProvider, useCell] = constate(
           console.log('set done', resp)
           setCell(resp)
         })
-        .catch((err) => {
+        .catch(err => {
           console.log('get failed ---- ', err)
         })
         .finally(() => {})
@@ -76,7 +76,7 @@ const [CellProvider, useCell] = constate(
     }
   },
   // useCell
-  (value) => value
+  value => value
 )
 
 export {CellProvider, useCell}

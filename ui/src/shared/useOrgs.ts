@@ -12,7 +12,7 @@ const [OrgsProvider, useOrgs] = constate(
       loading: remoteDataState(data, error, loading),
     }
   },
-  (values) => values
+  values => values
 )
 
 export {OrgsProvider, useOrgs}

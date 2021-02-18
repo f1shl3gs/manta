@@ -17,7 +17,7 @@ const [TimeRangeProvider, useTimeRange] = constate(
       setTimeRange,
     }
   },
-  (value) => value
+  value => value
 )
 
 export {TimeRangeProvider, useTimeRange}

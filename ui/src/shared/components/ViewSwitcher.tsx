@@ -16,7 +16,7 @@ interface Props {
   properties: ViewProperties
 }
 
-const ViewSwitcher: React.FC<Props> = (props) => {
+const ViewSwitcher: React.FC<Props> = props => {
   const {
     properties,
     giraffeResult: {table, fluxGroupKeyUnion},
@@ -26,20 +26,20 @@ const ViewSwitcher: React.FC<Props> = (props) => {
     case 'xy':
       return (
         <XYPlot table={table} groupKeyUnion={fluxGroupKeyUnion}>
-          {(config) => <Plot config={config} />}
+          {config => <Plot config={config} />}
         </XYPlot>
       )
 
     case 'gauge':
       return (
         <LatestValueTransform table={table}>
-          {(latestValue) => <GaugeChart value={latestValue} />}
+          {latestValue => <GaugeChart value={latestValue} />}
         </LatestValueTransform>
       )
     case 'single-stat':
       return (
         <LatestValueTransform table={table}>
-          {(latestValue) => (
+          {latestValue => (
             <SingleStat
               stat={latestValue}
               properties={properties}

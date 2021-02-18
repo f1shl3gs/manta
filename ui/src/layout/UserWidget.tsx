@@ -13,7 +13,7 @@ const getNavItemActivation = (
     parentPath.push('/me')
   }
 
-  return keywords.some((path) => parentPath.includes(path))
+  return keywords.some(path => parentPath.includes(path))
 }
 
 const UserWidget: React.FC = () => {
@@ -28,7 +28,7 @@ const UserWidget: React.FC = () => {
         id={'members'}
         label={'Members'}
         active={getNavItemActivation(['members'], location.pathname)}
-        linkElement={(className) => (
+        linkElement={className => (
           <Link className={className} to={`${orgPrefix}/about`} />
         )}
       />
@@ -40,9 +40,7 @@ const UserWidget: React.FC = () => {
       <TreeNav.UserItem
         id={'logout'}
         label={'Logout'}
-        linkElement={(className) => (
-          <Link className={className} to={'/logout'} />
-        )}
+        linkElement={className => <Link className={className} to={'/logout'} />}
       />
     </TreeNav.User>
   )

@@ -44,7 +44,7 @@ interface Props {
   value: number
 }
 
-const GaugeChart: React.FC<Props> = (props) => {
+const GaugeChart: React.FC<Props> = props => {
   const {value} = props
 
   return (

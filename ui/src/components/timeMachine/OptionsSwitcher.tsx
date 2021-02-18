@@ -6,7 +6,7 @@ interface Props {
   view: ViewProperties
 }
 
-const OptionsSwitcher: React.FC<Props> = (props) => {
+const OptionsSwitcher: React.FC<Props> = props => {
   const {view} = props
 
   switch (view.type) {

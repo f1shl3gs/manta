@@ -14,7 +14,7 @@ interface Props {
   check: Check
 }
 
-const CheckCard: React.FC<Props> = (props) => {
+const CheckCard: React.FC<Props> = props => {
   const {
     check: {id, name, desc, updated, status, conditions},
   } = props

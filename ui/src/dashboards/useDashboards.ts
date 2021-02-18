@@ -22,7 +22,7 @@ const [DashboardsProvider, useDashboards] = constate(
     }
   },
   // useDashboards
-  (value) => value
+  value => value
 )
 
 export {DashboardsProvider, useDashboards}

@@ -3,7 +3,7 @@ import React from 'react'
 const VERSION = process.env.VERSION
 const GIT_SHA = process.env.GIT_SHA
 
-const VersionInfo: React.FC = (props) => {
+const VersionInfo: React.FC = props => {
   return (
     <div className={'version-info'}>
       <p>

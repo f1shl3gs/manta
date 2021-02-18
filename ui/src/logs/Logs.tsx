@@ -27,7 +27,7 @@ const Logs: React.FC = () => {
           <Input
             placeholder={'LogQL'}
             value={query}
-            onChange={(ev) => setQuery(ev.target.value)}
+            onChange={ev => setQuery(ev.target.value)}
           />
           <Button
             color={ComponentColor.Primary}

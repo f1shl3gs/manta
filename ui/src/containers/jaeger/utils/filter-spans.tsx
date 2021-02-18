@@ -32,7 +32,7 @@ export default function filterSpans(
   textFilter
     .split(/\s+/)
     .filter(Boolean)
-    .forEach((w) => {
+    .forEach(w => {
       if (w[0] === '-') {
         excludeKeys.push(w.substr(1).toLowerCase())
       } else {
@@ -41,11 +41,11 @@ export default function filterSpans(
     })
 
   const isTextInFilters = (filters: string[], text: string) =>
-    filters.some((filter) => text.toLowerCase().includes(filter))
+    filters.some(filter => text.toLowerCase().includes(filter))
 
   const isTextInKeyValues = (kvs: TraceKeyValuePair[]) =>
     kvs
-      ? kvs.some((kv) => {
+      ? kvs.some(kv => {
           // ignore checking key and value for a match if key is in excludeKeys
           if (isTextInFilters(excludeKeys, kv.key)) {
             return false
@@ -62,9 +62,9 @@ export default function filterSpans(
     isTextInFilters(includeFilters, span.operationName) ||
     isTextInFilters(includeFilters, span.process.serviceName) ||
     isTextInKeyValues(span.tags) ||
-    span.logs.some((log) => isTextInKeyValues(log.fields)) ||
+    span.logs.some(log => isTextInKeyValues(log.fields)) ||
     isTextInKeyValues(span.process.tags) ||
-    includeFilters.some((filter) => filter === span.spanID)
+    includeFilters.some(filter => filter === span.spanID)
 
   // declare as const because need to disambiguate the type
   const rv: Set<string> = new Set(

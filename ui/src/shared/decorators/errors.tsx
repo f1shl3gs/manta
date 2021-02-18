@@ -40,7 +40,7 @@ export const parseComponentName = (errorInfo: ErrorInfo): string => {
   return errorInfo.componentStack
     .trim()
     .split('\n')
-    .map((s) => s.split(' ')[1])[0]
+    .map(s => s.split(' ')[1])[0]
 }
 
 export function ErrorHandlingWith(Error: ErrorMessageComponent) {

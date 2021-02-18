@@ -17,7 +17,7 @@ interface Props {
   cellID?: string
 }
 
-const TimeSeries: React.FC<Props> = (props) => {
+const TimeSeries: React.FC<Props> = props => {
   const {viewProperties} = useViewProperties()
   const {queries} = viewProperties
   const [errMsg, setErrMsg] = useState<string | undefined>()

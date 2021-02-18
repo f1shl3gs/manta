@@ -48,7 +48,7 @@ interface Props {
   options: AutoRefreshOption[]
 }
 
-const AutoRefreshDropdown: React.FC<Props> = (props) => {
+const AutoRefreshDropdown: React.FC<Props> = props => {
   const {options} = props
   const {autoRefresh, setAutoRefresh, refresh} = useAutoRefresh()
   const [selected, setSelected] = useState(AutoRefreshDropdownOptions[3])
@@ -82,12 +82,12 @@ const AutoRefreshDropdown: React.FC<Props> = (props) => {
             {selected.label}
           </Dropdown.Button>
         )}
-        menu={(onCollapse) => (
+        menu={onCollapse => (
           <Dropdown.Menu
             onCollapse={onCollapse}
             style={{width: `${DROPDOWN_WIDTH_FULL}px`}}
           >
-            {options.map((option) => {
+            {options.map(option => {
               if (option.type === AutoRefreshOptionType.Header) {
                 return (
                   <Dropdown.Divider

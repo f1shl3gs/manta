@@ -68,8 +68,7 @@ export default class DraggableManagerDemo extends React.PureComponent<
           </p>
           <p>
             Value:{' '}
-            {regionDragging &&
-              regionDragging.map((n) => n.toFixed(3)).join(', ')}
+            {regionDragging && regionDragging.map(n => n.toFixed(3)).join(', ')}
           </p>
           <div className="DraggableManagerDemo--realm">
             <RegionDemo

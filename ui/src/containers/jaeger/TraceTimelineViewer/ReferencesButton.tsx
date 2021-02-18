@@ -61,7 +61,7 @@ export default class ReferencesButton extends React.PureComponent<TReferencesBut
     const styles = getStyles()
     return (
       <UIMenu>
-        {references.map((ref) => {
+        {references.map(ref => {
           const {span, spanID} = ref
           return (
             <UIMenuItem key={`${spanID}`}>

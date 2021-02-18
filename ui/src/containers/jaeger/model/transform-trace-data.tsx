@@ -26,7 +26,7 @@ export function deduplicateTags(spanTags: TraceKeyValuePair[]) {
   const warningsHash: Map<string, string> = new Map<string, string>()
   const tags: TraceKeyValuePair[] = spanTags.reduce<TraceKeyValuePair[]>(
     (uniqueTags, tag) => {
-      if (!uniqueTags.some((t) => t.key === tag.key && t.value === tag.value)) {
+      if (!uniqueTags.some(t => t.key === tag.key && t.value === tag.value)) {
         uniqueTags.push(tag)
       } else {
         warningsHash.set(
@@ -94,7 +94,7 @@ export default function transformTraceData(
   const spanMap = new Map<string, TraceSpan>()
   // filter out spans with empty start times
   // eslint-disable-next-line no-param-reassign
-  data.spans = data.spans.filter((span) => Boolean(span.startTime))
+  data.spans = data.spans.filter(span => Boolean(span.startTime))
 
   const max = data.spans.length
   for (let i = 0; i < max; i++) {
@@ -182,7 +182,7 @@ export default function transformTraceData(
     })
     spans.push(span)
   })
-  const services = Object.keys(svcCounts).map((name) => ({
+  const services = Object.keys(svcCounts).map(name => ({
     name,
     numberOfSpans: svcCounts[name],
   }))

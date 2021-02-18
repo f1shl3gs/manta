@@ -38,11 +38,11 @@ const sortDropdownItems = [
   },
 ]
 
-const ResourceSortDropdown: React.FC<Props> = (props) => {
+const ResourceSortDropdown: React.FC<Props> = props => {
   const {sortKey, sortType, sortDirection, onSelect, width = 210} = props
 
   const {label} = sortDropdownItems.find(
-    (item) =>
+    item =>
       item.sortKey === sortKey &&
       item.sortDirection === sortDirection &&
       item.sortType === sortType
@@ -64,7 +64,7 @@ const ResourceSortDropdown: React.FC<Props> = (props) => {
 
   const menu = (onCollapse?: () => void) => (
     <Dropdown.Menu onCollapse={onCollapse}>
-      {sortDropdownItems.map((item) => (
+      {sortDropdownItems.map(item => (
         <Dropdown.Item
           key={`${item.sortKey}${item.sortDirection}`}
           value={item}

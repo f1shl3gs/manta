@@ -9,7 +9,7 @@ interface Props {
   onClick?: () => void
 }
 
-const CodeSnippet: React.FC<Props> = (props) => {
+const CodeSnippet: React.FC<Props> = props => {
   const {copyText, label, onClick} = props
 
   return (

@@ -216,7 +216,7 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
       if (suspense) {
         return async (...args) => {
           suspender.current = doFetch(...args).then(
-            (newData) => {
+            newData => {
               suspenseStatus.current = 'success'
               return newData
             },

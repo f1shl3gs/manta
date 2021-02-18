@@ -25,7 +25,7 @@ const useLocalStorage = <T>(
   })
 
   const set: Dispatch<SetStateAction<T | undefined>> = useCallback(
-    (valOrFunc) => {
+    valOrFunc => {
       try {
         const next =
           typeof valOrFunc === 'function'

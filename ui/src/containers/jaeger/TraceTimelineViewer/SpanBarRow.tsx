@@ -474,7 +474,7 @@ export class UnthemedSpanBarRow extends React.PureComponent<SpanBarRowProps> {
                     rel="noopener noreferrer"
                     onClick={
                       link.onClick
-                        ? (event) => {
+                        ? event => {
                             if (
                               !(
                                 event.ctrlKey ||

@@ -108,8 +108,8 @@ type TableRow = {
 const transformData = (ss: StreamResult[]) => {
   const rows = new Array<TableRow>()
 
-  ss.forEach((stream) => {
-    stream.values.forEach((pair) => {
+  ss.forEach(stream => {
+    stream.values.forEach(pair => {
       rows.push({
         ts: moment(Number(pair[0]) / 1000 / 1000).format(),
         msg: pair[1],

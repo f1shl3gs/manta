@@ -12,7 +12,7 @@ interface Props {
   onDeleteDashboard: (id: string) => void
 }
 
-const DashboardCard: React.FC<Props> = (props) => {
+const DashboardCard: React.FC<Props> = props => {
   const {id, name, desc, updatedAt, onDeleteDashboard} = props
   const history = useHistory()
   const orgID = useOrgID()
@@ -23,14 +23,14 @@ const DashboardCard: React.FC<Props> = (props) => {
         <Context.Menu icon={IconFont.CogThick}>
           <Context.Item
             label={'Export'}
-            action={(value) => console.log('export action', value)}
+            action={value => console.log('export action', value)}
             testID={'context_menu-export'}
           />
         </Context.Menu>
         <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
           <Context.Item
             label={'Delete'}
-            action={(value) => onDeleteDashboard(id)}
+            action={value => onDeleteDashboard(id)}
           />
         </Context.Menu>
       </Context>
@@ -40,13 +40,13 @@ const DashboardCard: React.FC<Props> = (props) => {
   return (
     <ResourceCard key={`dashboard-id--${id}`} contextMenu={contextMenu()}>
       <ResourceCard.EditableName
-        onUpdate={(v) => console.log('update dashboard name', v)}
+        onUpdate={v => console.log('update dashboard name', v)}
         onClick={() => history.push(`/orgs/${orgID}/dashboards/${id}`)}
         name={name}
       />
 
       <ResourceCard.EditableDescription
-        onUpdate={(desc) => console.log('update desc', desc)}
+        onUpdate={desc => console.log('update desc', desc)}
         description={desc}
         placeholder={`Describe ${name}`}
       />

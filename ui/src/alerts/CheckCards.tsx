@@ -14,12 +14,12 @@ interface Props {
   checks: Check[]
 }
 
-const CheckCards: React.FC<Props> = (props) => {
+const CheckCards: React.FC<Props> = props => {
   const {search, checks} = props
 
   const body = (filtered: Check[]) => (
     <ResourceList.Body emptyState={<EmptyChecksList search={search} />}>
-      {filtered.map((check) => (
+      {filtered.map(check => (
         <CheckCard check={check} />
       ))}
     </ResourceList.Body>

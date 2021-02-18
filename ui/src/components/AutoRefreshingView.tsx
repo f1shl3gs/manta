@@ -6,7 +6,7 @@ interface Props {
   manualRefresh: number
 }
 
-const AutoRefreshingView: React.FC<Props> = (props) => {
+const AutoRefreshingView: React.FC<Props> = props => {
   return <div>RefreshView</div>
 }
 

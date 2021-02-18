@@ -32,7 +32,7 @@ export const transformToRows = (resp: PromResp, legend: string): Row[] => {
     .map((item: Result) => {
       const {metric, values} = item
 
-      return values.map((val) => {
+      return values.map(val => {
         return {
           ...metric,
           legend,
@@ -59,7 +59,7 @@ export const transformPromResp = (
     .map((item: Result) => {
       const {metric, values} = item
 
-      return values.map((val) => {
+      return values.map(val => {
         return {
           ...metric,
           time: val[0] * 1000,
@@ -71,7 +71,7 @@ export const transformPromResp = (
 
   const table = fromRows(rows)
   const groupKeys = table.columnKeys.filter(
-    (key) => key !== 'time' && key !== 'value'
+    key => key !== 'time' && key !== 'value'
   )
 
   return {

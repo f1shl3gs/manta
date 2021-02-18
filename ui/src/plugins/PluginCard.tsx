@@ -15,7 +15,7 @@ import {PluginItem} from './constants/Plugins'
 
 type Props = PluginItem
 
-const PluginCard: React.FC<Props> = (props) => {
+const PluginCard: React.FC<Props> = props => {
   const {id, name, url, image} = props
   const history = useHistory()
   const orgID = useOrgID()

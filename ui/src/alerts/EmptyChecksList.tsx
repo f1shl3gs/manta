@@ -8,7 +8,7 @@ interface Props {
   search: string
 }
 
-const EmptyChecksList: React.FC<Props> = (props) => {
+const EmptyChecksList: React.FC<Props> = props => {
   const {search} = props
 
   if (search) {

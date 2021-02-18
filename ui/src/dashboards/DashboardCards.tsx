@@ -19,7 +19,7 @@ const DashboardCards: React.FC = () => {
         .then(() => {
           refresh()
         })
-        .catch((err) => {
+        .catch(err => {
           console.log('delete dashboard err', err)
         })
     },
@@ -29,7 +29,7 @@ const DashboardCards: React.FC = () => {
   return (
     <div style={{height: '100%', display: 'grid'}}>
       <div className={'dashboards-card-grid'}>
-        {dashboards?.map((d) => (
+        {dashboards?.map(d => (
           <DashboardCard
             key={d.id}
             id={d.id}

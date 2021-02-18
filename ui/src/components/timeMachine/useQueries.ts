@@ -29,7 +29,7 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
     }
   },
   // useQueries
-  (value) => {
+  value => {
     const {queries, setQueries, setActiveIndex} = value
     const addQuery = useCallback(() => {
       const next = queries.slice().concat({
@@ -60,7 +60,7 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
     }
   },
   // useActiveQuery
-  (value) => {
+  value => {
     const {activeIndex, queries, setQueries} = value
     const onSetText = useCallback(
       (text: string) => {

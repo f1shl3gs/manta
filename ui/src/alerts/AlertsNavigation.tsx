@@ -13,7 +13,7 @@ interface Props {
   prefix: string
 }
 
-const AlertsNavigation: React.FC<Props> = (props) => {
+const AlertsNavigation: React.FC<Props> = props => {
   const {prefix, tabs} = props
   const [activeTab, setActive] = useState('checks')
   const history = useHistory()
@@ -30,7 +30,7 @@ const AlertsNavigation: React.FC<Props> = (props) => {
       dropdownBreakpoint={872}
       dropdownLabel={''}
     >
-      {tabs.map((tab) => (
+      {tabs.map(tab => (
         <Tabs.Tab
           key={tab.id}
           text={tab.text}
