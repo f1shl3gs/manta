@@ -40,11 +40,7 @@ const AlertsPage: React.FC = props => {
         <Page.Title title={ALERTS_PAGE_TITLE} />
       </Page.Header>
 
-      <Page.Contents
-        fullWidth={true}
-        scrollable={false}
-        className={pageContentsClassName}
-      >
+      <Page.Contents className={pageContentsClassName}>
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>

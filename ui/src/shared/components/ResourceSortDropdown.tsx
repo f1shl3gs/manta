@@ -5,7 +5,7 @@ import React, {MouseEvent} from 'react'
 import {Dropdown, Sort} from '@influxdata/clockface'
 
 // Types
-import {SortKey, SortTypes} from '../../types/Sort'
+import {SortKey, SortTypes} from 'types/sort'
 
 export interface SortDropdownItem {
   label: string
@@ -24,6 +24,18 @@ interface Props {
 }
 
 const sortDropdownItems = [
+  {
+    label: 'Name (A → Z)',
+    sortKey: 'name',
+    sortType: SortTypes.String,
+    sortDirection: Sort.Ascending,
+  },
+  {
+    label: 'Name (Z → A)',
+    sortKey: 'name',
+    sortType: SortTypes.String,
+    sortDirection: Sort.Descending,
+  },
   {
     label: 'Modified (Oldest)',
     sortKey: 'updated',

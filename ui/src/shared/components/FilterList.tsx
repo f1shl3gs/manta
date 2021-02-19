@@ -1,6 +1,5 @@
-// Libraries
-import React, {PropsWithChildren} from 'react'
-import {get} from 'lodash'
+// Utils
+import {get} from 'utils/object'
 
 interface Props<T> {
   list: T[]
@@ -9,13 +8,23 @@ interface Props<T> {
   children: (list: T[]) => any
 }
 
-const FilterList: <T>(
-  props: Props<T>
-) => React.ReactElement<Props<T>> = props => {
-  const {list, children} = props
+function FilterList<T>(props: Props<T>) {
+  const {list, search, searchKeys, children} = props
 
   const filtered = () => {
-    return list
+    return list.filter(item => {
+      return (
+        undefined !==
+        searchKeys.find(sk => {
+          const val = get(item, sk)
+          if (val === undefined) {
+            return false
+          }
+
+          return val.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        })
+      )
+    })
   }
 
   return children(filtered())

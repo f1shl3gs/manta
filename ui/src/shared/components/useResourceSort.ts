@@ -1,6 +1,6 @@
 import constate from 'constate'
 import {Sort} from '@influxdata/clockface'
-import {SortKey} from '../../types/Sort'
+import {SortKey} from 'types/sort'
 
 interface Sortable {
   name: string

@@ -2,6 +2,8 @@ package manta
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/f1shl3gs/manta/pkg/duration"
 )
 
 const (
@@ -115,3 +117,40 @@ var (
 		Outside,
 	}
 )
+
+func (m *Condition) UnmarshalJSON(b []byte) error {
+	var tm struct {
+		Status    string    `json:"status"`
+		Pending   string    `json:"pending"`
+		Threshold Threshold `json:"threshold"`
+	}
+
+	if err := json.Unmarshal(b, &tm); err != nil {
+		return err
+	}
+
+	d, err := duration.Parse(tm.Pending)
+	if err != nil {
+		return err
+	}
+
+	m.Status = tm.Status
+	m.Pending = d
+	m.Threshold = tm.Threshold
+
+	return nil
+}
+
+func (m *Condition) MarshalJSON() ([]byte, error) {
+	var tm struct {
+		Status    string    `json:"status"`
+		Pending   string    `json:"pending"`
+		Threshold Threshold `json:"threshold"`
+	}
+
+	tm.Status = m.Status
+	tm.Pending = m.Pending.String()
+	tm.Threshold = m.Threshold
+
+	return json.Marshal(tm)
+}

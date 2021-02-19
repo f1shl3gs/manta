@@ -1,23 +1,39 @@
+// Libraries
 import React, {useState} from 'react'
-import {useChecks} from './useChecks'
-import TabbedPageHeader from '../shared/components/TabbedPageHeader'
-import SearchWidget from '../shared/components/SearchWidget'
+
+// Components
 import {
   Button,
+  Columns,
   ComponentColor,
   ComponentStatus,
+  Grid,
   IconFont,
   Sort,
 } from '@influxdata/clockface'
-import FilterList from '../shared/components/FilterList'
-import {Check} from '../types/Check'
+import TabbedPageHeader from 'shared/components/TabbedPageHeader'
+import SearchWidget from 'shared/components/SearchWidget'
+import FilterList from 'shared/components/FilterList'
 import ResourceSortDropdown from '../shared/components/ResourceSortDropdown'
-import {SortTypes} from '../types/Sort'
+
+// Hooks
+import {useChecks} from './useChecks'
+
+// Types
+import {Check} from 'types/Check'
+import {SortKey, SortTypes} from 'types/sort'
+import CheckCards from './CheckCards'
+import CheckExplainer from './CheckExplainer'
 
 const ChecksIndex: React.FC = () => {
   const {checks, remoteDataState} = useChecks()
   const title = `Checks`
   const [search, setSearch] = useState('')
+  const [sortOption, setSortOption] = useState({
+    key: 'updated' as SortKey,
+    type: SortTypes.Date,
+    direction: Sort.Ascending,
+  })
 
   const tooltipContents = (
     <>
@@ -31,20 +47,24 @@ const ChecksIndex: React.FC = () => {
     </>
   )
 
-  const [st, setSt] = useState('')
-
   const leftHeader = (
     <>
       <SearchWidget
-        search={st}
+        search={search}
         placeholder={'Filter Checks...'}
-        onSearch={v => console.log('v', v)}
+        onSearch={v => setSearch(v)}
       />
       <ResourceSortDropdown
-        sortKey={'updated'}
-        sortType={SortTypes.Date}
-        sortDirection={Sort.Ascending}
-        onSelect={(sk, sd, st) => console.log(sk, sd, st)}
+        sortKey={sortOption.key}
+        sortType={sortOption.type}
+        sortDirection={sortOption.direction}
+        onSelect={(sk, sd, st) => {
+          setSortOption({
+            key: sk,
+            type: st,
+            direction: sd,
+          })
+        }}
       />
     </>
   )
@@ -65,10 +85,38 @@ const ChecksIndex: React.FC = () => {
 
       <FilterList<Check>
         list={checks}
-        search={''}
+        search={search}
         searchKeys={['name', 'desc']}
       >
-        {filtered => filtered.map(item => <div>{item.name}</div>)}
+        {filtered => (
+          <Grid>
+            <Grid.Row>
+              <Grid.Column
+                widthXS={Columns.Twelve}
+                widthSM={filtered.length !== 0 ? Columns.Eight : Columns.Twelve}
+                widthMD={filtered.length !== 0 ? Columns.Ten : Columns.Twelve}
+              >
+                <CheckCards
+                  search={search}
+                  checks={filtered}
+                  sortKey={sortOption.key}
+                  sortType={sortOption.type}
+                  sortDirection={sortOption.direction}
+                />
+              </Grid.Column>
+
+              {filtered.length !== 0 && (
+                <Grid.Column
+                  widthXS={Columns.Twelve}
+                  widthSM={Columns.Four}
+                  widthMD={Columns.Two}
+                >
+                  <CheckExplainer />
+                </Grid.Column>
+              )}
+            </Grid.Row>
+          </Grid>
+        )}
       </FilterList>
     </>
   )

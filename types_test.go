@@ -1,9 +1,11 @@
 package manta_test
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 	"time"
 
@@ -155,4 +157,42 @@ func BenchmarkEventMarshal(b *testing.B) {
 	}
 
 	b.SetBytes(int64(total / b.N))
+}
+
+func TestCheckDecode(t *testing.T) {
+	text := `{
+  "name": "foo",
+  "desc": "bar",
+  "expr": "up",
+  "cron": "@every 1m",
+  "status": "active",
+  "conditions": [
+    {
+      "status": "warn",
+      "pending": "300s",
+      "threshold": {
+        "type": "lt",
+        "value": 10
+      }
+    }
+  ]
+}`
+
+	c := &manta.Check{}
+	err := json.NewDecoder(bytes.NewBufferString(text)).Decode(c)
+	require.NoError(t, err)
+}
+
+func TestConditionMarshal(t *testing.T) {
+	c := &manta.Condition{
+		Status:  "warn",
+		Pending: 60 * time.Second,
+		Threshold: manta.Threshold{
+			Type:  "lt",
+			Value: 10,
+		},
+	}
+
+	err := json.NewEncoder(os.Stdout).Encode(c)
+	require.NoError(t, err)
 }
