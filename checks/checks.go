@@ -2,32 +2,52 @@ package checks
 
 import (
 	"context"
-	"fmt"
-	"strconv"
+	"errors"
+	"time"
+
+	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/promql"
+	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/pkg/labelset"
+	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/tracing"
-	"github.com/f1shl3gs/manta/query"
-	"github.com/f1shl3gs/manta/query/promql"
-	"go.uber.org/zap"
+	"github.com/f1shl3gs/manta/store"
+)
+
+const (
+	// AlertMetricName is the metric name for synthetic alert timeseries.
+	alertMetricName = "ALERTS"
 )
 
 // Checker should be implement as a Executor's handler
 type Checker struct {
 	logger *zap.Logger
 
-	cs manta.CheckService
-	es manta.EventService
-	ds manta.DatasourceService
+	cs     manta.CheckService
+	es     manta.EventService
+	ts     store.TenantStorage
+	engine *promql.Engine
 }
 
-func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ds manta.DatasourceService) *Checker {
+func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ts store.TenantStorage) *Checker {
+	engOpts := promql.EngineOpts{
+		Logger: log.NewZapToGokitLogAdapter(logger),
+		// Reg:           prometheus.DefaultRegisterer,
+		MaxSamples:    50000000,
+		Timeout:       2 * time.Minute,
+		LookbackDelta: 5 * time.Minute,
+		NoStepSubqueryIntervalFn: func(rangeMillis int64) int64 {
+			return time.Minute.Milliseconds()
+		},
+	}
+
 	return &Checker{
-		logger: logger,
 		cs:     cs,
 		es:     es,
-		ds:     ds,
+		ts:     ts,
+		engine: promql.NewEngine(engOpts),
+		logger: logger,
 	}
 }
 
@@ -49,24 +69,41 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 	// todo: interpolate
 	expr := c.Expr
 
-	querier, err := checker.querierFromDatasource(ctx, 0)
+	qry, err := checker.ts.Queryable(ctx, c.OrgID)
 	if err != nil {
 		return err
 	}
 
-	results, err := querier.Query(ctx, expr)
+	// reuse time!?
+	q, err := checker.engine.NewInstantQuery(qry, expr, time.Now())
 	if err != nil {
 		return err
 	}
+	defer q.Close()
 
-	for _, result := range results {
-		// conditions are sort by severity
-		if len(result.Values) == 0 {
-			continue
+	result := q.Exec(ctx)
+	if result.Err != nil {
+		return result.Err
+	}
+
+	var vector promql.Vector
+	switch v := result.Value.(type) {
+	case promql.Vector:
+		vector = v
+	case promql.Scalar:
+		vector = promql.Vector{
+			promql.Sample{
+				Point:  promql.Point(v),
+				Metric: labels.Labels{},
+			},
 		}
 
-		current := result.Values[0].Value
+	default:
+		return errors.New("query result is not a vector or scalar")
+	}
 
+	for _, sample := range vector {
+		v := sample.V
 		for _, condition := range c.Conditions {
 			var (
 				match     = false
@@ -75,17 +112,17 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 
 			switch threshold.Type {
 			case manta.GreatThan:
-				match = current > threshold.Value
+				match = v > threshold.Value
 			case manta.Equal:
-				match = current == threshold.Value
+				match = v == threshold.Value
 			case manta.NotEqual:
-				match = current != threshold.Value
+				match = v != threshold.Value
 			case manta.LessThan:
-				match = current < threshold.Value
+				match = v < threshold.Value
 			case manta.Inside:
-				match = current > threshold.Max && threshold.Min <= current
+				match = v > threshold.Max && threshold.Min <= v
 			case manta.Outside:
-				match = current < threshold.Min && threshold.Max > current
+				match = v < threshold.Min && threshold.Max > v
 			default:
 				checker.logger.Error("unknown threshold type",
 					zap.String("check", c.ID.String()),
@@ -97,55 +134,23 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 				continue
 			}
 
-			// build the alert
-			lbs := make(labelset.LabelSet, 8)
-			anns := make(map[string]string, 8)
-
-			for k, v := range result.Labels {
-				lbs.Set(k, v)
+			l := make(map[string]string, len(sample.Metric))
+			for _, lbl := range sample.Metric {
+				l[lbl.Name] = lbl.Value
 			}
 
-			for k, v := range task.Annotations {
-				anns[k] = v
-			}
-			anns["check"] = c.ID.String()
-			anns["task"] = task.ID.String()
-			anns["current"] = strconv.FormatFloat(current, 'f', 2, 64)
-			anns["predicate"] = condition.Threshold.Type
-			anns["threshold"] = strconv.FormatFloat(condition.Threshold.Value, 'f', 2, 64)
+			lb := labels.NewBuilder(sample.Metric).Del(labels.MetricName)
 
-			/*
-				now := time.Now()
+			// todo: set check's labels
+			lb.Set("check", c.ID.String())
+			lb.Set("org", c.OrgID.String())
 
-				_, err := checker.as.UpsertAlert(ctx, &manta.Alert{
-					Labels:      lbs,
-					Annotations: anns,
-					StartsAt:    now,
-					EndsAt:      now.Add(time.Minute),
-				})
+			// todo: build annotations
 
-				if err != nil {
-					checker.logger.Error("upsert alert failed",
-						zap.Error(err))
-				}*/
+			checker.logger.Info("alert",
+				zap.String("lb", lb.Labels().String()))
 		}
 	}
 
 	return nil
-}
-
-// todo: add cache
-func (checker *Checker) querierFromDatasource(ctx context.Context, id manta.ID) (query.Querier, error) {
-	ds, err := checker.ds.FindDatasourceByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	switch ds.Type {
-	case "prometheus":
-		pc := ds.GetPrometheus()
-		return promql.New(pc.Url)
-	default:
-		return nil, fmt.Errorf("unknown datasource type %q", ds.Type)
-	}
 }

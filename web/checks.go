@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
@@ -18,19 +19,32 @@ type ChecksHandler struct {
 
 	logger       *zap.Logger
 	checkService manta.CheckService
+	taskService  manta.TaskService
 }
 
-func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService) {
+func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService, ts manta.TaskService) {
 	h := &ChecksHandler{
 		Router:       router,
 		logger:       logger.With(zap.String("handler", "check")),
 		checkService: cs,
+		taskService:  ts,
 	}
 
 	h.HandlerFunc(http.MethodGet, ChecksPrefix, h.handleList)
 	h.HandlerFunc(http.MethodPut, ChecksPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, ChecksIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPost, ChecksIDPath, h.handleUpdate)
+}
+
+type check struct {
+	*manta.Check
+
+	LatestCompleted time.Time `json:"latestCompleted"`
+	LatestScheduled time.Time `json:"latestScheduled"`
+	LatestSuccess   time.Time `json:"latestSuccess"`
+	LatestFailure   time.Time `json:"latestFailure"`
+	LastRunStatus   string    `json:"lastRunStatus"`
+	LastRunError    string    `json:"lastRunError,omitempty"`
 }
 
 func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +64,29 @@ func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, checks)
+	list := make([]check, 0, len(checks))
+	for _, c := range checks {
+		task, err := h.taskService.FindTaskByID(ctx, c.TaskID)
+		if err != nil {
+			h.logger.Warn("find task by id failed",
+				zap.String("task", c.TaskID.String()),
+				zap.Error(err))
+
+			continue
+		}
+
+		list = append(list, check{
+			Check:           c,
+			LatestCompleted: task.LatestCompleted,
+			LatestScheduled: task.LatestScheduled,
+			LatestSuccess:   task.LatestSuccess,
+			LatestFailure:   task.LatestFailure,
+			LastRunStatus:   task.LastRunStatus,
+			LastRunError:    task.LastRunError,
+		})
+	}
+
+	err = encodeResponse(ctx, w, http.StatusOK, &list)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}

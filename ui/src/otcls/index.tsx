@@ -46,6 +46,7 @@ class OtclPage extends React.PureComponent<OtclPageProps> {
               color={ComponentColor.Primary}
               text="Create Configuration"
               onClick={onCreate}
+              testID={'otcl--create-button'}
             />
           </Page.ControlBarRight>
         </Page.ControlBar>

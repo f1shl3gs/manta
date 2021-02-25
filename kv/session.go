@@ -110,6 +110,10 @@ func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.S
 
 	val, err := b.Get(pk)
 	if err != nil {
+		if err == ErrKeyNotFound {
+			return nil, manta.ErrSessionNotFound
+		}
+
 		return nil, err
 	}
 

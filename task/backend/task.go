@@ -15,6 +15,7 @@ type TaskControlService interface {
 	CreateRun(ctx context.Context, taskID manta.ID, scheduledFor time.Time, runAt time.Time) (*manta.Run, error)
 
 	CurrentlyRunning(ctx context.Context, taskID manta.ID) ([]*manta.Run, error)
+
 	ManualRuns(ctx context.Context, taskID manta.ID) ([]*manta.Run, error)
 
 	// StartManualRun pulls a manual run from the list and moves it to currently running.

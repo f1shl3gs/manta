@@ -194,13 +194,13 @@ func (s *Service) putTask(ctx context.Context, tx Tx, task *manta.Task) error {
 	}
 
 	// organization index
-	refIdx := IndexKey(fk, pk)
+	indexKey := IndexKey(fk, pk)
 	b, err := tx.Bucket(taskOrgIndexBucket)
 	if err != nil {
 		return err
 	}
 
-	if err = b.Put(refIdx, pk); err != nil {
+	if err = b.Put(indexKey, pk); err != nil {
 		return err
 	}
 

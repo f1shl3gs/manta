@@ -48,10 +48,16 @@ func (r *OnBoardingRequest) Validate() error {
 	return nil
 }
 
+type OnboardingResult struct {
+	Username string         `json:"username"`
+	Org      *Organization  `json:"org"`
+	Auth     *Authorization `json:"auth"`
+}
+
 type OnBoardingService interface {
 	Onboarded(ctx context.Context) (bool, error)
 
-	Setup(ctx context.Context, req *OnBoardingRequest) error
+	Setup(ctx context.Context, req *OnBoardingRequest) (*OnboardingResult, error)
 }
 
 type onBoardingService struct {
@@ -89,13 +95,13 @@ func (o *onBoardingService) Onboarded(ctx context.Context) (bool, error) {
 
 // Setup setup the initial organization, user and authorization
 // TODO: Setup should be protect by transaction
-func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) error {
+func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) (*OnboardingResult, error) {
 	err := o.userService.CreateUser(ctx, &User{
 		Name: req.Username,
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	user, err := o.userService.FindUser(ctx, UserFilter{
@@ -103,12 +109,12 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) e
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = o.passwordService.SetPassword(ctx, user.ID, req.Password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = o.organizationService.CreateOrganization(ctx, &Organization{
@@ -116,23 +122,31 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) e
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	org, err := o.organizationService.FindOrganization(ctx, OrganizationFilter{Name: &req.Org})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	token, err := o.tokenGen.Token()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return o.authorizationService.CreateAuthorization(ctx, &Authorization{
+	err = o.authorizationService.CreateAuthorization(ctx, &Authorization{
 		UID:         user.ID,
 		Status:      "active",
 		Token:       token,
 		Permissions: append(OwnerPermissions(org.ID), MePermissions(user.ID)...),
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &OnboardingResult{
+		Username: req.Username,
+		Org:      org,
+	}, nil
 }

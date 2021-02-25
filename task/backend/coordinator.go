@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"time"
 
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
@@ -22,19 +23,20 @@ func NotifyCoordinatorOfExisting(ctx context.Context, log *zap.Logger, ts manta.
 		return err
 	}
 
+	latestCompleted := time.Now()
 	for _, task := range tasks {
 		if task.Status != manta.TaskActive {
 			continue
 		}
 
-		// task, err := ts.UpdateTask(context.Background(), task.ID, influxdb.TaskUpdate{
-		// 	LatestCompleted: &latestCompleted,
-		// 	LatestScheduled: &latestCompleted,
-		// })
-		// if err != nil {
-		// 	file.Error("Failed to set latestCompleted", zap.Error(err))
-		// 	continue
-		// }
+		task, err := ts.UpdateTask(context.Background(), task.ID, manta.TaskUpdate{
+			LatestCompleted: &latestCompleted,
+			LatestScheduled: &latestCompleted,
+		})
+		if err != nil {
+			log.Error("Failed to set latestCompleted", zap.Error(err))
+			continue
+		}
 
 		if err = coord.TaskCreated(ctx, task); err != nil {
 			log.Error("task create failed",

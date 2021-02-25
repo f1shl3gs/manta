@@ -7,7 +7,6 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
-	"github.com/pkg/errors"
 )
 
 var (
@@ -151,26 +150,13 @@ func (s *Service) CreateCheck(ctx context.Context, c *manta.Check) error {
 }
 
 func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error {
-	c.ID = s.idGen.ID()
-	c.Created = time.Now()
-	c.Updated = time.Now()
-
-	org, err := s.findOrganizationByID(ctx, tx, c.OrgID)
-	if err != nil {
-		return errors.Wrap(err, "cannot find org by id")
-	}
-
-	if err := s.putCheck(ctx, tx, c); err != nil {
-		return err
-	}
+	now := time.Now()
+	taskID := s.idGen.ID()
 
 	task := &manta.Task{
-		Annotations: map[string]string{
-			"org":        org.ID.String(),
-			"org.name":   org.Name,
-			"check":      c.ID.String(),
-			"check.name": c.Name,
-		},
+		ID:      taskID,
+		Created: now,
+		Updated: now,
 		Type:    "check",
 		Status:  c.Status,
 		OwnerID: c.ID,
@@ -178,7 +164,16 @@ func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error 
 		Cron:    c.Cron,
 	}
 
-	if err := s.createTask(ctx, tx, task); err != nil {
+	if err := s.putTask(ctx, tx, task); err != nil {
+		return err
+	}
+
+	c.ID = s.idGen.ID()
+	c.Created = now
+	c.Updated = now
+	c.TaskID = taskID
+
+	if err := s.putCheck(ctx, tx, c); err != nil {
 		return err
 	}
 

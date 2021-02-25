@@ -3,8 +3,9 @@ package middleware
 import (
 	"context"
 
-	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
 )
 
 type CoordinatingCheckService struct {
@@ -28,18 +29,14 @@ func (cs *CoordinatingCheckService) CreateCheck(ctx context.Context, check *mant
 		return err
 	}
 
-	tasks, err := cs.taskService.FindTasks(ctx, manta.TaskFilter{
-		OrgID: &check.ID,
-	})
+	task, err := cs.taskService.FindTaskByID(ctx, check.TaskID)
 	if err != nil {
 		return err
 	}
 
-	for _, task := range tasks {
-		err = cs.coordinator.TaskCreated(ctx, task)
-		if err != nil {
-			return err
-		}
+	err = cs.coordinator.TaskCreated(ctx, task)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -51,7 +48,7 @@ func (cs *CoordinatingCheckService) UpdateCheck(ctx context.Context, id manta.ID
 		return nil, err
 	}
 
-	// not now
+	// todo: not now
 
 	return check, nil
 }

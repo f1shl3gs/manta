@@ -14,12 +14,14 @@ import {
   ResourceCard,
   SlideToggle,
 } from '@influxdata/clockface'
+import LastRunStatus from './LastRunStatus'
+
+// Utils
+import {relativeTimestampFormatter} from '../utils/relativeTimestampFormatter'
 
 // Types
 import {Check} from '../types/Check'
-import {relativeTimestampFormatter} from '../utils/relativeTimestampFormatter'
-import LastRunStatus from './LastRunStatus'
-import moment from 'moment'
+import {useChecks} from './useChecks'
 
 interface Props {
   check: Check
@@ -27,8 +29,18 @@ interface Props {
 
 const CheckCard: React.FC<Props> = props => {
   const {
-    check: {id, name, desc, updated, status, conditions},
+    check: {
+      id,
+      name,
+      desc,
+      updated,
+      status,
+      latestCompleted,
+      lastRunStatus,
+      lastRunError,
+    },
   } = props
+  const {del, reload} = useChecks()
 
   const contextMenu = () => (
     <Button
@@ -36,7 +48,15 @@ const CheckCard: React.FC<Props> = props => {
       text={'Delete'}
       color={ComponentColor.Danger}
       size={ComponentSize.ExtraSmall}
-      onClick={() => console.log(`delete ${id}`)}
+      onClick={() => {
+        del(id)
+          .then(() => {
+            reload()
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      }}
     />
   )
 
@@ -61,7 +81,10 @@ const CheckCard: React.FC<Props> = props => {
           onChange={() => console.log('toggle')}
           style={{flexBasis: '16px'}}
         />
-        <LastRunStatus lastRunStatus={'success'} />
+        <LastRunStatus
+          lastRunStatus={lastRunStatus}
+          lastRunError={lastRunError}
+        />
       </FlexBox>
 
       <FlexBox
@@ -81,7 +104,7 @@ const CheckCard: React.FC<Props> = props => {
           onUpdate={v => console.log('onUpdate')}
         />
         <ResourceCard.Meta>
-          <>Last completed at {moment().format()}</>
+          <>Last completed at {latestCompleted}</>
           <>{relativeTimestampFormatter(updated, 'Last updated ')}</>
         </ResourceCard.Meta>
       </FlexBox>

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"context"
 	"net/http"
 	"net/http/pprof"
 
@@ -17,11 +18,16 @@ import (
 	"github.com/f1shl3gs/manta/web/middlewares"
 )
 
+type Flusher interface {
+	Flush(ctx context.Context) error
+}
+
 type Backend struct {
 	manta.HTTPErrorHandler
 
-	TenantStorage store.TenantStorage
+	Flusher Flusher
 
+	TenantStorage        store.TenantStorage
 	OtclService          manta.OtclService
 	BackupService        manta.BackupService
 	OrganizationService  manta.OrganizationService
@@ -106,9 +112,24 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 
 	NewQueryHandler(logger, router, backend.TenantStorage)
 
-	NewChecksHandler(logger, router, backend.CheckService)
+	NewChecksHandler(logger, router, backend.CheckService, backend.TaskService)
 
 	// and more
+
+	if backend.Flusher != nil {
+		flusher := backend.Flusher
+		router.HandlerFunc(http.MethodGet, "/kv/flush", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+
+			err := flusher.Flush(r.Context())
+			if err != nil {
+				router.HandleHTTPError(ctx, err, w)
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+		})
+	}
 
 	// tracing
 	h := middlewares.Log(logger, router)
@@ -134,6 +155,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	ah.RegisterNoAuthRoute(http.MethodGet, "/metrics")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof/*all")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/kv/flush")
 
 	// test only
 	ah.RegisterNoAuthRoute(http.MethodGet, "/api/v1/otcls/:id")

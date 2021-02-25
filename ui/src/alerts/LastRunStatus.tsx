@@ -46,7 +46,7 @@ const LastRunStatus: React.FC<Props> = props => {
   const popoverContents = () => (
     <>
       <h6>Last Run Status:</h6>
-      <p>{text}</p>
+      <p style={{whiteSpace: 'pre-wrap'}}>{text}</p>
     </>
   )
 

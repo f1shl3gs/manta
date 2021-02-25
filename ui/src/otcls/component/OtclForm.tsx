@@ -72,6 +72,7 @@ const OtclForm: React.FC<Props> = props => {
                   placeholder="Name this Otcl"
                   autoFocus
                   status={status}
+                  testID={`editor--name-input`}
                 />
               )}
             </Form.ValidationElement>
@@ -96,6 +97,7 @@ const OtclForm: React.FC<Props> = props => {
                   titleText="Desc"
                   placeholder="Discribe this Otcl"
                   status={status}
+                  testID={`editor--desc-input`}
                 />
               )}
             </Form.ValidationElement>
@@ -130,13 +132,13 @@ const OtclForm: React.FC<Props> = props => {
               <Button
                 text="Cancel"
                 onClick={onDismiss}
-                testID="create-scraper--cancel"
+                testID="create-otcl--cancel"
               />
               <Button
                 status={ComponentStatus.Default}
                 text="Create"
                 color={ComponentColor.Success}
-                testID="create-scraper--submit"
+                testID="create-otcl--submit"
                 type={ButtonType.Submit}
               />
             </Form.Footer>

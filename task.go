@@ -22,7 +22,8 @@ var (
 )
 
 type TaskFilter struct {
-	OrgID *ID
+	OrgID   *ID
+	OwnerID *ID
 }
 
 type TaskUpdate struct {
@@ -33,6 +34,12 @@ type TaskUpdate struct {
 	LatestSuccess   *time.Time
 	LatestFailure   *time.Time
 	LastRunError    *string
+}
+
+func (udp TaskUpdate) Apply(task *Task) {
+	if udp.Status != nil {
+		task.Status = *udp.Status
+	}
 }
 
 type TaskService interface {

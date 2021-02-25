@@ -120,6 +120,8 @@ message Check {
   required string cron = 9;
 
   repeated Condition conditions = 10 [(gogoproto.nullable) = false];
+
+  required uint64 task_id = 11 [(gogoproto.customname) = "TaskID", (gogoproto.casttype) = "ID"];
 }
 
 message Alert {

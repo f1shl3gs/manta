@@ -43,13 +43,15 @@ func (h *SetupHandler) onBoarding(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.onBoardingService.Setup(ctx, br)
+	result, err := h.onBoardingService.Setup(ctx, br)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	if err = encodeResponse(ctx, w, http.StatusOK, result); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *SetupHandler) decodeOnBoardingRequest(r *http.Request) (*manta.OnBoardingRequest, error) {

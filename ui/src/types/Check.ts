@@ -7,4 +7,12 @@ export interface Check extends Common {
   desc?: string
   status: string
   conditions: Condition[]
+
+  // status
+  latestCompleted: string
+  latestScheduled: string
+  latestSuccess: string
+  latestFailure: string
+  lastRunStatus: string
+  lastRunError?: string
 }

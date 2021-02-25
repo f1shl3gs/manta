@@ -34,7 +34,6 @@ import (
 	"github.com/f1shl3gs/manta/task/backend/executor"
 	"github.com/f1shl3gs/manta/task/backend/middleware"
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
-	"github.com/f1shl3gs/manta/task/mock"
 	"github.com/f1shl3gs/manta/web"
 )
 
@@ -339,10 +338,15 @@ func (l *Launcher) Run() error {
 	// checks
 	checker := checks.NewChecker(
 		logger.With(zap.String("service", "checker")),
-		service, service, service)
+		service, service, tenantStorage)
+
+	var (
+		taskService        manta.TaskService          = service
+		taskControlService backend.TaskControlService = service
+	)
 
 	// scheduler
-	ex := executor.NewExecutor(logger, service, mock.NewTaskControlService(), checker.Process)
+	ex := executor.NewExecutor(logger, taskService, taskControlService, checker.Process)
 	var sch scheduler.Scheduler = &scheduler.NoopScheduler{}
 	if !l.noopSchedule {
 		tsch, sm, err := scheduler.NewScheduler(ex, backend.NewSchedulableTaskService(service),
@@ -390,6 +394,7 @@ func (l *Launcher) Run() error {
 			SessionService:       service,
 			ScrapeService:        service,
 			TenantStorage:        tenantStorage,
+			Flusher:              kvStore,
 		})
 
 		group.Go(func() error {

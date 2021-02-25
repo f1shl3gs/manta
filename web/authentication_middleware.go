@@ -56,7 +56,7 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err == manta.ErrSessionExpired {
+	if err == manta.ErrSessionExpired || err == manta.ErrSessionNotFound {
 		h.handleUnauthorized(w, r, err)
 		return
 	}

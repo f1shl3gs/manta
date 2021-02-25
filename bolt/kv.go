@@ -137,8 +137,8 @@ func (s *KVStore) DB() *bolt.DB {
 }
 
 // Flush removes all bolt keys within each bucket.
-func (s *KVStore) Flush(ctx context.Context) {
-	_ = s.db.Update(
+func (s *KVStore) Flush(ctx context.Context) error {
+	return s.db.Update(
 		func(tx *bolt.Tx) error {
 			return tx.ForEach(func(name []byte, b *bolt.Bucket) error {
 				s.cleanBucket(tx, b)
