@@ -218,7 +218,6 @@ paths:
           description: Create Check success
         default:
           $ref: "#/components/responses/UnexpectedError"
-
   /checks/{id}:
     delete:
       operationId: DeleteCheck
@@ -233,6 +232,47 @@ paths:
       responses:
         204:
           description: Delete check by id success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /notification_endpoint:
+    get:
+      operationId: ListNotificationEndpoint
+      tags:
+        - Notification Endpoint
+      summary: List all notification
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: query
+          name: orgID
+          required: true
+      responses:
+        200:
+          description: Notification Endpoint List
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationEndpoints"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /notification_endpoint/{id}:
+    get:
+      operationId: GetNotificationEndpoint
+      summary: Get NotificationEndpoint
+      tags:
+        - Notification Endpoint
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: NotificationEndpoint Detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationEndpoint"
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -388,7 +428,6 @@ components:
         threshold:
           $ref: "#/components/schemas/Threshold"
 
-
     Check:
       type: object
       properties:
@@ -423,6 +462,46 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Check"
+
+    NotificationEndpoint:
+      type: object
+      required: content_template
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+        desc:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+        url:
+          type: string
+        method:
+          type: string
+          enum:
+            - POST
+            - GET
+            - PUT
+        headers:
+          type: object
+        content_template:
+          type: string
+    NotificationEndpoints:
+      type: array
+      items:
+        $ref: "#/components/schemas/NotificationEndpoint"
 
   responses:
     UnexpectedError:

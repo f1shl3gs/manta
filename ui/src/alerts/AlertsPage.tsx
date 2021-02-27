@@ -10,6 +10,7 @@ import ChecksIndex from './ChecksIndex'
 // Hooks
 import {useOrgID} from 'shared/useOrg'
 import {ChecksProvider} from './useChecks'
+import CheckOverlay from './CheckOverlay'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
 
@@ -46,6 +47,10 @@ const AlertsPage: React.FC = props => {
           <Switch>
             <ChecksProvider>
               <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
+              <Route
+                path={`${pagePrefix}/checks/:id`}
+                component={CheckOverlay}
+              />
             </ChecksProvider>
             <Route
               path={`${pagePrefix}/notificationEndpoints`}

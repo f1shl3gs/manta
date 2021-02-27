@@ -1,10 +1,17 @@
-declare namespace Cypress {
-  interface Chainable {
-    flush(): Chainable<Element>
-    onboard(): Chainable<Response>
-    signin(): Chainable<Element>
+import {OnboardResult} from './support/commands'
 
-    getByTestID(id: string): Chainable<Element>
-    getByInputName(name: string): Chainable<Element>
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      flush(): Chainable<Element>
+
+      onboard(): Chainable<Response>
+
+      signin(): Chainable<OnboardResult>
+
+      getByTestID(id: string): Chainable<Element>
+
+      getByInputName(name: string): Chainable<Element>
+    }
   }
 }

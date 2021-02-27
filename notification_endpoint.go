@@ -5,8 +5,9 @@ import (
 )
 
 type NotificationEndpointFilter struct {
-	ID   *ID
-	Name *string
+	ID    *ID
+	Name  *string
+	OrgID *ID
 }
 
 type NotificationEndpointUpdate struct {

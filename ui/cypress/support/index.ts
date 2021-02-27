@@ -1,5 +1,3 @@
-import {OnboardResult} from './commands'
-
 Cypress.Commands.add(
   'getByTestID',
   (id: string): Cypress.Chainable => {
@@ -38,7 +36,7 @@ Cypress.Commands.add(
             },
           })
           .then(() => {
-            return cy.wrap(body as OnboardResult)
+            return cy.wrap(body)
           })
       })
     })

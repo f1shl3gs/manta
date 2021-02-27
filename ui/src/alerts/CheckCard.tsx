@@ -22,6 +22,8 @@ import {relativeTimestampFormatter} from '../utils/relativeTimestampFormatter'
 // Types
 import {Check} from '../types/Check'
 import {useChecks} from './useChecks'
+import {useHistory} from 'react-router-dom'
+import {useOrgID} from '../shared/useOrg'
 
 interface Props {
   check: Check
@@ -41,6 +43,8 @@ const CheckCard: React.FC<Props> = props => {
     },
   } = props
   const {del, reload} = useChecks()
+  const orgID = useOrgID()
+  const history = useHistory()
 
   const contextMenu = () => (
     <Button
@@ -95,7 +99,9 @@ const CheckCard: React.FC<Props> = props => {
         <ResourceCard.EditableName
           name={name}
           noNameString={'Name this Check'}
-          onClick={() => console.log('onClick')}
+          onClick={() => {
+            history.push(`/orgs/${orgID}/alerts/checks/${id}`)
+          }}
           onUpdate={v => console.log('v')}
         />
         <ResourceCard.EditableDescription

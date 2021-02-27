@@ -34,6 +34,7 @@ func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService,
 	h.HandlerFunc(http.MethodPut, ChecksPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, ChecksIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPost, ChecksIDPath, h.handleUpdate)
+	h.HandlerFunc(http.MethodGet, ChecksIDPath, h.handleGet)
 }
 
 type check struct {
@@ -191,4 +192,26 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+	)
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	c, err := h.checkService.FindCheckByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, c); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
