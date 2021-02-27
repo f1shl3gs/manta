@@ -1,5 +1,5 @@
 import constate from 'constate'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 import remoteDataState from '../utils/rds'
 
 const [OrgsProvider, useOrgs] = constate(

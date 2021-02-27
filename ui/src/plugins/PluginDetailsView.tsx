@@ -8,7 +8,7 @@ import OTCLPluginsExplainer from './OTCLPluginsExplainer'
 
 // Hooks
 import {useParams} from 'react-router-dom'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 
 // Constants
 import {OTCL_PLUGINS} from './constants/Plugins'

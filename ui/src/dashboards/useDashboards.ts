@@ -1,5 +1,5 @@
 import constate from 'constate'
-import {CachePolicies, useFetch} from 'use-http'
+import {CachePolicies, useFetch} from 'shared/useFetch'
 import {Dashboard} from '../types/Dashboard'
 import {useOrgID} from '../shared/useOrg'
 import remoteDataState from '../utils/rds'

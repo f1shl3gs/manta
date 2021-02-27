@@ -45,7 +45,6 @@
     "tween-functions": "^1.2.0",
     "typescript": "^4.0.3",
     "urs": "^0.0.7",
-    "use-http": "^1.0.16",
     "web-vitals": "^0.2.4"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@ import DashboardCard from './components/DashboardCard'
 
 // Hooks
 import {useDashboards} from './useDashboards'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 
 const DashboardCards: React.FC = () => {
   const {dashboards, refresh} = useDashboards()

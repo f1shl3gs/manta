@@ -1,6 +1,6 @@
 import React from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
-import {Provider} from 'use-http'
+import {Provider} from 'shared/useFetch'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {useAuth} from '../shared/useAuthentication'
 

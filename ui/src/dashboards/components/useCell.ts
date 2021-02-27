@@ -7,7 +7,7 @@ import {Cell} from 'types/Dashboard'
 
 // Hooks
 import {useParams} from 'react-router-dom'
-import {CachePolicies, useFetch} from 'use-http'
+import {CachePolicies, useFetch} from 'shared/useFetch'
 import remoteDataState from 'utils/rds'
 
 const [CellProvider, useCell] = constate(

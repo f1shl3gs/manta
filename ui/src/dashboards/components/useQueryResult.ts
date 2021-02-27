@@ -5,7 +5,7 @@ import {FromFluxResult, fromRows} from '@influxdata/giraffe'
 // Hooks
 import {useAutoRefresh} from 'shared/useAutoRefresh'
 import {useOrgID} from 'shared/useOrg'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 
 // Types
 import {DashboardQuery} from '../../types/Dashboard'

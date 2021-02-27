@@ -1,5 +1,10 @@
 import {ReactNode} from 'react'
-import {FunctionKeys} from 'utility-types'
+
+type NonUndefined<A> = A extends undefined ? never : A
+
+type FunctionKeys<T extends object> = {
+  [K in keyof T]-?: NonUndefined<T[K]> extends Function ? K : never
+}[keyof T]
 
 export enum HTTPMethod {
   DELETE = 'DELETE',

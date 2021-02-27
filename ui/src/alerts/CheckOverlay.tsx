@@ -5,6 +5,7 @@ import React from 'react'
 import {Button, Input, Overlay} from '@influxdata/clockface'
 import {useHistory, useParams} from 'react-router-dom'
 import {CheckProvider} from './useCheck'
+import CheckEditor from './CheckEditor'
 
 const CheckOverlay: React.FC = () => {
   const history = useHistory()
@@ -24,7 +25,7 @@ const CheckOverlay: React.FC = () => {
 
         <Overlay.Body>
           <CheckProvider id={id}>
-            <div>a</div>
+            <CheckEditor />
           </CheckProvider>
         </Overlay.Body>
 

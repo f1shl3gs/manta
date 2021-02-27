@@ -13,7 +13,7 @@ import {
   Input,
   InputType,
 } from '@influxdata/clockface'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 import {useHistory, useLocation} from 'react-router-dom'
 
 const SigninForm: React.FC = () => {

@@ -9,7 +9,7 @@ import SearchWidget from '../shared/components/SearchWidget'
 
 // Hooks
 import {DashboardsProvider} from './useDashboards'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 import {useOrgID} from 'shared/useOrg'
 
 // Types

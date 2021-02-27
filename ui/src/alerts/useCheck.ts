@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react'
 
 // types
 import {Check} from '../types/Check'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 
 // Utils
 import remoteDataState from '../utils/rds'
@@ -17,9 +17,27 @@ interface State {
   id: string
 }
 
+// todo: fix the status properties
+const defaultCheck: Check = {
+  lastRunStatus: '',
+  latestCompleted: '',
+  latestFailure: '',
+  latestScheduled: '',
+  latestSuccess: '',
+  conditions: [],
+  created: '',
+  id: '',
+  orgID: '',
+  status: '',
+  updated: '',
+  name: '',
+  desc: '',
+  expr: '',
+}
+
 const [CheckProvider, useCheck] = constate(
   (initialState: State) => {
-    const [check, setCheck] = useState<Check>()
+    const [check, setCheck] = useState<Check>(defaultCheck)
     const {data, get, del, put, loading, error} = useFetch(
       `/api/v1/checks/${initialState.id}`,
       {}

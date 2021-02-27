@@ -12,7 +12,7 @@ import ViewSwitcher from 'shared/components/ViewSwitcher'
 import {useViewProperties} from 'shared/useViewProperties'
 import {useAutoRefresh} from 'shared/useAutoRefresh'
 import {useQueries} from './useQueries'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 import {useOrgID} from 'shared/useOrg'
 
 // Utils
@@ -77,9 +77,6 @@ const TimeMachineVis: React.FC = () => {
   }
 
   const gr = transformer(queryResults)
-
-  console.log('qrs', queryResults)
-  console.log('gr', gr)
 
   return (
     <div className={timeMachineViewClassName}>

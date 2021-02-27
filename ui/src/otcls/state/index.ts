@@ -3,7 +3,7 @@ import constate from 'constate'
 
 import {Otcl} from 'types/otcl'
 import remoteDataState from 'utils/rds'
-import {CachePolicies, useFetch} from 'use-http'
+import {CachePolicies, useFetch} from 'shared/useFetch'
 
 const OtclPrefix = '/api/v1/otcls'
 

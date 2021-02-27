@@ -12709,20 +12709,6 @@ urs@^0.0.7:
   resolved "https://registry.npm.taobao.org/urs/download/urs-0.0.7.tgz#2dbf320a68a54bbd67ab9c5ac103b0f2227ca6be"
   integrity sha1-Lb8yCmilS71nq5xawQOw8iJ8pr4=
 
-use-http@^1.0.16:
-  version "1.0.16"
-  resolved "https://registry.npm.taobao.org/use-http/download/use-http-1.0.16.tgz#6d75f3e734abf990049c7a02b22d757c3abda883"
-  integrity sha1-bXXz5zSr+ZAEnHoCsi11fDq9qIM=
-  dependencies:
-    urs "^0.0.7"
-    use-ssr "^1.0.22"
-    utility-types "^3.10.0"
-
-use-ssr@^1.0.22:
-  version "1.0.23"
-  resolved "https://registry.npm.taobao.org/use-ssr/download/use-ssr-1.0.23.tgz#3bde1e10cd01b3b61ab6386d7cddb72e74828bf8"
-  integrity sha1-O94eEM0Bs7YatjhtfN23LnSCi/g=
-
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"

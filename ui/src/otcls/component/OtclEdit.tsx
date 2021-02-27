@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
-import useFetch, {CachePolicies} from 'use-http'
+import useFetch, {CachePolicies} from 'shared/useFetch'
 
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 

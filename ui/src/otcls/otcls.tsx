@@ -23,7 +23,7 @@ import CopyButton from '../shared/components/CopyButton'
 // Hooks
 import {useOrgID} from 'shared/useOrg'
 import {useOtcls} from './state'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 import {useHistory} from 'react-router-dom'
 
 // Types

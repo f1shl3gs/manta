@@ -1,7 +1,7 @@
 import {useCallback} from 'react'
 import constate from 'constate'
 import {useParams} from 'react-router-dom'
-import {CachePolicies, useFetch} from 'use-http'
+import {CachePolicies, useFetch} from 'shared/useFetch'
 
 import remoteDataState from '../../utils/rds'
 import {Cells, Dashboard} from '../../types/Dashboard'

@@ -5,7 +5,7 @@ import OtclForm from './OtclForm'
 import {OtclOverlay} from './OtclOverlay'
 import {emptyOtcl, useOtcl, useOtcls} from '../state'
 import {useOrgID} from 'shared/useOrg'
-import {useFetch} from 'use-http'
+import {useFetch} from 'shared/useFetch'
 
 const OtclCreate: React.FC = () => {
   const history = useHistory()

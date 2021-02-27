@@ -6,7 +6,7 @@ export const useFetchArgsDefaults: UseFetchArgsReturn = {
   path: undefined,
   customOptions: {
     cacheLife: 0,
-    cachePolicy: CachePolicies.CACHE_FIRST,
+    cachePolicy: CachePolicies.NO_CACHE,
     interceptors: {},
     onAbort: () => {
       /* do nothing */
