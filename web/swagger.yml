@@ -85,7 +85,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Organization"
-  /orgs/{orgID}:
+  /orgs/{id}:
     get:
       operationId: GetOrgByID
       tags:
@@ -94,11 +94,11 @@ paths:
       parameters:
         - $ref: "#/components/parameters/TraceSpan"
         - in: path
-          name: orgID
-          schema:
-            type: string
+          name: id
           required: true
           description: The ID of the organization to get
+          schema:
+            type: string
       responses:
         200:
           description: Organization details
@@ -154,7 +154,7 @@ paths:
                 $ref: "#/components/schemas/Otcl"
         default:
           $ref: "#/components/responses/UnexpectedError"
-  /otcls/{otclID}:
+  /otcls/{id}:
     get:
       operationId: GetOtcl
       tags:
@@ -163,7 +163,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/TraceSpan"
         - in: path
-          name: otclID
+          name: id
           schema:
             type: string
           required: true
@@ -190,6 +190,8 @@ paths:
           name: orgID
           description: List checks with this orgID
           required: false
+          schema:
+            type: string
 
       responses:
         200:
@@ -229,6 +231,9 @@ paths:
         - in: path
           name: id
           required: true
+          schema:
+            type: string
+
       responses:
         204:
           description: Delete check by id success
@@ -255,6 +260,7 @@ paths:
                 $ref: "#/components/schemas/NotificationEndpoints"
         default:
           $ref: "#/components/responses/UnexpectedError"
+
   /notification_endpoint/{id}:
     get:
       operationId: GetNotificationEndpoint
@@ -266,6 +272,8 @@ paths:
         - in: path
           name: id
           required: true
+          schema:
+            type: string
       responses:
         200:
           description: NotificationEndpoint Detail
@@ -273,6 +281,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotificationEndpoint"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    delete:
+      operationId: DeleteNotificationEndpoint
+      summary: Delete notification endpoint by id
+      tags:
+        - Notification Endpoint
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Delete success
         default:
           $ref: "#/components/responses/UnexpectedError"
 

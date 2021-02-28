@@ -48,11 +48,13 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	router := NewRouter()
 
 	// static
-	fileServer := http.FileServer(http.FS(manta.Assets))
+	/*fileServer := http.FileServer(http.FS(manta.Assets))
 	router.GET("/ui/*filepath", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 		r.URL.Path = manta.UIPrefix + params.ByName("filepath")
 		fileServer.ServeHTTP(w, r)
 	})
+	*/
+	router.ServeFiles("/*filepath", http.FS(manta.Assets))
 
 	// healthz
 	router.Handler(http.MethodGet, "/healthz", newHealthzHandler(logger))
@@ -156,6 +158,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof/*all")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/kv/flush")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/")
 
 	// test only
 	ah.RegisterNoAuthRoute(http.MethodGet, "/api/v1/otcls/:id")

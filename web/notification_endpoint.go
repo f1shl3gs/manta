@@ -33,6 +33,7 @@ func NewNotificationEndpointHandler(
 
 	h.HandlerFunc(http.MethodGet, NotificationEndpointPrefix, h.handleList)
 	h.HandlerFunc(http.MethodGet, NotificationEndpointIDPath, h.handleGet)
+	h.HandlerFunc(http.MethodDelete, NotificationEndpointIDPath, h.handleDelete)
 }
 
 // handleList is the http handler for list all notification endpoints
@@ -78,4 +79,24 @@ func (h *NotificationEndpointHandler) handleGet(w http.ResponseWriter, r *http.R
 	if err = encodeResponse(ctx, w, http.StatusOK, ne); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+func (h *NotificationEndpointHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+	)
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = h.notificationEndpointService.DeleteNotificationEndpoint(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

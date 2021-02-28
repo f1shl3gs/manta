@@ -478,3 +478,11 @@ message Otcl {
 message AlertAction {
 
 }
+
+message Variable {
+  required uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
+  required uint64 org_id = 2 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+  required string name = 3;
+  required string desc = 4;
+  repeated string selected = 5;
+}

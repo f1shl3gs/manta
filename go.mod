@@ -9,7 +9,6 @@ require (
 	github.com/go-kit/kit v0.10.0
 	github.com/go-playground/validator/v10 v10.4.0
 	github.com/gogo/protobuf v1.3.2
-	github.com/golang/snappy v0.0.2
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.4
 	github.com/influxdata/cron v0.0.0-20200427044617-e2c242fdf59f
@@ -41,7 +40,6 @@ require (
 	google.golang.org/grpc v1.33.1
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	honnef.co/go/tools v0.0.1-2020.1.6 // indirect
 )
 
 replace k8s.io/client-go => k8s.io/client-go v0.19.2
