@@ -6,8 +6,15 @@ import {
   useCallback,
   DependencyList,
 } from 'react'
-import {RequestInitJSON, Options, Res, HTTPMethod, ResponseType} from './types'
-import {FunctionKeys, NonFunctionKeys} from 'utility-types'
+import {
+  RequestInitJSON,
+  Options,
+  Res,
+  HTTPMethod,
+  ResponseType,
+  NonFunctionKeys,
+  FunctionKeys,
+} from './types'
 
 /**
  * Used for error checking. If the condition is false, throw an error

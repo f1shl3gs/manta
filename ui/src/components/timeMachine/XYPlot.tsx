@@ -5,9 +5,8 @@ import React from 'react'
 import {Config, Table} from '@influxdata/giraffe'
 
 // Types
-import {XYViewProperties} from 'types/Dashboard'
-import {getFormatter} from '../../utils/vis'
-import {useLineView} from '../../shared/useViewProperties'
+import {getFormatter} from 'utils/vis'
+import {useLineView} from 'shared/useViewProperties'
 
 interface Props {
   children: (config: Config) => JSX.Element
@@ -18,24 +17,6 @@ interface Props {
 
 const XYPlot: React.FC<Props> = props => {
   const {children, table, groupKeyUnion} = props
-
-  /*
-  {
-      timeFormat,
-      xColumn = 'time',
-      yColumn = 'value',
-      axes: {
-        x: {
-          label: xAxisLabel,
-          prefix: xTickPrefix
-        },
-        y: {
-          label: yAxisLabel,
-          prefix: yTickPrefix
-        }
-      }
-    }
-    */
 
   const {
     timeFormat,

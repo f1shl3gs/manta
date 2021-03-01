@@ -13,22 +13,12 @@ const CheckOverlay: React.FC = () => {
   const onDismiss = () => history.goBack()
 
   return (
-    <Overlay visible>
-      <Overlay.Container maxWidth={800}>
-        <Overlay.Header title={'Check'} onDismiss={onDismiss}>
-          <div>hhh</div>
-        </Overlay.Header>
-
-        <Overlay.Body>
-          <CheckProvider id={id}>
-            <CheckEditor />
-          </CheckProvider>
-        </Overlay.Body>
-
-        <Overlay.Footer>
-          <Button text={'Close'} onClick={onDismiss} />
-        </Overlay.Footer>
-      </Overlay.Container>
+    <Overlay visible className={'veo-overlay'} onEscape={onDismiss}>
+      <div className={'veo'}>
+        <CheckProvider id={id}>
+          <CheckEditor />
+        </CheckProvider>
+      </div>
     </Overlay>
   )
 }

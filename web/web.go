@@ -54,7 +54,7 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 		fileServer.ServeHTTP(w, r)
 	})
 	*/
-	router.ServeFiles("/*filepath", http.FS(manta.Assets))
+	router.ServeFiles("/ui/*filepath", http.FS(manta.Assets))
 
 	// healthz
 	router.Handler(http.MethodGet, "/healthz", newHealthzHandler(logger))

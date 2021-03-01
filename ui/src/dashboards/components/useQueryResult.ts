@@ -8,10 +8,10 @@ import {useOrgID} from 'shared/useOrg'
 import {useFetch} from 'shared/useFetch'
 
 // Types
-import {DashboardQuery} from '../../types/Dashboard'
+import {DashboardQuery} from 'types/Dashboard'
 
 // Utils
-import {Row, transformToRows} from '../../utils/transform'
+import {Row, transformToRows} from 'utils/transform'
 
 const useQueryResult = (
   queries: DashboardQuery[],
@@ -59,7 +59,7 @@ const useQueryResult = (
           console.error('query failed', err)
         })
     })
-  }, [queries, start, end, step, get, orgID])
+  }, [queries, start, end, step, get, orgID, deps])
 
   return result
 }

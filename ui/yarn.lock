@@ -1296,10 +1296,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.5.0":
-  version "2.5.0"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.5.0.tgz#ff4e93da185c97185298b1bdd8ae5fc08e444e9b"
-  integrity sha1-/06T2hhclxhSmLG92K5fwI5ETps=
+"@influxdata/clockface@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.1.tgz#3b39a11cfdc2570e9bad6bbdf967d5afd34fdc35"
+  integrity sha1-OzmhHP3CVw6brWu9+WfVr9NP3DU=
 
 "@influxdata/giraffe@2.1.0":
   version "2.1.0"

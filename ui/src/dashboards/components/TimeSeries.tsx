@@ -8,9 +8,9 @@ import {QueriesProvider} from 'components/timeMachine/useQueries'
 import {useViewProperties} from 'shared/useViewProperties'
 
 // Hooks
-
-// Utils
 import useQueryResult from './useQueryResult'
+
+// Types
 import {RemoteDataState} from '@influxdata/clockface'
 
 interface Props {

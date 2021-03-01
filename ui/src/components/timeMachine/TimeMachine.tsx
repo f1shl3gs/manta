@@ -17,6 +17,7 @@ const INITIAL_RESIZER_HANDLE = 0.5
 
 interface Props {
   viewProperties: ViewProperties
+  bottomContents?: JSX.Element
 }
 
 const TimeMachine: React.FC<Props> = props => {

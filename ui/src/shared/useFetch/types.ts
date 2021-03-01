@@ -2,8 +2,12 @@ import {ReactNode} from 'react'
 
 type NonUndefined<A> = A extends undefined ? never : A
 
-type FunctionKeys<T extends object> = {
+export type FunctionKeys<T extends object> = {
   [K in keyof T]-?: NonUndefined<T[K]> extends Function ? K : never
+}[keyof T]
+
+export declare type NonFunctionKeys<T extends object> = {
+  [K in keyof T]-?: NonUndefined<T[K]> extends Function ? never : K
 }[keyof T]
 
 export enum HTTPMethod {
