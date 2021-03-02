@@ -1301,10 +1301,12 @@
   resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.1.tgz#3b39a11cfdc2570e9bad6bbdf967d5afd34fdc35"
   integrity sha1-OzmhHP3CVw6brWu9+WfVr9NP3DU=
 
-"@influxdata/giraffe@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.1.0.tgz#7cd7792b2a8c04b228aa7a8b4ef4aa1fcf71fda5"
-  integrity sha1-fNd5KyqMBLIoqnqLTvSqH89x/aU=
+"@influxdata/giraffe@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.3.0.tgz#162af11c637cad97982399a14a67c439e07f1f74"
+  integrity sha1-FirxHGN8rZeYI5mhSmfEOeB/H3Q=
+  dependencies:
+    merge-images "^2.0.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -8316,6 +8318,11 @@ merge-descriptors@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
+
+merge-images@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/merge-images/download/merge-images-2.0.0.tgz#4d68d6d90ad8c33a91aced0b5d8660983bf4db3a"
+  integrity sha1-TWjW2QrYwzqRrO0LXYZgmDv02zo=
 
 merge-stream@^2.0.0:
   version "2.0.0"

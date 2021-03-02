@@ -25,7 +25,7 @@ const ViewEditorOverlay: React.FC<Props> = props => {
       visible={true}
       className={'veo-overlay'}
       onEscape={visible => {
-        console.log('on escape')
+        console.log('on escape', visible)
       }}
     >
       <div className={'veo'}>
