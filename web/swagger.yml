@@ -7,6 +7,7 @@ servers:
   - url: /api/v1
 
 tags:
+  - name: Setup
   - name: Organizations
   - name: Otcls
     description: OpenTelemetry Collector
@@ -131,89 +132,6 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
-  /otcls:
-    get:
-      operationId: GetOtcls
-      tags:
-        - Otcls
-      summary: List all OpenTelemetry Collector
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-      responses:
-        200:
-          description: A list of Otcl
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Otcl"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-
-    post:
-      operationId: CreateOtcl
-      tags:
-        - Otcls
-      summary: Create an Otcl
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-      requestBody:
-        description: Otcl to create
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OtclRequest"
-      responses:
-        201:
-          description: Otcl created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Otcl"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-  /otcls/{id}:
-    get:
-      operationId: GetOtcl
-      tags:
-        - Otcls
-      summary: Get Otcl by ID
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: The ID of the Otcl to get
-      responses:
-        200:
-          description: Otcl details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Otcl"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-    delete:
-      operationId: DeleteOtcl
-      tags:
-        - Otcls
-      summary: Delete Otcl by ID
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
-          description: The ID of the Otcl to get
-      responses:
-        204:
-          description: Delete otcl success
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-
   /checks:
     get:
       operationId: ListChecks
@@ -299,6 +217,89 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+  /otcls:
+    get:
+      operationId: GetOtcls
+      tags:
+        - Otcls
+      summary: List all OpenTelemetry Collector
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      responses:
+        200:
+          description: A list of Otcl
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Otcl"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    post:
+      operationId: CreateOtcl
+      tags:
+        - Otcls
+      summary: Create an Otcl
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      requestBody:
+        description: Otcl to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OtclRequest"
+      responses:
+        201:
+          description: Otcl created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Otcl"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /otcls/{id}:
+    get:
+      operationId: GetOtcl
+      tags:
+        - Otcls
+      summary: Get Otcl by ID
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the Otcl to get
+      responses:
+        200:
+          description: Otcl details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Otcl"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      operationId: DeleteOtcl
+      tags:
+        - Otcls
+      summary: Delete Otcl by ID
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the Otcl to get
+      responses:
+        204:
+          description: Delete otcl success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
   /notification_endpoint:
     get:
       operationId: ListNotificationEndpoint
@@ -319,7 +320,6 @@ paths:
                 $ref: "#/components/schemas/NotificationEndpoints"
         default:
           $ref: "#/components/responses/UnexpectedError"
-
   /notification_endpoint/{id}:
     get:
       operationId: GetNotificationEndpoint
@@ -360,6 +360,7 @@ paths:
           description: Delete success
         default:
           $ref: "#/components/responses/UnexpectedError"
+
   /migrations:
     get:
       operationId: GetMigrations
@@ -378,6 +379,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Migration"
+
 components:
   parameters:
     TraceSpan:
