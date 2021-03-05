@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	eventBucket             = []byte("event")
+	eventBucket             = []byte("events")
 	eventOrgIndexBucket     = []byte("eventorgindex")
 	eventOrgNameIndexBucket = []byte("eventorgnameindex")
 )

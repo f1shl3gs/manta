@@ -5,6 +5,7 @@ import (
 	"github.com/f1shl3gs/manta/pkg/snowflake"
 	"github.com/f1shl3gs/manta/resource"
 	"github.com/f1shl3gs/manta/token"
+
 	"go.uber.org/zap"
 )
 

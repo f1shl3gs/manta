@@ -7,6 +7,8 @@ import (
 
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
+
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zaptest"
@@ -21,7 +23,7 @@ func NewTestBackend(t *testing.T) (*Backend, *zap.Logger, func()) {
 		panic(err)
 	}
 
-	err = kv.Initial(context.Background(), store)
+	err = migration.Initial(context.Background(), store)
 	require.NoError(t, err)
 
 	service := kv.NewService(logger, store)

@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	scraperTargetBucket      = []byte("scrapertarget")
-	scraperTargetOrgIDBucket = []byte("scrapertargetorgindex")
+	scraperTargetBucket         = []byte("scrapertargets")
+	scraperTargetOrgIndexBucket = []byte("scrapertargetorgindex")
 
 	ErrInvalidFilter = errors.New("invalid filter")
 )
@@ -87,7 +87,7 @@ func (s *Service) findScraperTargets(ctx context.Context, tx Tx, filter manta.Sc
 			return nil, err
 		}
 
-		b, err := tx.Bucket(scraperTargetOrgIDBucket)
+		b, err := tx.Bucket(scraperTargetOrgIndexBucket)
 		if err != nil {
 			return nil, err
 		}
@@ -154,7 +154,7 @@ func (s *Service) putScraperTarget(ctx context.Context, tx Tx, target *manta.Scr
 
 	idxKey := IndexKey(fk, pk)
 
-	b, err := tx.Bucket(scraperTargetOrgIDBucket)
+	b, err := tx.Bucket(scraperTargetOrgIndexBucket)
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func (s *Service) deleteScraperTarget(ctx context.Context, tx Tx, id manta.ID) e
 
 	// delete orgID index
 	fk, _ := st.OrgID.Encode()
-	b, err = tx.Bucket(scraperTargetOrgIDBucket)
+	b, err = tx.Bucket(scraperTargetOrgIndexBucket)
 	if err != nil {
 		return err
 	}

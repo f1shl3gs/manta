@@ -7,6 +7,8 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
+
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 )
@@ -19,7 +21,7 @@ func TestOrganization(t *testing.T) {
 	defer cancel()
 
 	svc := kv.NewService(zaptest.NewLogger(t), store)
-	err := kv.Initial(ctx, store)
+	err := migration.Initial(ctx, store)
 	require.NoError(t, err)
 
 	err = svc.CreateOrganization(ctx, &manta.Organization{

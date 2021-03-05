@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	taskBucket           = []byte("task")
+	taskBucket           = []byte("tasks")
 	taskOrgIndexBucket   = []byte("taskorgindex")
 	taskOwnerIndexBucket = []byte("taskownerindex")
 )

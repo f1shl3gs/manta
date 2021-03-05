@@ -112,6 +112,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      operationId: DeleteOrganization
+      tags:
+        - Organizations
+      summary: Delete Organizaion by ID
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          required: true
+          description: The ID of the organization to get
+          schema:
+            type: string
+      responses:
+        204:
+          description: Organization deleted
+        default:
+          $ref: "#/components/responses/UnexpectedError"
 
   /otcls:
     get:
@@ -177,6 +195,24 @@ paths:
                 $ref: "#/components/schemas/Otcl"
         default:
           $ref: "#/components/responses/UnexpectedError"
+    delete:
+      operationId: DeleteOtcl
+      tags:
+        - Otcls
+      summary: Delete Otcl by ID
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the Otcl to get
+      responses:
+        204:
+          description: Delete otcl success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
 
   /checks:
     get:
@@ -221,6 +257,29 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
   /checks/{id}:
+    get:
+      operationId: GetCheck
+      tags:
+        - Checks
+      summary: Find Check by id
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the Otcl to get
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Check"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
     delete:
       operationId: DeleteCheck
       tags:
@@ -301,7 +360,24 @@ paths:
           description: Delete success
         default:
           $ref: "#/components/responses/UnexpectedError"
-
+  /migrations:
+    get:
+      operationId: GetMigrations
+      summary: List all migrations
+      description: Migrations could be very helpful when debug
+      tags:
+        - Migrations
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      responses:
+        200:
+          description: Migration details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Migration"
 components:
   parameters:
     TraceSpan:
@@ -353,7 +429,25 @@ components:
         org:
           type: string
 
-
+    Migration:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+            - up
+            - down
+        start_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
     Organization:
       type: object
       properties:

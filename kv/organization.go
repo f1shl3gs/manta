@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	organizationBucket          = []byte("organization")
+	organizationBucket          = []byte("organizations")
 	organizationNameIndexBucket = []byte("organizationnameindex")
 )
 

@@ -7,6 +7,8 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
+
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 )
@@ -16,7 +18,7 @@ func BenchmarkCreateNode(b *testing.B) {
 	defer closer()
 
 	svc := kv.NewService(zaptest.NewLogger(b), store)
-	err := kv.Initial(context.Background(), store)
+	err := migration.Initial(context.Background(), store)
 	require.NoError(b, err)
 
 	org := &manta.Organization{

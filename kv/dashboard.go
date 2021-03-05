@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	dashboardBucket         = []byte("dashboard")
+	dashboardBucket         = []byte("dashboards")
 	dashboardOrgIndexBucket = []byte("dashboardorgindex")
 )
 

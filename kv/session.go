@@ -13,7 +13,7 @@ const (
 )
 
 var (
-	sessionBucket = []byte("session")
+	sessionBucket = []byte("sessions")
 )
 
 func (s *Service) CreateSession(ctx context.Context, uid manta.ID) (*manta.Session, error) {

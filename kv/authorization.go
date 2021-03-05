@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	authorizationBucket           = []byte("authorization")
+	authorizationBucket           = []byte("authorizations")
 	authorizationTokenIndexBucket = []byte("authorizationtokenindex")
 
 	// todo

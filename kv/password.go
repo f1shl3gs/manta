@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	passwordBucket = []byte("password")
+	passwordBucket = []byte("passwords")
 )
 
 func (s *Service) SetPassword(ctx context.Context, uid manta.ID, password string) error {

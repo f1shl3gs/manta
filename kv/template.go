@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	templateBucket          = []byte("template")
+	templateBucket          = []byte("templates")
 	templateNameIndexBucket = []byte("templatenameindex")
 )
 

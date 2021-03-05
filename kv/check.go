@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	checkBucket         = []byte("check")
+	checkBucket         = []byte("checks")
 	checkOrgIndexBucket = []byte("checkorgindex")
 )
 

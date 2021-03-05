@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	notificationBucket          = []byte("notification")
-	notificationUserIndexBucket = []byte("notificationuserindex")
+	notificationBucket         = []byte("notifications")
+	notificationOrgIndexBucket = []byte("notificationorgindex")
 )
 
 var _ manta.NotificationService = (*Service)(nil)

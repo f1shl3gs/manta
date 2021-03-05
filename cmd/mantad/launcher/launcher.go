@@ -26,6 +26,7 @@ import (
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/checks"
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
 	"github.com/f1shl3gs/manta/store"
@@ -213,7 +214,9 @@ func (l *Launcher) Run() error {
 	}
 	defer kvStore.Close()
 
-	if err = kv.Initial(ctx, kvStore); err != nil {
+	migrator := migration.New(logger, kvStore, migration.All...)
+	err = migrator.Up(ctx)
+	if err != nil {
 		return err
 	}
 
@@ -383,7 +386,6 @@ func (l *Launcher) Run() error {
 			OrganizationService:  service,
 			CheckService:         checkService,
 			TaskService:          service,
-			DatasourceService:    service,
 			TemplateService:      service,
 			UserService:          service,
 			PasswordService:      service,

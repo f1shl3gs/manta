@@ -8,6 +8,8 @@ import (
 
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
+
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 )
@@ -63,7 +65,7 @@ func NewTestService(t TestingT, opts ...kv.Option) (*kv.Service, func()) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := kv.Initial(ctx, store)
+	err := migration.Initial(ctx, store)
 	require.NoError(t, err)
 
 	return svc, closer

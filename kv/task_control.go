@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	runBucket    = []byte("run")
-	runTaskIndex = []byte("runtaskindex")
+	runBucket          = []byte("runs")
+	runTaskIndexBucket = []byte("runtaskindex")
 )
 
 func (s *Service) CreateRun(ctx context.Context, taskID manta.ID, scheduledFor time.Time, runAt time.Time) (*manta.Run, error) {
@@ -83,7 +83,7 @@ func (s *Service) putTaskRun(ctx context.Context, tx Tx, run *manta.Run) error {
 	}
 	indexKey := IndexKey(fk, pk)
 
-	b, err := tx.Bucket(runTaskIndex)
+	b, err := tx.Bucket(runTaskIndexBucket)
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func (s *Service) removeRun(ctx context.Context, tx Tx, taskID, runID manta.ID) 
 	// remove task index
 	fk, _ := taskID.Encode()
 	indexKey := IndexKey(fk, pk)
-	b, err = tx.Bucket(runTaskIndex)
+	b, err = tx.Bucket(runTaskIndexBucket)
 	if err != nil {
 		return err
 	}

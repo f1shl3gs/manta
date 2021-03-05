@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	notificationEndpointBucket          = []byte("notificationendpoint")
-	notificationEndpointNameIndexBucket = []byte("notificationendpointname")
+	notificationEndpointBucket          = []byte("notificationendpoints")
+	notificationEndpointNameIndexBucket = []byte("notificationendpointnameindex")
 )
 
 func (s *Service) FindNotificationEndpointByID(ctx context.Context, id manta.ID) (*manta.NotificationEndpoint, error) {

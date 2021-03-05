@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	otclBucket   = []byte("otcls")
-	otclOrgIndex = []byte("otclorgindex")
+	otclBucket         = []byte("otcls")
+	otclOrgIndexBucket = []byte("otclorgindex")
 
-	otclOrgIndexMapping = NewIndexMapping(otclBucket, otclOrgIndex, func(data []byte) ([]byte, error) {
+	otclOrgIndexMapping = NewIndexMapping(otclBucket, otclOrgIndexBucket, func(data []byte) ([]byte, error) {
 		var otcl manta.Otcl
 		if err := otcl.Unmarshal(data); err != nil {
 			return nil, err
@@ -79,7 +79,7 @@ func (s *Service) putOtcl(ctx context.Context, tx Tx, o *manta.Otcl) error {
 	}
 
 	// save index
-	b, err = tx.Bucket(otclOrgIndex)
+	b, err = tx.Bucket(otclOrgIndexBucket)
 	if err != nil {
 		return err
 	}
@@ -170,7 +170,7 @@ func (s *Service) findOtclsByOrg(ctx context.Context, tx Tx, orgID manta.ID) ([]
 		err  error
 	)
 
-	err = s.findResourceByOrg(ctx, tx, orgID, otclOrgIndex, func(k, v []byte) error {
+	err = s.findResourceByOrg(ctx, tx, orgID, otclOrgIndexBucket, func(k, v []byte) error {
 		keys = append(keys, v)
 		return nil
 	})
@@ -316,7 +316,7 @@ func (s *Service) deleteOtcl(ctx context.Context, tx Tx, id manta.ID) error {
 		return err
 	}
 
-	b, err = tx.Bucket(otclOrgIndex)
+	b, err = tx.Bucket(otclOrgIndexBucket)
 	if err != nil {
 		return err
 	}
