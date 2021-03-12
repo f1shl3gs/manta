@@ -114,12 +114,12 @@ func (m *MultiTSDB) Flush() error {
 	for id, tenant := range m.tenants {
 		db := tenant.readyStorage().Get()
 		if db == nil {
-			m.logger.Error("flushing tsdb failed, not ready",
+			m.logger.Error("Flushing TSDB failed, not ready",
 				zap.String("tenant", id.String()))
 			continue
 		}
 
-		m.logger.Info("flushing tsdb",
+		m.logger.Info("Flushing TSDB",
 			zap.String("tenant", id.String()))
 		wg.Add(1)
 		go func() {
@@ -145,7 +145,7 @@ func (m *MultiTSDB) Close() error {
 	for id, tenant := range m.tenants {
 		db := tenant.readyStorage().Get()
 		if db == nil {
-			m.logger.Error("closing tsdb failed, not ready",
+			m.logger.Error("Closing TSDB failed, not ready",
 				zap.String("tenant", id.String()))
 			continue
 		}
@@ -174,7 +174,7 @@ func (m *MultiTSDB) Sync(ctx context.Context) (int, error) {
 		defer m.mtx.RUnlock()
 
 		for tid, tenant := range m.tenants {
-			m.logger.Debug("uploading block for tenant",
+			m.logger.Debug("Uploading block for tenant",
 				zap.String("tenant", tid.String()))
 
 			s := tenant.shipper()
@@ -226,7 +226,7 @@ func (m *MultiTSDB) RemoveLockFilesIfAny() error {
 			continue
 		}
 
-		m.logger.Info("a leftover lockfile found and removed",
+		m.logger.Info("A leftover lockfile found and removed",
 			zap.String("tenant", fi.Name()))
 	}
 
@@ -261,7 +261,7 @@ func (m *MultiTSDB) getOrLoadTenant(tenantID manta.ID, blockingStart bool) (*Ten
 		go func() {
 			err := m.startTSDB(logger, tenantID, tenant)
 			if err != nil {
-				logger.Warn("failed to start tsdb asynchronously",
+				logger.Warn("Failed to start TSDB asynchronously",
 					zap.Error(err))
 			}
 		}()

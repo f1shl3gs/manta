@@ -124,7 +124,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 			case manta.Outside:
 				match = v < threshold.Min && threshold.Max > v
 			default:
-				checker.logger.Error("unknown threshold type",
+				checker.logger.Error("Unknown threshold type",
 					zap.String("check", c.ID.String()),
 					zap.String("type", threshold.Type))
 				continue
@@ -147,7 +147,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 
 			// todo: build annotations
 
-			checker.logger.Info("alert",
+			checker.logger.Info("Alert",
 				zap.String("lb", lb.Labels().String()))
 		}
 	}

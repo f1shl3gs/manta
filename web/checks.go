@@ -69,7 +69,7 @@ func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
 	for _, c := range checks {
 		task, err := h.taskService.FindTaskByID(ctx, c.TaskID)
 		if err != nil {
-			h.logger.Warn("find task by id failed",
+			h.logger.Warn("Find task by id failed",
 				zap.String("task", c.TaskID.String()),
 				zap.Error(err))
 

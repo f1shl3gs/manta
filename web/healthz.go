@@ -18,7 +18,7 @@ func (h *HealthzHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		h.logger.Error("write healthz response failed",
+		h.logger.Error("Write healthz response failed",
 			zap.Error(err))
 	}
 }

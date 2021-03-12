@@ -54,7 +54,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 
 	defer func() {
 		if _, err = e.tcs.FinishRun(ctx, task.ID, run.ID); err != nil {
-			e.logger.Error("finish run failed",
+			e.logger.Error("Finish run failed",
 				zap.String("task", task.ID.String()),
 				zap.Error(err))
 		}
@@ -63,7 +63,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), fmt.Sprintf("Start running"))
 	err = e.tcs.UpdateRunState(ctx, task.ID, run.ID, time.Now(), manta.RunStarted)
 	if err != nil {
-		e.logger.Warn("update started status failed",
+		e.logger.Warn("Update started status failed",
 			zap.String("task", task.ID.String()),
 			zap.Error(err))
 		return err
@@ -89,7 +89,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 		e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), "Context canceled")
 		err = e.tcs.UpdateRunState(context.Background(), task.ID, run.ID, time.Now(), manta.RunCanceled)
 		if err != nil {
-			e.logger.Warn("update cancel status failed",
+			e.logger.Warn("Update cancel status failed",
 				zap.String("task", task.ID.String()),
 				zap.Error(err))
 		}
@@ -103,7 +103,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 
 	e.tcs.AddRunLog(ctx, task.ID, run.ID, now, fmt.Sprintf("Fail: %s", errMsg))
 	if err := e.tcs.UpdateRunState(ctx, task.ID, run.ID, now, manta.RunFail); err != nil {
-		e.logger.Warn("update fail status failed",
+		e.logger.Warn("Update fail status failed",
 			zap.String("task", task.ID.String()),
 			zap.Error(err))
 	}

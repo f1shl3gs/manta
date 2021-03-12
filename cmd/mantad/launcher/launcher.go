@@ -80,6 +80,11 @@ func (l *Launcher) Options() []Option {
 			Default: ":8080",
 		},
 		{
+			DestP:   &l.AccessLog,
+			Flag:    "http.access_log",
+			Default: false,
+		},
+		{
 			DestP:   &l.BoltPath,
 			Flag:    "bolt.path",
 			Default: "manta.bolt",
@@ -155,7 +160,7 @@ func (l *Launcher) Run() error {
 	defer logger.Sync()
 
 	if l.Opentracing {
-		logger.Info("opentracing is enabled")
+		logger.Info("Opentracing is enabled")
 		closer, otErr := setupOpentracing(logger)
 		if otErr != nil {
 			return otErr
@@ -183,20 +188,20 @@ func (l *Launcher) Run() error {
 		}
 
 		defer func() {
-			logger.Info("starting flush storage")
+			logger.Info("Starting flush storage")
 			start := time.Now()
 			err = multitsdb.Flush()
 			if err != nil {
-				logger.Error("flush storage failed",
+				logger.Error("Flush storage failed",
 					zap.Error(err))
 			} else {
-				logger.Error("flush storage success",
+				logger.Error("Flush storage success",
 					zap.Duration("time", time.Since(start)))
 			}
 
 			err = multitsdb.Close()
 			if err != nil {
-				logger.Error("close storage failed",
+				logger.Error("Close storage failed",
 					zap.Error(err))
 			}
 		}()
@@ -241,7 +246,7 @@ func (l *Launcher) Run() error {
 					// sync tset as soon as possible
 					targets, err := scrapeTargetService.FindScraperTargets(ctx, manta.ScraperTargetFilter{OrgID: &orgID})
 					if err != nil {
-						logger.Warn("find scrape targets failed",
+						logger.Warn("Find scrape targets failed",
 							zap.Error(err))
 					} else {
 						scf := &config.Config{
@@ -283,10 +288,10 @@ func (l *Launcher) Run() error {
 
 						err := mgr.ApplyConfig(scf)
 						if err != nil {
-							logger.Warn("apply scrape config failed",
+							logger.Warn("Apply scrape config failed",
 								zap.Error(err))
 						} else {
-							logger.Debug("apply scrape config success")
+							logger.Debug("Apply scrape config success")
 						}
 
 						select {
@@ -358,7 +363,7 @@ func (l *Launcher) Run() error {
 		tsch, sm, err := scheduler.NewScheduler(ex, backend.NewSchedulableTaskService(service),
 			scheduler.WithMaxConcurrentWorkers(l.WorkerLimit),
 			scheduler.WithOnErrorFn(func(ctx context.Context, taskID scheduler.ID, scheduledFor time.Time, err error) {
-				logger.Warn("schedule task failed",
+				logger.Warn("Schedule task failed",
 					zap.String("task", manta.ID(taskID).String()),
 					zap.Time("scheduledFor", scheduledFor),
 					zap.Error(err))
@@ -400,7 +405,7 @@ func (l *Launcher) Run() error {
 			ScrapeService:        service,
 			TenantStorage:        tenantStorage,
 			Flusher:              kvStore,
-		})
+		}, l.AccessLog)
 
 		group.Go(func() error {
 			server := &http.Server{
@@ -410,7 +415,7 @@ func (l *Launcher) Run() error {
 
 			errCh := make(chan error)
 			go func() {
-				logger.Info("start http service",
+				logger.Info("Start HTTP service",
 					zap.String("listen", l.HTTPAddress))
 				errCh <- server.ListenAndServe()
 			}()
@@ -422,15 +427,15 @@ func (l *Launcher) Run() error {
 
 				err = server.Shutdown(ctx)
 				if err != nil {
-					logger.Error("shutdown http server failed",
+					logger.Error("Shutdown http server failed",
 						zap.Error(err))
 				} else {
-					logger.Info("shutdown http server success")
+					logger.Info("Shutdown http server success")
 				}
 
 				return nil
 			case err := <-errCh:
-				logger.Error("http service exit on error",
+				logger.Error("HTTP service exit on error",
 					zap.Error(err))
 				return err
 			}

@@ -20,11 +20,11 @@ func (b *BackupHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	latency := time.Since(start)
 
 	if err != nil {
-		b.logger.Error("backup failed",
+		b.logger.Error("Backup failed",
 			zap.String("latency", latency.String()),
 			zap.Error(err))
 	} else {
-		b.logger.Info("backup success",
+		b.logger.Info("Backup success",
 			zap.String("latency", latency.String()))
 	}
 }

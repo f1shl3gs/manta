@@ -39,7 +39,7 @@ func NotifyCoordinatorOfExisting(ctx context.Context, log *zap.Logger, ts manta.
 		}
 
 		if err = coord.TaskCreated(ctx, task); err != nil {
-			log.Error("task create failed",
+			log.Error("Task create failed",
 				zap.Error(err))
 		}
 	}

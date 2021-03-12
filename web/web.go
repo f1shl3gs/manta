@@ -44,7 +44,7 @@ type Backend struct {
 	ScrapeService        manta.ScraperTargetService
 }
 
-func New(logger *zap.Logger, backend *Backend) http.Handler {
+func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	router := NewRouter()
 
 	// static
@@ -133,8 +133,15 @@ func New(logger *zap.Logger, backend *Backend) http.Handler {
 		})
 	}
 
+	// access log
+	var h http.Handler = router
+	if accessLog {
+		h = middlewares.Log(logger, router)
+	} else {
+		logger.Info("Access log is disabled")
+	}
+
 	// tracing
-	h := middlewares.Log(logger, router)
 	h = Trace(h)
 	h = middlewares.Metrics(prometheus.DefaultRegisterer, h)
 	// h = middlewares.Gzip(h)

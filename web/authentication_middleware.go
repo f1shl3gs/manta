@@ -114,7 +114,7 @@ func (h *AuthenticationHandler) extractSession(ctx context.Context, r *http.Requ
 	if err == manta.ErrSessionExpired {
 		revokeErr := h.SessionService.RevokeSession(ctx, id)
 		if revokeErr != nil {
-			h.logger.Warn("clean up expired session failed",
+			h.logger.Warn("Clean up expired session failed",
 				zap.Error(err))
 		}
 	}
@@ -137,7 +137,7 @@ func (h *AuthenticationHandler) extractJWT(ctx context.Context, r *http.Request)
 }
 
 func (h *AuthenticationHandler) handleUnauthorized(w http.ResponseWriter, r *http.Request, err error) {
-	h.logger.Info("unauthorized http request",
+	h.logger.Info("Unauthorized http request",
 		zap.String("remote", r.RemoteAddr),
 		zap.String("method", r.Method),
 		zap.String("path", r.URL.Path),

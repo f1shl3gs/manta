@@ -76,7 +76,7 @@ func (cs *CoordinatingCheckService) DeleteCheck(ctx context.Context, id manta.ID
 	for _, task := range tasks {
 		err = cs.coordinator.TaskDeleted(ctx, task.ID)
 		if err != nil {
-			cs.logger.Error("delete task from coordinator failed",
+			cs.logger.Error("Delete task from coordinator failed",
 				zap.String("check", id.String()),
 				zap.String("task", task.ID.String()),
 				zap.Error(err))

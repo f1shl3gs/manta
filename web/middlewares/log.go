@@ -18,7 +18,7 @@ func Log(logger *zap.Logger, next http.Handler) http.Handler {
 
 		id, _, _ := tracing.InfoFromContext(r.Context())
 
-		logger.Info("serve http request",
+		logger.Info("Serve http request",
 			zap.String("trace_id", id),
 			zap.String("remote", r.RemoteAddr),
 			zap.String("method", r.Method),
