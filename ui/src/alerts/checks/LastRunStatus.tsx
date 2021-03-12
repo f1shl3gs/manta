@@ -43,6 +43,12 @@ const LastRunStatus: React.FC<Props> = props => {
     text = 'Task Cancelled'
   }
 
+  if (lastRunStatus === '') {
+    color = ComponentColor.Warning
+    icon = IconFont.Clock
+    text = 'Unknown'
+  }
+
   const popoverContents = () => (
     <>
       <h6>Last Run Status:</h6>

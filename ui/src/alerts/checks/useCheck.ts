@@ -1,13 +1,13 @@
 // Libraries
 import constate from 'constate'
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 
 // types
-import {Check} from '../types/Check'
+import {Check} from '../../types/Check'
 import {useFetch} from 'shared/useFetch'
 
 // Utils
-import remoteDataState from '../utils/rds'
+import {RemoteDataState} from '@influxdata/clockface'
 
 interface CheckUpdate {
   name: string
@@ -38,14 +38,25 @@ const defaultCheck: Check = {
 const [CheckProvider, useCheck] = constate(
   (initialState: State) => {
     const [check, setCheck] = useState<Check>(defaultCheck)
+    const [remoteDataState, setRemoteDataState] = useState(
+      RemoteDataState.NotStarted
+    )
+
     const {data, get, del, put, loading, error} = useFetch(
       `/api/v1/checks/${initialState.id}`,
       {}
     )
+
     useEffect(() => {
-      get().then(data => {
-        setCheck(data)
-      })
+      setRemoteDataState(RemoteDataState.Loading)
+      get()
+        .then(data => {
+          setCheck(data)
+          setRemoteDataState(RemoteDataState.Done)
+        })
+        .catch(err => {
+          setRemoteDataState(RemoteDataState.Error)
+        })
     }, [])
 
     const updateCheck = (udp: CheckUpdate) => {
@@ -58,9 +69,24 @@ const [CheckProvider, useCheck] = constate(
       })
     }
 
+    const onSave = useCallback(() => {
+      return put(check)
+    }, [check])
+
+    const onRename = useCallback((name: string) => {
+      setCheck(prev => {
+        return {
+          ...prev,
+          name,
+        }
+      })
+    }, [])
+
     return {
       check,
-      remoteDataState: remoteDataState(data, error, loading),
+      onSave,
+      onRename,
+      remoteDataState: remoteDataState,
       updateCheck,
     }
   },

@@ -5,12 +5,12 @@ import {Route, Switch} from 'react-router-dom'
 // Components
 import {Page, Tabs} from '@influxdata/clockface'
 import AlertsNavigation from './AlertsNavigation'
-import ChecksIndex from './ChecksIndex'
+import ChecksIndex from './checks/ChecksIndex'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
 import {ChecksProvider} from './useChecks'
-import CheckOverlay from './CheckOverlay'
+import CheckOverlay from './checks/CheckOverlay'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
 

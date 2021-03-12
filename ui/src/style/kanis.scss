@@ -35,7 +35,7 @@
 @import 'src/shared/components/TabbedPage.scss';
 @import 'src/shared/components/SearchWidget.scss';
 @import 'src/alerts/Alerts.scss';
-@import 'src/alerts/LastRunStatus.scss';
+@import '../alerts/checks/LastRunStatus';
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

@@ -14,10 +14,10 @@ import {
 import TabbedPageHeader from 'shared/components/TabbedPageHeader'
 import SearchWidget from 'shared/components/SearchWidget'
 import FilterList from 'shared/components/FilterList'
-import ResourceSortDropdown from '../shared/components/ResourceSortDropdown'
+import ResourceSortDropdown from '../../shared/components/ResourceSortDropdown'
 
 // Hooks
-import {useChecks} from './useChecks'
+import {useChecks} from '../useChecks'
 
 // Types
 import {Check} from 'types/Check'

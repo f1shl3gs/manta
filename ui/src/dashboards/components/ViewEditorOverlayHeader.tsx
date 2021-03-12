@@ -26,8 +26,6 @@ interface Props {
   onCancel: () => void
 }
 
-const onClickOutside = () => console.log('onClickOutside')
-
 const ViewEditorOverlayHeader: React.FC = props => {
   const history = useHistory()
   const {cell, updateCell} = useCell()
@@ -65,7 +63,6 @@ const ViewEditorOverlayHeader: React.FC = props => {
           onRename={onNameSet}
           placeholder={'Name this Cell'}
           maxLength={68}
-          onClickOutside={onClickOutside}
         />
       </Page.Header>
 

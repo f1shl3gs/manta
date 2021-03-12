@@ -3,12 +3,12 @@ import React, {useMemo} from 'react'
 
 // Components
 import {Plot} from '@influxdata/giraffe'
-import XYPlot from '../components/timeMachine/XYPlot'
+import XYPlot from '../../components/timeMachine/XYPlot'
 
 // Types
-import {DashboardQuery, XYViewProperties} from '../types/Dashboard'
-import useQueryResult from '../dashboards/components/useQueryResult'
-import {ViewPropertiesProvider} from '../shared/useViewProperties'
+import {DashboardQuery, XYViewProperties} from '../../types/Dashboard'
+import useQueryResult from '../../dashboards/components/useQueryResult'
+import {ViewPropertiesProvider} from '../../shared/useViewProperties'
 
 interface Props {
   query: string

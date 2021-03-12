@@ -17,13 +17,13 @@ import {
 import LastRunStatus from './LastRunStatus'
 
 // Utils
-import {relativeTimestampFormatter} from '../utils/relativeTimestampFormatter'
+import {relativeTimestampFormatter} from '../../utils/relativeTimestampFormatter'
 
 // Types
-import {Check} from '../types/Check'
-import {useChecks} from './useChecks'
+import {Check} from '../../types/Check'
+import {useChecks} from '../useChecks'
 import {useHistory} from 'react-router-dom'
-import {useOrgID} from '../shared/useOrg'
+import {useOrgID} from '../../shared/useOrg'
 
 interface Props {
   check: Check

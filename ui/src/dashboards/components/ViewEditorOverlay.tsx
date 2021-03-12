@@ -1,5 +1,5 @@
 // Libraries
-import React, {useCallback} from 'react'
+import React from 'react'
 
 // Components
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -7,7 +7,7 @@ import ViewEditorOverlayHeader from './ViewEditorOverlayHeader'
 import TimeMachine from 'components/timeMachine/TimeMachine'
 
 // Types
-import {Cell, ViewProperties} from 'types/Dashboard'
+import {ViewProperties} from 'types/Dashboard'
 
 // Hooks
 import {CellProvider, useCell} from './useCell'
@@ -17,7 +17,7 @@ import {ViewOptionProvider} from 'shared/useViewOption'
 
 interface Props {}
 
-const ViewEditorOverlay: React.FC<Props> = props => {
+const ViewEditorOverlay: React.FC<Props> = () => {
   const {cell, remoteDataState} = useCell()
 
   return (

@@ -284,6 +284,8 @@ func (l *Launcher) Run() error {
 						err := mgr.ApplyConfig(scf)
 						if err != nil {
 							logger.Warn("apply scrape config failed")
+						} else {
+							logger.Info("apply scrape config success")
 						}
 
 						select {
