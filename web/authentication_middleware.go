@@ -137,7 +137,7 @@ func (h *AuthenticationHandler) extractJWT(ctx context.Context, r *http.Request)
 }
 
 func (h *AuthenticationHandler) handleUnauthorized(w http.ResponseWriter, r *http.Request, err error) {
-	h.logger.Info("Unauthorized http request",
+	h.logger.Debug("Unauthorized http request",
 		zap.String("remote", r.RemoteAddr),
 		zap.String("method", r.Method),
 		zap.String("path", r.URL.Path),

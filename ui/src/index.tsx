@@ -13,6 +13,15 @@ import Authentication from './components/Authentication'
 import NotFound from './components/NotFound'
 import {AuthenticationProvider} from './shared/useAuthentication'
 import {OrgsProvider} from './shared/useOrgs'
+import combineProviders from './utils/combine'
+
+import {Provider as FetchProvider} from 'shared/useFetch'
+
+const CombinedProvider = combineProviders([
+  AuthenticationProvider,
+  PresentationModeProvider,
+  [FetchProvider, {}],
+])
 
 ReactDOM.render(
   /*<React.StrictMode>

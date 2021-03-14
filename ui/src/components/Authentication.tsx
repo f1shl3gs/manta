@@ -1,6 +1,6 @@
 import React from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
-import {Provider} from 'shared/useFetch'
+import {Provider as FetchProvider} from 'shared/useFetch'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {useAuth} from '../shared/useAuthentication'
 
@@ -35,11 +35,11 @@ const Authentication: React.FC<Props> = ({children}) => {
   const {loading} = useAuth()
 
   return (
-    <Provider options={options}>
+    <FetchProvider options={options}>
       <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
         {children}
       </SpinnerContainer>
-    </Provider>
+    </FetchProvider>
   )
 }
 

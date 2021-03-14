@@ -9,7 +9,6 @@ import Organizations from './containers/organization/Organizations'
 import Signin from './components/Signin'
 
 // Styles
-import './App.css'
 
 const App: React.FC = () => {
   const {inPresentationMode} = usePresentationMode()

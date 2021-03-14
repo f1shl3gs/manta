@@ -39,7 +39,7 @@ import (
 )
 
 type Launcher struct {
-	// misc
+	// log
 	LogLevel string
 	LogFile  string
 
@@ -55,9 +55,6 @@ type Launcher struct {
 
 	// opentracing
 	Opentracing bool
-
-	// event retention
-	EventRetention time.Duration
 
 	// scheduler
 	noopSchedule bool
@@ -95,13 +92,8 @@ func (l *Launcher) Options() []Option {
 			Default: true,
 		},
 		{
-			DestP:   &l.EventRetention,
-			Flag:    "event.retention",
-			Default: 14 * 24 * time.Hour,
-		},
-		{
 			DestP:   &l.LogLevel,
-			Flag:    "file.level",
+			Flag:    "log.level",
 			Default: "info",
 		},
 		{
