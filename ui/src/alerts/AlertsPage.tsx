@@ -9,7 +9,7 @@ import ChecksIndex from './checks/ChecksIndex'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
-import {ChecksProvider} from './useChecks'
+import {ChecksProvider} from './checks/useChecks'
 import CheckOverlay from './checks/CheckOverlay'
 
 const ALERTS_PAGE_TITLE = 'Alerts'

@@ -3,14 +3,15 @@ package kv_test
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/stretchr/testify/require"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/mock"
-	"github.com/stretchr/testify/require"
 )
 
 const (

@@ -14,38 +14,25 @@ import {
 import TabbedPageHeader from 'shared/components/TabbedPageHeader'
 import SearchWidget from 'shared/components/SearchWidget'
 import FilterList from 'shared/components/FilterList'
-import ResourceSortDropdown from '../../shared/components/ResourceSortDropdown'
+import ResourceSortDropdown from 'shared/components/ResourceSortDropdown'
+import CheckCards from './CheckCards'
+import CheckExplainer from './CheckExplainer'
 
 // Hooks
-import {useChecks} from '../useChecks'
+import {useChecks} from './useChecks'
 
 // Types
 import {Check} from 'types/Check'
 import {SortKey, SortTypes} from 'types/sort'
-import CheckCards from './CheckCards'
-import CheckExplainer from './CheckExplainer'
 
 const ChecksIndex: React.FC = () => {
-  const {checks, remoteDataState} = useChecks()
-  const title = `Checks`
+  const {checks} = useChecks()
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
     type: SortTypes.Date,
     direction: Sort.Ascending,
   })
-
-  const tooltipContents = (
-    <>
-      A <strong>Check</strong> is a periodic query that the system
-      <br />
-      performs against your time series data
-      <br />
-      that will generate a status
-      <br />
-      <br />
-    </>
-  )
 
   const leftHeader = (
     <>

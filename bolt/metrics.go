@@ -19,7 +19,7 @@ var (
 		nil, nil)
 
 	boltBucketKeysDesc = prometheus.NewDesc(
-		"boltdb_keys_totoal",
+		"boltdb_keys_total",
 		"Total number of keys of the bucket",
 		[]string{"bucket"},
 		nil,

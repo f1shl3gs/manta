@@ -65,7 +65,8 @@ func NewTestService(t TestingT, opts ...kv.Option) (*kv.Service, func()) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := migration.Initial(ctx, store)
+	migrator := migration.New(zaptest.NewLogger(t), store, migration.All...)
+	err := migrator.Up(ctx)
 	require.NoError(t, err)
 
 	return svc, closer

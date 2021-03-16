@@ -45,53 +45,28 @@ func New(logger *zap.Logger, store kv.SchemaStore, specs ...all.Spec) *Migrator 
 }
 
 func (m *Migrator) Up(ctx context.Context) error {
-	var (
-		from int
-	)
-
 	err := m.store.CreateBucket(ctx, migrationBucket)
 	if err != nil {
 		return err
 	}
 
-	// find the last applied index
-	for from = 0; from < len(m.specs); from++ {
-		id := manta.ID(from + 1)
-		mig, err := m.getMigration(ctx, id)
-		if err != nil {
-			if err == kv.ErrKeyNotFound {
-				break
-			}
-
+	for i := 0; i < len(m.specs); i++ {
+		id := manta.ID(i + 1)
+		migration, err := m.getMigration(ctx, id)
+		if err != kv.ErrKeyNotFound && err != nil {
 			return err
 		}
 
-		if mig.FinishedAt == nil {
-			break
-		}
-	}
-
-	// apply the remain specs
-	for i := from; i < len(m.specs); i++ {
-		id := manta.ID(from + 1)
-		mig, err := m.getMigration(ctx, id)
-		if err != nil {
-			if err == kv.ErrKeyNotFound {
-				break
-			}
-
-			return err
+		if migration != nil && migration.FinishedAt != nil {
+			continue
 		}
 
-		if mig.FinishedAt == nil {
-			break
-		}
-
+		// apply spec
 		spec := m.specs[i]
 		started := time.Now()
 
-		migration := &Migration{
-			ID:        manta.ID(i + 1),
+		migration = &Migration{
+			ID:        id,
 			Name:      spec.Name(),
 			StartedAt: &started,
 		}

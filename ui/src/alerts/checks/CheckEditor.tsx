@@ -1,17 +1,34 @@
+// Libraries
 import React, {useState} from 'react'
+
 import {useCheck} from './useCheck'
+
+// Components
 import {
+  Button,
+  ComponentColor,
   DraggableResizer,
+  FlexBox,
   Orientation,
-  SpinnerContainer,
-  TechnoSpinner,
 } from '@influxdata/clockface'
+import {Controlled as ReactCodeMirror} from 'react-codemirror2'
+
 import classnames from 'classnames'
 import {TimeRangeProvider} from '../../shared/useTimeRange'
 import CheckVis from './CheckVis'
 import {AutoRefreshProvider} from '../../shared/useAutoRefresh'
 
 const INITIAL_RESIZER_HANDLE = 0.65
+
+const options = {
+  tabIndex: 1,
+  mode: 'yaml',
+  readonly: true,
+  lineNumbers: true,
+  autoRefresh: true,
+  theme: 'material',
+  completeSingle: false,
+}
 
 const CheckEditor: React.FC = () => {
   const {check} = useCheck()
@@ -40,7 +57,32 @@ const CheckEditor: React.FC = () => {
 
           <DraggableResizer.Panel sizePercent={30}>
             <div className={'time-machine--bottom'}>
-              <div className={'time-machine--bottom-contents'}>todo</div>
+              <div className={'time-machine--bottom-contents'}>
+                <div className={'time-machine-queries'}>
+                  <div className={'time-machine-queries--controls'}>
+                    <div className={'time-machine-queries--tabs'}>Todo</div>
+
+                    <FlexBox>
+                      <Button
+                        text={'submit'}
+                        color={ComponentColor.Primary}
+                        onClick={() => console.log('submit')}
+                      />
+                    </FlexBox>
+                  </div>
+
+                  <div className={'time-machine-queries--body'}>
+                    <ReactCodeMirror
+                      autoCursor
+                      options={options}
+                      value={check.expr}
+                      onBeforeChange={(_, d, v) => {
+                        console.log('v', v)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </DraggableResizer.Panel>
         </DraggableResizer>

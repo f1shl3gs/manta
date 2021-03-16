@@ -2022,10 +2022,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.6.1":
-  version "2.6.1"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.1.tgz#3b39a11cfdc2570e9bad6bbdf967d5afd34fdc35"
-  integrity sha1-OzmhHP3CVw6brWu9+WfVr9NP3DU=
+"@influxdata/clockface@2.6.4":
+  version "2.6.4"
+  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.4.tgz#dd3534b0506de31fc98928c1f5232e61971f7559"
+  integrity sha1-3TU0sFBt4x/JiSjB9SMuYZcfdVk=
 
 "@influxdata/giraffe@2.3.0":
   version "2.3.0"

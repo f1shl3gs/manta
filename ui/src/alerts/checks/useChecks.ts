@@ -2,8 +2,8 @@
 import constate from 'constate'
 import {CachePolicies, useFetch} from 'shared/useFetch'
 
-import {useOrgID} from '../shared/useOrg'
-import remoteDataState from '../utils/rds'
+import {useOrgID} from '../../shared/useOrg'
+import remoteDataState from '../../utils/rds'
 
 const [ChecksProvider, useChecks] = constate(
   () => {

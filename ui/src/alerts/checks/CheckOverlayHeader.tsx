@@ -1,13 +1,15 @@
 // Libraries
 import React, {useCallback} from 'react'
-import {useHistory, useLocation, useParams} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
+  ButtonShape,
   ComponentColor,
   ComponentSize,
   IconFont,
   Page,
+  SelectGroup,
   SquareButton,
 } from '@influxdata/clockface'
 import RenamablePageTitle from 'components/RenamablePageTitle'
@@ -40,7 +42,27 @@ const CheckOverlayHeader: React.FC = () => {
 
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
-          <div>todo</div>
+          <SelectGroup
+            shape={ButtonShape.StretchToFit}
+            style={{width: '300px'}}
+          >
+            <SelectGroup.Option
+              id={'A'}
+              value={'a'}
+              active
+              onClick={v => console.log(v)}
+            >
+              A
+            </SelectGroup.Option>
+            <SelectGroup.Option
+              id={'B'}
+              value={'b'}
+              active={false}
+              onClick={v => console.log(v)}
+            >
+              B
+            </SelectGroup.Option>
+          </SelectGroup>
         </Page.ControlBarLeft>
 
         <Page.ControlBarRight>

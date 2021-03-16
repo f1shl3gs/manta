@@ -40,7 +40,7 @@ func NewSessionHandler(
 	}
 
 	h.HandlerFunc(http.MethodPost, signinPath, h.handleSignin)
-	h.HandlerFunc(http.MethodDelete, signinPath, h.handleSignout)
+	h.HandlerFunc(http.MethodDelete, signoutPath, h.handleSignout)
 
 	return h
 }

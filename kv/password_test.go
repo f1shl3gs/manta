@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/kv"
-	"github.com/stretchr/testify/require"
 )
 
 func newTestPasswordService(t *testing.T, timeout time.Duration) (context.Context, manta.PasswordService, func()) {

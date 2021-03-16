@@ -1,17 +1,14 @@
 // Libraries
 import React from 'react'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
-import {
-  Button,
-  Overlay,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface'
-import {useHistory, useParams} from 'react-router-dom'
-import {CheckProvider, useCheck} from './useCheck'
+import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import CheckEditor from './CheckEditor'
 import CheckOverlayHeader from './CheckOverlayHeader'
+
+// Hooks
+import {CheckProvider, useCheck} from './useCheck'
 
 const CheckOverlay: React.FC = () => {
   const history = useHistory()

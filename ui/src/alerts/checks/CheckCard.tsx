@@ -21,7 +21,7 @@ import {relativeTimestampFormatter} from '../../utils/relativeTimestampFormatter
 
 // Types
 import {Check} from '../../types/Check'
-import {useChecks} from '../useChecks'
+import {useChecks} from './useChecks'
 import {useHistory} from 'react-router-dom'
 import {useOrgID} from '../../shared/useOrg'
 
