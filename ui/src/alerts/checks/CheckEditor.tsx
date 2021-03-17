@@ -17,6 +17,7 @@ import classnames from 'classnames'
 import {TimeRangeProvider} from '../../shared/useTimeRange'
 import CheckVis from './CheckVis'
 import {AutoRefreshProvider} from '../../shared/useAutoRefresh'
+import CheckBuilder from '../builder/CheckBuilder'
 
 const INITIAL_RESIZER_HANDLE = 0.65
 
@@ -72,14 +73,7 @@ const CheckEditor: React.FC = () => {
                   </div>
 
                   <div className={'time-machine-queries--body'}>
-                    <ReactCodeMirror
-                      autoCursor
-                      options={options}
-                      value={check.expr}
-                      onBeforeChange={(_, d, v) => {
-                        console.log('v', v)
-                      }}
-                    />
+                    <CheckBuilder />
                   </div>
                 </div>
               </div>
