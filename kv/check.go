@@ -227,7 +227,20 @@ func (s *Service) putCheck(ctx context.Context, tx Tx, c *manta.Check) error {
 }
 
 func (s *Service) UpdateCheck(ctx context.Context, id manta.ID, c *manta.Check) (*manta.Check, error) {
-	panic("implement me")
+	var (
+		err error
+	)
+
+	err = s.kv.Update(ctx, func(tx Tx) error {
+		err := s.deleteCheck(ctx, tx, id)
+		if err != nil {
+			return err
+		}
+
+		return s.putCheck(ctx, tx, c)
+	})
+
+	return c, err
 }
 
 func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpdate) (*manta.Check, error) {

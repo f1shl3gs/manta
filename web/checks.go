@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
 )
 
 const (
@@ -34,6 +35,7 @@ func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService,
 	h.HandlerFunc(http.MethodPut, ChecksPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, ChecksIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPost, ChecksIDPath, h.handleUpdate)
+	h.HandlerFunc(http.MethodPatch, ChecksIDPath, h.handlePatch)
 	h.HandlerFunc(http.MethodGet, ChecksIDPath, h.handleGet)
 }
 
@@ -97,12 +99,20 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 	c := &manta.Check{}
 	err := json.NewDecoder(r.Body).Decode(c)
 	if err != nil {
-		return nil, err
+		return nil, &manta.Error{
+			Code: manta.EInvalid,
+			Op:   "Decode check",
+			Err:  err,
+		}
 	}
 
 	err = c.Validate()
 	if err != nil {
-		return nil, err
+		return nil, &manta.Error{
+			Code: manta.EInvalid,
+			Op:   "Validate check",
+			Err:  err,
+		}
 	}
 
 	return c, nil
@@ -115,12 +125,7 @@ func (h *ChecksHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 
 	c, err := decodeCheck(r)
 	if err != nil {
-		h.HandleHTTPError(ctx,
-			&manta.Error{
-				Code: manta.EInvalid,
-				Err:  err,
-				Op:   "decode check",
-			}, w)
+		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
@@ -153,16 +158,16 @@ func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func decodeCheckUpdate(r *http.Request) (*manta.CheckUpdate, error) {
-	udp := &manta.CheckUpdate{}
+func decodeCheckUpdate(r *http.Request) (manta.CheckUpdate, error) {
+	udp := manta.CheckUpdate{}
 
-	err := json.NewDecoder(r.Body).Decode(udp)
+	err := json.NewDecoder(r.Body).Decode(&udp)
 	if err != nil {
-		return nil, &manta.Error{Code: manta.EInvalid, Op: "decode CheckUpdate", Err: err}
+		return udp, &manta.Error{Code: manta.EInvalid, Op: "decode CheckUpdate", Err: err}
 	}
 
 	if err = udp.Validate(); err != nil {
-		return nil, err
+		return udp, err
 	}
 
 	return udp, nil
@@ -179,13 +184,13 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	upd, err := decodeCheckUpdate(r)
+	c, err := decodeCheck(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	_, err = h.checkService.PatchCheck(ctx, id, *upd)
+	_, err = h.checkService.UpdateCheck(ctx, id, c)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -214,4 +219,30 @@ func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	if err = encodeResponse(ctx, w, http.StatusOK, c); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+	)
+
+	id, err := idFromRequestPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	udp, err := decodeCheckUpdate(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	_, err = h.checkService.PatchCheck(ctx, id, udp)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

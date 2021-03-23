@@ -196,3 +196,17 @@ func TestConditionMarshal(t *testing.T) {
 	err := json.NewEncoder(os.Stdout).Encode(c)
 	require.NoError(t, err)
 }
+
+func TestDecodeCondition(t *testing.T) {
+	text := `{
+      "status": "CRIT",
+      "threshold": {
+        "type": "gt",
+        "value": 0
+      }
+    }`
+
+	c := &manta.Condition{}
+	err := json.Unmarshal([]byte(text), c)
+	require.NoError(t, err)
+}

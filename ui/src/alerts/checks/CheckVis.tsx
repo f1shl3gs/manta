@@ -37,11 +37,13 @@ const CheckVis: React.FC<Props> = ({query}) => {
   const {table, fluxGroupKeyUnion} = useQueryResult(queries)
 
   return (
-    <ViewPropertiesProvider viewProperties={viewProperties}>
-      <XYPlot table={table} groupKeyUnion={fluxGroupKeyUnion}>
-        {config => <Plot config={config} />}
-      </XYPlot>
-    </ViewPropertiesProvider>
+    <div className={'time-machine--view'}>
+      <ViewPropertiesProvider viewProperties={viewProperties}>
+        <XYPlot table={table} groupKeyUnion={fluxGroupKeyUnion}>
+          {config => <Plot config={config} />}
+        </XYPlot>
+      </ViewPropertiesProvider>
+    </div>
   )
 }
 

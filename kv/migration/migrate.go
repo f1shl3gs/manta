@@ -24,6 +24,7 @@ type Migration struct {
 var (
 	All = []all.Spec{
 		all.Migration0000Initial(),
+		all.Migration0001AddSecret(),
 	}
 
 	//

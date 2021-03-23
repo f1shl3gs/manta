@@ -19,7 +19,7 @@ const BuilderCardHeader: React.FC<Props> = props => {
 
   return (
     <div className={classname} data-testid={testID}>
-      {title}
+      <h2 className={'builder-card--title'}>{title}</h2>
       {children}
     </div>
   )

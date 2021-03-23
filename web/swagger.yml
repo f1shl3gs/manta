@@ -239,6 +239,64 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+    put:
+      operationId: UpdateCheck
+      tags:
+        - Checks
+      summary: Update checks
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The check ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Check"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Check"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    patch:
+      operationId: PatchCheck
+      tags:
+        - Checks
+      summary: Update a check
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The check ID
+      requestBody:
+        description: Check update to apply
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckUpdate"
+      responses:
+        200:
+          description: Update successfuly
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Check"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
     delete:
       operationId: DeleteCheck
       tags:
@@ -399,6 +457,71 @@ paths:
       responses:
         204:
           description: Delete success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /orgs/{orgID}/secrets:
+    get:
+      operationId: ListSecrets
+      summary: List all secrets of the org
+      description: List all secrets of the org, the value will not be returned for security
+      tags:
+        - Secrets
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - name: orgID
+          in: path
+          required: true
+      responses:
+        200:
+          description: Secrets
+          content:
+            applicatoin/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecretWithoutValue"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    put:
+      operationId: PutSecret
+      summary: Create or update a secret
+      description: Create or update a secret
+      tags:
+        - Secrets
+      parameters:
+        - $ref: "#/components/responses/UnexpectedError"
+        - name: orgID
+          in: path
+          required: true
+          description: Organization ID
+      requestBody:
+        required: true
+        description: Secrets to create or update
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Secret"
+      responses:
+        201:
+          description: Put secret success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /orgs/{orgID}/secrets/{key}:
+    delete:
+      operationId: DeleteSecret
+      summary: Delete secret
+      description: Delete a secret by key
+      tags:
+        - Secrets
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      responses:
+        200:
+          description: Delete secret success
         default:
           $ref: "#/components/responses/UnexpectedError"
 
@@ -591,6 +714,19 @@ components:
         threshold:
           $ref: "#/components/schemas/Threshold"
 
+    CheckUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+
     Check:
       type: object
       properties:
@@ -625,6 +761,24 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Check"
+
+    Secret:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+    SecretWithoutValue:
+      type: object
+      required: key
+      properties:
+        key:
+          type: string
 
     NotificationEndpoint:
       type: object

@@ -3,7 +3,7 @@ import constate from 'constate'
 import {useCallback, useEffect, useState} from 'react'
 
 // types
-import {Check} from '../../types/Check'
+import {Check, CheckStatusLevel} from '../../types/Check'
 import {useFetch} from 'shared/useFetch'
 
 // Utils
@@ -42,7 +42,7 @@ const [CheckProvider, useCheck] = constate(
       RemoteDataState.NotStarted
     )
 
-    const {data, get, del, put, loading, error} = useFetch(
+    const {data, get, del, post, loading, error} = useFetch(
       `/api/v1/checks/${initialState.id}`,
       {}
     )
@@ -70,7 +70,7 @@ const [CheckProvider, useCheck] = constate(
     }
 
     const onSave = useCallback(() => {
-      return put(check)
+      return post(check)
     }, [check])
 
     const onRename = useCallback((name: string) => {
@@ -82,10 +82,29 @@ const [CheckProvider, useCheck] = constate(
       })
     }, [])
 
+    const onAddCondition = useCallback((level: CheckStatusLevel) => {
+      setCheck(prevState => {
+        const {conditions} = prevState
+
+        conditions.push({
+          status: level,
+          threshold: {
+            type: 'gt',
+            value: 0,
+          },
+        })
+        return {
+          ...prevState,
+          conditions,
+        }
+      })
+    }, [])
+
     return {
-      check,
+      ...check,
       onSave,
       onRename,
+      onAddCondition,
       remoteDataState: remoteDataState,
       updateCheck,
     }

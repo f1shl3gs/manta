@@ -1,7 +1,6 @@
 // Libraries
 import React, {useState} from 'react'
-
-import {useCheck} from './useCheck'
+import classnames from 'classnames'
 
 // Components
 import {
@@ -11,36 +10,24 @@ import {
   FlexBox,
   Orientation,
 } from '@influxdata/clockface'
-import {Controlled as ReactCodeMirror} from 'react-codemirror2'
-
-import classnames from 'classnames'
 import {TimeRangeProvider} from '../../shared/useTimeRange'
 import CheckVis from './CheckVis'
 import {AutoRefreshProvider} from '../../shared/useAutoRefresh'
 import CheckBuilder from '../builder/CheckBuilder'
 
-const INITIAL_RESIZER_HANDLE = 0.65
+// Hooks
+import {useCheck} from './useCheck'
 
-const options = {
-  tabIndex: 1,
-  mode: 'yaml',
-  readonly: true,
-  lineNumbers: true,
-  autoRefresh: true,
-  theme: 'material',
-  completeSingle: false,
-}
+// Constants
+import {INITIAL_RESIZER_HANDLE} from '../../constants/timeMachine'
 
 const CheckEditor: React.FC = () => {
-  const {check} = useCheck()
+  const {expr} = useCheck()
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
-  const containerClassName = classnames('time-machine', {
-    'time-machine--split': false,
-  })
 
   return (
     <div className={'veo-contents'}>
-      <div className={containerClassName}>
+      <div className={'time-machine'}>
         <DraggableResizer
           handleOrientation={Orientation.Horizontal}
           handlePositions={dragPosition}
@@ -50,13 +37,13 @@ const CheckEditor: React.FC = () => {
             <div className={'time-machine--top'}>
               <TimeRangeProvider>
                 <AutoRefreshProvider>
-                  <CheckVis query={check.expr} />
+                  <CheckVis query={expr} />
                 </AutoRefreshProvider>
               </TimeRangeProvider>
             </div>
           </DraggableResizer.Panel>
 
-          <DraggableResizer.Panel sizePercent={30}>
+          <DraggableResizer.Panel>
             <div className={'time-machine--bottom'}>
               <div className={'time-machine--bottom-contents'}>
                 <div className={'time-machine-queries'}>

@@ -12,8 +12,7 @@ import ViewOptions from './ViewOptions'
 import {ViewProperties} from 'types/Dashboard'
 import {useViewOption} from 'shared/useViewOption'
 import {QueriesProvider} from './useQueries'
-
-const INITIAL_RESIZER_HANDLE = 0.5
+import {INITIAL_RESIZER_HANDLE} from 'constants/timeMachine'
 
 interface Props {
   viewProperties: ViewProperties

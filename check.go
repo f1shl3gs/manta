@@ -3,6 +3,7 @@ package manta
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/f1shl3gs/manta/pkg/duration"
 )
 
@@ -129,13 +130,16 @@ func (m *Condition) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	d, err := duration.Parse(tm.Pending)
-	if err != nil {
-		return err
+	if tm.Pending != "" {
+		d, err := duration.Parse(tm.Pending)
+		if err != nil {
+			return err
+		}
+
+		m.Pending = d
 	}
 
 	m.Status = tm.Status
-	m.Pending = d
 	m.Threshold = tm.Threshold
 
 	return nil

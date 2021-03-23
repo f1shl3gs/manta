@@ -498,3 +498,8 @@ message Bucket {
   // Retention Policy
   required google.protobuf.Duration retention = 6 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
+
+message Secret {
+  required string key = 1;
+  required string value = 2;
+}

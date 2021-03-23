@@ -21,7 +21,7 @@ import {useOrgID} from '../../shared/useOrg'
 const saveButtonClass = 'veo-header--save-cell-button'
 
 const CheckOverlayHeader: React.FC = () => {
-  const {check, onRename, onSave} = useCheck()
+  const {name, onRename, onSave} = useCheck()
   const history = useHistory()
   const orgID = useOrgID()
 
@@ -33,7 +33,7 @@ const CheckOverlayHeader: React.FC = () => {
     <>
       <Page.Header fullWidth={true}>
         <RenamablePageTitle
-          name={check.name}
+          name={name}
           onRename={onRename}
           placeholder={'Name this Check'}
           maxLength={68}
@@ -52,7 +52,7 @@ const CheckOverlayHeader: React.FC = () => {
               active
               onClick={v => console.log(v)}
             >
-              A
+              Define Query
             </SelectGroup.Option>
             <SelectGroup.Option
               id={'B'}
@@ -60,7 +60,7 @@ const CheckOverlayHeader: React.FC = () => {
               active={false}
               onClick={v => console.log(v)}
             >
-              B
+              Configure Check
             </SelectGroup.Option>
           </SelectGroup>
         </Page.ControlBarLeft>
