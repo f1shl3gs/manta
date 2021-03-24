@@ -120,24 +120,24 @@ func (p Permission) matches(perm Permission) bool {
 		return false
 	}
 
-	if p.Resource.OrgID == nil && p.Resource.ID == nil {
+	if p.Resource.OrgID == 0 && p.Resource.ID == 0 {
 		return true
 	}
 
-	if p.Resource.OrgID != nil && perm.Resource.OrgID != nil && p.Resource.ID != nil && perm.Resource.ID != nil {
+	if p.Resource.OrgID != 0 && perm.Resource.OrgID != 0 && p.Resource.ID != 0 && perm.Resource.ID != 0 {
 		if p.Resource.OrgID != perm.Resource.OrgID && p.Resource.ID == perm.Resource.ID {
 			fmt.Printf("match used: p.Resource.OrgID=%s perm.Resource.OrgID=%s p.Resource.ID=%s",
 				p.Resource.OrgID, perm.Resource.OrgID, p.Resource.ID)
 		}
 	}
 
-	if p.Resource.OrgID != nil {
-		if perm.Resource.OrgID != nil {
+	if p.Resource.OrgID != 0 {
+		if perm.Resource.OrgID != 0 {
 			if p.Resource.OrgID == perm.Resource.OrgID {
-				if p.Resource.ID == nil {
+				if p.Resource.ID == 0 {
 					return true
 				}
-				if perm.Resource.ID != nil {
+				if perm.Resource.ID != 0 {
 					return p.Resource.ID == perm.Resource.ID
 				}
 			}
@@ -145,9 +145,9 @@ func (p Permission) matches(perm Permission) bool {
 		}
 	}
 
-	if p.Resource.ID != nil {
+	if p.Resource.ID != 0 {
 		pID := p.Resource.ID
-		if perm.Resource.ID != nil {
+		if perm.Resource.ID != 0 {
 			permID := perm.Resource.ID
 			if pID == permID {
 				return true
@@ -205,7 +205,7 @@ func OwnerPermissions(orgID ID) []Permission {
 					Action: a,
 					Resource: Resource{
 						Type: r,
-						ID:   &orgID,
+						ID:   orgID,
 					},
 				})
 
@@ -216,7 +216,7 @@ func OwnerPermissions(orgID ID) []Permission {
 				Action: a,
 				Resource: Resource{
 					Type:  r,
-					OrgID: &orgID,
+					OrgID: orgID,
 				},
 			})
 		}
@@ -235,7 +235,7 @@ func MemberPermissions(orgID ID) []Permission {
 				Action: ReadAction,
 				Resource: Resource{
 					Type: r,
-					ID:   &orgID,
+					ID:   orgID,
 				},
 			})
 			continue
@@ -245,7 +245,7 @@ func MemberPermissions(orgID ID) []Permission {
 			Action: ReadAction,
 			Resource: Resource{
 				Type:  r,
-				OrgID: &orgID,
+				OrgID: orgID,
 			},
 		})
 	}
@@ -262,7 +262,7 @@ func MePermissions(userID ID) []Permission {
 			Action: a,
 			Resource: Resource{
 				Type: UsersResourceType,
-				ID:   &userID,
+				ID:   userID,
 			},
 		})
 	}

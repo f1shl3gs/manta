@@ -66,6 +66,7 @@ func (udp DashboardCellUpdate) Apply(cell *Cell) {
 func (udp *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
 	var a struct {
 		Name           *string
+		Desc           *string
 		W, H, X, Y     *int32
 		ViewProperties json.RawMessage `json:"viewProperties"`
 	}
@@ -83,6 +84,7 @@ func (udp *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
 	}
 
 	udp.Name = a.Name
+	udp.Desc = a.Desc
 	udp.W = a.W
 	udp.H = a.H
 	udp.X = a.X

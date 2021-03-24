@@ -2,16 +2,23 @@
 import React from 'react'
 
 // Components
+import {ComponentColor, ComponentSize, Form, Grid} from '@influxdata/clockface'
+import DashedButton from 'shared/components/DashedButton'
+import DurationInput from 'shared/components/DurationInput'
 import BuilderCard from '../builderCard/BuilderCard'
 import BuilderCardHeader from '../builderCard/BuilderCardHeader'
 import BuilderCardBody from '../builderCard/BuilderCardBody'
-import {Form, Grid} from '@influxdata/clockface'
-import DurationInput from '../../shared/components/DurationInput'
+import CheckLabelRow from './CheckLabelRow'
+
+// Hooks
+import {useCheck} from '../checks/useCheck'
 
 // Constants
-import {DURATIONS} from '../../constants/duration'
+import {DURATIONS} from 'constants/duration'
 
 const CheckMetaCard: React.FC = () => {
+  const {labels} = useCheck()
+
   return (
     <BuilderCard
       testID={'builder-meta'}
@@ -44,6 +51,25 @@ const CheckMetaCard: React.FC = () => {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+
+        <Form.Label label={'Labels'} />
+
+        {labels.map((label, index) => (
+          <CheckLabelRow
+            key={index}
+            index={index}
+            label={label}
+            handleChangeLabelRow={() => console.log('change')}
+            handleRemoveTagRow={() => console.log('remove')}
+          />
+        ))}
+
+        <DashedButton
+          text={'+ Label'}
+          onClick={() => console.log('add label')}
+          color={ComponentColor.Primary}
+          size={ComponentSize.Small}
+        />
       </BuilderCardBody>
     </BuilderCard>
   )

@@ -1,5 +1,5 @@
 // Libraries
-import React from 'react'
+import React, {useCallback} from 'react'
 
 // Components
 import {
@@ -42,9 +42,33 @@ const CheckCard: React.FC<Props> = props => {
       lastRunError,
     },
   } = props
-  const {del, reload} = useChecks()
+  const {del, reload, patchCheck} = useChecks()
   const orgID = useOrgID()
   const history = useHistory()
+
+  const toggle = useCallback(() => {
+    patchCheck(id, {
+      status: status === 'active' ? 'inactive' : 'active',
+    })
+  }, [id, patchCheck, status])
+
+  const rename = useCallback(
+    (name: string) => {
+      patchCheck(id, {
+        name,
+      })
+    },
+    [id, patchCheck]
+  )
+
+  const onUpdateDesc = useCallback(
+    (desc: string) => {
+      patchCheck(id, {
+        desc,
+      })
+    },
+    [id, patchCheck]
+  )
 
   const contextMenu = () => (
     <Button
@@ -82,7 +106,7 @@ const CheckCard: React.FC<Props> = props => {
         <SlideToggle
           active={status !== 'inactive'}
           size={ComponentSize.ExtraSmall}
-          onChange={() => console.log('toggle')}
+          onChange={toggle}
           style={{flexBasis: '16px'}}
         />
         <LastRunStatus
@@ -102,12 +126,12 @@ const CheckCard: React.FC<Props> = props => {
           onClick={() => {
             history.push(`/orgs/${orgID}/alerts/checks/${id}`)
           }}
-          onUpdate={v => console.log('v')}
+          onUpdate={rename}
         />
         <ResourceCard.EditableDescription
           description={desc || ''}
           placeholder={`Describe ${name}`}
-          onUpdate={v => console.log('onUpdate')}
+          onUpdate={onUpdateDesc}
         />
         <ResourceCard.Meta>
           <>Last completed at {latestCompleted}</>

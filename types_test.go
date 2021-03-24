@@ -88,7 +88,7 @@ func TestCell(t *testing.T) {
 		txt := `{
 "id": "0000000000002b67",
   "name": "xy",
-  "description": "desc",
+  "desc": "desc",
   "x": 4,
   "h": 2,
 "y": 2,
@@ -209,4 +209,35 @@ func TestDecodeCondition(t *testing.T) {
 	c := &manta.Condition{}
 	err := json.Unmarshal([]byte(text), c)
 	require.NoError(t, err)
+}
+
+type content struct {
+	Array []string `json:"array"`
+}
+
+func TestEmptySlice(t *testing.T) {
+	type content struct {
+		Array []string `json:"array"`
+	}
+
+	t.Run("marshal", func(t *testing.T) {
+		c := &content{}
+		data, err := json.Marshal(c)
+		require.NoError(t, err)
+
+		fmt.Println(string(data))
+	})
+
+	t.Run("unmarshal", func(t *testing.T) {
+		text := `{"array":[]}`
+		c := &content{}
+
+		err := json.Unmarshal([]byte(text), c)
+		require.NoError(t, err)
+
+		data, err := json.Marshal(c)
+		require.NoError(t, err)
+
+		fmt.Println(string(data))
+	})
 }

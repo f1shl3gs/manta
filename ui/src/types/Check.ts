@@ -17,12 +17,18 @@ export interface CheckStatus {
   lastRunError?: string
 }
 
+export interface CheckLabel {
+  key: string
+  value: string
+}
+
 export interface Check extends Common, CheckStatus {
   name: string
   desc?: string
   status: string
   expr: string
   conditions: Condition[]
+  labels: CheckLabel[]
 }
 
 export interface ThresholdBase {

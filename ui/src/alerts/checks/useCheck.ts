@@ -33,6 +33,7 @@ const defaultCheck: Check = {
   name: '',
   desc: '',
   expr: '',
+  labels: [],
 }
 
 const [CheckProvider, useCheck] = constate(
@@ -42,15 +43,17 @@ const [CheckProvider, useCheck] = constate(
       RemoteDataState.NotStarted
     )
 
-    const {data, get, del, post, loading, error} = useFetch(
-      `/api/v1/checks/${initialState.id}`,
-      {}
-    )
+    const {get, post} = useFetch(`/api/v1/checks/${initialState.id}`, {})
 
     useEffect(() => {
       setRemoteDataState(RemoteDataState.Loading)
       get()
         .then(data => {
+          // todo: dummy
+          if (data.labels === null) {
+            data.labels = []
+          }
+
           setCheck(data)
           setRemoteDataState(RemoteDataState.Done)
         })

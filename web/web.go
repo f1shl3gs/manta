@@ -33,7 +33,6 @@ type Backend struct {
 	OrganizationService  manta.OrganizationService
 	CheckService         manta.CheckService
 	TaskService          manta.TaskService
-	DatasourceService    manta.DatasourceService
 	DashboardService     manta.DashboardService
 	TemplateService      manta.TemplateService
 	UserService          manta.UserService
@@ -97,9 +96,6 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	NewSessionHandler(router, logger, backend.UserService, backend.PasswordService, backend.SessionService)
 
 	NewKeyringHandler(router, logger, backend.Keyring)
-
-	// datasource
-	DatasourceService(logger, router, backend.DatasourceService)
 
 	// dashboard
 	dh := &DashboardHandler{

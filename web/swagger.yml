@@ -719,7 +719,7 @@ components:
       properties:
         name:
           type: string
-        description:
+        desc:
           type: string
         status:
           type: string
