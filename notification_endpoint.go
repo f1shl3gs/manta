@@ -2,6 +2,7 @@ package manta
 
 import (
 	"context"
+	"errors"
 )
 
 type NotificationEndpointFilter struct {
@@ -31,4 +32,16 @@ type NotificationEndpointService interface {
 
 	// DeleteNotificationEndpoint delete a notification endpoint by id
 	DeleteNotificationEndpoint(ctx context.Context, id ID) error
+}
+
+func (m *NotificationEndpoint) Validate() error {
+	if m.Name == "" {
+		return errors.New("name is required")
+	}
+
+	if m.OrgID == 0 {
+		return ErrInvalidOrgID
+	}
+
+	return nil
 }

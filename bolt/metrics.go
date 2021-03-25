@@ -27,13 +27,13 @@ var (
 )
 
 // Describe returns all descriptions of the collector.
-func (c *KVStore) Describe(ch chan<- *prometheus.Desc) {
+func (s *KVStore) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("mantad_boltdb", "", nil, nil)
 }
 
 // Collect returns the current state of all metrics of the collector.
-func (c *KVStore) Collect(ch chan<- prometheus.Metric) {
-	stats := c.db.Stats()
+func (s *KVStore) Collect(ch chan<- prometheus.Metric) {
+	stats := s.db.Stats()
 	writes := stats.TxStats.Write
 	reads := stats.TxN
 
@@ -50,7 +50,7 @@ func (c *KVStore) Collect(ch chan<- prometheus.Metric) {
 	)
 
 	keys := make(map[string]int)
-	_ = c.db.View(func(tx *bolt.Tx) error {
+	_ = s.db.View(func(tx *bolt.Tx) error {
 		return tx.ForEach(func(name []byte, b *bolt.Bucket) error {
 			keys[string(name)] = b.Stats().KeyN
 			return nil
@@ -66,8 +66,8 @@ func (c *KVStore) Collect(ch chan<- prometheus.Metric) {
 		)
 	}
 
-	c.commitSec.Collect(ch)
-	c.writeSec.Collect(ch)
-	c.updateSec.Collect(ch)
-	c.viewSec.Collect(ch)
+	s.commitSec.Collect(ch)
+	s.writeSec.Collect(ch)
+	s.updateSec.Collect(ch)
+	s.viewSec.Collect(ch)
 }

@@ -15,7 +15,14 @@ interface Props {
 
 const AlertsNavigation: React.FC<Props> = props => {
   const {prefix, tabs} = props
-  const [activeTab, setActive] = useState('checks')
+  const [activeTab, setActive] = useState(() => {
+    if (window.location.pathname.indexOf('checks') >= 0) {
+      return 'checks'
+    }
+
+    return 'endpoints'
+  })
+
   const history = useHistory()
 
   const onClick = (id: string) => {

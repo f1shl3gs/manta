@@ -382,21 +382,22 @@ func (l *Launcher) Run() error {
 		// http service
 		hl := logger.With(zap.String("service", "http"))
 		handler := web.New(hl, &web.Backend{
-			BackupService:        kvStore,
-			OrganizationService:  service,
-			CheckService:         checkService,
-			TaskService:          service,
-			TemplateService:      service,
-			UserService:          service,
-			PasswordService:      service,
-			AuthorizationService: service,
-			OtclService:          service,
-			DashboardService:     service,
-			Keyring:              service,
-			SessionService:       service,
-			ScrapeService:        service,
-			TenantStorage:        tenantStorage,
-			Flusher:              kvStore,
+			BackupService:               kvStore,
+			OrganizationService:         service,
+			CheckService:                checkService,
+			TaskService:                 service,
+			TemplateService:             service,
+			UserService:                 service,
+			PasswordService:             service,
+			AuthorizationService:        service,
+			OtclService:                 service,
+			DashboardService:            service,
+			Keyring:                     service,
+			SessionService:              service,
+			ScrapeService:               service,
+			TenantStorage:               tenantStorage,
+			NotificationEndpointService: service,
+			Flusher:                     kvStore,
 		}, l.AccessLog)
 
 		group.Go(func() error {

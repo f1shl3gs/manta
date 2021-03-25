@@ -6,10 +6,10 @@ import {Route, Switch} from 'react-router-dom'
 import {Page, Tabs} from '@influxdata/clockface'
 import AlertsNavigation from './AlertsNavigation'
 import ChecksIndex from './checks/ChecksIndex'
+import NotificationEndpointIndex from './notificationEndpoints/NotificationEndpointIndex'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
-import {ChecksProvider} from './checks/useChecks'
 import CheckOverlay from './checks/CheckOverlay'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
@@ -20,14 +20,10 @@ const tabs = [
     text: 'Checks',
   },
   {
-    id: 'notificationEndpoints',
+    id: 'endpoints',
     text: 'Notification Endpoints',
   },
 ]
-
-const dummy: React.FC = () => {
-  return <div>Dummy</div>
-}
 
 const AlertsPage: React.FC = props => {
   const activeColumn = 'checks'
@@ -45,16 +41,11 @@ const AlertsPage: React.FC = props => {
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>
-            <ChecksProvider>
-              <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
-              <Route
-                path={`${pagePrefix}/checks/:id`}
-                component={CheckOverlay}
-              />
-            </ChecksProvider>
+            <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
+            <Route path={`${pagePrefix}/checks/:id`} component={CheckOverlay} />
             <Route
-              path={`${pagePrefix}/notificationEndpoints`}
-              component={dummy}
+              path={`${pagePrefix}/endpoints`}
+              component={NotificationEndpointIndex}
             />
           </Switch>
         </Tabs.TabContents>

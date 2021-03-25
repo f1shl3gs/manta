@@ -10,6 +10,7 @@ import (
 
 var (
 	notificationEndpointBucket          = []byte("notificationendpoints")
+	notificationEndpointOrgIndexBucket  = []byte("notificationendpointorgindex")
 	notificationEndpointNameIndexBucket = []byte("notificationendpointnameindex")
 )
 
@@ -59,6 +60,12 @@ func (s *Service) FindNotificationEndpoints(ctx context.Context, filter manta.No
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
+		if filter.OrgID != nil {
+			edps, err = s.findNotificationEndpointsByOrgID(ctx, tx, *filter.OrgID)
+			total = len(edps)
+			return err
+		}
+
 		edps, total, err = s.findNotificationEndpoints(ctx, tx, filter, opts...)
 		return err
 	})
@@ -68,6 +75,65 @@ func (s *Service) FindNotificationEndpoints(ctx context.Context, filter manta.No
 	}
 
 	return edps, total, nil
+}
+
+func (s *Service) findNotificationEndpointsByOrgID(ctx context.Context, tx Tx, orgID manta.ID) ([]*manta.NotificationEndpoint, error) {
+	prefix, err := orgID.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(notificationEndpointOrgIndexBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := b.ForwardCursor(prefix, WithCursorPrefix(prefix))
+	if err != nil {
+		return nil, err
+	}
+
+	defer c.Close()
+
+	keys := make([][]byte, 0)
+	for k, v := c.Next(); k != nil; k, v = c.Next() {
+		keys = append(keys, v)
+	}
+
+	if err = c.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(keys) == 0 {
+		return make([]*manta.NotificationEndpoint, 0), nil
+	}
+
+	b, err = tx.Bucket(notificationEndpointBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	values, err := b.GetBatch(keys...)
+	if err != nil {
+		return nil, err
+	}
+
+	eps := make([]*manta.NotificationEndpoint, 0, len(values))
+	for _, v := range values {
+		if v == nil {
+			continue
+		}
+
+		ep := &manta.NotificationEndpoint{}
+		err = ep.Unmarshal(v)
+		if err != nil {
+			return nil, err
+		}
+
+		eps = append(eps, ep)
+	}
+
+	return eps, nil
 }
 
 func (s *Service) findNotificationEndpoints(ctx context.Context, tx Tx, filter manta.NotificationEndpointFilter, opts ...manta.FindOptions) ([]*manta.NotificationEndpoint, int, error) {
@@ -153,6 +219,7 @@ func (s *Service) createNotificationEndpoint(ctx context.Context, tx Tx, ne *man
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
+	ne.ID = s.idGen.ID()
 	ne.Created = time.Now()
 	ne.Updated = time.Now()
 
@@ -160,19 +227,36 @@ func (s *Service) createNotificationEndpoint(ctx context.Context, tx Tx, ne *man
 }
 
 func (s *Service) putNotificationEndpoint(ctx context.Context, tx Tx, ne *manta.NotificationEndpoint) error {
-	key, err := ne.ID.Encode()
+	pk, err := ne.ID.Encode()
 	if err != nil {
 		return err
 	}
 
 	// name index
-	nameIdx := IndexKey([]byte(ne.Name), key)
+	indexKey := IndexKey([]byte(ne.Name), pk)
 	b, err := tx.Bucket(notificationEndpointNameIndexBucket)
 	if err != nil {
 		return err
 	}
 
-	if err := b.Put(nameIdx, key); err != nil {
+	if err := b.Put(indexKey, pk); err != nil {
+		return err
+	}
+
+	// org index
+	fk, err := ne.OrgID.Encode()
+	if err != nil {
+		return err
+	}
+
+	indexKey = IndexKey(fk, pk)
+	b, err = tx.Bucket(notificationEndpointOrgIndexBucket)
+	if err != nil {
+		return err
+	}
+
+	err = b.Put(indexKey, pk)
+	if err != nil {
 		return err
 	}
 
@@ -187,7 +271,7 @@ func (s *Service) putNotificationEndpoint(ctx context.Context, tx Tx, ne *manta.
 		return err
 	}
 
-	return b.Put(key, data)
+	return b.Put(pk, data)
 }
 
 func (s *Service) UpdateNotificationEndpoint(ctx context.Context, id manta.ID, u manta.NotificationEndpointUpdate) (*manta.NotificationEndpoint, error) {

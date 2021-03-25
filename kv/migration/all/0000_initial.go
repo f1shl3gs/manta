@@ -26,6 +26,7 @@ func Migration0000Initial() Spec {
 			[]byte("notificationorgindex"),
 			[]byte("notificationendpoints"),
 			[]byte("notificationendpointorgindex"),
+			[]byte("notificationendpointnameindex"),
 			[]byte("organizations"),
 			[]byte("organizationnameindex"),
 			[]byte("otcls"),

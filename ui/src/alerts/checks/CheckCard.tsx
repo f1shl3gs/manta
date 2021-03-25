@@ -1,5 +1,6 @@
 // Libraries
 import React, {useCallback} from 'react'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -16,14 +17,15 @@ import {
 } from '@influxdata/clockface'
 import LastRunStatus from './LastRunStatus'
 
+// Hooks
+import {useChecks} from './useChecks'
+import {useOrgID} from 'shared/useOrg'
+
 // Utils
-import {relativeTimestampFormatter} from '../../utils/relativeTimestampFormatter'
+import {relativeTimestampFormatter} from 'utils/relativeTimestampFormatter'
 
 // Types
-import {Check} from '../../types/Check'
-import {useChecks} from './useChecks'
-import {useHistory} from 'react-router-dom'
-import {useOrgID} from '../../shared/useOrg'
+import {Check} from 'types/Check'
 
 interface Props {
   check: Check

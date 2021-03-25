@@ -27,20 +27,21 @@ type Backend struct {
 
 	Flusher Flusher
 
-	TenantStorage        store.TenantStorage
-	OtclService          manta.OtclService
-	BackupService        manta.BackupService
-	OrganizationService  manta.OrganizationService
-	CheckService         manta.CheckService
-	TaskService          manta.TaskService
-	DashboardService     manta.DashboardService
-	TemplateService      manta.TemplateService
-	UserService          manta.UserService
-	PasswordService      manta.PasswordService
-	AuthorizationService manta.AuthorizationService
-	Keyring              manta.Keyring
-	SessionService       manta.SessionService
-	ScrapeService        manta.ScraperTargetService
+	TenantStorage               store.TenantStorage
+	OtclService                 manta.OtclService
+	BackupService               manta.BackupService
+	OrganizationService         manta.OrganizationService
+	CheckService                manta.CheckService
+	TaskService                 manta.TaskService
+	DashboardService            manta.DashboardService
+	TemplateService             manta.TemplateService
+	UserService                 manta.UserService
+	PasswordService             manta.PasswordService
+	AuthorizationService        manta.AuthorizationService
+	Keyring                     manta.Keyring
+	SessionService              manta.SessionService
+	ScrapeService               manta.ScraperTargetService
+	NotificationEndpointService manta.NotificationEndpointService
 }
 
 func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
@@ -111,6 +112,8 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	NewQueryHandler(logger, router, backend.TenantStorage)
 
 	NewChecksHandler(logger, router, backend.CheckService, backend.TaskService)
+
+	NewNotificationEndpointHandler(logger, router, backend.NotificationEndpointService)
 
 	// and more
 
