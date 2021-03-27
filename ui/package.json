@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@influxdata/clockface": "2.6.4",
-    "@influxdata/giraffe": "2.3.0",
+    "@influxdata/clockface": "2.6.6",
+    "@influxdata/giraffe": "2.7.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

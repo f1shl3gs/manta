@@ -9,7 +9,7 @@ import (
 
 const (
 	// todo: make tll configurable
-	defaultSessionTTL = 12 * time.Hour
+	defaultSessionTTL = 7 * 24 * time.Hour
 )
 
 var (

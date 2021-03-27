@@ -41,6 +41,7 @@ type Backend struct {
 	Keyring                     manta.Keyring
 	SessionService              manta.SessionService
 	ScrapeService               manta.ScraperTargetService
+	VariableService             manta.VariableService
 	NotificationEndpointService manta.NotificationEndpointService
 }
 
@@ -114,6 +115,8 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	NewChecksHandler(logger, router, backend.CheckService, backend.TaskService)
 
 	NewNotificationEndpointHandler(logger, router, backend.NotificationEndpointService)
+
+	NewVariableHandler(logger, router, backend.VariableService)
 
 	// and more
 

@@ -472,10 +472,16 @@ message AlertAction {
 
 message Variable {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
-  uint64 org_id = 2 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
-  string name = 3;
-  string desc = 4;
-  repeated string selected = 5;
+  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  string name = 4;
+  string desc = 5;
+  uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
+
+  // type could be 'query' or 'static'
+  string type = 7;
+  string value = 8;
 }
 
 message Bucket {

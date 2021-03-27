@@ -23,7 +23,8 @@ func NewTestBackend(t *testing.T) (*Backend, *zap.Logger, func()) {
 		panic(err)
 	}
 
-	err = migration.Initial(context.Background(), store)
+	migrator := migration.New(logger, store, migration.All...)
+	err = migrator.Up(context.Background())
 	require.NoError(t, err)
 
 	service := kv.NewService(logger, store)

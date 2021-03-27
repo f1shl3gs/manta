@@ -397,6 +397,7 @@ func (l *Launcher) Run() error {
 			ScrapeService:               service,
 			TenantStorage:               tenantStorage,
 			NotificationEndpointService: service,
+			VariableService:             service,
 			Flusher:                     kvStore,
 		}, l.AccessLog)
 

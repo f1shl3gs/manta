@@ -2022,15 +2022,15 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.6.4":
-  version "2.6.4"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.4.tgz#dd3534b0506de31fc98928c1f5232e61971f7559"
-  integrity sha1-3TU0sFBt4x/JiSjB9SMuYZcfdVk=
+"@influxdata/clockface@2.6.6":
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.6.6.tgz#5eeb42110da8e967eb8199a337e9923935d49fe1"
+  integrity sha512-bbEwkwWHFQvxrWa3yOWn65Th+/JdNVJp5Nzx55v93tIWa93O1H/q3sFp96lZbMA1WH8eO5mz1qvNDVAkqF4crw==
 
-"@influxdata/giraffe@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.3.0.tgz#162af11c637cad97982399a14a67c439e07f1f74"
-  integrity sha1-FirxHGN8rZeYI5mhSmfEOeB/H3Q=
+"@influxdata/giraffe@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.npm.taobao.org/@influxdata/giraffe/download/@influxdata/giraffe-2.7.0.tgz#ce93da5581875530d612eae9489eebfe66b710c5"
+  integrity sha1-zpPaVYGHVTDWEurpSJ7r/ma3EMU=
   dependencies:
     merge-images "^2.0.0"
 

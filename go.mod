@@ -7,7 +7,6 @@ require (
 	github.com/cespare/xxhash v1.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
-	github.com/go-playground/validator/v10 v10.4.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.4

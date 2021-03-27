@@ -525,6 +525,119 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+  /variables:
+    get:
+      operationId: GetAllVariables
+      summary: Get Variables
+      tags:
+        - Variables
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: query
+          required: true
+          name: orgID
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Variable"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      operationId: CreateVariable
+      summary: Crreate Variable
+      tags:
+        - Variables
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+      requestBody:
+        description: Variable to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Variable"
+      responses:
+        201:
+          description: Success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /variables/{id}:
+    parameters:
+      - $ref: "#/components/parameters/TraceSpan"
+      - in: path
+        required: true
+        name: id
+        schema:
+          type: string
+        description: Variable ID
+
+    get:
+      operationId: GetVariable
+      summary: Get Variable by ID
+      tags:
+        - Variables
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Variable"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    patch:
+      operationId: PatchVariable
+      summary: Update variable with change set
+      tags:
+        - Variables
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VariableUpdate"
+      responses:
+        204:
+          description: Success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    post:
+      operationId: UpdateVariable
+      summary: Update Variable
+      tags:
+        - Variables
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Variable"
+      responses:
+        200:
+          description: Success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+    delete:
+      operationId: DeleteVariable
+      summary: Delete variable by ID
+      tags:
+        - Variables
+      responses:
+        200:
+          description: Success
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
   /migrations:
     get:
       operationId: GetMigrations
@@ -838,6 +951,44 @@ components:
           type: array
           items:
             type: string
+    Variable:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        orgID:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        desc:
+          type: string
+        type:
+          type: string
+          enum:
+            - query
+            - static
+        value:
+          type: string
+    VariableUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        desc:
+          type: string
+
   responses:
     UnexpectedError:
       description: Unexpected error

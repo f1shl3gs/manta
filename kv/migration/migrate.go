@@ -25,6 +25,7 @@ var (
 	All = []all.Spec{
 		all.Migration0000Initial(),
 		all.Migration0001AddSecret(),
+		all.Migration0002AddVariable(),
 	}
 
 	//

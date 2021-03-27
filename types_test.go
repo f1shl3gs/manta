@@ -9,9 +9,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/prometheus/prometheus/promql/parser"
+	"github.com/stretchr/testify/require"
+
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/snowflake"
-	"github.com/stretchr/testify/require"
 )
 
 func TestCell(t *testing.T) {
@@ -240,4 +242,15 @@ func TestEmptySlice(t *testing.T) {
 
 		fmt.Println(string(data))
 	})
+}
+
+func TestParsePromql(t *testing.T) {
+	text := `histogram_quantile(0.9, sum by(le, method, path) (rate(demo_api_request_duration_seconds_bucket[5m])))`
+	expr, err := parser.ParseExpr(text)
+	require.NoError(t, err)
+
+	data, err := json.MarshalIndent(expr, "", "  ")
+	require.NoError(t, err)
+
+	fmt.Println(string(data))
 }

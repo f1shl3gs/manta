@@ -18,7 +18,6 @@ deps:
 	go mod download
 
 lint:
-	go fmt ./...
 	golangci-lint run ./...
 
 test:
