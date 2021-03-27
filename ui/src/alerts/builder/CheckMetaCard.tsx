@@ -2,7 +2,13 @@
 import React from 'react'
 
 // Components
-import {ComponentColor, ComponentSize, Form, Grid} from '@influxdata/clockface'
+import {
+  Columns,
+  ComponentColor,
+  ComponentSize,
+  Form,
+  Grid,
+} from '@influxdata/clockface'
 import DashedButton from 'shared/components/DashedButton'
 import DurationInput from 'shared/components/DurationInput'
 import BuilderCard from '../builderCard/BuilderCard'
@@ -28,7 +34,7 @@ const CheckMetaCard: React.FC = () => {
       <BuilderCardBody addPadding={true} autoHideScrollbars={true}>
         <Grid>
           <Grid.Row>
-            <Grid.Column widthSM={6}>
+            <Grid.Column widthSM={Columns.Six}>
               <Form.Element label={'Schedule Every'}>
                 <DurationInput
                   value={'5m'}
@@ -39,7 +45,7 @@ const CheckMetaCard: React.FC = () => {
               </Form.Element>
             </Grid.Column>
 
-            <Grid.Column widthSM={6}>
+            <Grid.Column widthSM={Columns.Six}>
               <Form.Element label="Offset">
                 <DurationInput
                   value={'1m'}

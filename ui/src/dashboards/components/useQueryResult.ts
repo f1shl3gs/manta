@@ -37,7 +37,7 @@ const useQueryResult = (
       }
 
       get(
-        `?query=${encodeURI(
+        `?query=${encodeURIComponent(
           q.text
         )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
       )

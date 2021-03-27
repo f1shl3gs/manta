@@ -47,7 +47,6 @@ const [CellProvider, useCell] = constate(
             }
           }
 
-          console.log('set done', resp)
           setCell(resp)
         })
         .catch(err => {
@@ -63,8 +62,6 @@ const [CellProvider, useCell] = constate(
       },
       [cell]
     )
-
-    console.log('rds', remoteDataState(cell, error, loading), 'cell', cell)
 
     return {
       cell,

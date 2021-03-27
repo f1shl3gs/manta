@@ -2,22 +2,29 @@ package web
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/log"
-	"github.com/prometheus/client_golang/prometheus"
+	"fmt"
 	"math"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/pkg/textparse"
+	"github.com/prometheus/prometheus/pkg/timestamp"
 	"github.com/prometheus/prometheus/promql"
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/prometheus/prometheus/util/stats"
+	v1 "github.com/prometheus/prometheus/web/api/v1"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 	"github.com/f1shl3gs/manta/store"
 )
@@ -27,12 +34,17 @@ type status string
 const (
 	StatusSuccess status = "success"
 	StatusError   status = "error"
-)
 
-var (
 	instantQueryPath = "/api/v1/query"
 	rangeQueryPath   = "/api/v1/query_range"
 
+	promPrefix          = "/api/v1/query/:orgID/"
+	promMetadataPath    = "/api/v1/query/:orgID/api/v1/metadata"
+	promLabelNamesPath  = "/api/v1/query/:orgID/api/v1/labels"
+	promLabelValuesPath = "/api/v1/query/:orgID/api/v1/label/:name/values"
+)
+
+var (
 	minTime          = time.Unix(math.MinInt64/1000+62135596801, 0).UTC()
 	maxTime          = time.Unix(math.MaxInt64/1000-62135596801, 999999999).UTC()
 	minTimeFormatted = minTime.Format(time.RFC3339Nano)
@@ -47,9 +59,12 @@ type QueryHandler struct {
 	logger        *zap.Logger
 	engine        *promql.Engine
 	tenantStorage store.TenantStorage
+
+	// todo: dummy
+	targetRetriever v1.TargetRetriever
 }
 
-func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage store.TenantStorage) {
+func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage store.TenantStorage, tr v1.TargetRetriever) {
 	engOpts := promql.EngineOpts{
 		Logger:        log.NewZapToGokitLogAdapter(logger),
 		Reg:           prometheus.DefaultRegisterer,
@@ -63,15 +78,20 @@ func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage store.Ten
 	engine := promql.NewEngine(engOpts)
 
 	h := &QueryHandler{
-		logger:        logger,
-		Router:        router,
-		tenantStorage: tenantStorage,
-		now:           time.Now,
-		engine:        engine,
+		logger:          logger,
+		Router:          router,
+		tenantStorage:   tenantStorage,
+		now:             time.Now,
+		engine:          engine,
+		targetRetriever: tr,
 	}
 
 	h.HandlerFunc(http.MethodGet, instantQueryPath, h.handleInstantQuery)
 	h.HandlerFunc(http.MethodGet, rangeQueryPath, h.handleRangeQuery)
+	h.HandlerFunc(http.MethodGet, promMetadataPath, h.handleMetadata)
+	h.HandlerFunc(http.MethodGet, promLabelNamesPath, h.handleLabelNames)
+	h.HandlerFunc(http.MethodPost, promLabelNamesPath, h.handleLabelNames)
+	h.HandlerFunc(http.MethodGet, promLabelValuesPath, h.handleLabelValues)
 }
 
 func parseTime(s string) (time.Time, error) {
@@ -262,15 +282,18 @@ const (
 )
 
 type apiError struct {
-	Typ errorType `json:"typ"`
-	Err error     `json:"err"`
+	typ errorType
+	err error
+}
+
+func (e *apiError) Error() string {
+	return fmt.Sprintf("%s: %s", e.typ, e.err)
 }
 
 type apiFuncResult struct {
-	Data      interface{}      `json:"data,omitempty"`
-	Err       *apiError        `json:"err,omitempty"`
-	Warnings  storage.Warnings `json:"warnings,omitempty"`
-	finalizer func()
+	Data     interface{}      `json:"data,omitempty"`
+	Err      *apiError        `json:"err,omitempty"`
+	Warnings storage.Warnings `json:"warnings,omitempty"`
 }
 
 func returnAPIError(err error) *apiError {
@@ -360,4 +383,316 @@ func (h *QueryHandler) encodeQueryResult(ctx context.Context, w http.ResponseWri
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+type metadata struct {
+	Type textparse.MetricType `json:"type"`
+	Help string               `json:"help"`
+	Unit string               `json:"unit"`
+}
+
+func (h *QueryHandler) handleMetadata(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx     = r.Context()
+		metrics = map[string]map[metadata]struct{}{}
+	)
+
+	limit := -1
+	if s := r.FormValue("limit"); s != "" {
+		var err error
+		if limit, err = strconv.Atoi(s); err != nil {
+			h.HandleHTTPError(ctx, err, w)
+			// apiFuncResult{nil, &apiError{errorBadData, errors.New("limit must be a number")}, nil, nil}
+			return
+		}
+	}
+
+	metric := r.FormValue("metric")
+	for _, tt := range h.targetRetriever.TargetsActive() {
+		for _, t := range tt {
+
+			if metric == "" {
+				for _, mm := range t.MetadataList() {
+					m := metadata{Type: mm.Type, Help: mm.Help, Unit: mm.Unit}
+					ms, ok := metrics[mm.Metric]
+
+					if !ok {
+						ms = map[metadata]struct{}{}
+						metrics[mm.Metric] = ms
+					}
+					ms[m] = struct{}{}
+				}
+				continue
+			}
+
+			if md, ok := t.Metadata(metric); ok {
+				m := metadata{Type: md.Type, Help: md.Help, Unit: md.Unit}
+				ms, ok := metrics[md.Metric]
+
+				if !ok {
+					ms = map[metadata]struct{}{}
+					metrics[md.Metric] = ms
+				}
+				ms[m] = struct{}{}
+			}
+		}
+	}
+
+	// Put the elements from the pseudo-set into a slice for marshaling.
+	res := map[string][]metadata{}
+	for name, set := range metrics {
+		if limit >= 0 && len(res) >= limit {
+			break
+		}
+
+		s := []metadata{}
+		for metadata := range set {
+			s = append(s, metadata)
+		}
+		res[name] = s
+	}
+
+	err := encodeResponse(ctx, w, http.StatusOK, apiFuncResult{
+		Data: res,
+	})
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *QueryHandler) handleLabelNames(w http.ResponseWriter, r *http.Request) {
+	var (
+		orgID manta.ID
+
+		ctx    = r.Context()
+		params = httprouter.ParamsFromContext(ctx)
+	)
+
+	err := orgID.DecodeFromString(params.ByName("orgID"))
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	start, err := parseTimeParam(r, "start", minTime)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	end, err := parseTimeParam(r, "end", maxTime)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	matcherSets, err := parseMatchersParam(r.Form["match[]"])
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	queryable, err := h.tenantStorage.Queryable(ctx, orgID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	q, err := queryable.Querier(ctx, timestamp.FromTime(start), timestamp.FromTime(end))
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	defer q.Close()
+
+	var (
+		names    = make([]string, 0)
+		warnings storage.Warnings
+	)
+
+	if len(matcherSets) > 0 {
+		hints := &storage.SelectHints{
+			Start: timestamp.FromTime(start),
+			End:   timestamp.FromTime(end),
+			// There is no series function, this token is used for lookups that don't need samples.
+			Func: "series",
+		}
+
+		labelNamesSet := make(map[string]struct{})
+		// Get all series which match matchers
+		for _, mset := range matcherSets {
+			s := q.Select(false, hints, mset...)
+			for s.Next() {
+				series := s.At()
+				for _, lb := range series.Labels() {
+					labelNamesSet[lb.Name] = struct{}{}
+				}
+			}
+
+			warnings = append(warnings, s.Warnings()...)
+			if err := s.Err(); err != nil {
+				h.HandleHTTPError(ctx, err, w)
+				return
+			}
+		}
+
+		// Convert the map to an array
+		names = make([]string, 0, len(labelNamesSet))
+		for key := range labelNamesSet {
+			names = append(names, key)
+		}
+
+		sort.Strings(names)
+	} else {
+		names, warnings, err = q.LabelNames()
+		if err != nil {
+			h.HandleHTTPError(ctx, err, w)
+			return
+		}
+	}
+
+	err = encodeResponse(ctx, w, http.StatusOK, &promAPIResult{
+		Data:     names,
+		Status:   "success",
+		Warnings: warnings,
+	})
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func parseMatchersParam(matchers []string) ([][]*labels.Matcher, error) {
+	var matcherSets [][]*labels.Matcher
+	for _, s := range matchers {
+		matchers, err := parser.ParseMetricSelector(s)
+		if err != nil {
+			return nil, err
+		}
+		matcherSets = append(matcherSets, matchers)
+	}
+
+OUTER:
+	for _, ms := range matcherSets {
+		for _, lm := range ms {
+			if lm != nil && !lm.Matches("") {
+				continue OUTER
+			}
+		}
+		return nil, errors.New("match[] must contain at least one non-empty matcher")
+	}
+	return matcherSets, nil
+}
+
+func (h *QueryHandler) handleLabelValues(w http.ResponseWriter, r *http.Request) {
+	var (
+		orgID  manta.ID
+		ctx    = r.Context()
+		params = httprouter.ParamsFromContext(ctx)
+	)
+
+	name := params.ByName("name")
+
+	err := orgID.DecodeFromString(params.ByName("orgID"))
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if !model.LabelNameRE.MatchString(name) {
+		h.HandleHTTPError(ctx, &apiError{errorBadData, errors.Errorf("invalid label name: %q", name)}, w)
+		return
+	}
+
+	start, err := parseTimeParam(r, "start", minTime)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	end, err := parseTimeParam(r, "end", maxTime)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	matcherSets, err := parseMatchersParam(r.Form["match[]"])
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	queryable, err := h.tenantStorage.Queryable(ctx, orgID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	q, err := queryable.Querier(ctx, timestamp.FromTime(start), timestamp.FromTime(end))
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	defer q.Close()
+
+	var (
+		vals     []string
+		warnings storage.Warnings
+	)
+	if len(matcherSets) > 0 {
+		var callWarnings storage.Warnings
+		labelValuesSet := make(map[string]struct{})
+		for _, matchers := range matcherSets {
+			vals, callWarnings, err = q.LabelValues(name, matchers...)
+			if err != nil {
+				// todo: add warnings
+				h.HandleHTTPError(ctx, &apiError{errorExec, err}, w)
+				return
+			}
+			warnings = append(warnings, callWarnings...)
+			for _, val := range vals {
+				labelValuesSet[val] = struct{}{}
+			}
+		}
+
+		vals = make([]string, 0, len(labelValuesSet))
+		for val := range labelValuesSet {
+			vals = append(vals, val)
+		}
+	} else {
+		vals, warnings, err = q.LabelValues(name)
+		if err != nil {
+			// todo: add warnings
+			h.HandleHTTPError(ctx, &apiError{errorExec, err}, w)
+			return
+		}
+
+		if vals == nil {
+			vals = []string{}
+		}
+	}
+
+	sort.Strings(vals)
+
+	err = encodeResponse(ctx, w, http.StatusOK, &promAPIResult{
+		Data:     vals,
+		Status:   "success",
+		Warnings: warnings,
+	})
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+type promAPIResult struct {
+	Data interface{} `json:"data,omitempty"`
+	// Err      *apiError        `json:"err,omitempty"`
+	Status   string           `json:"status"`
+	Warnings storage.Warnings `json:"warnings,omitempty"`
+}
+
+// todo
+func decodePromResponse(data interface{}, warnings storage.Warnings) error {
+	return nil
 }

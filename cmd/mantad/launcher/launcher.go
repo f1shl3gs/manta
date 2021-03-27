@@ -221,11 +221,9 @@ func (l *Launcher) Run() error {
 
 	prometheus.MustRegister(kvStore)
 
+	var scrapeManager *scrape.Manager
 	// scrape service
 	{
-		// todo: implement multi scrape targets as multi job
-		//   and call ApplyConfig when sync
-
 		var scrapeTargetService manta.ScraperTargetService = service
 		syncTargetsCh := func(orgID manta.ID, mgr *scrape.Manager) chan map[string][]*targetgroup.Group {
 			ch := make(chan map[string][]*targetgroup.Group)
@@ -324,6 +322,7 @@ func (l *Launcher) Run() error {
 				mgr := scrape.NewManager(kl, app)
 				errCh := make(chan error)
 				go func() {
+					scrapeManager = mgr
 					errCh <- mgr.Run(syncTargetsCh(orgID, mgr))
 				}()
 
@@ -399,7 +398,7 @@ func (l *Launcher) Run() error {
 			NotificationEndpointService: service,
 			VariableService:             service,
 			Flusher:                     kvStore,
-		}, l.AccessLog)
+		}, l.AccessLog, scrapeManager)
 
 		group.Go(func() error {
 			server := &http.Server{
