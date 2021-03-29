@@ -24,7 +24,6 @@ import {Compartment, EditorState, Prec} from '@codemirror/state'
 import {bracketMatching} from '@codemirror/matchbrackets'
 import {closeBrackets, closeBracketsKeymap} from '@codemirror/closebrackets'
 import {defaultKeymap, insertNewlineAndIndent} from '@codemirror/commands'
-import {searchKeymap, highlightSelectionMatches} from '@codemirror/search'
 import {commentKeymap} from '@codemirror/comment'
 import {lintKeymap} from '@codemirror/lint'
 
@@ -135,7 +134,6 @@ const PromqlEditor: React.FC<Props> = props => {
           bracketMatching(),
           closeBrackets(),
           autocompletion(),
-          highlightSelectionMatches(),
           keymap.of([
             ...closeBracketsKeymap,
             ...defaultKeymap,
@@ -214,7 +212,6 @@ const PromqlEditor: React.FC<Props> = props => {
       // @ts-ignore
       ref={containerRef}
       className={'cm-expression-input'}
-      style={{height: '100%'}}
     />
   )
 }

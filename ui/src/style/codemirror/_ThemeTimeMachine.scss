@@ -53,7 +53,8 @@
     background-color: transparent;
   }
 
-  .CodeMirror-vscrollbar,
+  // .CodeMirror-vscrollbar,
+
   .CodeMirror-hscrollbar {
     @include custom-scrollbar-round($g1-raven, $g6-smoke);
   }

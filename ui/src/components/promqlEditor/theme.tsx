@@ -7,6 +7,7 @@ export const theme = EditorView.theme({
     fontSize: '13px',
     // $g13-mist
     color: '#bec2cc',
+    height: '100%',
   },
   '.cm-content': {
     backgroundColor: '#202028',
@@ -18,7 +19,7 @@ export const theme = EditorView.theme({
     },
   },
   '.cm-scroller': {
-    overflow: 'hidden',
+    overflow: 'auto',
     fontFamily: '"DejaVu Sans Mono", monospace',
   },
   '.cm-placeholder': {

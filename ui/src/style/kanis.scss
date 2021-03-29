@@ -1,10 +1,8 @@
 // Modules
 @import 'modules';
 
-/*
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';
-*/
 
 // Components
 @import 'src/components/AutoRefreshDropdown/AutoRefreshDropdown.scss';
@@ -40,6 +38,8 @@
 @import 'src/alerts/builderCard/BuilderCard.scss';
 @import 'src/shared/components/DashedButton.scss';
 @import 'src/components/promqlEditor/PromqlEditor.scss';
+@import 'src/components/timeMachine/QueryEditor.scss';
+@import 'src/components/timeMachine/PromqlToolbar.scss';
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

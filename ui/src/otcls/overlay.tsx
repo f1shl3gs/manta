@@ -44,9 +44,9 @@ const OtclOverlay: React.FC<Props> = props => {
             autoCursor
             options={options}
             value={value}
-            onChange={val => {
+            onChange={(editor, data, value) => {
               if (onChange !== undefined) {
-                onChange(val)
+                onChange(value)
               }
             }}
           />

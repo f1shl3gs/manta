@@ -4,30 +4,41 @@ import React from 'react'
 // Components
 import {Controlled as ReactCodeMirror} from 'react-codemirror2'
 import {useActiveQuery} from './useQueries'
-import PromqlEditor from '../promqlEditor/PromqlEditor'
-import {Columns, Grid} from '@influxdata/clockface'
+import PromqlToolbar from './PromqlToolbar'
 
 // Constants
 const options = {
   tabIndex: 1,
+  mode: 'json',
+  readonly: true,
   lineNumbers: true,
   autoRefresh: true,
   theme: 'time-machine',
   completeSingle: false,
+  scrollbarStyle: 'native',
 }
 
 const QueryEditor: React.FC = () => {
   const {activeQuery, onSetText} = useActiveQuery()
 
   return (
-    /*<ReactCodeMirror
-      autoScroll={true}
-      value={activeQuery?.text || ''}
-      options={options}
-      onBeforeChange={(editor, data, value) => onSetText(value)}
-    />*/
+    <div className={'flux-editor'}>
+      <div className={'flux-editor--left-panel'}>
+        <ReactCodeMirror
+          autoFocus={false}
+          autoCursor={true}
+          value={activeQuery?.text || ''}
+          options={options}
+          onBeforeChange={(editor, data, value) => onSetText(value)}
+        />
+      </div>
 
-    <PromqlEditor value={activeQuery?.text || ''} onChange={onSetText} />
+      <div className={'flux-editor--right-panel'}>
+        <PromqlToolbar />
+      </div>
+    </div>
+
+    /*<PromqlEditor value={activeQuery?.text || ''} onChange={onSetText} />*/
 
     /*<Grid style={{height: '100%'}}>
       <Grid.Row>
