@@ -7,22 +7,19 @@ import {
   Button,
   ComponentColor,
   ComponentSize,
+  DapperScrollbars,
   Panel,
   Popover,
   PopoverInteraction,
   PopoverPosition,
 } from '@influxdata/clockface'
 
-interface FunctionTerm {
-  label: string
-  detail: string
-  info: string
-  type: string
-}
+// Constants
+import {PromqlFunction} from '../../constants/promqlFunctions'
 
 interface Props {
-  fn: FunctionTerm
-  onClickFn: (fn: FunctionTerm) => void
+  fn: PromqlFunction
+  onClickFn: (fn: PromqlFunction) => void
   testID?: string
 }
 
@@ -42,9 +39,9 @@ const FunctionItem: React.FC<Props> = props => {
         distanceFromTrigger={8}
         testID={'toolbar-popover'}
         contents={() => (
-          <Panel>
+          /*<Panel>
             <Panel.Header>
-              <h5>{fn.label}</h5>
+              <h5>{fn.name}</h5>
             </Panel.Header>
 
             <Panel.Body size={ComponentSize.Small}>
@@ -52,7 +49,62 @@ const FunctionItem: React.FC<Props> = props => {
               <p>{fn.info}</p>
               <p>{fn.detail}</p>
             </Panel.Body>
-          </Panel>
+          </Panel>*/
+          <div
+            className={'flux-function-docs'}
+            data-testid={`flux-docs--${fn.name}`}
+          >
+            <DapperScrollbars autoHide={false}>
+              <div className={'flux-toolbar--popover'}>
+                {/* desc */}
+                <article className={'flux-functions-toolbar--description'}>
+                  <div className={'flux-function-docs--heading'}>
+                    Description
+                  </div>
+                  <span>{fn.desc}</span>
+                </article>
+
+                {/* arguments */}
+                <article>
+                  <div className={'flux-function-docs--heading'}>Arguments</div>
+                  <div className={'flux-function-docs--snippet'}>
+                    {fn.args.length === 0 ? (
+                      <div className={'flux-function-docs--arguments'}>
+                        None
+                      </div>
+                    ) : (
+                      fn.args.map(arg => (
+                        <div className={'flux-function-docs--arguments'}>
+                          <span>{arg.name}:</span>
+                          <span>{arg.type}</span>
+                          <div>{arg.desc}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </article>
+
+                {/* Example */}
+                <article>
+                  <div className={'flux-function-docs--heading'}>Example</div>
+                  <div className={'flux-function-docs--snippet'}>
+                    {fn.example}
+                  </div>
+                </article>
+
+                {/* Links */}
+                <p className={'tooltip--link'}>
+                  Still have questions? Check out the{' '}
+                  <a
+                    target={'_blank'}
+                    href={`https://prometheus.io/docs/prometheus/latest/querying/basics`}
+                  >
+                    PromQL Docs
+                  </a>
+                </p>
+              </div>
+            </DapperScrollbars>
+          </div>
         )}
       />
       <dd
@@ -61,7 +113,7 @@ const FunctionItem: React.FC<Props> = props => {
         data-testid={`flux--${testID}`}
         className={'flux-toolbar--list-item flux-toolbar--function'}
       >
-        <code>{fn.label}</code>
+        <code>{fn.name}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text={'Inject'}
