@@ -61,7 +61,7 @@ const FunctionItem: React.FC<Props> = props => {
                   <div className={'flux-function-docs--heading'}>
                     Description
                   </div>
-                  <span>{fn.desc}</span>
+                  <span style={{whiteSpace: 'pre-line'}}>{fn.desc}</span>
                 </article>
 
                 {/* arguments */}
