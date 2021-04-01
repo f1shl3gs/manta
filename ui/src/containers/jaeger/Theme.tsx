@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React, {useContext} from 'react'
+// @ts-ignore
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import memoizeOne from 'memoize-one'
 // @ts-ignore

@@ -13,6 +13,9 @@ import Cells from './Cells'
 import {TimeRangeProvider} from 'shared/useTimeRange'
 import {AutoRefreshProvider} from 'shared/useAutoRefresh'
 import {DashboardProvider, useDashboard} from './useDashboard'
+import VariablesControlBar from './variablesControlBar/VariablesControlBar'
+import {DndProvider} from 'react-dnd'
+import {HTML5Backend} from 'react-dnd-html5-backend'
 
 const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`
 
@@ -28,6 +31,7 @@ const DashboardPage: React.FC = () => {
             spinnerComponent={<TechnoSpinner />}
           >
             <DashboardHeader />
+            <VariablesControlBar />
 
             <Page.Contents
               fullWidth={true}

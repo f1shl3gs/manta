@@ -41,6 +41,8 @@
 @import 'src/components/timeMachine/QueryEditor.scss';
 @import 'src/components/timeMachine/PromqlToolbar.scss';
 @import 'src/components/timeMachine/FunctionItem.scss';
+@import 'src/dashboards/components/variablesControlBar/DraggableDropdown.scss';
+@import 'src/dashboards/components/variablesControlBar/VariablesControlBar.scss';
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {
