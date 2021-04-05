@@ -12,6 +12,7 @@ import {
 
 // Hooks
 import {useAutoRefresh} from 'shared/useAutoRefresh'
+import useSearchParams from 'shared/useSearchParams'
 
 // Types
 import {
@@ -51,22 +52,42 @@ interface Props {
 const AutoRefreshDropdown: React.FC<Props> = props => {
   const {options} = props
   const {autoRefresh, setAutoRefresh, refresh} = useAutoRefresh()
-  const [selected, setSelected] = useState(AutoRefreshDropdownOptions[3])
+  const [selected, setSelected] = useState(() => {
+    const opt = AutoRefreshDropdownOptions.find(
+      opt => opt.seconds === autoRefresh.interval
+    )
+    if (opt === undefined) {
+      return AutoRefreshDropdownOptions[3]
+    }
+
+    return opt
+  })
   const paused = selected.seconds === 0
+  const {setParams} = useSearchParams()
+
   const dropdownWidthPixels = paused
     ? DROPDOWN_WIDTH_COLLAPSED
     : DROPDOWN_WIDTH_FULL
   const dropdownClassname = classnames('autorefresh-dropdown', {
     paused: paused,
   })
-  const onSelectAutoRefreshOption = useCallback((opt: AutoRefreshOption) => {
-    setSelected(opt)
-    setAutoRefresh({
-      status:
-        opt.seconds !== 0 ? AutoRefreshStatus.Active : AutoRefreshStatus.Paused,
-      interval: opt.seconds,
-    })
-  }, [])
+  const onSelectAutoRefreshOption = useCallback(
+    (opt: AutoRefreshOption) => {
+      setSelected(opt)
+      setAutoRefresh({
+        status:
+          opt.seconds !== 0
+            ? AutoRefreshStatus.Active
+            : AutoRefreshStatus.Paused,
+        interval: opt.seconds,
+      })
+      setParams(prev => {
+        prev.set('_interval', `${opt.seconds}s`)
+        return prev
+      })
+    },
+    [setAutoRefresh, setParams]
+  )
 
   return (
     <div className={dropdownClassname}>

@@ -132,6 +132,84 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+  /dashboards:
+    get:
+      operationId: ListDashboards
+      tags:
+        - Dashboards
+      summary: List all scrapes
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: query
+          name: orgID
+          description: Filter the list by orgID
+          schema:
+            type: string
+      responses:
+        200:
+          description: Dashboard List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dashboard'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /dashboards/{id}:
+    parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Dashboard ID
+
+    get:
+      operationId: GetDashboardByID
+      tags:
+        - Dashboards
+      summary: Get dashboard by id
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    patch:
+      operationId: PatchDashboard
+      tags:
+        - Dashboards
+      summary: Patch a dashboard with changeset
+      requestBody:
+        description: The changeset
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardPatch'
+      responses:
+        200:
+          description: Success
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+    delete:
+      operationId: DeleteDashboardByID
+      tags:
+        - Dashboards
+      summary: Delete Dashboard by ID
+      responses:
+        204:
+          description: Success
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+
   /scrapes:
     get:
       operationId: ListScrapes
@@ -399,11 +477,11 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
-  /notification_endpoint:
+  /notification_endpoints:
     get:
       operationId: ListNotificationEndpoint
       tags:
-        - Notification Endpoint
+        - Notification Endpoints
       summary: List all notification
       parameters:
         - $ref: "#/components/parameters/TraceSpan"
@@ -419,19 +497,42 @@ paths:
                 $ref: "#/components/schemas/NotificationEndpoints"
         default:
           $ref: "#/components/responses/UnexpectedError"
-  /notification_endpoint/{id}:
+    patch:
+      operationId: Update Notification Endpoint with a change set
+      tags:
+        - Notification Endpoints
+      summary: Update Notification
+      requestBody:
+        description: Patch to apply
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        204:
+          description: Success
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /notification_endpoints/{id}:
+    parameters:
+      - $ref: "#/components/parameters/TraceSpan"
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+
     get:
-      operationId: GetNotificationEndpoint
+      operationId: GetNotificationEndpointByID
       summary: Get NotificationEndpoint
       tags:
-        - Notification Endpoint
-      parameters:
-        - $ref: "#/components/parameters/TraceSpan"
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
+        - Notification Endpoints
       responses:
         200:
           description: NotificationEndpoint Detail
@@ -446,7 +547,7 @@ paths:
       operationId: DeleteNotificationEndpoint
       summary: Delete notification endpoint by id
       tags:
-        - Notification Endpoint
+        - Notification Endpoints
       parameters:
         - $ref: "#/components/parameters/TraceSpan"
         - in: path
@@ -988,6 +1089,234 @@ components:
           type: string
         desc:
           type: string
+    Cell:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        x:
+          type: integer
+          description: Cell position
+        y:
+          type: integer
+          description: Cell position
+        w:
+          type: integer
+          description: Cell width
+        h:
+          type: integer
+          description: Cell height
+        minH:
+          type: integer
+          description: Min height of the cell
+        minW:
+          type: integer
+          description: Mix width of the cell
+        maxW:
+          type: integer
+          description: Max width of the cell
+        viewProperties:
+          oneOf:
+            - $ref: "#/components/schemas/GaugeViewProperties"
+            - $ref: '#/components/schemas/XYViewProperties'
+            - $ref: '#/components/schemas/SingleStatViewProperties'
+            - $ref: '#/components/schemas/LinePlusSingleStatViewProperties'
+            - $ref: '#/components/schemas/MarkdownViewProperties'
+
+    Axis:
+      type: object
+      properties:
+        bounds:
+          type: array
+          items:
+            type: string
+        label:
+          type: string
+        prefix:
+          type: string
+        suffix:
+          type: string
+        base:
+          type: string
+          enum:
+            - ''
+            - '2'
+            - '10'
+
+    DashboardQuery:
+      type: object
+      properties:
+        name:
+          type: string
+        text:
+          type: string
+        legend:
+          type: string
+        hidden:
+          type: boolean
+
+    Axes:
+      type: object
+      properties:
+        x:
+          $ref: '#/components/schemas/Axis'
+        y:
+          $ref: '#/components/schemas/Axis'
+
+    GaugeViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+          const: 'gauge'
+        axes:
+          $ref: '#/components/schemas/Axes'
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardQuery'
+    XYViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+          const: 'xy'
+        axes:
+          $ref: '#/components/schemas/Axes'
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardQuery'
+        timeFormat:
+          type: string
+        xColumn:
+          type: string
+        yColumn:
+          type: string
+        hoverDimension:
+          type: string
+        postion:
+          type: string
+        geom:
+          type: string
+
+    DashboardColor:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        hex:
+          type: string
+        name:
+          type: string
+        value:
+          type: integer
+
+    SingleStatViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+          const: 'single-stat'
+        note:
+          type: string
+        query:
+          $ref: '#/components/schemas/DashboardQuery'
+        prefix:
+          type: string
+        suffix:
+          type: string
+        tickPrefix:
+          type: string
+        tickSuffix:
+          type: string
+        showNoteWhenEmpty:
+          type: boolean
+        colors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardColor'
+
+    DecimalPlaces:
+      type: object
+      properties:
+        isEnforced:
+          type: boolean
+        digits:
+          type: integer
+
+    LinePlusSingleStatViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+          const: 'line-plus-single-stat'
+        note:
+          type: string
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardQuery'
+        prefix:
+          type: string
+        suffix:
+          type: string
+        tickPrefix:
+          type: string
+        tickSuffix:
+          type: string
+        showNoteWhenEmpty:
+          type: boolean
+        DecimalPlaces:
+          $ref: '#/components/schemas/DecimalPlaces'
+
+    MarkdownViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+        content:
+          type: string
+
+    DashboardPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        desc:
+          type: string
+
+    Dashboard:
+      type: object
+      required: name
+      properties:
+        id:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+        desc:
+          type: string
+        orgID:
+          type: string
+        cells:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cell'
 
   responses:
     UnexpectedError:

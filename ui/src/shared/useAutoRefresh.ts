@@ -9,6 +9,8 @@ import {AutoRefresh, AutoRefreshStatus} from 'types/AutoRefresh'
 
 // Hooks
 import {useTimeRange} from './useTimeRange'
+import useSearchParams from './useSearchParams'
+import {parseDuration} from '../utils/duration'
 
 const MAX_POINT = 1024
 const MIN_STEP = 14
@@ -44,10 +46,24 @@ const calculateRange = (timeRange: TimeRange) => {
 const [AutoRefreshProvider, useAutoRefresh] = constate(
   () => {
     const {timeRange} = useTimeRange()
+    const {params} = useSearchParams()
 
-    const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>({
-      status: AutoRefreshStatus.Active,
-      interval: 15,
+    const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>(() => {
+      const val = params.get('_interval')
+      if (val === null) {
+        // todo: set default and update params
+        return {
+          status: AutoRefreshStatus.Active,
+          interval: 15,
+        }
+      }
+      const duration = parseDuration(val)
+
+      return {
+        status:
+          duration !== 0 ? AutoRefreshStatus.Active : AutoRefreshStatus.Paused,
+        interval: duration / 1000,
+      }
     })
     const [state, setState] = useState(() => calculateRange(timeRange))
     // const [manualRefresh, setManualRefresh] = useState(0);

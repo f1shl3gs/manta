@@ -4,7 +4,6 @@ import React from 'react'
 // Components
 import {AutoSizer} from 'react-virtualized'
 
-import {useViewProperties} from '../../shared/useViewProperties'
 import Gauge from './Gauge'
 import {DashboardColor} from 'types/Colors'
 import {GAUGE_THEME_DARK} from '../../constants/gauge'

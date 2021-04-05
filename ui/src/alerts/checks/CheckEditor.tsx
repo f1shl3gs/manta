@@ -1,6 +1,5 @@
 // Libraries
 import React, {useState} from 'react'
-import classnames from 'classnames'
 
 // Components
 import {

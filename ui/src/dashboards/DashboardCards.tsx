@@ -8,8 +8,22 @@ import DashboardCard from './components/DashboardCard'
 // Hooks
 import {useDashboards} from './useDashboards'
 import {useFetch} from 'shared/useFetch'
+import {SortKey, SortTypes} from '../types/sort'
+import {Sort} from '@influxdata/clockface'
 
-const DashboardCards: React.FC = () => {
+import {Dashboard} from '../types/Dashboard'
+
+// Utils
+import {getSortedResources} from 'utils/sort'
+
+interface Props {
+  sortKey: SortKey
+  sortType: SortTypes
+  sortDirection: Sort
+}
+
+const DashboardCards: React.FC<Props> = props => {
+  const {sortKey, sortType, sortDirection} = props
   const {dashboards, refresh} = useDashboards()
 
   const {del} = useFetch(`/api/v1/dashboards`, {})
@@ -23,23 +37,29 @@ const DashboardCards: React.FC = () => {
           console.log('delete dashboard err', err)
         })
     },
-    [del]
+    [del, refresh]
   )
+
+  const body = (filtered: Dashboard[]) =>
+    getSortedResources<Dashboard>(
+      filtered,
+      sortKey,
+      sortType,
+      sortDirection
+    ).map(d => (
+      <DashboardCard
+        key={d.id}
+        id={d.id}
+        name={d.name}
+        desc={d.desc}
+        updatedAt={moment(d.updated).fromNow()}
+        onDeleteDashboard={onDeleteDashboard}
+      />
+    ))
 
   return (
     <div style={{height: '100%', display: 'grid'}}>
-      <div className={'dashboards-card-grid'}>
-        {dashboards?.map(d => (
-          <DashboardCard
-            key={d.id}
-            id={d.id}
-            name={d.name}
-            desc={d.desc}
-            updatedAt={moment(d.updated).fromNow()}
-            onDeleteDashboard={onDeleteDashboard}
-          />
-        ))}
-      </div>
+      <div className={'dashboards-card-grid'}>{body(dashboards)}</div>
     </div>
   )
 }

@@ -31,7 +31,7 @@ const ChecksIndex: React.FC = () => {
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
     type: SortTypes.Date,
-    direction: Sort.Ascending,
+    direction: Sort.Descending,
   })
 
   const leftHeader = (

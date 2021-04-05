@@ -1,9 +1,15 @@
 // Libraries
-import React from 'react'
+import React, {useState} from 'react'
 import {useHistory} from 'react-router-dom'
 
 // Components
-import {Button, ComponentColor, IconFont, Page} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  IconFont,
+  Page,
+  Sort,
+} from '@influxdata/clockface'
 import DashboardCards from './DashboardCards'
 import SearchWidget from '../shared/components/SearchWidget'
 
@@ -14,6 +20,8 @@ import {useOrgID} from 'shared/useOrg'
 
 // Types
 import {Dashboard} from 'types/Dashboard'
+import ResourceSortDropdown from '../shared/components/ResourceSortDropdown'
+import {SortKey, SortTypes} from '../types/sort'
 
 const useCreateDash = () => {
   const orgID = useOrgID()
@@ -31,6 +39,12 @@ const DashboardsIndex: React.FC = () => {
   const create = useCreateDash()
   const history = useHistory()
   const orgID = useOrgID()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortOption, setSortOption] = useState({
+    key: 'updated' as SortKey,
+    type: SortTypes.Date,
+    direction: Sort.Descending,
+  })
 
   return (
     <Page titleTag={'Dashboards'}>
@@ -42,9 +56,21 @@ const DashboardsIndex: React.FC = () => {
       <Page.ControlBar fullWidth={false}>
         <Page.ControlBarLeft>
           <SearchWidget
-            search={'v'}
+            search={searchTerm}
             placeholder={'Filter dashboards...'}
-            onSearch={v => console.log('v', v)}
+            onSearch={setSearchTerm}
+          />
+          <ResourceSortDropdown
+            sortKey={sortOption.key}
+            sortType={sortOption.type}
+            sortDirection={sortOption.direction}
+            onSelect={(sk, sd, st) => {
+              setSortOption({
+                key: sk,
+                type: st,
+                direction: sd,
+              })
+            }}
           />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
@@ -73,7 +99,11 @@ const DashboardsIndex: React.FC = () => {
         scrollable={true}
       >
         <DashboardsProvider>
-          <DashboardCards />
+          <DashboardCards
+            sortKey={sortOption.key}
+            sortType={sortOption.type}
+            sortDirection={sortOption.direction}
+          />
         </DashboardsProvider>
       </Page.Contents>
     </Page>

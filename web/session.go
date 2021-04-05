@@ -12,7 +12,7 @@ const (
 	signinPath  = "/api/v1/signin"
 	signoutPath = "/api/v1/signout"
 
-	SessionCookieKey = "session"
+	SessionCookieKey = "manta_session"
 )
 
 type SessionHandler struct {

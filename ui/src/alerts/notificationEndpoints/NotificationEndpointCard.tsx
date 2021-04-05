@@ -17,6 +17,7 @@ import {
 // Hooks
 import {useHistory} from 'react-router-dom'
 import {useOrgID} from '../../shared/useOrg'
+import {useNotificationEndpoints} from './useNotificationEndpoints'
 
 // Utils
 import {relativeTimestampFormatter} from '../../utils/relativeTimestampFormatter'
@@ -31,17 +32,21 @@ interface Props {
 const NotificationEndpointCard: React.FC<Props> = props => {
   const orgID = useOrgID()
   const history = useHistory()
+  const {
+    patchNotificationEndpoint,
+    deleteNotificationEndpoint,
+  } = useNotificationEndpoints()
 
   const {
     endpoint: {id, name, desc, updated},
   } = props
 
-  const onNameUpdate = (v: string) => {
-    console.log('new name')
+  const onNameUpdate = (name: string) => {
+    patchNotificationEndpoint(id, {name})
   }
 
-  const onDescUpdate = (v: string) => {
-    console.log('new desc')
+  const onDescUpdate = (desc: string) => {
+    patchNotificationEndpoint(id, {desc})
   }
 
   const contextMenu = () => (
@@ -51,7 +56,7 @@ const NotificationEndpointCard: React.FC<Props> = props => {
       color={ComponentColor.Danger}
       size={ComponentSize.ExtraSmall}
       onClick={() => {
-        console.log('delete')
+        deleteNotificationEndpoint(id)
       }}
     />
   )

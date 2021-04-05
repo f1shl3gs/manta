@@ -1,4 +1,7 @@
+// Libraries
 import React, {useState} from 'react'
+
+// Components
 import ToolbarTab from './PromqlToolbarTab'
 import VariableToolbar from './VariableToolbar'
 import FunctionsToolbar from './FunctionsToolbar'
@@ -7,13 +10,9 @@ interface Props {}
 
 type PromqlToolbarTabs = 'functions' | 'variables' | 'none'
 
-const PromqlToolbar: React.FC<Props> = props => {
+const PromqlToolbar: React.FC<Props> = () => {
   const [activeTab, setActiveTab] = useState<PromqlToolbarTabs>('functions')
-
   const expanded = activeTab === 'functions' || activeTab === 'variables'
-  const handleTabClick = (id: PromqlToolbarTabs) => {
-    setActiveTab(id)
-  }
 
   let activeToolbar = activeTab === 'functions' ? <FunctionsToolbar /> : null
   if (activeTab === 'variables') {

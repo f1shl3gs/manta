@@ -308,14 +308,7 @@ func (s *Service) updateNotificationEndpoint(ctx context.Context, tx Tx, id mant
 	}
 
 	// apply update
-	if u.Name != nil {
-		ne.Name = *u.Name
-	}
-
-	if u.Description != nil {
-		ne.Desc = *u.Description
-	}
-
+	u.Apply(ne)
 	ne.Updated = time.Now()
 
 	err = s.putNotificationEndpoint(ctx, tx, ne)

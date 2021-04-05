@@ -22,7 +22,7 @@ func (udp DashboardUpdate) Apply(dash *Dashboard) {
 	}
 
 	if udp.Desc != nil {
-		dash.Desc = *udp.Name
+		dash.Desc = *udp.Desc
 	}
 }
 

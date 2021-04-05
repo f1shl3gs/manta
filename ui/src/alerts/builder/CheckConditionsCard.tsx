@@ -9,7 +9,7 @@ import {
   FlexDirection,
 } from '@influxdata/clockface'
 import ThresholdConditions from './ThresholdConditions'
-import {CheckStatusLevel, Condition, Threshold} from '../../types/Check'
+import {Condition} from '../../types/Check'
 import {useCheck} from '../checks/useCheck'
 
 const CheckConditionsCard: React.FC = () => {

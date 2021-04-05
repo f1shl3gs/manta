@@ -7,12 +7,22 @@ import (
 )
 
 func Migration0001AddSecret() Spec {
-	bucket := []byte("secrets")
+	buckets := [][]byte{
+		[]byte("secrets"),
+		[]byte("secretorgindex"),
+	}
 
 	return &spec{
 		name: "add secret",
 		up: func(ctx context.Context, store kv.SchemaStore) error {
-			return store.CreateBucket(ctx, bucket)
+			for _, b := range buckets {
+				err := store.CreateBucket(ctx, b)
+				if err != nil {
+					return err
+				}
+			}
+
+			return nil
 		},
 	}
 }

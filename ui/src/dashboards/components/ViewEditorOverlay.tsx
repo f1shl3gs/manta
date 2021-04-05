@@ -18,7 +18,7 @@ import {ViewOptionProvider} from 'shared/useViewOption'
 interface Props {}
 
 const ViewEditorOverlay: React.FC<Props> = () => {
-  const {cell, remoteDataState} = useCell()
+  const {cell, loading} = useCell()
 
   return (
     <Overlay
@@ -31,7 +31,7 @@ const ViewEditorOverlay: React.FC<Props> = () => {
       <div className={'veo'}>
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}
-          loading={remoteDataState}
+          loading={loading}
         >
           <ViewPropertiesProvider
             viewProperties={cell?.viewProperties as ViewProperties}

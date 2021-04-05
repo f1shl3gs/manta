@@ -1,24 +1,65 @@
 import constate from 'constate'
-import {CachePolicies, useFetch} from 'shared/useFetch'
-import {Dashboard} from '../types/Dashboard'
 import {useOrgID} from '../shared/useOrg'
-import remoteDataState from '../utils/rds'
+import {useCallback, useEffect, useState} from 'react'
+import {
+  defaultErrorNotification,
+  useNotification,
+} from '../shared/notification/useNotification'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const [DashboardsProvider, useDashboards] = constate(
   () => {
     const orgID = useOrgID()
-    const {data, error, loading, get} = useFetch<Dashboard[]>(
-      `/api/v1/dashboards?orgID=${orgID}`,
-      {
-        cachePolicy: CachePolicies.NO_CACHE,
+    const {notify} = useNotification()
+    const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+    const [trigger, setTrigger] = useState(0)
+    const [dashboards, setDashboards] = useState([])
+
+    useEffect(() => {
+      setLoading(RemoteDataState.Loading)
+      fetch(`/api/v1/dashboards?orgID=${orgID}`)
+        .then(resp => resp.json())
+        .then(data => {
+          setDashboards(data)
+          setLoading(RemoteDataState.Done)
+        })
+        .catch(err => {
+          setLoading(RemoteDataState.Error)
+          notify({
+            ...defaultErrorNotification,
+            message: 'Loading dashboards failed, err: ' + err.message,
+          })
+        })
+    }, [notify, orgID, trigger])
+
+    const reload = useCallback(() => {
+      setTrigger(prevState => prevState + 1)
+    }, [])
+
+    const updateDashboard = useCallback(
+      (id: string, upd: {name?: string; desc?: string}) => {
+        fetch(`/api/v1/dashboards/${id}`, {
+          method: 'PATCH',
+          body: JSON.stringify(upd),
+        })
+          .then(() => {
+            reload()
+          })
+          .catch(err => {
+            notify({
+              ...defaultErrorNotification,
+              message: 'Update dashboard name failed',
+            })
+          })
       },
-      []
+      [notify, reload]
     )
 
     return {
-      dashboards: data,
-      remoteDataState: remoteDataState(data, error, loading),
-      refresh: get,
+      loading,
+      updateDashboard,
+      dashboards,
+      refresh: reload,
     }
   },
   // useDashboards

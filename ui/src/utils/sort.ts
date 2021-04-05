@@ -1,6 +1,7 @@
+import {Sort} from '@influxdata/clockface'
+
 import {SortTypes} from 'types/sort'
 import {get} from './object'
-import {Sort} from '@influxdata/clockface'
 
 function sortBy<T>(
   resourceList: T[],
@@ -38,7 +39,12 @@ function orderByType(data: string, type: SortTypes) {
   }
 }
 
-export function getSortedResources<T>(
+interface Sortable {
+  name: string
+  updated: string
+}
+
+export function getSortedResources<T extends Sortable>(
   resourceList: T[],
   sortKey: string,
   sortType: SortTypes,
@@ -47,7 +53,7 @@ export function getSortedResources<T>(
   if (sortKey && sortDirection) {
     return sortBy<T>(
       resourceList,
-      r => orderByType(get(r, sortKey), sortType),
+      r => orderByType(get(r, sortKey, ''), sortType),
       sortDirection
     )
   }

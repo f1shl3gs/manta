@@ -1,7 +1,6 @@
-import React, {useCallback} from 'react'
+import React from 'react'
 
 import {
-  Button,
   ComponentColor,
   ComponentSize,
   IconFont,
@@ -12,47 +11,20 @@ import RenamablePageTitle from 'components/RenamablePageTitle'
 import VisOptionsButton from './VisOptionsButton'
 import {useHistory} from 'react-router-dom'
 import {useCell} from './useCell'
-import {useViewProperties} from '../../shared/useViewProperties'
-import {Cell} from '../../types/Dashboard'
-import {useDashboard} from './useDashboard'
 import ViewTypeDropdown from '../../components/timeMachine/ViewTypeDropdown'
+import {useViewProperties} from '../../shared/useViewProperties'
 
 const saveButtonClass = 'veo-header--save-cell-button'
 
-interface Props {
-  name: string
-  onNameSet: (name: string) => void
-  onSave: () => void
-  onCancel: () => void
-}
-
-const ViewEditorOverlayHeader: React.FC = props => {
+const ViewEditorOverlayHeader: React.FC = () => {
   const history = useHistory()
-  const {cell, updateCell} = useCell()
-  const {reload} = useDashboard()
+  const {cell, onRename, updateCell} = useCell()
   const {viewProperties} = useViewProperties()
-
-  const onNameSet = useCallback(
-    (name: string) => {
-      updateCell({
-        ...cell,
-        viewProperties,
-        name: name,
-      } as Cell)
-    },
-    [cell, viewProperties]
-  )
-
-  const onSave = useCallback(() => {
+  const onSave = () =>
     updateCell({
       ...cell,
       viewProperties,
-    } as Cell).then(() => {
-      history.goBack()
-      reload()
     })
-  }, [cell, viewProperties])
-
   const onCancel = () => history.goBack()
 
   return (
@@ -60,7 +32,7 @@ const ViewEditorOverlayHeader: React.FC = props => {
       <Page.Header fullWidth={true}>
         <RenamablePageTitle
           name={cell!.name}
-          onRename={onNameSet}
+          onRename={onRename}
           placeholder={'Name this Cell'}
           maxLength={68}
         />

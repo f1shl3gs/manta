@@ -16,6 +16,9 @@ import {OrgsProvider} from './shared/useOrgs'
 import combineProviders from './utils/combine'
 
 import {Provider as FetchProvider} from 'shared/useFetch'
+import {NotificationProvider} from './shared/notification/useNotification'
+import {TimeRangeProvider} from './shared/useTimeRange'
+import {AutoRefreshProvider} from './shared/useAutoRefresh'
 
 const CombinedProvider = combineProviders([
   AuthenticationProvider,
@@ -29,18 +32,24 @@ ReactDOM.render(
   </React.StrictMode>,*/
 
   <BrowserRouter>
-    <AuthenticationProvider>
-      <Authentication>
-        <PresentationModeProvider>
-          <OrgsProvider>
-            <Switch>
-              <Route path="/" component={App} />
-              <Route component={NotFound} />
-            </Switch>
-          </OrgsProvider>
-        </PresentationModeProvider>
-      </Authentication>
-    </AuthenticationProvider>
+    <NotificationProvider>
+      <AuthenticationProvider>
+        <Authentication>
+          <PresentationModeProvider>
+            <OrgsProvider>
+              <TimeRangeProvider>
+                <AutoRefreshProvider>
+                  <Switch>
+                    <Route path="/" component={App} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </AutoRefreshProvider>
+              </TimeRangeProvider>
+            </OrgsProvider>
+          </PresentationModeProvider>
+        </Authentication>
+      </AuthenticationProvider>
+    </NotificationProvider>
   </BrowserRouter>,
   document.getElementById('root')
 )

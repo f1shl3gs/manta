@@ -2,6 +2,7 @@ import React from 'react'
 import {TreeNav} from '@influxdata/clockface'
 import {Link, useLocation} from 'react-router-dom'
 import {useOrgID} from '../shared/useOrg'
+import {useAuth} from '../shared/useAuthentication'
 
 const getNavItemActivation = (
   keywords: string[],

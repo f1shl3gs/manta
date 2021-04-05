@@ -168,7 +168,7 @@ func (l *Launcher) Run() error {
 		tsdbOpts := &tsdb.Options{
 			MinBlockDuration:  int64(2 * time.Hour / time.Millisecond),
 			MaxBlockDuration:  int64(2 * time.Hour / time.Millisecond),
-			RetentionDuration: int64(4 * time.Hour / time.Millisecond),
+			RetentionDuration: int64(15 * 24 * time.Hour / time.Millisecond),
 			NoLockfile:        false,
 			WALCompression:    true,
 		}

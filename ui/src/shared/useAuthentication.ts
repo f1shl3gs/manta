@@ -1,13 +1,31 @@
 import constate from 'constate'
-import {useFetch} from 'shared/useFetch'
-import remoteDataState from '../utils/rds'
+import {useEffect, useState} from 'react'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const [AuthenticationProvider, useAuth] = constate(() => {
-  const {data, error, loading} = useFetch<boolean>('/api/v1/viewer', {}, [])
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+  })
+
+  useEffect(() => {
+    setLoading(RemoteDataState.Loading)
+    fetch('/api/v1/viewer')
+      .then(resp => resp.json())
+      .then(data => {
+        setUser(data)
+        setLoading(RemoteDataState.Done)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(RemoteDataState.Error)
+      })
+  }, [])
 
   return {
-    data,
-    loading: remoteDataState(data, error, loading),
+    user,
+    loading,
   }
 })
 

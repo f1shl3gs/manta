@@ -1,14 +1,26 @@
-import React from 'react'
-import {ComponentColor, IconFont, ResourceCard} from '@influxdata/clockface'
+// Libraries
+import React, {useCallback} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useOrgID} from 'shared/useOrg'
+
+// Components
+import {
+  ButtonShape,
+  ComponentColor,
+  IconFont,
+  ResourceCard,
+} from '@influxdata/clockface'
 import Context from 'components/context_menu/Context'
+
+// Hooks
+import {useOrgID} from 'shared/useOrg'
+import {useDashboards} from '../useDashboards'
 
 interface Props {
   id: string
   name: string
   desc: string
   updatedAt: string
+  // onNameUpdate: (name: string) => void
   onDeleteDashboard: (id: string) => void
 }
 
@@ -16,11 +28,35 @@ const DashboardCard: React.FC<Props> = props => {
   const {id, name, desc, updatedAt, onDeleteDashboard} = props
   const history = useHistory()
   const orgID = useOrgID()
+  const {updateDashboard} = useDashboards()
+
+  const onNameUpdate = useCallback(
+    (name: string) => {
+      updateDashboard(id, {
+        name,
+      })
+    },
+    [id, updateDashboard]
+  )
+
+  const onDescUpdate = useCallback(
+    (desc: string) => {
+      updateDashboard(id, {
+        desc,
+      })
+    },
+    [id, updateDashboard]
+  )
 
   const contextMenu = (): JSX.Element => {
     return (
       <Context>
-        <Context.Menu icon={IconFont.CogThick}>
+        <Context.Menu
+          icon={IconFont.CogThick}
+          color={ComponentColor.Default}
+          shape={ButtonShape.Square}
+          testID={'dashboard-card-context--export'}
+        >
           <Context.Item
             label={'Export'}
             action={value => console.log('export action', value)}
@@ -40,13 +76,20 @@ const DashboardCard: React.FC<Props> = props => {
   return (
     <ResourceCard key={`dashboard-id--${id}`} contextMenu={contextMenu()}>
       <ResourceCard.EditableName
-        onUpdate={v => console.log('update dashboard name', v)}
-        onClick={() => history.push(`/orgs/${orgID}/dashboards/${id}`)}
+        onUpdate={onNameUpdate}
+        onClick={() =>
+          history.push(
+            `/orgs/${orgID}/dashboards/${id}?${new URLSearchParams({
+              _interval: '15s',
+              _start: 'now() - 1h',
+            }).toString()}`
+          )
+        }
         name={name}
       />
 
       <ResourceCard.EditableDescription
-        onUpdate={desc => console.log('update desc', desc)}
+        onUpdate={onDescUpdate}
         description={desc}
         placeholder={`Describe ${name}`}
       />

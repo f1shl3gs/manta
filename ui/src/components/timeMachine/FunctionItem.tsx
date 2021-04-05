@@ -8,7 +8,6 @@ import {
   ComponentColor,
   ComponentSize,
   DapperScrollbars,
-  Panel,
   Popover,
   PopoverInteraction,
   PopoverPosition,
@@ -39,17 +38,6 @@ const FunctionItem: React.FC<Props> = props => {
         distanceFromTrigger={8}
         testID={'toolbar-popover'}
         contents={() => (
-          /*<Panel>
-            <Panel.Header>
-              <h5>{fn.name}</h5>
-            </Panel.Header>
-
-            <Panel.Body size={ComponentSize.Small}>
-              <p>{fn.type}</p>
-              <p>{fn.info}</p>
-              <p>{fn.detail}</p>
-            </Panel.Body>
-          </Panel>*/
           <div
             className={'flux-function-docs'}
             data-testid={`flux-docs--${fn.name}`}
@@ -74,7 +62,10 @@ const FunctionItem: React.FC<Props> = props => {
                       </div>
                     ) : (
                       fn.args.map(arg => (
-                        <div className={'flux-function-docs--arguments'}>
+                        <div
+                          key={arg.name}
+                          className={'flux-function-docs--arguments'}
+                        >
                           <span>{arg.name}:</span>
                           <span>{arg.type}</span>
                           <div>{arg.desc}</div>

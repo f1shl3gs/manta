@@ -33,7 +33,7 @@ func NewDashboardService(h *DashboardHandler) {
 	h.HandlerFunc(http.MethodPost, DashboardCellPrefix, h.handleAddCell)
 	h.HandlerFunc(http.MethodGet, DashboardCellIDPath, h.handleGetCell)
 	h.HandlerFunc(http.MethodPut, DashboardCellPrefix, h.handleReplaceDashboardCells)
-	h.HandlerFunc(http.MethodPost, DashboardIDPath, h.handleUpdate)
+	h.HandlerFunc(http.MethodPatch, DashboardIDPath, h.handleUpdate)
 	h.HandlerFunc(http.MethodPatch, DashboardCellIDPath, h.handleUpdateCell)
 	h.HandlerFunc(http.MethodDelete, DashboardCellIDPath, h.handleDeleteCell)
 }

@@ -128,7 +128,7 @@ message Check {
   repeated Condition conditions = 10 [(gogoproto.nullable) = false];
 
   uint64 task_id = 11 [(gogoproto.customname) = "TaskID", (gogoproto.casttype) = "ID"];
-  
+
   repeated Label labels = 12 [(gogoproto.nullable) = false];
 }
 
@@ -320,7 +320,7 @@ message XAxis {
 }
 
 message Axis {
-  string bounds = 1;
+  repeated string bounds = 1;
   string label = 2;
   string prefix = 3;
   string suffix = 4;
@@ -390,7 +390,7 @@ message LinePlusSingleStatViewProperties {
   DecimalPlaces decimalPlaces = 9 [(gogoproto.nullable) = false];
 }
 
-message MarkdownView {
+message MarkdownViewProperties {
   string type = 1;
   string content = 2;
 }
@@ -414,7 +414,7 @@ message Cell {
     XYViewProperties xy = 12 [(gogoproto.customname) = "XY"];
     SingleStatViewProperties singleStat = 13;
     LinePlusSingleStatViewProperties linePlusSingleStat = 14;
-    MarkdownView markdown = 15;
+    MarkdownViewProperties markdown = 15;
   };
 }
 
@@ -499,4 +499,5 @@ message Bucket {
 message Secret {
   string key = 1;
   string value = 2;
+  uint64 org_id = 3 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 }

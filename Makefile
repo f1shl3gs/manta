@@ -14,6 +14,9 @@ export GOBUILD=${GO} build -ldflags ${LDFLAGS}
 
 .PHONY: proto tidy deps
 
+mantad: $(GOSROUCES) ui
+	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
+
 deps:
 	go mod download
 
@@ -33,10 +36,11 @@ proto:
 		--gogofaster_out=plugins=grpc,Mgoogle/protobuf/any.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/wrappers.proto=github.com/gogo/protobuf/types:./ \
 		*.proto
 
+ui: $(UISOURCES)
+	cd ui && yarn build
+
 swagger:
 	wget https://codeload.github.com/swagger-api/swagger-ui/tar.gz/v3.44.1 -O swagger.tgz
 
-mantad: $(GOSROUCES) $(UISOURCES) deps
-	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 
 

@@ -25,8 +25,7 @@ const CheckLabelRow: React.FC<Props> = props => {
   const {index, label, handleChangeLabelRow, handleRemoveTagRow} = props
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // handleChangeLabelRow()
-    console.log('onchange', index, e.target.name, e.target.value)
+    handleChangeLabelRow(index, e.target.name, e.target.value)
   }
 
   return (

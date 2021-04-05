@@ -12,8 +12,18 @@ type NotificationEndpointFilter struct {
 }
 
 type NotificationEndpointUpdate struct {
-	Name        *string
-	Description *string
+	Name *string
+	Desc *string
+}
+
+func (upd *NotificationEndpointUpdate) Apply(ne *NotificationEndpoint) {
+	if upd.Name != nil {
+		ne.Name = *upd.Name
+	}
+
+	if upd.Desc != nil {
+		ne.Desc = *upd.Desc
+	}
 }
 
 type NotificationEndpointService interface {

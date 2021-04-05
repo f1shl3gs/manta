@@ -7,6 +7,7 @@ import {AppWrapper} from '@influxdata/clockface'
 import {usePresentationMode} from './shared/usePresentationMode'
 import Organizations from './containers/organization/Organizations'
 import Signin from './components/Signin'
+import Notifications from './components/notifications/Notifications'
 
 // Styles
 
@@ -15,6 +16,7 @@ const App: React.FC = () => {
 
   return (
     <AppWrapper presentationMode={inPresentationMode} className="dark">
+      <Notifications />
       <Switch>
         <Redirect exact from={'/'} to={'/orgs'} />
 
