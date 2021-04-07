@@ -81,7 +81,8 @@ const DashboardCard: React.FC<Props> = props => {
           history.push(
             `/orgs/${orgID}/dashboards/${id}?${new URLSearchParams({
               _interval: '15s',
-              _start: 'now() - 1h',
+              _lower: 'now() - 1h',
+              _type: 'selectable-duration',
             }).toString()}`
           )
         }

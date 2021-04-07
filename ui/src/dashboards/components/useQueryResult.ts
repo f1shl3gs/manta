@@ -42,7 +42,7 @@ const useQueryResult = (
         )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
       )
         .then(resp => {
-          set[index] = transformToRows(resp, q.name || `Query ${index}`)
+          set[index] = transformToRows(resp)
           const table = fromRows(
             set.flat().sort((a, b) => {
               return Number(a['time']) - Number(b['time'])

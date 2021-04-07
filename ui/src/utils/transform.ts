@@ -19,7 +19,7 @@ export interface Row {
   [key: string]: string | number
 }
 
-export const transformToRows = (resp: PromResp, legend: string): Row[] => {
+export const transformToRows = (resp: PromResp): Row[] => {
   if (!resp) {
     return []
   }
@@ -35,7 +35,6 @@ export const transformToRows = (resp: PromResp, legend: string): Row[] => {
       return values.map(val => {
         return {
           ...metric,
-          legend,
           time: val[0] * 1000,
           value: Number(val[1]),
         }

@@ -1,28 +1,31 @@
-import {useHistory, useLocation} from 'react-router-dom'
-import {useCallback, useMemo} from 'react'
+import {useCallback, useState} from 'react'
+import {useHistory} from 'react-router-dom'
+import constate from 'constate'
 
-type setStateAction = (prev: URLSearchParams) => URLSearchParams
+const [SearchParamsProvider, useSearchParams] = constate(
+  () => {
+    const {pathname, search} = window.location
+    const history = useHistory()
+    const [params] = useState<URLSearchParams>(
+      () => new URLSearchParams(search)
+    )
 
-function useSearchParams(): {
-  params: URLSearchParams
-  setParams: (u: setStateAction) => void
-} {
-  const {search, pathname} = useLocation()
-  const history = useHistory()
-  const params = useMemo(() => new URLSearchParams(search), [search])
+    const setParams = useCallback(
+      (u: (prev: URLSearchParams) => URLSearchParams) => {
+        const next = u(params)
+        history.push(`${pathname}?${next.toString()}`)
+      },
+      [history, params, pathname]
+    )
 
-  const setParams = useCallback(
-    (u: setStateAction) => {
-      const next = u(params)
-      history.push(`${pathname}?${next.toString()}`)
-    },
-    [history, params, pathname]
-  )
-
-  return {
-    params,
-    setParams,
-  }
-}
+    return {
+      params,
+      setParams,
+    }
+  },
+  value => value
+)
 
 export default useSearchParams
+
+export {SearchParamsProvider}

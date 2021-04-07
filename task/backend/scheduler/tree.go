@@ -132,7 +132,6 @@ func NewScheduler(executor Executor, checkpointer SchedulableService, opts ...tr
 	}
 	if s.workchans == nil {
 		s.workchans = make([]chan Item, defaultMaxWorkers)
-
 	}
 
 	s.wg.Add(len(s.workchans))

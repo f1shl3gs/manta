@@ -8,6 +8,10 @@ import {useFetch} from 'shared/useFetch'
 
 // Utils
 import {RemoteDataState} from '@influxdata/clockface'
+import {
+  defaultErrorNotification,
+  useNotification,
+} from '../../shared/notification/useNotification'
 
 interface CheckUpdate {
   name: string
@@ -39,6 +43,7 @@ const defaultCheck: Check = {
 const [CheckProvider, useCheck] = constate(
   (initialState: State) => {
     const [check, setCheck] = useState<Check>(defaultCheck)
+    const {notify} = useNotification()
     const [remoteDataState, setRemoteDataState] = useState(
       RemoteDataState.NotStarted
     )
@@ -59,8 +64,12 @@ const [CheckProvider, useCheck] = constate(
         })
         .catch(err => {
           setRemoteDataState(RemoteDataState.Error)
+          notify({
+            ...defaultErrorNotification,
+            message: `Fetch Check failed, err: ${err.message}`,
+          })
         })
-    }, [])
+    }, [get, notify])
 
     const updateCheck = (udp: CheckUpdate) => {
       // @ts-ignore
