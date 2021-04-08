@@ -4,16 +4,17 @@ import React from 'react'
 // Components
 import {Config, Table} from '@influxdata/giraffe'
 
+// Hooks
+import {useVisXDomainSettings} from './useVisXDomainSettings'
+
 // Types
 import {getFormatter} from 'utils/vis'
 import {useLineView} from 'shared/useViewProperties'
-import {useVisXDomainSettings} from './useVisXDomainSettings'
 
 interface Props {
-  children: (config: Config) => JSX.Element
-  // timeRange?: TimeRange | null
   table: Table
   groupKeyUnion: string[]
+  children: (config: Config) => JSX.Element
 }
 
 const XYPlot: React.FC<Props> = props => {

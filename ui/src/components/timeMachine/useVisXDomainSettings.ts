@@ -23,3 +23,5 @@ export const useVisXDomainSettings = () => {
     onResetXDomain,
   }
 }
+
+// todo: useVisYDomainSettings
