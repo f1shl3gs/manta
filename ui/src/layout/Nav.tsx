@@ -200,6 +200,15 @@ const generateNavItems = (orgID: string): NavItem[] => {
           },
         },
         {
+          id: 'secrets',
+          testID: 'nav-subitem-secrets',
+          label: 'Secrets',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/settings/secrets`,
+          },
+        },
+        {
           id: 'templates',
           testID: 'nav-subitem-templates',
           label: 'Templates',

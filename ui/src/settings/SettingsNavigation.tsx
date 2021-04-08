@@ -7,3 +7,11 @@ interface Props {
     text: string
   }[]
 }
+
+const SettingsNavigation: React.FC<Props> = props => {
+  const {prefix} = props
+  console.log('prefix', prefix)
+  return <div>aaaa</div>
+}
+
+export default SettingsNavigation

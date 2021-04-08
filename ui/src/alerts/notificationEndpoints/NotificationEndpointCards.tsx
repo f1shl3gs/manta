@@ -7,11 +7,11 @@ import NotificationEndpointCard from './NotificationEndpointCard'
 import {ResourceList, Sort} from '@influxdata/clockface'
 
 // Types
-import {NotificationEndpoint} from '../../client'
-import {SortKey, SortTypes} from '../../types/sort'
+import {NotificationEndpoint} from 'client'
+import {SortKey, SortTypes} from 'types/sort'
 
 // Utils
-import {getSortedResources} from '../../utils/sort'
+import {getSortedResources} from 'utils/sort'
 
 interface Props {
   search: string

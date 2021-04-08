@@ -25,7 +25,8 @@ const tabs = [
   },
 ]
 
-const AlertsPage: React.FC = props => {
+const AlertsPage: React.FC = () => {
+  // todo: handle activeColumn
   const activeColumn = 'checks'
   const orgID = useOrgID()
   const pageContentsClassName = `alerting-index alerting-index__${activeColumn}`

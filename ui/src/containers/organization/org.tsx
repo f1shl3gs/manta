@@ -17,6 +17,7 @@ import ProfilePage from '../../profile/ProfilePage'
 import PluginsIndex from '../../plugins/PluginsIndex'
 import PluginDetailsView from '../../plugins/PluginDetailsView'
 import AlertsPage from '../../alerts/AlertsPage'
+import Settings from '../../settings/Settings'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -68,6 +69,9 @@ const Org: React.FC = () => {
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardPage}
           />
+
+          {/* Settings */}
+          <Route path={`${orgPath}/settings`} component={Settings} />
         </Switch>
       </OrgProvider>
     </SpinnerContainer>
