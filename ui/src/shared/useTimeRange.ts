@@ -3,17 +3,13 @@ import {useEffect, useState} from 'react'
 import constate from 'constate'
 
 // Types
-import {
-  SelectableDurationTimeRange,
-  SelectableTimeRangeLower,
-  TimeRange,
-} from '../types/TimeRanges'
+import {TimeRange} from '../types/TimeRanges'
 
 // Hooks
 import useSearchParams from './useSearchParams'
 
 // Constants
-import {pastHourTimeRange} from '../constants/timeRange'
+import {pastHourTimeRange, SELECTABLE_TIME_RANGES} from '../constants/timeRange'
 
 const [TimeRangeProvider, useTimeRange] = constate(
   () => {
@@ -21,14 +17,11 @@ const [TimeRangeProvider, useTimeRange] = constate(
     const [timeRange, setTimeRange] = useState<TimeRange>(() => {
       switch (params.get('_type')) {
         case 'selectable-duration':
-          const tr = {} as SelectableDurationTimeRange
-
-          const lower = params.get('_lower')
-          if (lower) {
-            tr.lower = lower as SelectableTimeRangeLower
-          }
-
-          return tr
+          const lower = params.get('_type')
+          return (
+            SELECTABLE_TIME_RANGES.find(tr => lower === tr.lower) ||
+            pastHourTimeRange
+          )
         case 'duration':
           return pastHourTimeRange
         case 'custom':
