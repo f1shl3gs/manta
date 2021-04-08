@@ -7,6 +7,7 @@ import {Config, Table} from '@influxdata/giraffe'
 // Types
 import {getFormatter} from 'utils/vis'
 import {useLineView} from 'shared/useViewProperties'
+import {useVisXDomainSettings} from './useVisXDomainSettings'
 
 interface Props {
   children: (config: Config) => JSX.Element
@@ -17,6 +18,7 @@ interface Props {
 
 const XYPlot: React.FC<Props> = props => {
   const {children, table, groupKeyUnion} = props
+  const {xDomain, onSetXDomain, onResetXDomain} = useVisXDomainSettings()
 
   const {
     timeFormat,
@@ -52,6 +54,9 @@ const XYPlot: React.FC<Props> = props => {
 
   const config: Config = {
     table,
+    xDomain,
+    onSetXDomain: onSetXDomain,
+    onResetXDomain: onResetXDomain,
     xAxisLabel,
     yAxisLabel,
     // @ts-ignore
