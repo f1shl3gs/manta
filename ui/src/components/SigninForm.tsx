@@ -30,8 +30,13 @@ const SigninForm: React.FC = () => {
     })
       .then(() => {
         // success
-        const q = new URLSearchParams(location.search)
-        history.push(`${decodeURIComponent(q.get('returnTo') || '/')}`)
+        const params = new URLSearchParams(location.search)
+        const returnTo = params.get('returnTo')
+        if (!returnTo || returnTo === '') {
+          history.push(`/orgs`)
+        } else {
+          history.push(`${decodeURIComponent(returnTo)}`)
+        }
       })
       .catch(() => {
         // failed

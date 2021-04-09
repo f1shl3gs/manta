@@ -1,15 +1,15 @@
 // Libraries
 import React from 'react'
+import {Route, Switch} from 'react-router-dom'
 
 // Components
 import {Page, Tabs} from '@influxdata/clockface'
+import Navigation from '../layout/resourcePage/Navigation'
+import VariablesPage from './VariablesPage'
+import Todo from '../components/Todo'
 
 // Hooks
 import {useOrgID} from '../shared/useOrg'
-import Navigation from '../layout/resourcePage/Navigation'
-import {Route, Switch} from 'react-router-dom'
-import VariablesPage from './VariablesPage'
-import Todo from '../components/Todo'
 
 const SETTINGS_PAGE_TITLE = 'Settings'
 
@@ -36,7 +36,7 @@ const Settings: React.FC = () => {
         <Page.Title title={SETTINGS_PAGE_TITLE} />
       </Page.Header>
 
-      <Page.Contents className={pageContentsClassName}>
+      <Page.Contents className={pageContentsClassName} fullWidth={true}>
         <Navigation prefix={pagePrefix} tabs={tabs} />
 
         <Tabs.TabContents>
