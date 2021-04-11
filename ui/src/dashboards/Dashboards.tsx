@@ -35,7 +35,7 @@ const useCreateDash = () => {
   return post
 }
 
-const DashboardsIndex: React.FC = () => {
+const Dashboards: React.FC = () => {
   const create = useCreateDash()
   const history = useHistory()
   const orgID = useOrgID()
@@ -110,4 +110,4 @@ const DashboardsIndex: React.FC = () => {
   )
 }
 
-export default DashboardsIndex
+export default Dashboards
