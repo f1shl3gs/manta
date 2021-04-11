@@ -14,7 +14,7 @@
 
 import React from 'react'
 
-import DraggableManager, {DraggableBounds, DraggingUpdate} from '..'
+import DraggableManager, {DraggableBounds, DraggingUpdate} from '../index'
 import {TNil} from '../../../types'
 
 import './RegionDemo.css'

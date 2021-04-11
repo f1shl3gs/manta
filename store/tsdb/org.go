@@ -1,7 +1,8 @@
-package store
+package tsdb
 
 import (
 	"context"
+
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/cache"
 	"github.com/prometheus/prometheus/storage"

@@ -17,7 +17,7 @@ import {css} from 'emotion'
 import copy from 'copy-to-clipboard'
 
 import {createStyle} from '../Theme'
-import {Button} from '@influxdata/clockface'
+import {Button, ComponentSize} from '@influxdata/clockface'
 
 const getStyles = createStyle(() => {
   return {
@@ -80,7 +80,14 @@ export default class CopyIcon extends React.PureComponent<
   render() {
     const styles = getStyles()
     return (
-      <Button text={'copy'}>Copy Icon</Button>
+      <Button
+        text={this.state.hasCopied ? 'Copied' : this.props.tooltipTitle}
+        size={ComponentSize.ExtraSmall}
+        onClick={this.handleClick}
+      >
+        Copy Icon
+      </Button>
+
       /*<UITooltip
         arrowPointAtCenter
         mouseLeaveDelay={0.5}

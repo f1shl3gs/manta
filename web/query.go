@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/f1shl3gs/manta/store/tsdb"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -26,7 +27,6 @@ import (
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/tracing"
-	"github.com/f1shl3gs/manta/store"
 )
 
 type status string
@@ -58,13 +58,13 @@ type QueryHandler struct {
 
 	logger        *zap.Logger
 	engine        *promql.Engine
-	tenantStorage store.TenantStorage
+	tenantStorage tsdb.TenantStorage
 
 	// todo: dummy
 	targetRetriever v1.TargetRetriever
 }
 
-func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage store.TenantStorage, tr v1.TargetRetriever) {
+func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb.TenantStorage, tr v1.TargetRetriever) {
 	engOpts := promql.EngineOpts{
 		Logger:        log.NewZapToGokitLogAdapter(logger),
 		Reg:           prometheus.DefaultRegisterer,

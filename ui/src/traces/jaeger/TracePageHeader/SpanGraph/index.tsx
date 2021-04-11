@@ -24,7 +24,7 @@ import {
   TUpdateViewRangeTimeFunction,
   ViewRange,
   ViewRangeTimeUpdate,
-} from '../..'
+} from '../../index'
 import {ubPb2, ubPx2, ubRelative} from '../../uberUtilityStyles'
 
 const DEFAULT_HEIGHT = 60

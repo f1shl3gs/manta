@@ -6,14 +6,10 @@ import moment from 'moment'
 import {
   Config,
   DEFAULT_TABLE_COLORS,
-  fromRows,
   HoverTimeProvider,
   Plot,
 } from '@influxdata/giraffe'
 import {TableGraphLayerConfig} from '@influxdata/giraffe/dist/types'
-
-// test data
-import testData from './query_range_resp.json'
 
 const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
@@ -78,6 +74,7 @@ const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:20Z,10.21021021021021,usage_system,cpu,cpu0,MBP15-TLUONG.local
 ,,1,2020-07-01T21:45:43.0968Z,2020-07-01T21:50:43.0968Z,2020-07-01T21:50:30Z,11.4,usage_system,cpu,cpu0,MBP15-TLUONG.local
 `
+
 type StreamResult = {
   stream: {
     [key: string]: string

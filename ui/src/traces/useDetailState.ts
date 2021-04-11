@@ -1,5 +1,5 @@
 import {useCallback, useState} from 'react'
-import {DetailState, TraceLog} from '../containers/jaeger'
+import {DetailState, TraceLog} from './jaeger'
 
 function makeDetailSubsectionToggle(
   subSection:

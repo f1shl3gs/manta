@@ -14,7 +14,7 @@
 
 import * as React from 'react'
 
-import {TNil} from '../types/index'
+import {TNil} from '../types'
 import {UIIcon, UIInput} from '../uiElementsContext'
 
 type Props = {

@@ -1,6 +1,9 @@
+// Libraries
 import React from 'react'
+
+// Components
 import {Table} from '@influxdata/giraffe'
-import EmptyGraphMessage from '../../shared/components/EmptyGraphMessage'
+import EmptyGraphMessage from 'shared/components/EmptyGraphMessage'
 
 interface Props {
   table: Table

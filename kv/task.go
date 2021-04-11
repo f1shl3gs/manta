@@ -20,6 +20,9 @@ func (s *Service) FindTaskByID(ctx context.Context, id manta.ID) (*manta.Task, e
 		err  error
 	)
 
+	span, _ := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	err = s.kv.View(ctx, func(tx Tx) error {
 		task, err = s.findTaskByID(ctx, tx, id)
 		return err
@@ -33,9 +36,6 @@ func (s *Service) FindTaskByID(ctx context.Context, id manta.ID) (*manta.Task, e
 }
 
 func (s *Service) findTaskByID(ctx context.Context, tx Tx, id manta.ID) (*manta.Task, error) {
-	span, _ := tracing.StartSpanFromContext(ctx)
-	defer span.Finish()
-
 	pk, err := id.Encode()
 	if err != nil {
 		return nil, err

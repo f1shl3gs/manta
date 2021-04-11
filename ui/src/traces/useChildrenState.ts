@@ -1,5 +1,5 @@
 import {useCallback, useState} from 'react'
-import {TraceSpan} from '../containers/jaeger/types'
+import {TraceSpan} from './jaeger/types'
 
 function shouldDisableCollapse(
   allSpans: TraceSpan[],

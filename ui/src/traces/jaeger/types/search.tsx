@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {TNil} from '.'
+import {TNil} from './index'
 
 export type SearchQuery = {
   end: number | string

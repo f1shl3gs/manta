@@ -9,9 +9,13 @@ const Logout: React.FC = () => {
       method: 'DELETE',
     })
       .then(resp => {
-        console.log('resp', resp)
+        if (resp.status === 204) {
+          history.push(`/signin`)
+          return
+        }
 
-        history.push(`/signin`)
+        // todo: handle failures
+        console.log('unexpected response', resp)
       })
       .catch(err => {
         console.log('logout error: ' + err.message)

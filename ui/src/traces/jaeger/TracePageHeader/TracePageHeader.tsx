@@ -30,7 +30,7 @@ import {
   useTheme,
   ViewRange,
   ViewRangeTimeUpdate,
-} from '..'
+} from '../index'
 import LabeledList from '../common/LabeledList'
 import TraceName from '../common/TraceName'
 import {getTraceName} from '../model/trace-viewer'

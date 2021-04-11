@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	tsdb2 "github.com/f1shl3gs/manta/store/tsdb"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -29,7 +30,6 @@ import (
 	"github.com/f1shl3gs/manta/kv/migration"
 	"github.com/f1shl3gs/manta/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
-	"github.com/f1shl3gs/manta/store"
 	"github.com/f1shl3gs/manta/task/backend"
 	"github.com/f1shl3gs/manta/task/backend/coordinator"
 	"github.com/f1shl3gs/manta/task/backend/executor"
@@ -163,7 +163,7 @@ func (l *Launcher) Run() error {
 
 	// init tsdb storage
 	// for now only local TenantStorage is available, aka MultiTSDB
-	var tenantStorage store.TenantStorage
+	var tenantStorage tsdb2.TenantStorage
 	{
 		tsdbOpts := &tsdb.Options{
 			MinBlockDuration:  int64(2 * time.Hour / time.Millisecond),
@@ -173,7 +173,7 @@ func (l *Launcher) Run() error {
 			WALCompression:    true,
 		}
 
-		multitsdb := store.NewMultiTSDB(l.StorageDir, logger, prometheus.DefaultRegisterer, tsdbOpts, nil, false)
+		multitsdb := tsdb2.NewMultiTSDB(l.StorageDir, logger, prometheus.DefaultRegisterer, tsdbOpts, nil, false)
 		err = multitsdb.Open()
 		if err != nil {
 			return err

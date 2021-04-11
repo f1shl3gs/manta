@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import * as React from 'react'
-import {css} from 'emotion'
 
 import ListView from './ListView'
 import SpanBarRow from './SpanBarRow'
@@ -38,12 +37,12 @@ import {
 } from '../types'
 import TTraceTimeline from '../types/TTraceTimeline'
 
-import {createStyle, Theme, withTheme} from '../Theme'
+import {Theme, withTheme} from '../Theme'
 
 type TExtractUiFindFromStateReturn = {
   uiFind: string | undefined
 }
-
+/*
 const getStyles = createStyle(() => {
   return {
     rowsWrapper: css`
@@ -53,7 +52,7 @@ const getStyles = createStyle(() => {
       width: 100%;
     `,
   }
-})
+})*/
 
 type RowState = {
   isDetail: boolean
@@ -420,9 +419,14 @@ export class UnthemedVirtualizedTraceView extends React.Component<VirtualizedTra
         }
       }
     }
-    const styles = getStyles()
+
     return (
-      <div className={styles.row} key={key} style={style} {...attrs}>
+      <div
+        className={'trace-timeline-viewer--row'}
+        key={key}
+        style={style}
+        {...attrs}
+      >
         <SpanBarRow
           clippingLeft={this.clipping.left}
           clippingRight={this.clipping.right}
@@ -481,10 +485,10 @@ export class UnthemedVirtualizedTraceView extends React.Component<VirtualizedTra
       return null
     }
     const color = getColorByKey(serviceName, theme)
-    const styles = getStyles()
+
     return (
       <div
-        className={styles.row}
+        className={'trace-timeline-viewer--row'}
         key={key}
         style={{...style, zIndex: 1}}
         {...attrs}
@@ -514,7 +518,6 @@ export class UnthemedVirtualizedTraceView extends React.Component<VirtualizedTra
   }
 
   render() {
-    const styles = getStyles()
     return (
       <div>
         <ListView
@@ -524,7 +527,7 @@ export class UnthemedVirtualizedTraceView extends React.Component<VirtualizedTra
           itemRenderer={this.renderRow}
           viewBuffer={300}
           viewBufferMin={100}
-          itemsWrapperClassName={styles.rowsWrapper}
+          itemsWrapperClassName={'trace-timeline-viewer--rows-wrapper'}
           getKeyFromIndex={this.getKeyFromIndex}
           getIndexFromKey={this.getIndexFromKey}
           windowScroller

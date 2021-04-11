@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
 	"go.uber.org/zap"
 )
@@ -60,6 +61,9 @@ func NewCoordinator(logger *zap.Logger, sch scheduler.Scheduler, executor Execut
 }
 
 func (c *Coordinator) TaskCreated(ctx context.Context, task *manta.Task) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	t, err := NewSchedulableTask(task)
 	if err != nil {
 		return err
@@ -69,6 +73,9 @@ func (c *Coordinator) TaskCreated(ctx context.Context, task *manta.Task) error {
 }
 
 func (c *Coordinator) TaskUpdated(ctx context.Context, from, to *manta.Task) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	sid := scheduler.ID(to.ID)
 	t, err := NewSchedulableTask(to)
 	if err != nil {
@@ -90,6 +97,9 @@ func (c *Coordinator) TaskUpdated(ctx context.Context, from, to *manta.Task) err
 }
 
 func (c *Coordinator) TaskDeleted(ctx context.Context, id manta.ID) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	tid := scheduler.ID(id)
 	if err := c.scheduler.Release(tid); err != nil && err != manta.ErrTaskNotClaimed {
 		return err
@@ -99,7 +109,7 @@ func (c *Coordinator) TaskDeleted(ctx context.Context, id manta.ID) error {
 }
 
 func NewSchedulableTask(task *manta.Task) (SchedulableTask, error) {
-	// todo: handle last scheduled
+	// todo: handle the last scheduled
 	// for now always set it for now
 	ts := time.Now()
 	sch, ts, err := scheduler.NewSchedule(task.Cron, ts)

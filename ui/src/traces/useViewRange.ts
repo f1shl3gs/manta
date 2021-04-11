@@ -1,5 +1,5 @@
 import {useCallback, useState} from 'react'
-import {ViewRange, ViewRangeTimeUpdate} from '../containers/jaeger'
+import {ViewRange, ViewRangeTimeUpdate} from './jaeger'
 
 /**
  * Controls state of the zoom function that can be used through minimap in header or on the timeline. ViewRange contains

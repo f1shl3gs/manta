@@ -34,8 +34,10 @@ func NewExecutor(logger *zap.Logger, ts manta.TaskService, tcs backend.TaskContr
 }
 
 func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor time.Time, runAt time.Time) error {
-	span, ctx := tracing.StartSpanFromContextWithOperationName(ctx, "execute")
+	span, ctx := tracing.StartSpanFromContextWithOperationName(ctx, "Execute")
 	defer span.Finish()
+
+	span.LogKV("task_id", manta.ID(id).String())
 
 	task, err := e.ts.FindTaskByID(ctx, manta.ID(id))
 	if err != nil {
@@ -51,6 +53,8 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	if err != nil {
 		return err
 	}
+
+	span.LogKV("run_id", run.ID.String())
 
 	defer func() {
 		if _, err = e.tcs.FinishRun(ctx, task.ID, run.ID); err != nil {

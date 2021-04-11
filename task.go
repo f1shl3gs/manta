@@ -46,13 +46,13 @@ type TaskService interface {
 	// FindTaskByID returns a single task by id
 	FindTaskByID(ctx context.Context, id ID) (*Task, error)
 
-	// FindTasks returns
+	// FindTasks returns all tasks which match the filter
 	FindTasks(ctx context.Context, filter TaskFilter) ([]*Task, error)
 
-	// CreateTask
+	// CreateTask creates a task
 	CreateTask(ctx context.Context, task *Task) error
 
-	// UpdateTask
+	// UpdateTask updates a single task with a patch
 	UpdateTask(ctx context.Context, id ID, udp TaskUpdate) (*Task, error)
 
 	// DeleteTask delete a single task by ID

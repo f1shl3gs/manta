@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import * as React from 'react'
-import {UIMenu, UIMenuItem} from '..'
+import {UIMenu, UIMenuItem} from '../index'
 import NewWindowIcon from './NewWindowIcon'
 
 type Link = {

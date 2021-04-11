@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 var (
@@ -19,6 +20,9 @@ func (s *Service) CreateRun(ctx context.Context, taskID manta.ID, scheduledFor t
 		run *manta.Run
 		err error
 	)
+
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
 		run, err = s.createRun(ctx, tx, taskID, scheduledFor, runAt)
@@ -122,6 +126,9 @@ func (s *Service) FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta
 		run *manta.Run
 		err error
 	)
+
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
 		run, err = s.findRunByID(ctx, tx, runID)
@@ -238,6 +245,9 @@ func (s *Service) UpdateRunState(
 }
 
 func (s *Service) AddRunLog(ctx context.Context, taskID, runID manta.ID, when time.Time, log string) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	return s.kv.Update(ctx, func(tx Tx) error {
 		run, err := s.findRunByID(ctx, tx, runID)
 		if err != nil {

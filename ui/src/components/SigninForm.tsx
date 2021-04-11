@@ -1,5 +1,6 @@
 // Libraries
 import React, {useCallback, useState} from 'react'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -13,14 +14,14 @@ import {
   Input,
   InputType,
 } from '@influxdata/clockface'
+
+// Hooks
 import {useFetch} from 'shared/useFetch'
-import {useHistory, useLocation} from 'react-router-dom'
 
 const SigninForm: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const history = useHistory()
-  const location = useLocation()
 
   const {post, loading, error} = useFetch(`/api/v1/signin`, {})
   const onSubmit = useCallback(() => {
@@ -30,7 +31,7 @@ const SigninForm: React.FC = () => {
     })
       .then(() => {
         // success
-        const params = new URLSearchParams(location.search)
+        const params = new URLSearchParams(window.location.search)
         const returnTo = params.get('returnTo')
         if (!returnTo || returnTo === '') {
           history.push(`/orgs`)
@@ -41,7 +42,7 @@ const SigninForm: React.FC = () => {
       .catch(() => {
         // failed
       })
-  }, [username, password])
+  }, [post, username, password, history])
 
   return (
     <Form onSubmit={onSubmit}>

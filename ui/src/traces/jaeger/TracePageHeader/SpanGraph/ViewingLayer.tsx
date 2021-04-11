@@ -23,9 +23,9 @@ import {
   UIButton,
   ViewRange,
   ViewRangeTimeUpdate,
-} from '../..'
+} from '../../index'
 import {withTheme, Theme, autoColor} from '../../Theme'
-import {TNil} from '../..'
+import {TNil} from '../../index'
 import DraggableManager, {
   DraggableBounds,
   DraggingUpdate,

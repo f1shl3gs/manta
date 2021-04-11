@@ -38,7 +38,7 @@ const AlertsPage: React.FC = () => {
         <Page.Title title={ALERTS_PAGE_TITLE} />
       </Page.Header>
 
-      <Page.Contents className={pageContentsClassName}>
+      <Page.Contents className={pageContentsClassName} fullWidth={true}>
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>

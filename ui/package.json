@@ -80,7 +80,8 @@
     "node-sass": "4.14.1",
     "openapi-typescript-codegen": "^0.8.1",
     "prettier": "^2.2.1",
-    "source-map-explorer": "^2.5.1"
+    "source-map-explorer": "2.5.2",
+    "webpack-bundle-analyzer": "^4.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -90,6 +91,7 @@
     "e2e:dev": "CYPRESS_baseUrl=http://localhost:8000 cypress open --browser chrome",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "wba": "webpack-bundle-analyzer build/bundle-stats.json",
     "prettier": "prettier --config .prettierrc.json --check 'src/**/*.{ts,tsx,scss}'",
     "prettier:fix": "prettier --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx,scss}'"
   },

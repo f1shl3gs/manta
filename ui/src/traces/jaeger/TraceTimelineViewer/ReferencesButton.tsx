@@ -15,13 +15,7 @@
 import React from 'react'
 import {css} from 'emotion'
 import NewWindowIcon from '../common/NewWindowIcon'
-import {
-  UITooltip,
-  UIDropdown,
-  UIMenuItem,
-  UIMenu,
-  TooltipPlacement,
-} from '../uiElementsContext'
+import {UIMenuItem, UIMenu, TooltipPlacement} from '../uiElementsContext'
 
 import ReferenceLink from '../url/ReferenceLink'
 import {createStyle} from '../Theme'

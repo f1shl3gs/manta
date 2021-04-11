@@ -1,6 +1,6 @@
 import {useMemo, useState} from 'react'
 
-import {filterSpans, TraceSpan} from '../containers/jaeger'
+import {filterSpans, TraceSpan} from './jaeger'
 
 /**
  * Controls the state of search input that highlights spans if they match the search string.
