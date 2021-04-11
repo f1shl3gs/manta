@@ -1,0 +1,18 @@
+/bin/
+manta.bolt
+
+.idea
+
+# test tools
+docker
+
+# test data
+data
+
+# test files
+web/*.http
+
+# ui
+ui/.eslintcache
+ui/cypress/videos
+ui/public
