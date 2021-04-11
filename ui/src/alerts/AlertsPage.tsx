@@ -42,8 +42,9 @@ const AlertsPage: React.FC = () => {
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>
-            <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
             <Route path={`${pagePrefix}/checks/:id`} component={CheckOverlay} />
+
+            <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
             <Route
               path={`${pagePrefix}/endpoints`}
               component={NotificationEndpointIndex}

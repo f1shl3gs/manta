@@ -34,8 +34,8 @@
 @import 'src/shared/components/SearchWidget.scss';
 @import 'src/alerts/Alerts.scss';
 @import 'src/alerts/checks/LastRunStatus.scss';
-@import 'src/alerts/builderCard/AlertBuilder.scss';
-@import 'src/alerts/builderCard/BuilderCard.scss';
+@import '../alerts/checks/builderCard/AlertBuilder.scss';
+@import '../alerts/checks/builderCard/BuilderCard.scss';
 @import 'src/shared/components/DashedButton.scss';
 @import 'src/components/promqlEditor/PromqlEditor.scss';
 @import 'src/components/timeMachine/QueryEditor.scss';

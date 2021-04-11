@@ -42,6 +42,7 @@ const defaultCheck: Check = {
 
 const [CheckProvider, useCheck] = constate(
   (initialState: State) => {
+    const [tab, setTab] = useState('query')
     const [check, setCheck] = useState<Check>(defaultCheck)
     const {notify} = useNotification()
     const [remoteDataState, setRemoteDataState] = useState(
@@ -83,7 +84,7 @@ const [CheckProvider, useCheck] = constate(
 
     const onSave = useCallback(() => {
       return post(check)
-    }, [check])
+    }, [check, post])
 
     const onRename = useCallback((name: string) => {
       setCheck(prev => {
@@ -93,6 +94,24 @@ const [CheckProvider, useCheck] = constate(
         }
       })
     }, [])
+
+    const onExprUpdate = useCallback(
+      (expr: string) => {
+        // promql editor will call this when mount
+        // it must be stopped
+        if (check.expr === expr) {
+          return
+        }
+
+        setCheck(prev => {
+          return {
+            ...prev,
+            expr,
+          }
+        })
+      },
+      [check]
+    )
 
     const onAddCondition = useCallback((level: CheckStatusLevel) => {
       setCheck(prevState => {
@@ -114,8 +133,11 @@ const [CheckProvider, useCheck] = constate(
 
     return {
       ...check,
+      tab,
+      setTab,
       onSave,
       onRename,
+      onExprUpdate,
       onAddCondition,
       remoteDataState: remoteDataState,
       updateCheck,

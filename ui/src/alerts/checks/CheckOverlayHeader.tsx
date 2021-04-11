@@ -17,17 +17,41 @@ import RenamablePageTitle from 'components/RenamablePageTitle'
 // Hooks
 import {useCheck} from './useCheck'
 import {useOrgID} from '../../shared/useOrg'
+import {
+  defaultErrorNotification,
+  useNotification,
+} from '../../shared/notification/useNotification'
 
 const saveButtonClass = 'veo-header--save-cell-button'
 
 const CheckOverlayHeader: React.FC = () => {
-  const {name, onRename, onSave} = useCheck()
+  const {id, name, onRename, onSave, tab, setTab} = useCheck()
   const history = useHistory()
   const orgID = useOrgID()
+  const {notify} = useNotification()
 
   const onCancel = useCallback(() => {
     history.push(`/orgs/${orgID}/alerts/checks`)
   }, [orgID, history])
+
+  // todo: it's a bad name
+  const onSubmit = useCallback(() => {
+    onSave()
+      .then(() => {
+        history.push(`/orgs/${orgID}/alerts/checks`)
+      })
+      .catch(err => {
+        const message =
+          id === 'new'
+            ? `Create new checks failed, err: ${err.message}`
+            : `Update Check ${name} failed, err: ${err}`
+
+        notify({
+          ...defaultErrorNotification,
+          message,
+        })
+      })
+  }, [onSave, history, orgID, id, name, notify])
 
   return (
     <>
@@ -47,20 +71,20 @@ const CheckOverlayHeader: React.FC = () => {
             style={{width: '300px'}}
           >
             <SelectGroup.Option
-              id={'A'}
-              value={'a'}
-              active
-              onClick={v => console.log(v)}
+              id={'query'}
+              value={'query'}
+              active={tab === 'query'}
+              onClick={setTab}
             >
-              Define Query
+              1. Define Query
             </SelectGroup.Option>
             <SelectGroup.Option
-              id={'B'}
-              value={'b'}
-              active={false}
-              onClick={v => console.log(v)}
+              id={'check'}
+              value={'check'}
+              active={tab === 'check'}
+              onClick={setTab}
             >
-              Configure Check
+              2. Configure Check
             </SelectGroup.Option>
           </SelectGroup>
         </Page.ControlBarLeft>
@@ -77,15 +101,7 @@ const CheckOverlayHeader: React.FC = () => {
             icon={IconFont.Checkmark}
             color={ComponentColor.Success}
             size={ComponentSize.Small}
-            onClick={() => {
-              onSave()
-                .then(() => {
-                  history.goBack()
-                })
-                .catch(err => {
-                  console.warn(err)
-                })
-            }}
+            onClick={onSubmit}
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

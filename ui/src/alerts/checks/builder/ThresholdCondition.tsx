@@ -9,11 +9,11 @@ import ThresholdRangeInput from './ThresholdRangeInput'
 import ThresholdValueInput from './ThresholdValueInput'
 
 // Types
-import {CheckStatusLevel, Threshold} from '../../types/Check'
+import {CheckStatusLevel, Threshold} from '../../../types/Check'
 
 // Constants
-import {LEVEL_COMPONENT_COLORS} from '../../constants/level'
-import {useCheck} from '../checks/useCheck'
+import {LEVEL_COMPONENT_COLORS} from '../../../constants/level'
+import {useCheck} from '../useCheck'
 
 interface Props {
   level: CheckStatusLevel

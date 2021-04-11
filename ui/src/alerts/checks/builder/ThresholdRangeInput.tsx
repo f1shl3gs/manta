@@ -1,6 +1,6 @@
 import React from 'react'
-import {InsideThreshold, OutsideThreshold} from '../../types/Check'
-import {convertUserInputToNumOrNaN} from '../../utils/convert'
+import {InsideThreshold, OutsideThreshold} from '../../../types/Check'
+import {convertUserInputToNumOrNaN} from '../../../utils/convert'
 import {FlexBox, Input, InputType, TextBlock} from '@influxdata/clockface'
 
 interface Props {

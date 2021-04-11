@@ -12,16 +12,17 @@ import {
 import {TimeRangeProvider} from '../../shared/useTimeRange'
 import CheckVis from './CheckVis'
 import {AutoRefreshProvider} from '../../shared/useAutoRefresh'
-import CheckBuilder from '../builder/CheckBuilder'
+import CheckBuilder from './builder/CheckBuilder'
 
 // Hooks
 import {useCheck} from './useCheck'
 
 // Constants
 import {INITIAL_RESIZER_HANDLE} from '../../constants/timeMachine'
+import QueryBuilder from './builder/QueryBuilder'
 
 const CheckEditor: React.FC = () => {
-  const {expr} = useCheck()
+  const {expr, tab} = useCheck()
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 
   return (
@@ -59,7 +60,7 @@ const CheckEditor: React.FC = () => {
                   </div>
 
                   <div className={'time-machine-queries--body'}>
-                    <CheckBuilder />
+                    {tab === 'query' ? <QueryBuilder /> : <CheckBuilder />}
                   </div>
                 </div>
               </div>

@@ -173,6 +173,8 @@ const PromqlEditor: React.FC<Props> = props => {
           ),
           EditorView.updateListener.of((upd: ViewUpdate): void => {
             // onChange(upd.state.doc.toString())
+            const text = upd.state.doc.toString()
+            // onChange(text)
           }),
         ],
       })
@@ -215,5 +217,7 @@ const PromqlEditor: React.FC<Props> = props => {
     />
   )
 }
+
+PromqlEditor.whyDidYouRender = true
 
 export default PromqlEditor

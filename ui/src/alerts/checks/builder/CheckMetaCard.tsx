@@ -17,7 +17,7 @@ import BuilderCardBody from '../builderCard/BuilderCardBody'
 import CheckLabelRow from './CheckLabelRow'
 
 // Hooks
-import {useCheck} from '../checks/useCheck'
+import {useCheck} from '../useCheck'
 
 // Constants
 import {DURATIONS} from 'constants/duration'

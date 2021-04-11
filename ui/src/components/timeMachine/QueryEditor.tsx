@@ -3,7 +3,6 @@ import React from 'react'
 
 // Components
 import {Controlled as ReactCodeMirror} from 'react-codemirror2'
-import {useActiveQuery} from './useQueries'
 import PromqlToolbar from './PromqlToolbar'
 
 // Constants
@@ -18,18 +17,23 @@ const options = {
   scrollbarStyle: 'native',
 }
 
-const QueryEditor: React.FC = () => {
-  const {activeQuery, onSetText} = useActiveQuery()
+interface Props {
+  query: string
+  onChange: (v: string) => void
+}
 
+// todo: maybe rename it to PromqlEditor
+
+const QueryEditor: React.FC<Props> = ({query, onChange}) => {
   return (
     <div className={'flux-editor'}>
       <div className={'flux-editor--left-panel'}>
         <ReactCodeMirror
           autoFocus={false}
           autoCursor={true}
-          value={activeQuery?.text || ''}
+          value={query}
           options={options}
-          onBeforeChange={(editor, data, value) => onSetText(value)}
+          onBeforeChange={(editor, data, value) => onChange(value)}
         />
       </div>
 

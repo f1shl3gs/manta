@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development' && enable) {
     trackAllPureComponents: true,
     trackHooks: true,
     trackExtraHooks: [],
-    include: [/CellComponent/],
+    include: [],
     exclude: [],
   })
 }

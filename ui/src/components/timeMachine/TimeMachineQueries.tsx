@@ -7,7 +7,12 @@ import QueryTabs from './QueryTabs'
 import SubmitQueryButton from './SubmitQueryButton'
 import QueryEditor from './QueryEditor'
 
+// Hooks
+import {useActiveQuery} from './useQueries'
+
 const TimeMachineQueries: React.FC = () => {
+  const {activeQuery, onSetText} = useActiveQuery()
+
   return (
     <div className={'time-machine-queries'}>
       <div className={'time-machine-queries--controls'}>
@@ -19,7 +24,7 @@ const TimeMachineQueries: React.FC = () => {
       </div>
 
       <div className={'time-machine-queries--body'}>
-        <QueryEditor />
+        <QueryEditor query={activeQuery.text} onChange={onSetText} />
       </div>
     </div>
   )

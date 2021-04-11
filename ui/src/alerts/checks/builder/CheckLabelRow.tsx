@@ -2,7 +2,7 @@
 import React from 'react'
 
 // Types
-import {CheckLabel} from '../../types/Check'
+import {CheckLabel} from '../../../types/Check'
 import {
   ComponentColor,
   ComponentSize,
