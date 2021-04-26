@@ -1,9 +1,9 @@
-kind:
-  datasource
-name:
-  loki
+kind: dashboard
+name: system
 spec:
-  backend: http://localhost:3100
-  type: loki
-
+  name: System
+  desc: system dashboard
+  cells:
+    - xx
+    - xxx
 ----

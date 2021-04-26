@@ -88,16 +88,6 @@ func (m *Template) Validate() error {
 		return invalidField("desc", ErrFieldMustBeSet)
 	}
 
-	if len(m.Matchers) == 0 {
-		return invalidField("matchers", ErrFieldMustBeSet)
-	}
-
-	for _, matcher := range m.Matchers {
-		if err := matcher.Validate(); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 

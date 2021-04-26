@@ -11,7 +11,6 @@ type TemplateFilter struct {
 type TemplateUpdate struct {
 	Name        *string
 	Description *string
-	Matcher     map[string]string
 }
 
 type TemplateService interface {

@@ -24,7 +24,7 @@ const TimeMachineQueries: React.FC = () => {
       </div>
 
       <div className={'time-machine-queries--body'}>
-        <QueryEditor query={activeQuery.text} onChange={onSetText} />
+        <QueryEditor query={activeQuery.text || ''} onChange={onSetText} />
       </div>
     </div>
   )

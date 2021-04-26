@@ -20,7 +20,7 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
             x: {},
             y: {},
           },
-          queries: [] as DashboardQuery[],
+          queries: [{text: '', hidden: false}] as DashboardQuery[],
         } as ViewProperties
       }
 

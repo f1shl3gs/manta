@@ -2,8 +2,6 @@
 import React, {useState} from 'react'
 
 // Components
-import SearchWidget from '../../shared/components/SearchWidget'
-import ResourceSortDropdown from '../../shared/components/ResourceSortDropdown'
 import {
   Button,
   Columns,
@@ -13,23 +11,22 @@ import {
   IconFont,
   Sort,
 } from '@influxdata/clockface'
-import TabbedPageHeader from '../../shared/components/TabbedPageHeader'
-import FilterList from '../../shared/components/FilterList'
-import NotificationEndpointCards from './NotificationEndpointCards'
+import TabbedPageHeader from 'shared/components/TabbedPageHeader'
+import SearchWidget from 'shared/components/SearchWidget'
+import FilterList from 'shared/components/FilterList'
+import ResourceSortDropdown from 'shared/components/ResourceSortDropdown'
+import CheckCards from './CheckCards'
+import CheckExplainer from './CheckExplainer'
 
 // Hooks
-import {
-  NotificationEndpointsProvider,
-  useNotificationEndpoints,
-} from './useNotificationEndpoints'
+import {ChecksProvider, useChecks} from './useChecks'
 
 // Types
-import {SortKey, SortTypes} from '../../types/sort'
-import {NotificationEndpoint} from '../../client'
-import NotificationEndpointExplainer from './NotificationEndpointExplainer'
+import {Check} from 'types/Check'
+import {SortKey, SortTypes} from 'types/sort'
 
-const NotificationEndpointIndex: React.FC = () => {
-  const {endpoints} = useNotificationEndpoints()
+const Checks: React.FC = () => {
+  const {checks} = useChecks()
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
@@ -41,10 +38,9 @@ const NotificationEndpointIndex: React.FC = () => {
     <>
       <SearchWidget
         search={search}
-        placeholder={'Filter Endpoints...'}
-        onSearch={setSearch}
+        placeholder={'Filter Checks...'}
+        onSearch={v => setSearch(v)}
       />
-
       <ResourceSortDropdown
         sortKey={sortOption.key}
         sortType={sortOption.type}
@@ -62,10 +58,10 @@ const NotificationEndpointIndex: React.FC = () => {
 
   const rightHeader = (
     <Button
-      text={'Create Notification Endpoint'}
+      text={'Create Check'}
       icon={IconFont.Plus}
       color={ComponentColor.Primary}
-      titleText={'Create a new Notification Endpoint'}
+      titleText={'Create a new Check'}
       status={ComponentStatus.Default}
     />
   )
@@ -74,8 +70,8 @@ const NotificationEndpointIndex: React.FC = () => {
     <>
       <TabbedPageHeader left={leftHeader} right={rightHeader} />
 
-      <FilterList<NotificationEndpoint>
-        list={endpoints}
+      <FilterList<Check>
+        list={checks}
         search={search}
         searchKeys={['name', 'desc']}
       >
@@ -87,9 +83,9 @@ const NotificationEndpointIndex: React.FC = () => {
                 widthSM={filtered.length !== 0 ? Columns.Eight : Columns.Twelve}
                 widthMD={filtered.length !== 0 ? Columns.Ten : Columns.Twelve}
               >
-                <NotificationEndpointCards
+                <CheckCards
                   search={search}
-                  endpoints={filtered}
+                  checks={filtered}
                   sortKey={sortOption.key}
                   sortType={sortOption.type}
                   sortDirection={sortOption.direction}
@@ -102,7 +98,7 @@ const NotificationEndpointIndex: React.FC = () => {
                   widthSM={Columns.Four}
                   widthMD={Columns.Two}
                 >
-                  <NotificationEndpointExplainer />
+                  <CheckExplainer />
                 </Grid.Column>
               )}
             </Grid.Row>
@@ -114,7 +110,7 @@ const NotificationEndpointIndex: React.FC = () => {
 }
 
 export default () => (
-  <NotificationEndpointsProvider>
-    <NotificationEndpointIndex />
-  </NotificationEndpointsProvider>
+  <ChecksProvider>
+    <Checks />
+  </ChecksProvider>
 )

@@ -64,8 +64,8 @@ message Template {
 
   string name = 4;
   string desc = 5;
-
-  repeated Matcher matchers = 6 [(gogoproto.nullable) = false];
+  string url = 6;
+  string content = 7;
 }
 
 message Resource {

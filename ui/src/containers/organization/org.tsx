@@ -8,7 +8,7 @@ import {OrgProvider} from 'shared/useOrg'
 import Todo from 'components/Todo'
 import TracePage from 'traces'
 import Logs from 'logs/Logs'
-import DashboardsIndex from 'dashboards/dashboards'
+import Dashboards from 'dashboards/Dashboards'
 import DashboardPage from 'dashboards/components/DashboardPage'
 import Nav from 'layout/Nav'
 import {useFetch} from 'shared/useFetch'
@@ -60,11 +60,7 @@ const Org: React.FC = () => {
           <Route path={`${orgPath}/profile`} component={ProfilePage} />
 
           {/* Dashboards */}
-          <Route
-            exact
-            path={`${orgPath}/dashboards`}
-            component={DashboardsIndex}
-          />
+          <Route exact path={`${orgPath}/dashboards`} component={Dashboards} />
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardPage}

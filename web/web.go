@@ -49,14 +49,15 @@ type Backend struct {
 func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetriever) http.Handler {
 	router := NewRouter()
 
-	// static
-	/*fileServer := http.FileServer(http.FS(manta.Assets))
-	router.GET("/ui/*filepath", func(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-		r.URL.Path = manta.UIPrefix + params.ByName("filepath")
-		fileServer.ServeHTTP(w, r)
+	assetsHandler := &Assets{
+		logger:  logger,
+		Prefix:  "/ui/build",
+		Default: "/ui/build",
+	}
+
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assetsHandler.ServeHTTP(w, r)
 	})
-	*/
-	router.ServeFiles("/ui/*filepath", http.FS(manta.Assets))
 
 	// healthz
 	router.Handler(http.MethodGet, "/healthz", newHealthzHandler(logger))
@@ -136,18 +137,19 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetri
 		})
 	}
 
-	// access log
 	var h http.Handler = router
-	if accessLog {
-		h = middlewares.Log(logger, router)
-	} else {
-		logger.Info("Access log is disabled")
-	}
 
-	// tracing
+	// middlewares
 	h = Trace(h)
 	h = middlewares.Metrics(prometheus.DefaultRegisterer, h)
-	// h = middlewares.Gzip(h)
+	h = middlewares.Gzip(h)
+
+	// access log
+	if accessLog {
+		h = middlewares.Log(logger, h)
+	} else {
+		logger.Debug("Access log is disabled")
+	}
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -169,9 +171,6 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetri
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/pprof")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/kv/flush")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/")
-
-	// test only
-	ah.RegisterNoAuthRoute(http.MethodGet, "/api/v1/otcls/:id")
 
 	return ah
 }

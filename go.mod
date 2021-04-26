@@ -3,6 +3,8 @@ module github.com/f1shl3gs/manta
 go 1.16
 
 require (
+	github.com/OneOfOne/xxhash v1.2.6 // indirect
+	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
 	github.com/cespare/xxhash v1.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -10,6 +12,10 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.5
+	github.com/gopherjs/gopherjs v0.0.0-20191106031601-ce3c9ade29de // indirect
+	github.com/hashicorp/go-hclog v0.12.2 // indirect
+	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/influxdata/cron v0.0.0-20200427044617-e2c242fdf59f
 	github.com/json-iterator/go v1.1.10
 	github.com/jsternberg/zap-logfmt v1.2.0
@@ -22,21 +28,23 @@ require (
 	github.com/prometheus/client_golang v1.10.0
 	github.com/prometheus/common v0.20.0
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
+	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
-	github.com/thanos-io/thanos v0.18.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/zap v1.16.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/tools v0.1.0
-	google.golang.org/grpc v1.36.0
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
+	gopkg.in/ini.v1 v1.57.0 // indirect
+	k8s.io/client-go v12.0.0+incompatible // indirect
 )
 
 replace k8s.io/client-go => k8s.io/client-go v0.20.0

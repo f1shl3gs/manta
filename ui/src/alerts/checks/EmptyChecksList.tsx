@@ -15,7 +15,7 @@ const EmptyChecksList: React.FC<Props> = props => {
     return (
       <EmptyState size={ComponentSize.Small} className={'alert-column--empty'}>
         <EmptyState.Text>
-          No <b>checks</b> match your search
+          No <b>Checks</b> match your search
         </EmptyState.Text>
       </EmptyState>
     )

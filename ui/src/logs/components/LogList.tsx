@@ -9,7 +9,6 @@ import {
   HoverTimeProvider,
   Plot,
 } from '@influxdata/giraffe'
-import {TableGraphLayerConfig} from '@influxdata/giraffe/dist/types'
 
 const tableCSV = `#group,false,false,true,true,false,false,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
@@ -215,7 +214,7 @@ const LogList = () => {
         },
         timeZone: 'Local',
         tableTheme: theme,
-      } as TableGraphLayerConfig,
+      },
     ],
   }
   return (

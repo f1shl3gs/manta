@@ -135,7 +135,7 @@ func (h *ChecksHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {

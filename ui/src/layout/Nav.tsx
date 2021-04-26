@@ -237,6 +237,9 @@ const Nav: React.FC = () => {
   const navItems = generateNavItems(orgID)
 
   const {inPresentationMode} = usePresentationMode()
+
+  console.log('nav', inPresentationMode)
+
   if (inPresentationMode) {
     return null
   }

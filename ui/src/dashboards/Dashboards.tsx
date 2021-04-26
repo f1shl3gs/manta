@@ -22,6 +22,7 @@ import {useOrgID} from 'shared/useOrg'
 import {Dashboard} from 'types/Dashboard'
 import ResourceSortDropdown from '../shared/components/ResourceSortDropdown'
 import {SortKey, SortTypes} from '../types/sort'
+import FilterList from '../shared/components/FilterList'
 
 const useCreateDash = () => {
   const orgID = useOrgID()
@@ -100,6 +101,7 @@ const Dashboards: React.FC = () => {
       >
         <DashboardsProvider>
           <DashboardCards
+            searchTerm={searchTerm}
             sortKey={sortOption.key}
             sortType={sortOption.type}
             sortDirection={sortOption.direction}

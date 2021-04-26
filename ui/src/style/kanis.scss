@@ -1,9 +1,6 @@
 // Modules
 @import 'modules';
 
-// External
-@import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';
-
 // Components
 @import 'src/components/AutoRefreshDropdown/AutoRefreshDropdown.scss';
 @import 'src/components/context_menu/ContextMenu.scss';
@@ -44,7 +41,9 @@
 @import 'src/dashboards/components/variablesControlBar/DraggableDropdown.scss';
 @import 'src/dashboards/components/variablesControlBar/VariablesControlBar.scss';
 @import 'src/components/notifications/Notification.scss';
-@import 'src/traces/jaeger/TraceTimelineViewer/TraceTimelineViewer.scss';
+
+// External
+@import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';
 
 // TODO: delete this later when it's addressed in Clockface
 .cf-resource-card {

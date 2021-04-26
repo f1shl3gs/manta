@@ -18,7 +18,8 @@ const (
 )
 
 type compressResponseWriter struct {
-	http.ResponseWriter
+	// http.ResponseWriter
+	RecordableHTTPResponse
 	io.Writer
 }
 
@@ -56,8 +57,8 @@ func Gzip(next http.Handler) http.Handler {
 		r.Header.Del(acceptEncoding)
 
 		next.ServeHTTP(&compressResponseWriter{
-			ResponseWriter: w,
-			Writer:         gw,
+			RecordableHTTPResponse: rw,
+			Writer:                 gw,
 		}, r)
 	})
 }

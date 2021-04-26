@@ -5,8 +5,8 @@ import {Route, Switch} from 'react-router-dom'
 // Components
 import {Page, Tabs} from '@influxdata/clockface'
 import AlertsNavigation from './AlertsNavigation'
-import ChecksIndex from './checks/ChecksIndex'
-import NotificationEndpointIndex from './notificationEndpoints/NotificationEndpointIndex'
+import Checks from './checks/Checks'
+import NotificationEndpoints from './notificationEndpoints/NotificationEndpoints'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
@@ -44,10 +44,10 @@ const AlertsPage: React.FC = () => {
           <Switch>
             <Route path={`${pagePrefix}/checks/:id`} component={CheckOverlay} />
 
-            <Route path={`${pagePrefix}/checks`} component={ChecksIndex} />
+            <Route path={`${pagePrefix}/checks`} component={Checks} />
             <Route
               path={`${pagePrefix}/endpoints`}
-              component={NotificationEndpointIndex}
+              component={NotificationEndpoints}
             />
           </Switch>
         </Tabs.TabContents>
