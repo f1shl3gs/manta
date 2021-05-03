@@ -54,24 +54,33 @@ const generateNavItems = (orgID: string): NavItem[] => {
 
   return [
     {
-      id: 'otcl',
-      testID: 'nav-item-otcls',
-      icon: IconFont.Cloud,
-      label: 'OTcl',
-      shortLabel: 'OTcl',
+      id: 'data',
+      testID: 'nav-item-data',
+      icon: IconFont.DisksNav,
+      label: 'Data',
+      shortLabel: 'Data',
       link: {
         type: 'link',
-        location: `${orgPrefix}/otcls`,
+        location: `${orgPrefix}/data/otcls`,
       },
-      activeKeywords: ['otcls'],
+      activeKeywords: ['data', 'otcls', 'scrapes'],
       menu: [
+        {
+          id: 'otcls',
+          testID: 'nav-subitem-otcls',
+          label: 'Otcls',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/data/otcls`,
+          },
+        },
         {
           id: 'scrapers',
           testID: 'nav-subitem-scrapers',
           label: 'Scrapers',
           link: {
             type: 'link',
-            location: `${orgPrefix}/otcls/scrapers`,
+            location: `${orgPrefix}/data/scrapers`,
           },
         },
       ],
@@ -237,9 +246,6 @@ const Nav: React.FC = () => {
   const navItems = generateNavItems(orgID)
 
   const {inPresentationMode} = usePresentationMode()
-
-  console.log('nav', inPresentationMode)
-
   if (inPresentationMode) {
     return null
   }

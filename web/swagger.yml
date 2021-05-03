@@ -456,6 +456,7 @@ paths:
                 $ref: "#/components/schemas/Otcl"
         default:
           $ref: "#/components/responses/UnexpectedError"
+
     delete:
       operationId: DeleteOtcl
       tags:

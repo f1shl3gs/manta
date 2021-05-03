@@ -17,9 +17,9 @@ type OtclFilter struct {
 }
 
 type OtclPatch struct {
-	Name        *string
-	Description *string
-	Content     *string
+	Name    *string
+	Desc    *string
+	Content *string
 }
 
 type OtclService interface {

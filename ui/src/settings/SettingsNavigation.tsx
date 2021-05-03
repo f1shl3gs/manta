@@ -10,7 +10,6 @@ interface Props {
 
 const SettingsNavigation: React.FC<Props> = props => {
   const {prefix} = props
-  console.log('prefix', prefix)
   return <div>aaaa</div>
 }
 

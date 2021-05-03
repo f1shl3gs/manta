@@ -131,15 +131,35 @@ const [CheckProvider, useCheck] = constate(
       })
     }, [])
 
+    const onSetCron = useCallback((cron: string) => {
+      setCheck(prev => {
+        return {
+          ...prev,
+          cron,
+        }
+      })
+    }, [])
+
+    const onSetOffset = useCallback((offset: string) => {
+      setCheck(prev => {
+        return {
+          ...prev,
+          offset,
+        }
+      })
+    }, [])
+
     return {
       ...check,
       tab,
       setTab,
       onSave,
       onRename,
+      onSetCron,
+      onSetOffset,
       onExprUpdate,
       onAddCondition,
-      remoteDataState: remoteDataState,
+      remoteDataState,
       updateCheck,
     }
   },

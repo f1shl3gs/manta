@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 const (
@@ -91,7 +90,7 @@ func (h *otclHandler) decodeOtclRequest(r *http.Request) (*manta.Otcl, error) {
 	}
 
 	if !otcl.OrgID.Valid() {
-		return nil, manta.ErrInvalidID
+		return nil, manta.ErrInvalidOrgID
 	}
 
 	return otcl, nil
@@ -118,30 +117,43 @@ func (h *otclHandler) createOtcl(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func decodeOtclPatch(r *http.Request) {
+func decodeOtclPatch(r *http.Request, p *manta.OtclPatch) error {
+	err := json.NewDecoder(r.Body).Decode(p)
+	if err != nil {
+		return err
+	}
 
+	if p.Name == nil && p.Content == nil && p.Desc == nil {
+		return &manta.Error{
+			Code: manta.EInvalid,
+			Msg:  "Patch is empty",
+			Op:   "validate",
+		}
+	}
+
+	return nil
 }
 
-// updateOtcl updates a Otcl
+// patchOtcl updates a Otcl
 func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx = r.Context()
+		ctx   = r.Context()
+		patch manta.OtclPatch
 	)
 
-	span, ctx := tracing.StartSpanFromContext(ctx)
-	defer span.Finish()
-
-	otcl, err := h.decodeOtclRequest(r)
+	id, err := idFromRequestPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	otcl, err = h.otclService.PatchOtcl(ctx, otcl.ID, manta.OtclPatch{
-		Name:        &otcl.Name,
-		Description: &otcl.Desc,
-		Content:     &otcl.Content,
-	})
+	err = decodeOtclPatch(r, &patch)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	otcl, err := h.otclService.PatchOtcl(ctx, id, patch)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

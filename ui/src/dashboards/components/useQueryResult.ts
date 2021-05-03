@@ -13,14 +13,11 @@ import {DashboardQuery} from 'types/Dashboard'
 // Utils
 import {Row, transformToRows} from 'utils/transform'
 
-const useQueryResult = (
-  queries: DashboardQuery[],
-  deps?: any[]
-): FromFluxResult => {
-  // const
+const useQueryResult = (queries: DashboardQuery[], deps?: any[]) => {
   const {get} = useFetch(`/api/v1/query_range`, {})
   const {start, end, step} = useAutoRefresh()
   const orgID = useOrgID()
+  const [errors, setErrors] = useState()
   const [result, setResult] = useState<FromFluxResult>(() => {
     return {
       table: fromRows([]),
@@ -36,12 +33,23 @@ const useQueryResult = (
         return
       }
 
+      if (q.text === '') {
+        return
+      }
+
       get(
         `?query=${encodeURIComponent(
           q.text
         )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
       )
         .then(resp => {
+          // handle error
+          if (resp.code) {
+            setErrors(resp.message)
+            return
+          }
+
+          setErrors(undefined)
           set[index] = transformToRows(resp)
           const table = fromRows(
             set.flat().sort((a, b) => {
@@ -56,12 +64,15 @@ const useQueryResult = (
           })
         })
         .catch(err => {
-          console.error('query failed', err)
+          setErrors(err.message)
         })
     })
   }, [queries, start, end, step, get, orgID, deps])
 
-  return result
+  return {
+    result,
+    errs: errors,
+  }
 }
 
 export default useQueryResult

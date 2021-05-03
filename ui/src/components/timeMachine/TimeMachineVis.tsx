@@ -22,7 +22,8 @@ const TimeMachineVis: React.FC = () => {
   })
 
   const {queries} = useQueries()
-  const result = useQueryResult(queries)
+  // todo: handle errors
+  const {result, errs} = useQueryResult(queries)
 
   return (
     <div className={timeMachineViewClassName}>
@@ -32,7 +33,7 @@ const TimeMachineVis: React.FC = () => {
           loading={RemoteDataState.Done}
           queries={queries}
           hasResults={result?.table.length !== 0}
-          errorMessage={undefined}
+          errorMessage={errs}
         >
           <ViewSwitcher giraffeResult={result} properties={viewProperties} />
         </EmptyQueryView>

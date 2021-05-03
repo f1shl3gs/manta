@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "raftpb/raft.proto";
+
+message ProcessRaftMessageResponse {}
+
+message StreamRaftMessageResponse {}
+
+message ResolveAddressRequest {
+  // id is the ID to resolve to an address.
+  uint64 id = 1;
+}
+
+message ResolveAddressResponse {
+  // Addr specifies the address of the member
+  string addr = 1;
+}
+
+service Raft {
+  // ProcessRaftMessage sends a raft message to be processed on a raft member,
+  // it is called from the RaftMember willing to send a message to it's destination
+  rpc ProcessRaftMessage(raftpb.Message) returns (ProcessRaftMessageResponse);
+
+  // StreamRaftMessage accepts a stream of raft messages of type StreamRaftMessageRequest
+  // to be processed on a raft member, returning a StreamRaftMessageResponse when processing
+  // of the streamed messages is complete. A single stream corresponds to a single raft
+  // message, which may be disassembled and streamd as individual messages.
+  // It is called from the Raft leader, which uses it to stream messages to a raft member
+  rpc StreamRaftMessage(stream raftpb.Message) returns (ProcessRaftMessageResponse);
+
+  // ResolveAddress returns the address where the node with the given ID can be reached
+  rpc ResolveAddress(ResolveAddressRequest) returns (ResolveAddressResponse);
+}

@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState} from 'react'
+import React from 'react'
 
 // Components
 import ViewSwitcher from 'shared/components/ViewSwitcher'
@@ -17,12 +17,10 @@ interface Props {
   cellID?: string
 }
 
-const TimeSeries: React.FC<Props> = props => {
+const TimeSeries: React.FC<Props> = () => {
   const {viewProperties} = useViewProperties()
   const {queries} = viewProperties
-  const [errMsg, setErrMsg] = useState<string | undefined>()
-
-  const result = useQueryResult(queries)
+  const {result, errs} = useQueryResult(queries)
 
   return (
     <QueriesProvider>
@@ -30,7 +28,7 @@ const TimeSeries: React.FC<Props> = props => {
         queries={queries}
         hasResults={result !== undefined}
         loading={RemoteDataState.Done}
-        errorMessage={errMsg}
+        errorMessage={errs}
       >
         <ViewSwitcher properties={viewProperties} giraffeResult={result!} />
       </EmptyQueryView>

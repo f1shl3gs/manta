@@ -11,6 +11,7 @@ import NotificationEndpoints from './notificationEndpoints/NotificationEndpoints
 // Hooks
 import {useOrgID} from 'shared/useOrg'
 import CheckOverlay from './checks/CheckOverlay'
+import Todo from '../components/Todo'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
 
@@ -42,7 +43,11 @@ const AlertsPage: React.FC = () => {
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>
-            <Route path={`${pagePrefix}/checks/:id`} component={CheckOverlay} />
+            <Route
+              path={`${pagePrefix}/checks/:id`}
+              component={CheckOverlay}
+              exact={false}
+            />
 
             <Route path={`${pagePrefix}/checks`} component={Checks} />
             <Route

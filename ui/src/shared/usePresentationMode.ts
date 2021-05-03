@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react'
-import constate from 'constate'
 import {useHistory, useLocation} from 'react-router-dom'
+import constate from 'constate'
 
 const escapeKeyCode = 27
 const PRESENTATION_KEY = 'presentation'

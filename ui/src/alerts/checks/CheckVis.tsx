@@ -34,7 +34,10 @@ const CheckVis: React.FC<Props> = ({query}) => {
       },
     ]
   }, [query])
-  const {table, fluxGroupKeyUnion} = useQueryResult(queries)
+  const {
+    result: {table, fluxGroupKeyUnion},
+    errs,
+  } = useQueryResult(queries)
 
   return (
     <div className={'time-machine--view'}>

@@ -5,7 +5,6 @@ import (
 )
 
 func TestHash(t *testing.T) {
-
 	tests := []struct {
 		key    uint64
 		bucket []int32
@@ -29,7 +28,6 @@ func TestHash(t *testing.T) {
 
 // From Guava
 func TestGolden(t *testing.T) {
-
 	golden100 := []int32{0, 55, 62, 8, 45, 59, 86, 97, 82, 59, 73, 37, 17, 56, 86, 21, 90, 37, 38, 83}
 	for i, v := range golden100 {
 		if g := Hash(uint64(i), 100); g != v {

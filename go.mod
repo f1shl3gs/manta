@@ -6,6 +6,7 @@ require (
 	github.com/OneOfOne/xxhash v1.2.6 // indirect
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
+	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash v1.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
@@ -39,12 +40,25 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.etcd.io/bbolt v1.3.5
-	go.uber.org/zap v1.16.0
+	go.etcd.io/etcd/api/v3 v3.5.0-alpha.0
+	go.etcd.io/etcd/client/pkg/v3 v3.0.0-20210429211256-c46e96d519a3
+	go.etcd.io/etcd/pkg/v3 v3.5.0-alpha.0
+	go.etcd.io/etcd/raft/v3 v3.5.0-alpha.0
+	go.etcd.io/etcd/server/v3 v3.5.0-alpha.0
+	go.uber.org/zap v1.16.1-0.20210329175301-c23abee72d19
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/tools v0.1.0
+	google.golang.org/grpc v1.36.1
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	k8s.io/client-go v12.0.0+incompatible // indirect
 )
 
 replace k8s.io/client-go => k8s.io/client-go v0.20.0
+
+// At the time of writing (i.e. as of this version below) the `etcd` repo is in the process of properly introducing
+// modules, and as part of that uses an unsatisfiable version for this dependency (v3.0.0-00010101000000-000000000000).
+// We just force it to the same SHA as the `go.etcd.io/etcd/raft/v3` module (they live in the same VCS root).
+//
+// While this is necessary, make sure that the require block above does not diverge.
+replace go.etcd.io/etcd/pkg/v3 => go.etcd.io/etcd/pkg/v3 v3.0.0-20201109164711-01844fd28560

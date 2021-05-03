@@ -1,9 +1,9 @@
+// Libraries
 import React from 'react'
 import {Redirect, Route, Switch, useParams, withRouter} from 'react-router-dom'
 
+// Components
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import Otcl from 'otcls'
-
 import {OrgProvider} from 'shared/useOrg'
 import Todo from 'components/Todo'
 import TracePage from 'traces'
@@ -18,6 +18,7 @@ import PluginsIndex from '../../plugins/PluginsIndex'
 import PluginDetailsView from '../../plugins/PluginDetailsView'
 import AlertsPage from '../../alerts/AlertsPage'
 import Settings from '../../settings/Settings'
+import Data from '../../data/Data'
 
 const Org: React.FC = () => {
   const orgPath = '/orgs/:orgID'
@@ -42,7 +43,9 @@ const Org: React.FC = () => {
           />
 
           {/* OpenTelemetry Collectors */}
-          <Route path={`${orgPath}/otcls`} component={Otcl} />
+          {/* Data */}
+          <Route path={`${orgPath}/data`} component={Data} />
+          {/*<Route path={`${orgPath}/otcls`} component={Otcl} />*/}
 
           {/* Alerts */}
           <Route path={`${orgPath}/alerts`} component={AlertsPage} />

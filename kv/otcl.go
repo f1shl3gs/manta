@@ -253,8 +253,8 @@ func (s *Service) PatchOtcl(ctx context.Context, id manta.ID, u manta.OtclPatch)
 			otcl.Name = *u.Name
 		}
 
-		if u.Description != nil {
-			otcl.Desc = *u.Description
+		if u.Desc != nil {
+			otcl.Desc = *u.Desc
 		}
 
 		if u.Content != nil {

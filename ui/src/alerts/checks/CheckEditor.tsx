@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 
 // Components
 import {
@@ -9,10 +9,9 @@ import {
   FlexBox,
   Orientation,
 } from '@influxdata/clockface'
-import {TimeRangeProvider} from '../../shared/useTimeRange'
 import CheckVis from './CheckVis'
-import {AutoRefreshProvider} from '../../shared/useAutoRefresh'
-import CheckBuilder from './builder/CheckBuilder'
+import {TimeRangeProvider} from 'shared/useTimeRange'
+import {AutoRefreshProvider} from 'shared/useAutoRefresh'
 
 // Hooks
 import {useCheck} from './useCheck'
@@ -20,10 +19,16 @@ import {useCheck} from './useCheck'
 // Constants
 import {INITIAL_RESIZER_HANDLE} from '../../constants/timeMachine'
 import QueryBuilder from './builder/QueryBuilder'
+import CheckBuilder from './builder/CheckBuilder'
 
 const CheckEditor: React.FC = () => {
-  const {expr, tab} = useCheck()
+  const {expr, tab, onExprUpdate} = useCheck()
+  const [query, setQuery] = useState(expr)
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
+
+  const onSubmit = useCallback(() => {
+    setQuery(expr)
+  }, [expr])
 
   return (
     <div className={'veo-contents'}>
@@ -37,7 +42,7 @@ const CheckEditor: React.FC = () => {
             <div className={'time-machine--top'}>
               <TimeRangeProvider>
                 <AutoRefreshProvider>
-                  <CheckVis query={expr} />
+                  <CheckVis query={query} />
                 </AutoRefreshProvider>
               </TimeRangeProvider>
             </div>
@@ -54,13 +59,21 @@ const CheckEditor: React.FC = () => {
                       <Button
                         text={'submit'}
                         color={ComponentColor.Primary}
-                        onClick={() => console.log('submit')}
+                        onClick={onSubmit}
                       />
                     </FlexBox>
                   </div>
 
                   <div className={'time-machine-queries--body'}>
-                    {tab === 'query' ? <QueryBuilder /> : <CheckBuilder />}
+                    {tab === 'query' ? (
+                      <QueryBuilder
+                        expr={expr}
+                        onExprUpdate={onExprUpdate}
+                        onSubmit={setQuery}
+                      />
+                    ) : (
+                      <CheckBuilder />
+                    )}
                   </div>
                 </div>
               </div>

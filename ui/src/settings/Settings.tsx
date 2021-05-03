@@ -22,6 +22,10 @@ const tabs = [
     id: 'secrets',
     text: 'Secrets',
   },
+  {
+    id: 'templates',
+    text: 'Templates',
+  },
 ]
 
 const Settings: React.FC = () => {
@@ -41,8 +45,9 @@ const Settings: React.FC = () => {
 
         <Tabs.TabContents>
           <Switch>
-            <Route path={`${pagePrefix}/variables`} component={VariablesPage} />
             <Route path={`${pagePrefix}/variables/:id`} component={Todo} />
+            <Route path={`${pagePrefix}/variables`} component={VariablesPage} />
+            <Route path={`${pagePrefix}/secrets/:id`} component={Todo} />
             <Route path={`${pagePrefix}/secrets`} component={Todo} />
           </Switch>
         </Tabs.TabContents>

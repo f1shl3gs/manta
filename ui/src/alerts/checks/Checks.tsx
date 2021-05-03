@@ -39,7 +39,7 @@ const Checks: React.FC = () => {
       <SearchWidget
         search={search}
         placeholder={'Filter Checks...'}
-        onSearch={v => setSearch(v)}
+        onSearch={setSearch}
       />
       <ResourceSortDropdown
         sortKey={sortOption.key}
