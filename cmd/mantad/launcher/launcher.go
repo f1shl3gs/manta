@@ -16,6 +16,7 @@ import (
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/tsdb"
+	"github.com/pyroscope-io/pyroscope/pkg/agent/profiler"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
 	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
@@ -160,6 +161,11 @@ func (l *Launcher) Run() error {
 
 		defer closer.Close()
 	}
+
+	profiler.Start(profiler.Config{
+		ApplicationName: "mantad",
+		ServerAddress:   "http://localhost:4040", // this will run inside docker-compose, hence `pyroscope` for hostname
+	})
 
 	// init tsdb storage
 	// for now only local TenantStorage is available, aka MultiTSDB

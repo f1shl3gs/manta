@@ -8,6 +8,7 @@ require (
 	github.com/benbjohnson/clock v1.0.3
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash v1.1.0
+	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
@@ -24,13 +25,12 @@ require (
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mileusna/useragent v1.0.2
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.10.0
 	github.com/prometheus/common v0.20.0
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
+	github.com/pyroscope-io/pyroscope v0.0.30
 	github.com/smartystreets/assertions v1.0.1 // indirect
-	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
