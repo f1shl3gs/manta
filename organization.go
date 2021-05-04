@@ -30,21 +30,21 @@ type OrganizationUpdate struct {
 type OrganizationService interface {
 	FindOrganizationByID(ctx context.Context, id ID) (*Organization, error)
 
-	// returns the first Organization that matches filter
+	// FindOrganization returns the first Organization that matches filter
 	FindOrganization(ctx context.Context, filter OrganizationFilter) (*Organization, error)
 
-	// returns a list of Organizations that match filter and the total count of matching Organizations
+	// FindOrganizations returns a list of Organizations that match filter and the total count of matching Organizations
 	// additional options provide pagination & sorting
 	FindOrganizations(ctx context.Context, filter OrganizationFilter, opt ...FindOptions) ([]*Organization, int, error)
 
-	// Create a single Organization and sets Organization.id with the new identifier
+	// CreateOrganization create a single Organization and sets Organization.id with the new identifier
 	CreateOrganization(ctx context.Context, Organization *Organization) error
 
-	// Updates a single Organization with changeset
+	// UpdateOrganization updates a single Organization with changeset
 	// returns the new Organization state after update
 	UpdateOrganization(ctx context.Context, id ID, u OrganizationUpdate) (*Organization, error)
 
-	// Remove a Organization by ID
+	// DeleteOrganization remove a Organization by ID
 	DeleteOrganization(ctx context.Context, id ID) error
 }
 

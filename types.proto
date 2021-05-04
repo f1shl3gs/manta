@@ -285,6 +285,9 @@ message ScrapeTarget {
 
   repeated string targets = 5;
   map<string, string> labels = 6;
+
+  google.protobuf.Timestamp created = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated = 8 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message Loki {

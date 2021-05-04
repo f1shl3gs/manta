@@ -9,8 +9,35 @@ type ScraperTargetFilter struct {
 }
 
 type ScraperTargetUpdate struct {
-	Target *string
+	Name   *string
+	Desc   *string
 	Labels *map[string]string
+}
+
+func (upd *ScraperTargetUpdate) Apply(s *ScrapeTarget) {
+	if upd.Name != nil {
+		s.Name = *upd.Name
+	}
+
+	if upd.Desc != nil {
+		s.Desc = *upd.Desc
+	}
+
+	if upd.Labels != nil {
+		s.Labels = *upd.Labels
+	}
+}
+
+func (m *ScrapeTarget) Validate() error {
+	if m.Name == "" {
+		return &Error{Code: EInvalid, Msg: "Name is required"}
+	}
+
+	if !m.OrgID.Valid() {
+		return ErrInvalidOrgID
+	}
+
+	return nil
 }
 
 // ScraperTargetService defines the crud service for ScraperTarget

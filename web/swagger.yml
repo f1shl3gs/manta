@@ -249,13 +249,65 @@ paths:
           description: Create Success
         default:
           $ref: "#/components/responses/UnexpectedError"
+  /scrapes/{id}:
+    get:
+      operationId: GetScraper
+      tags:
+        - Scrapes
+      summary: Get Scraper by ID
+      parameters:
+        - $ref: "#/components/parameters/TraceSpan"
+        - in: path
+          name: id
+          description: Scrape's ID
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scrape'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    patch:
+      operationId: PatchScraper
+      tags:
+        - Scrapes
+      summary: Patch a scrape with changeset
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - in: path
+          name: id
+          description: Scrape's ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Changeset of the scrape
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScrapePatch'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scrape'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
 
   /checks:
     get:
       operationId: ListChecks
       tags:
         - Checks
-      summary: List al Checks
+      summary: List all Checks
       parameters:
         - $ref: "#/components/parameters/TraceSpan"
         - in: query
@@ -1050,6 +1102,17 @@ components:
         targets:
           type: array
           items:
+            type: string
+    ScrapePatch:
+      type: object
+      properties:
+        name:
+          type: string
+        desc:
+          type: string
+        labels:
+          type: object
+          additionalProperties:
             type: string
     Variable:
       type: object

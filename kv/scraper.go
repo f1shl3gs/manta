@@ -3,6 +3,7 @@ package kv
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -177,11 +178,43 @@ func (s *Service) putScraperTarget(ctx context.Context, tx Tx, target *manta.Scr
 }
 
 func (s *Service) UpdateScraperTarget(ctx context.Context, id manta.ID, u manta.ScraperTargetUpdate) (*manta.ScrapeTarget, error) {
-	panic("implement me")
+	var (
+		scraper *manta.ScrapeTarget
+		err     error
+	)
+
+	err = s.kv.Update(ctx, func(tx Tx) error {
+		scraper, err = s.updateScraperTarget(ctx, tx, id, u)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return scraper, nil
 }
 
 func (s *Service) updateScraperTarget(ctx context.Context, tx Tx, id manta.ID, u manta.ScraperTargetUpdate) (*manta.ScrapeTarget, error) {
-	return nil, nil
+	scrape, err := s.findScraperTargetByID(ctx, tx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	u.Apply(scrape)
+	scrape.Updated = time.Now()
+
+	err = scrape.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.putScraperTarget(ctx, tx, scrape)
+	if err != nil {
+		return nil, err
+	}
+
+	return scrape, nil
 }
 
 func (s *Service) DeleteScraperTarget(ctx context.Context, id manta.ID) error {
