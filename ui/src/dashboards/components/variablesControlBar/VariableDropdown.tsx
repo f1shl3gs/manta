@@ -17,7 +17,7 @@ const VariableDropdown: React.FC<Props> = props => {
   const [selectedValue, setSelectedValue] = useState(() => {
     return values[0]
   })
-  const {variableID, testID = 'variable-dropdown', onSelect} = props
+  const {testID = 'variable-dropdown'} = props
   const dropdownStatus =
     values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 

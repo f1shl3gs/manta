@@ -36,7 +36,7 @@ const PluginCard: React.FC<Props> = props => {
         className={'write-data--item'}
       >
         <div className={'write-data--item-thumb'}>
-          <img src={image ? image : placeholderLogo} />
+          <img alt={name} src={image ? image : placeholderLogo} />
         </div>
       </SelectableCard>
     </SquareGrid.Card>

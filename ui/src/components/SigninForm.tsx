@@ -17,11 +17,16 @@ import {
 
 // Hooks
 import {useFetch} from 'shared/useFetch'
+import {
+  defaultErrorNotification,
+  useNotification,
+} from '../shared/notification/useNotification'
 
 const SigninForm: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const history = useHistory()
+  const {notify} = useNotification()
 
   const {post, loading, error} = useFetch(`/api/v1/signin`, {})
   const onSubmit = useCallback(() => {
@@ -39,10 +44,13 @@ const SigninForm: React.FC = () => {
           history.push(`${decodeURIComponent(returnTo)}`)
         }
       })
-      .catch(() => {
-        // failed
+      .catch(err => {
+        notify({
+          ...defaultErrorNotification,
+          message: `Sign in failed, err: ${err.message}`,
+        })
       })
-  }, [post, username, password, history])
+  }, [post, username, password, history, notify])
 
   return (
     <Form onSubmit={onSubmit}>

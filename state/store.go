@@ -53,7 +53,3 @@ func (s *Store) Range(prefix []byte) [][]byte {
 	// todo: implement
 	return nil
 }
-
-func (s *Store) Recovery(data []byte) error {
-
-}

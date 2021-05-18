@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/f1shl3gs/manta/store/tsdb"
+	tsdb2 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql"
 	"go.uber.org/zap"
@@ -26,11 +26,11 @@ type Checker struct {
 
 	cs     manta.CheckService
 	es     manta.EventService
-	ts     tsdb.TenantStorage
+	ts     tsdb2.TenantStorage
 	engine *promql.Engine
 }
 
-func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ts tsdb.TenantStorage) *Checker {
+func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ts tsdb2.TenantStorage) *Checker {
 	engOpts := promql.EngineOpts{
 		Logger: log.NewZapToGokitLogAdapter(logger),
 		// Reg:           prometheus.DefaultRegisterer,

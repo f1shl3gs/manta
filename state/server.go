@@ -2,6 +2,7 @@ package state
 
 import (
 	"context"
+	"encoding/json"
 	"hash/fnv"
 	"os"
 	"path/filepath"
@@ -10,8 +11,10 @@ import (
 	"time"
 
 	"github.com/coreos/etcd/etcdserver/stats"
+	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/snowflake"
 	"github.com/f1shl3gs/manta/state/cindex"
+	"github.com/f1shl3gs/manta/state/membership"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	pb "go.etcd.io/etcd/api/v3/etcdserverpb"
@@ -47,7 +50,8 @@ const (
 	// Max number of in-flight snapshot messages the server allows
 	// to have. This number is more than enough for most clusters with 5
 	// machines.
-	maxInFlightMsgSnap = 16
+	maxInFlightMsgSnap        = 16
+	releaseDelayAfterSnapshot = 30 * time.Second
 
 	// maxPendingRevokes is the maximum number of outstanding expired
 	// lease revocations
@@ -79,9 +83,13 @@ func (cf *Config) SnapDir() string {
 type Server struct {
 	Config
 
-	ID     types.ID
-	logger *zap.Logger
-	node   raft.Node
+	ID                manta.ID
+	logger            *zap.Logger
+	node              raft.Node
+	errCh             chan error
+	wg                sync.WaitGroup
+	inflightSnapshots int64
+	cluster           membership.Cluster
 
 	idGen *snowflake.Generator
 
@@ -91,18 +99,21 @@ type Server struct {
 	consistentIndex cindex.ConsistentIndexer
 
 	// example implement
-	transport     *rafthttp.Transport
-	wait          wait.Wait
-	applyWait     wait.WaitTime
-	doneCh        chan struct{}
-	stopCh        chan struct{}
-	stopping      chan struct{}
-	cancel        context.CancelFunc
-	ctx           context.Context
-	readwaitC     chan struct{}
-	readNotifier  *notifier
-	leaderChanged chan struct{}
-	lead          uint64
+	transport    *rafthttp.Transport
+	wait         wait.Wait
+	applyWait    wait.WaitTime
+	doneCh       chan struct{}
+	stopCh       chan struct{}
+	stopping     chan struct{}
+	cancel       context.CancelFunc
+	ctx          context.Context
+	readwaitC    chan struct{}
+	readNotifier *notifier
+
+	// leaderChanged is used to notify the linearizable read loop to drop the old read requests.
+	leaderChanged   chan struct{}
+	leaderChangedMu sync.RWMutex
+	lead            uint64
 
 	// stats
 	stats       *stats.ServerStats
@@ -112,9 +123,16 @@ type Server struct {
 
 	// metrics
 	applySnapshotInProgress prometheus.Gauge
+	proposalsApplied        prometheus.Gauge
+	isLearner               prometheus.Gauge
 
 	// unknown field
 	forceVersionC chan struct{}
+
+	leadTimeMu      sync.RWMutex
+	leadElectedTime time.Time
+	appliedIndex    uint64
+	term            uint64
 }
 
 // Process implement rafthttp.Raft
@@ -175,6 +193,23 @@ func New(cf *Config, logger *zap.Logger) (*Server, error) {
 	}
 
 	if haveWAL {
+		walSnap, err := wal.ValidSnapshotEntries(logger, cf.WALDir())
+		if err != nil {
+			return nil, err
+		}
+
+		// snapshot files can be orphaned if etcd crashes
+		// after writing them but before writing the corresponding
+		// wal log entries
+		snapshot, err := ss.LoadNewestAvailable(walSnap)
+		if err != nil && err != snap.ErrNoSnapshot {
+			return nil, err
+		}
+
+		if snapshot != nil {
+
+		}
+
 		node = raft.RestartNode(rc)
 	} else {
 		rps := make([]raft.Peer, len(cf.Peers))
@@ -279,7 +314,7 @@ func (s *Server) start() {
 	go s.run()
 }
 
-func (s *Server) run() {
+func (s *Server) run(ctx context.Context) {
 	sn, err := s.raftStorage.Snapshot()
 	if err != nil {
 		s.logger.Panic("failed to get snapshot from raft storage",
@@ -288,25 +323,6 @@ func (s *Server) run() {
 
 	// asynchronously accept apply packets, dispatch progress in-order
 	sched := schedule.NewFIFOScheduler()
-
-	var (
-		mtx   sync.RWMutex
-		syncC <-chan time.Time
-	)
-
-	setSyncC := func(ch <-chan time.Time) {
-		mtx.Lock()
-		syncC = ch
-		mtx.Unlock()
-	}
-
-	getSyncC := func() <-chan time.Time {
-		mtx.RLock()
-		ch := syncC
-		mtx.RUnlock()
-
-		return ch
-	}
 
 	rh := &raftReadyHandler{
 		getLead: func() (lead uint64) {
@@ -317,7 +333,6 @@ func (s *Server) run() {
 		},
 		updateLeadership: func(newLeader bool) {
 			if !s.isLeader() {
-				setSyncC(nil)
 
 				// todo: handle compactor properly
 			} else {
@@ -328,16 +343,15 @@ func (s *Server) run() {
 					s.leadTimeMu.Unlock()
 				}
 
-				setSyncC(s.SyncTicker.C)
 				// todo: handle compactor
 			}
 
 			if newLeader {
-				s.leaderChangeMu.Lock()
+				s.leaderChangedMu.Lock()
 				lc := s.leaderChanged
 				s.leaderChanged = make(chan struct{})
 				close(lc)
-				s.leaderChangeMu.Unlock()
+				s.leaderChangedMu.Unlock()
 			}
 
 			// TODO: remove the nil checking
@@ -356,7 +370,17 @@ func (s *Server) run() {
 
 	s.raftNode.start(rh)
 
-	// etcProcess ?
+	ep := etcdProgress{
+		confState: sn.Metadata.ConfState,
+		snapi:     sn.Metadata.Index,
+		appliedt:  sn.Metadata.Term,
+		appliedi:  sn.Metadata.Index,
+	}
+
+	defer func() {
+		close(s.stopping)
+
+	}()
 
 	for {
 		select {
@@ -364,6 +388,15 @@ func (s *Server) run() {
 			f := func(ctx context.Context) {
 				s.applyAll(&ep, &ap)
 			}
+			sched.Schedule(f)
+
+		case err := <-s.errCh:
+			s.logger.Warn("server error",
+				zap.Error(err))
+			return
+
+		case <-s.stopCh:
+			return
 		}
 	}
 }
@@ -379,7 +412,7 @@ func (s *Server) applyAll(ep *etcdProgress, apply *apply) {
 	s.applySnapshot(ep, apply)
 	s.applyEntries(ep, apply)
 
-	proposalsApplied.Set(float64(ep.appliedi))
+	s.proposalsApplied.Set(float64(ep.appliedi))
 	s.applyWait.Trigger(ep.appliedi)
 
 	// wait for the raft routine to finish the disk writes before
@@ -396,6 +429,131 @@ func (s *Server) applyAll(ep *etcdProgress, apply *apply) {
 		s.sendMergedSnap(merged)
 	default:
 	}
+}
+
+func (s *Server) sendMergedSnap(merged snap.Message) {
+	atomic.AddInt64(&s.inflightSnapshots, 1)
+
+	fields := []zap.Field{
+		zap.String("from", s.ID.String()),
+		zap.String("to", types.ID(merged.To).String()),
+		zap.Int64("bytes", merged.TotalSize),
+	}
+
+	now := time.Now()
+	s.raftNode.transport.SendSnapshot(merged)
+
+	s.logger.Info("sending merged snapshot", fields...)
+
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+
+		select {
+		case ok := <-merged.CloseNotify():
+			// delay releasing inflight snapshot for another 30 seconds
+			// to block log compaction. If the follower still fails to catch
+			// up, it is probably just too slow to catch up. We cannot avoid
+			// the snapshot cycle any way
+			if ok {
+				select {
+				case <-time.After(releaseDelayAfterSnapshot):
+				case <-s.stopping:
+				}
+			}
+
+			atomic.AddInt64(&s.inflightSnapshots, -1)
+			s.logger.Info("sent merged snapshot",
+				append(fields, zap.Duration("took", time.Since(now)))...)
+
+		case <-s.stopping:
+			s.logger.Warn("canceled sending merged snapshot; server stopping",
+				fields...)
+		}
+	}()
+}
+
+func (s *Server) triggerSnapshot(ep *etcdProgress) {
+	if ep.appliedi-ep.snapi <= s.Config.SnapshotCount {
+		return
+	}
+
+	s.logger.Info("triggering snapshot",
+		zap.Uint64("applied", ep.appliedi),
+		zap.Uint64("snapshot", ep.snapi),
+		zap.Uint64("snapshot-count", s.Config.SnapshotCount))
+
+	s.snapshot(ep.appliedi, ep.confState)
+	ep.snapi = ep.appliedi
+}
+
+func (s *Server) snapshot(snapIndex uint64, confState raftpb.ConfState) {
+	// flush !?
+
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+
+		// data
+		snap, err := s.raftNode.raftStorage.CreateSnapshot(snapIndex, &confState, []byte("a"))
+		if err != nil {
+			// the snapshot was done asynchronously with the progress of raft
+			// raft might have already got a newer snapshot
+			if err == raft.ErrSnapOutOfDate {
+				return
+			}
+
+			s.logger.Panic("failed to create snapshot",
+				zap.Error(err))
+		}
+
+		// SaveSnap saves the snapshot to file and appends the corresponding WAL entry
+		if err = s.raftNode.storage.SaveSnap(snap); err != nil {
+			s.logger.Panic("failed to save snapshot",
+				zap.Error(err))
+		}
+
+		if err = s.raftNode.storage.Release(snap); err != nil {
+			s.logger.Panic("failed to release wal",
+				zap.Error(err))
+		}
+
+		s.logger.Info("save snapshot success",
+			zap.Uint64("index", snap.Metadata.Index))
+
+		// When sending a snapshot, etcd will pause compaction
+		// After receives a snapshot, the slow follower needs to get all the
+		// entries right after the snapshot sent to catch up. If we
+		// do not pause compaction, the log entries right after the snapshot
+		// send might already be compacted. It happens when the snapshot
+		// takes long time to send and save. Pausing compaction avoids
+		// triggering a snapshot sending cyley
+		if atomic.LoadInt64(&s.inflightSnapshots) != 0 {
+			s.logger.Info("skip compaction since there is an inflight snapshot")
+			return
+		}
+
+		// keep some in memory log entries for slow followers
+		compactIndex := uint64(1)
+		if snapIndex > s.Config.SnapshotCatchUpEntries {
+			compactIndex = snapIndex - s.Config.SnapshotCatchUpEntries
+		}
+
+		err = s.raftNode.raftStorage.Compact(compactIndex)
+		if err != nil {
+			// the compaction was done asynchronously with the progress of
+			// raft. Raft log might already been compact
+			if err == raft.ErrCompacted {
+				return
+			}
+
+			s.logger.Panic("failed to compact",
+				zap.Error(err))
+		}
+
+		s.logger.Info("compacted raft logs",
+			zap.Uint64("comapct-index", compactIndex))
+	}()
 }
 
 func (s *Server) applySnapshot(ep *etcdProgress, apply *apply) {
@@ -469,6 +627,23 @@ func (s *Server) applyEntries(ep *etcdProgress, apply *apply) {
 	}
 }
 
+func (s *Server) stopWithDelay(d time.Duration, err error) {
+	select {
+	case <-time.After(d):
+	case <-s.doneCh:
+	}
+
+	select {
+	case s.errCh <- err:
+	default:
+	}
+}
+
+type confChangeResponse struct {
+	membs []*membership.Member
+	err   error
+}
+
 // apply takes entries received from Raft (after it has been committed)
 // and applies them to the current state of the EtcdServer.
 // The given entries should not be empty
@@ -481,8 +656,114 @@ func (s *Server) apply(
 		switch e.Type {
 		case raftpb.EntryNormal:
 			s.applyEntryNormal(&e)
+			s.setAppliedIndex(e.Index)
+			s.setTerm(e.Term)
+
+		case raftpb.EntryConfChange:
+			// set the consistent index of current executing entry
+			if e.Index > s.consistentIndex.ConsistentIndex() {
+				s.consistentIndex.SetConsistentIndex(e.Index)
+			}
+
+			var cc raftpb.ConfChange
+			pbutil.MustUnmarshal(&cc, e.Data)
+			removedSelf, err := s.applyConfChange(cc, confState)
+			s.setAppliedIndex(e.Index)
+			s.setTerm(e.Term)
+			shouldStop = shouldStop || removedSelf
+			s.wait.Trigger(cc.ID, &confChangeResponse{s.cluster.Members(), err})
+
+		default:
+			// It must be either EntryNormal or EntryConfChange
+			s.logger.Panic("unknown entry type",
+				zap.String("type", e.Type.String()))
 		}
 	}
+
+	return appliedTerm, appliedIndex, shouldStop
+}
+
+// applyConfChange applies a ConfChange to the server.
+// It is only invoked with a confChange that has already
+// passed through Raft
+func (s *Server) applyConfChange(cc raftpb.ConfChange, confState *raftpb.ConfState) (bool, error) {
+	if err := s.cluster.ValidateConfigurationChange(cc); err != nil {
+		cc.NodeID = raft.None
+		s.raftNode.ApplyConfChange(cc)
+		return false, err
+	}
+
+	*confState = *s.raftNode.ApplyConfChange(cc)
+	switch cc.Type {
+	case raftpb.ConfChangeAddNode, raftpb.ConfChangeAddLearnerNode:
+		confChangeContext := new(membership.ConfigChangeContext)
+		if err := json.Unmarshal(cc.Context, confChangeContext); err != nil {
+			s.logger.Panic("failed to unmarshal member",
+				zap.Error(err))
+		}
+
+		if cc.NodeID != uint64(confChangeContext.Member.ID) {
+			s.logger.Panic("got different member ID",
+				zap.String("member-id-from-config-change-entry", types.ID(cc.NodeID).String()),
+				zap.String("member-id-from-message", confChangeContext.Member.ID.String()))
+		}
+
+		if confChangeContext.IsPromote {
+			s.cluster.PromoteMember(uint64(confChangeContext.Member.ID))
+		} else {
+			s.cluster.AddMember(&confChangeContext.Member)
+
+			if confChangeContext.Member.ID != s.ID {
+				s.raftNode.transport.AddPeer(types.ID(confChangeContext.Member.ID), confChangeContext.Addresses)
+			}
+		}
+
+		// update the isLearner metric when this server id is equal to the id in raft member confChange
+		if confChangeContext.Member.ID == s.ID {
+			if cc.Type == raftpb.ConfChangeAddLearnerNode {
+				s.isLearner.Set(1)
+			} else {
+				s.isLearner.Set(0)
+			}
+		}
+
+	case raftpb.ConfChangeRemoveNode:
+		id := manta.ID(cc.NodeID)
+		s.cluster.RemoveMember(uint64(id))
+		if id == s.ID {
+			return true, nil
+		}
+
+		s.raftNode.transport.RemovePeer(types.ID(id))
+
+	case raftpb.ConfChangeUpdateNode:
+		m := &membership.Member{}
+		if err := json.Unmarshal(cc.Context, m); err != nil {
+			s.logger.Panic("failed to unmarshal member",
+				zap.Error(err))
+		}
+
+		if cc.NodeID != uint64(m.ID) {
+			s.logger.Panic("got different member ID",
+				zap.String("member-id-from-config-change-entry", types.ID(cc.NodeID).String()),
+				zap.String("member-id-from-message", m.ID.String()))
+		}
+
+		s.cluster.UpdateAttributes(m.ID, m.Attributes)
+		if m.ID != s.ID {
+			s.raftNode.transport.UpdatePeer(types.ID(m.ID), m.Addresses)
+		}
+	}
+
+	return false, nil
+}
+
+func (s *Server) setAppliedIndex(index uint64) {
+	atomic.StoreUint64(&s.appliedIndex, index)
+}
+
+func (s *Server) setTerm(term uint64) {
+	atomic.StoreUint64(&s.term, term)
 }
 
 func (s *Server) getCommittedIndex() uint64 {
@@ -538,9 +819,5 @@ func (s *Server) applyEntryNormal(entry *raftpb.Entry) {
 		pbutil.MustUnmarshal(rp, entry.Data)
 		// s.w.Trigger(r.ID, s.applyV2Request((*RequestV2)(rp)))
 		return
-	}
-
-	if raftReq.V2 != nil {
-
 	}
 }

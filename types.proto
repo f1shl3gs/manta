@@ -327,7 +327,7 @@ message Axis {
   string label = 2;
   string prefix = 3;
   string suffix = 4;
-  string base = 5;
+  string base = 5 [(gogoproto.jsontag) = "base"];
 }
 
 message Axes {

@@ -48,7 +48,7 @@ const XYPlot: React.FC<Props> = props => {
   const yFormatter = getFormatter('number', {
     prefix: yAxisPrefix,
     suffix: yAxisSuffix,
-    base: yAxisBase || '10',
+    base: yAxisBase,
     timeZone: 'Local',
     timeFormat: timeFormat,
   })

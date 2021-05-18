@@ -1,5 +1,6 @@
 // Library
 import React from 'react'
+import {Redirect, Route, Switch} from 'react-router-dom'
 
 // Components
 import {
@@ -7,11 +8,10 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import {Redirect, Route, Switch} from 'react-router-dom'
 import Org from './org'
 
 // Hooks
-import {useOrgs} from '../../shared/useOrgs'
+import {useOrgs} from 'shared/useOrgs'
 
 const Organizations: React.FC = () => {
   const {orgs, loading} = useOrgs()

@@ -8,7 +8,7 @@ interface State {
   viewProperties: ViewProperties
 }
 
-const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
+const [ViewPropertiesProvider, useViewProperties] = constate(
   (initialState: State) => {
     const [viewProperties, setViewProperties] = useState<ViewProperties>(() => {
       if (initialState.viewProperties === undefined) {
@@ -29,31 +29,13 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
       }
     })
 
-    const sm = useCallback(
-      (vp: ViewProperties) => {
-        setViewProperties(vp)
-      },
-      [viewProperties]
-    )
-
     return {
       viewProperties,
-      setViewProperties: sm,
+      setViewProperties,
     }
   },
   // useViewProperties
-  value => value,
-  // useQueries
-  value => {
-    const {
-      viewProperties: {queries = []},
-    } = value
-    // const { queries = [] } = viewProperties;
-
-    return {
-      queries,
-    }
-  }
+  value => value
 )
 
 const useLineView = () => {

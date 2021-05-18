@@ -24,7 +24,7 @@ const ColumnSelector: FunctionComponent<Props> = ({
         onSelect={onSelectColumn}
         testID={`dropdown-${axisName}`}
         buttonStatus={
-          availableColumns.length == 0
+          availableColumns.length === 0
             ? ComponentStatus.Disabled
             : ComponentStatus.Default
         }

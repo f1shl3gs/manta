@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/http/pprof"
 
-	"github.com/f1shl3gs/manta/store/tsdb"
+	tsdb2 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/julienschmidt/httprouter"
 	ua "github.com/mileusna/useragent"
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,7 +28,7 @@ type Backend struct {
 
 	Flusher Flusher
 
-	TenantStorage               tsdb.TenantStorage
+	TenantStorage               tsdb2.TenantStorage
 	OtclService                 manta.OtclService
 	BackupService               manta.BackupService
 	OrganizationService         manta.OrganizationService

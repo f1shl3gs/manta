@@ -7,11 +7,10 @@ import {Page, Tabs} from '@influxdata/clockface'
 import AlertsNavigation from './AlertsNavigation'
 import Checks from './checks/Checks'
 import NotificationEndpoints from './notificationEndpoints/NotificationEndpoints'
+import CheckOverlay from './checks/CheckOverlay'
 
 // Hooks
 import {useOrgID} from 'shared/useOrg'
-import CheckOverlay from './checks/CheckOverlay'
-import Todo from '../components/Todo'
 
 const ALERTS_PAGE_TITLE = 'Alerts'
 

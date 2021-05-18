@@ -1,6 +1,6 @@
 // Libraries
 import React from 'react'
-import {useHistory, useParams} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -9,6 +9,7 @@ import CheckOverlayHeader from './CheckOverlayHeader'
 
 // Hooks
 import {CheckProvider, useCheck} from './useCheck'
+import withProvider from '../../utils/withProvider'
 
 const CheckOverlay: React.FC = () => {
   const history = useHistory()
@@ -31,12 +32,4 @@ const CheckOverlay: React.FC = () => {
   )
 }
 
-export default () => {
-  const {id} = useParams<{id: string}>()
-
-  return (
-    <CheckProvider id={id}>
-      <CheckOverlay />
-    </CheckProvider>
-  )
-}
+export default withProvider(CheckProvider, CheckOverlay)

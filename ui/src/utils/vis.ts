@@ -4,11 +4,7 @@ import {
   siPrefixFormatter,
   timeFormatter,
 } from '@influxdata/giraffe'
-import {
-  DEFAULT_TIME_FORMAT,
-  FORMAT_OPTIONS,
-  resolveTimeFormat,
-} from '../constants/timeFormat'
+import {DEFAULT_TIME_FORMAT, resolveTimeFormat} from '../constants/timeFormat'
 
 export type ColumnType = 'number' | 'string' | 'time' | 'boolean'
 
@@ -39,14 +35,20 @@ interface GetFormatterOptions {
 export const getFormatter = (
   columnType: ColumnType,
   {
-    prefix,
-    suffix,
+    prefix = '',
+    suffix = '',
     base,
     timeZone,
     trimZeros = true,
     timeFormat = DEFAULT_TIME_FORMAT,
   }: GetFormatterOptions = {}
 ): null | ((x: any) => string) => {
+  if (base === '') {
+    return (x: any) => {
+      return `${prefix}${x}${suffix}`
+    }
+  }
+
   if (columnType === 'number' && base === '2') {
     return binaryPrefixFormatter({
       prefix,

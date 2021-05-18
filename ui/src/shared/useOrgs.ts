@@ -1,15 +1,29 @@
 import constate from 'constate'
-import {useFetch} from 'shared/useFetch'
-import remoteDataState from '../utils/rds'
+import {useEffect, useState} from 'react'
+import {Organization} from '../types/Organization'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const [OrgsProvider, useOrgs] = constate(
   () => {
-    const {data, error, loading} = useFetch(`/api/v1/orgs`, {}, [])
+    const [orgs, setOrgs] = useState<Organization[]>([])
+    const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+
+    useEffect(() => {
+      setLoading(RemoteDataState.Loading)
+      fetch(`/api/v1/orgs`)
+        .then(resp => resp.json())
+        .then(data => {
+          setOrgs(data)
+          setLoading(RemoteDataState.Done)
+        })
+        .catch(err => {
+          setLoading(RemoteDataState.Error)
+        })
+    }, [])
 
     return {
-      error,
-      orgs: data,
-      loading: remoteDataState(data, error, loading),
+      orgs,
+      loading,
     }
   },
   values => values

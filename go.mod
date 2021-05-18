@@ -41,7 +41,6 @@ require (
 	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.etcd.io/bbolt v1.3.5
 	go.etcd.io/etcd/api/v3 v3.5.0-alpha.0
-	go.etcd.io/etcd/client/pkg/v3 v3.0.0-20210429211256-c46e96d519a3
 	go.etcd.io/etcd/pkg/v3 v3.5.0-alpha.0
 	go.etcd.io/etcd/raft/v3 v3.5.0-alpha.0
 	go.etcd.io/etcd/server/v3 v3.5.0-alpha.0

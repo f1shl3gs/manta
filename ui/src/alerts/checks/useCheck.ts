@@ -12,13 +12,10 @@ import {
   defaultErrorNotification,
   useNotification,
 } from '../../shared/notification/useNotification'
+import {useParams} from 'react-router-dom'
 
 interface CheckUpdate {
   name: string
-}
-
-interface State {
-  id: string
 }
 
 // todo: fix the status properties
@@ -41,7 +38,8 @@ const defaultCheck: Check = {
 }
 
 const [CheckProvider, useCheck] = constate(
-  (initialState: State) => {
+  () => {
+    const {id} = useParams<{id: string}>()
     const [tab, setTab] = useState('query')
     const [check, setCheck] = useState<Check>(defaultCheck)
     const {notify} = useNotification()
@@ -49,7 +47,7 @@ const [CheckProvider, useCheck] = constate(
       RemoteDataState.NotStarted
     )
 
-    const {get, post} = useFetch(`/api/v1/checks/${initialState.id}`, {})
+    const {get, post} = useFetch(`/api/v1/checks/${id}`, {})
 
     useEffect(() => {
       setRemoteDataState(RemoteDataState.Loading)

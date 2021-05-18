@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/f1shl3gs/manta/store/tsdb"
+	tsdb2 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -58,13 +58,13 @@ type QueryHandler struct {
 
 	logger        *zap.Logger
 	engine        *promql.Engine
-	tenantStorage tsdb.TenantStorage
+	tenantStorage tsdb2.TenantStorage
 
 	// todo: dummy
 	targetRetriever v1.TargetRetriever
 }
 
-func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb.TenantStorage, tr v1.TargetRetriever) {
+func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb2.TenantStorage, tr v1.TargetRetriever) {
 	engOpts := promql.EngineOpts{
 		Logger:        log.NewZapToGokitLogAdapter(logger),
 		Reg:           prometheus.DefaultRegisterer,

@@ -1,6 +1,13 @@
 syntax = "proto3";
 
+package pb;
+
+import "gogoproto/gogo.proto";
 import "raftpb/raft.proto";
+
+message ProcessRaftMessageRequest {
+  raftpb.Message msg = 1 [(gogoproto.nullable) = false];
+}
 
 message ProcessRaftMessageResponse {}
 
@@ -19,7 +26,7 @@ message ResolveAddressResponse {
 service Raft {
   // ProcessRaftMessage sends a raft message to be processed on a raft member,
   // it is called from the RaftMember willing to send a message to it's destination
-  rpc ProcessRaftMessage(raftpb.Message) returns (ProcessRaftMessageResponse);
+  rpc ProcessRaftMessage(ProcessRaftMessageRequest) returns (ProcessRaftMessageResponse);
 
   // StreamRaftMessage accepts a stream of raft messages of type StreamRaftMessageRequest
   // to be processed on a raft member, returning a StreamRaftMessageResponse when processing
@@ -30,4 +37,48 @@ service Raft {
 
   // ResolveAddress returns the address where the node with the given ID can be reached
   rpc ResolveAddress(ResolveAddressRequest) returns (ResolveAddressResponse);
+}
+
+message JoinRequest {
+
+}
+
+message JoinResponse {
+
+}
+
+message Member {
+  uint64 id = 1;
+}
+
+message AddRequest {}
+message AddResponse {}
+
+message RemoveRequest {}
+message RemoveResponse {}
+
+message MembersRequest {}
+message MembersResponse {
+  repeated Member members = 1;
+}
+
+service Membership {
+  rpc Add(AddRequest) returns (AddResponse);
+
+  rpc Remove(RemoveRequest) returns (RemoveResponse);
+
+  rpc Members(MembersRequest) returns (MembersResponse);
+}
+
+message Done {}
+
+message SendMessageRequest {}
+message SendMessageResponse {}
+
+message SnapshotChunk {}
+
+service Transport {
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+
+  rpc SendSnapshot(stream SnapshotChunk) returns (Done);
 }

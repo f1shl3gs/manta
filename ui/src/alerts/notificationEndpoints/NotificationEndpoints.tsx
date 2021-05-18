@@ -27,6 +27,7 @@ import {
 import {SortKey, SortTypes} from '../../types/sort'
 import {NotificationEndpoint} from '../../client'
 import NotificationEndpointExplainer from './NotificationEndpointExplainer'
+import withProvider from '../../utils/withProvider'
 
 const NotificationEndpoints: React.FC = () => {
   const {endpoints} = useNotificationEndpoints()
@@ -113,8 +114,7 @@ const NotificationEndpoints: React.FC = () => {
   )
 }
 
-export default () => (
-  <NotificationEndpointsProvider>
-    <NotificationEndpoints />
-  </NotificationEndpointsProvider>
+export default withProvider(
+  NotificationEndpointsProvider,
+  NotificationEndpoints
 )

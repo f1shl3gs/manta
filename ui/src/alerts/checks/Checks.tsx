@@ -24,6 +24,7 @@ import {ChecksProvider, useChecks} from './useChecks'
 // Types
 import {Check} from 'types/Check'
 import {SortKey, SortTypes} from 'types/sort'
+import withProvider from '../../utils/withProvider'
 
 const Checks: React.FC = () => {
   const {checks} = useChecks()
@@ -109,8 +110,4 @@ const Checks: React.FC = () => {
   )
 }
 
-export default () => (
-  <ChecksProvider>
-    <Checks />
-  </ChecksProvider>
-)
+export default withProvider(ChecksProvider, Checks)
