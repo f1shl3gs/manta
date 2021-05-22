@@ -38,7 +38,6 @@ const [PresentationModeProvider, usePresentationMode] = constate(
     )
 
     const toggle = useCallback(() => {
-      console.log('toggle', !inPresentationMode)
       setPresentation(!inPresentationMode)
     }, [inPresentationMode, setPresentation])
 

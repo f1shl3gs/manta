@@ -3,6 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/f1shl3gs/manta/cmd/manta/completion"
+	"github.com/f1shl3gs/manta/cmd/manta/template"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +16,10 @@ func main() {
 		SilenceUsage: true,
 	}
 
-	// todo: implement
+	rootCmd.AddCommand(
+		template.New(),
+		completion.New(),
+	)
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

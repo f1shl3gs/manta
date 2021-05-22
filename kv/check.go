@@ -152,6 +152,7 @@ func (s *Service) CreateCheck(ctx context.Context, c *manta.Check) error {
 func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error {
 	now := time.Now()
 	taskID := s.idGen.ID()
+	checkID := s.idGen.ID()
 
 	task := &manta.Task{
 		ID:      taskID,
@@ -159,7 +160,7 @@ func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error 
 		Updated: now,
 		Type:    "check",
 		Status:  c.Status,
-		OwnerID: c.ID,
+		OwnerID: checkID,
 		OrgID:   c.OrgID,
 		Cron:    c.Cron,
 	}
@@ -168,7 +169,7 @@ func (s *Service) createCheck(ctx context.Context, tx Tx, c *manta.Check) error 
 		return err
 	}
 
-	c.ID = s.idGen.ID()
+	c.ID = checkID
 	c.Created = now
 	c.Updated = now
 	c.TaskID = taskID
@@ -291,6 +292,11 @@ func (s *Service) DeleteCheck(ctx context.Context, id manta.ID) error {
 	defer span.Finish()
 
 	return s.kv.Update(ctx, func(tx Tx) error {
+		err := s.deleteTaskByOwnerID(ctx, tx, id)
+		if err != nil {
+			return err
+		}
+
 		return s.deleteCheck(ctx, tx, id)
 	})
 }

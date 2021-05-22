@@ -2173,15 +2173,15 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@influxdata/clockface@2.6.9":
-  version "2.6.9"
-  resolved "https://registry.npm.taobao.org/@influxdata/clockface/download/@influxdata/clockface-2.6.9.tgz#ec18cabdc9a07f56e788270db4027b3985ac5316"
-  integrity sha1-7BjKvcmgf1bniCcNtAJ7OYWsUxY=
-
-"@influxdata/giraffe@2.7.0":
+"@influxdata/clockface@2.7.0":
   version "2.7.0"
-  resolved "https://registry.nlark.com/@influxdata/giraffe/download/@influxdata/giraffe-2.7.0.tgz#ce93da5581875530d612eae9489eebfe66b710c5"
-  integrity sha1-zpPaVYGHVTDWEurpSJ7r/ma3EMU=
+  resolved "https://registry.nlark.com/@influxdata/clockface/download/@influxdata/clockface-2.7.0.tgz#2a2d4fa2d96e71cf681fcdad07882d3be7891eb6"
+  integrity sha1-Ki1Potlucc9oH82tB4gtO+eJHrY=
+
+"@influxdata/giraffe@2.10.4":
+  version "2.10.4"
+  resolved "https://registry.nlark.com/@influxdata/giraffe/download/@influxdata/giraffe-2.10.4.tgz#6c20196ce339f964cbfa274c049098aa1d148684"
+  integrity sha1-bCAZbOM5+WTL+idMBJCYqh0UhoQ=
   dependencies:
     merge-images "^2.0.0"
 

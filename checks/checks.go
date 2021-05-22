@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	tsdb2 "github.com/f1shl3gs/manta/pkg/tsdb"
+	"github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql"
 	"go.uber.org/zap"
@@ -18,6 +18,11 @@ import (
 const (
 	// AlertMetricName is the metric name for synthetic alert timeseries.
 	alertMetricName = "ALERTS"
+	// AlertForStateMetricName is the metric name for 'for' state of alert.
+	alertForStateMetricName = "ALERTS_FOR_STATE"
+
+	// AlertStateLabel is the label name indicating the state of an alert.
+	alertStateLabel = "alertstate"
 )
 
 // Checker should be implement as a Executor's handler
@@ -26,11 +31,11 @@ type Checker struct {
 
 	cs     manta.CheckService
 	es     manta.EventService
-	ts     tsdb2.TenantStorage
+	ts     tsdb.TenantStorage
 	engine *promql.Engine
 }
 
-func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ts tsdb2.TenantStorage) *Checker {
+func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService, ts tsdb.TenantStorage) *Checker {
 	engOpts := promql.EngineOpts{
 		Logger: log.NewZapToGokitLogAdapter(logger),
 		// Reg:           prometheus.DefaultRegisterer,
@@ -102,6 +107,23 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 		return errors.New("query result is not a vector or scalar")
 	}
 
+	appendable, err := checker.ts.Appendable(ctx, c.OrgID)
+	if err != nil {
+		return err
+	}
+
+	appender := appendable.Appender(ctx)
+	defer func() {
+		err := appender.Commit()
+		if err == nil {
+			return
+		}
+
+		checker.logger.Warn("commit ALERTS failed",
+			zap.Error(err))
+	}()
+
+	timestamp := fromTime(time.Now())
 	for _, sample := range vector {
 		v := sample.V
 		for _, condition := range c.Conditions {
@@ -139,11 +161,29 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 				l[lbl.Name] = lbl.Value
 			}
 
-			lb := labels.NewBuilder(sample.Metric).Del(labels.MetricName)
+			lb := labels.NewBuilder(sample.Metric)
+			lb.Set(labels.MetricName, alertMetricName)
+			lb.Set(labels.AlertName, c.Name)
+			lb.Set("check", c.ID.String())
+
+			baseLabels := lb.Labels()
+
+			var vec = promql.Vector{
+				valueSample(baseLabels, c, timestamp, v),
+				stateSample(baseLabels, c, timestamp),
+			}
 
 			// todo: set check's labels
-			lb.Set("check", c.ID.String())
-			lb.Set("org", c.OrgID.String())
+			for _, s := range vec {
+				_, err := appender.Append(0, s.Metric, s.T, s.V)
+				if err != nil {
+					// todo: mark check run failed
+
+					checker.logger.Warn("append ALERTS metrics failed",
+						zap.String("check", task.OwnerID.String()),
+						zap.Error(err))
+				}
+			}
 
 			// todo: build annotations
 
@@ -153,4 +193,34 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 	}
 
 	return nil
+}
+
+func fromTime(t time.Time) int64 {
+	return t.Unix()*1000 + int64(t.Nanosecond())/int64(time.Millisecond)
+}
+
+func valueSample(lbs labels.Labels, c *manta.Check, ts int64, v float64) promql.Sample {
+	lb := labels.NewBuilder(lbs)
+
+	lb.Set(labels.MetricName, alertMetricName)
+	lb.Set(labels.AlertName, c.Name)
+
+	return promql.Sample{
+		Metric: lb.Labels(),
+		Point:  promql.Point{T: ts, V: v},
+	}
+}
+
+func stateSample(lbs labels.Labels, c *manta.Check, ts int64) promql.Sample {
+	lb := labels.NewBuilder(lbs)
+	lb.Set(labels.MetricName, alertForStateMetricName)
+	lb.Set(labels.AlertName, c.Name)
+
+	return promql.Sample{
+		Metric: lb.Labels(),
+		Point: promql.Point{
+			T: ts,
+			V: 1,
+		},
+	}
 }

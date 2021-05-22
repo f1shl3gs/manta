@@ -318,3 +318,37 @@ func (s *Service) deleteTask(ctx context.Context, tx Tx, id manta.ID) (*manta.Ta
 
 	return task, nil
 }
+
+func (s *Service) deleteTaskByOwnerID(ctx context.Context, tx Tx, ownerID manta.ID) error {
+	b, err := tx.Bucket(taskOwnerIndexBucket)
+	if err != nil {
+		return err
+	}
+
+	pk, err := ownerID.Encode()
+	if err != nil {
+		return err
+	}
+
+	c, err := b.ForwardCursor(pk, WithCursorPrefix(pk))
+	if err != nil {
+		return err
+	}
+
+	defer c.Close()
+
+	var id manta.ID
+	for k, v := c.Next(); k != nil && c.Err() != nil; k, v = c.Next() {
+		err = id.Decode(v)
+		if err != nil {
+			return err
+		}
+
+		_, err := s.deleteTask(ctx, tx, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	return c.Err()
+}
