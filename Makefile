@@ -42,5 +42,3 @@ ui: $(UISOURCES)
 swagger:
 	wget https://codeload.github.com/swagger-api/swagger-ui/tar.gz/v3.44.1 -O swagger.tgz
 
-
-

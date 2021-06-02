@@ -14,7 +14,7 @@ import (
 	"github.com/f1shl3gs/manta/task/mock"
 )
 
-type TaskHandler func(ctx context.Context, task *manta.Task) error
+type TaskHandler func(ctx context.Context, task *manta.Task, ts time.Time) error
 
 type Executor struct {
 	logger *zap.Logger
@@ -73,7 +73,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 		return err
 	}
 
-	perr := e.checkFunc(ctx, task)
+	perr := e.checkFunc(ctx, task, scheduledFor)
 
 	// success
 	if perr == nil {

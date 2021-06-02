@@ -3,10 +3,15 @@ package launcher
 import (
 	"context"
 	"io"
+	"math"
+	"net"
 	"net/http"
 	"os"
+	"runtime"
 	"time"
 
+	"github.com/f1shl3gs/manta/pkg/cgroups"
+	profiler2 "github.com/f1shl3gs/manta/pkg/profiler"
 	tsdb3 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
@@ -17,12 +22,14 @@ import (
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/tsdb"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/profiler"
+	"github.com/soheilhy/cmux"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
 	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
@@ -40,16 +47,15 @@ import (
 )
 
 type Launcher struct {
+	//
+	Listen string
+
 	// log
 	LogLevel string
 	LogFile  string
 
-	// service
-	GrpcAddress string
-
 	// http service
-	HTTPAddress string
-	AccessLog   bool
+	AccessLog bool
 
 	// bolt store
 	BoltPath string
@@ -63,18 +69,25 @@ type Launcher struct {
 
 	// storage
 	StorageDir string
+
+	// pprof
+	ProfileDir       string
+	ProfileInterval  string
+	ProfileRetention string
+
+	// grpc
+	grpcServer *grpc.Server
+
+	// cluster
+
 }
 
 func (l *Launcher) Options() []Option {
 	return []Option{
 		{
-			DestP:   &l.GrpcAddress,
-			Flag:    "grpc.address",
-			Default: ":8081",
-		},
-		{
-			DestP:   &l.HTTPAddress,
-			Flag:    "http.address",
+			DestP: &l.Listen,
+			Flag:  "listen",
+			// TODO: use 8080 for now
 			Default: ":8080",
 		},
 		{
@@ -112,6 +125,12 @@ func (l *Launcher) Options() []Option {
 			Flag:    "storage.dir",
 			Default: "data",
 			Desc:    "storage is disabled by default",
+		},
+		{
+			DestP:   &l.ProfileDir,
+			Flag:    "profile.dir",
+			Default: "",
+			EnvVar:  "MANTA_PROFILE_DIR",
 		},
 	}
 }
@@ -151,6 +170,12 @@ func (l *Launcher) Run() error {
 	}
 
 	defer logger.Sync()
+
+	CPUToUse := adjustMaxProcs()
+	if CPUToUse != 0 {
+		logger.Info("starting mantad",
+			zap.Int("GOMAXPROCS", CPUToUse))
+	}
 
 	if l.Opentracing {
 		logger.Info("Opentracing is enabled")
@@ -383,6 +408,46 @@ func (l *Launcher) Run() error {
 		return err
 	}
 
+	listen, err := net.Listen("tcp", l.Listen)
+	if err != nil {
+		return err
+	}
+
+	m := cmux.New(listen)
+
+	group.Go(m.Serve)
+
+	group.Go(func() error {
+		// todo: make profile path configurable
+		path := "profile"
+
+		err = os.MkdirAll(path, 0700)
+		if err != nil {
+			return err
+		}
+
+		hp := profiler2.NewHeapProfiler(path, 0)
+		ticker := time.NewTicker(10 * time.Second)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ctx.Done():
+				return nil
+			case <-ticker.C:
+			}
+
+			var ms runtime.MemStats
+			runtime.ReadMemStats(&ms)
+
+			err = hp.MaybeTakeProfile(ctx, ms.HeapAlloc)
+			if err != nil {
+				logger.Warn("take heap profile failed",
+					zap.Error(err))
+			}
+		}
+	})
+
 	{
 		// http service
 		hl := logger.With(zap.String("service", "http"))
@@ -406,17 +471,18 @@ func (l *Launcher) Run() error {
 			Flusher:                     kvStore,
 		}, l.AccessLog, scrapeManager)
 
+		httpListener := m.Match(cmux.HTTP1Fast())
+
 		group.Go(func() error {
 			server := &http.Server{
-				Addr:    l.HTTPAddress,
 				Handler: handler,
 			}
 
 			errCh := make(chan error)
 			go func() {
 				logger.Info("Start HTTP service",
-					zap.String("listen", l.HTTPAddress))
-				errCh <- server.ListenAndServe()
+					zap.String("listen", l.Listen))
+				errCh <- server.Serve(httpListener)
 			}()
 
 			select {
@@ -464,4 +530,30 @@ func setupOpentracing(logger *zap.Logger) (io.Closer, error) {
 	opentracing.SetGlobalTracer(tracer)
 
 	return closer, nil
+}
+
+// adjustMaxProcs set GOMAXPROCS (if not overridden by env variables)
+// to be the CPU limit of the current cgroup, if running inside a cgroup
+// with a cpu limit lower than runtime.NumCPU(). This is preferable to
+// letting it fall back to Go's default, which is runtime.NumCPU(), as
+// the Go scheduler would be running more OS-level threads than can ever
+// be concurrently scheduled.
+func adjustMaxProcs() int {
+	var defaultValue = runtime.NumCPU()
+
+	if _, set := os.LookupEnv("GOMAXPROCS"); set {
+		return defaultValue
+	}
+
+	cpuInfo, err := cgroups.GetCgroupCPU()
+	if err != nil {
+		return defaultValue
+	}
+
+	numCPUToUse := int(math.Ceil(cpuInfo.CPUShares()))
+	if numCPUToUse < runtime.NumCPU() && numCPUToUse > 0 {
+		runtime.GOMAXPROCS(numCPUToUse)
+	}
+
+	return numCPUToUse
 }

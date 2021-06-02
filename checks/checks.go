@@ -56,7 +56,7 @@ func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService
 	}
 }
 
-func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
+func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.Time) error {
 	span, ctx := tracing.StartSpanFromContextWithOperationName(ctx, "check")
 	defer span.Finish()
 
@@ -80,7 +80,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task) error {
 	}
 
 	// reuse time!?
-	q, err := checker.engine.NewInstantQuery(qry, expr, time.Now())
+	q, err := checker.engine.NewInstantQuery(qry, expr, ts)
 	if err != nil {
 		return err
 	}

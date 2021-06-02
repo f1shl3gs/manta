@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
@@ -70,4 +71,20 @@ func NewTestService(t TestingT, opts ...kv.Option) (*kv.Service, func()) {
 	require.NoError(t, err)
 
 	return svc, closer
+}
+
+func CreateTestOrg(t TestingT, svc *kv.Service, name string) manta.ID {
+	org := &manta.Organization{
+		Name: name,
+		Desc: name + " desc",
+	}
+
+	err := svc.CreateOrganization(context.Background(), org)
+	require.NoError(t, err, "create test org %q failed", name)
+
+	return org.ID
+}
+
+func CreateDefaultOrg(t TestingT, svc *kv.Service) manta.ID {
+	return CreateTestOrg(t, svc, "test")
 }

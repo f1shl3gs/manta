@@ -2,6 +2,8 @@ package launcher
 
 import (
 	"fmt"
+	"math/rand"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -18,6 +20,12 @@ func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          "mantad",
 		SilenceUsage: true,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			// global id generator need a real random number to init
+			rand.Seed(time.Now().UnixNano() + int64(os.Getpid()))
+
+			return nil
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return launcher.Run()
 		},

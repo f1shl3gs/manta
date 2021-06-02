@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "gogoproto/gogo.proto";
+
+package membership;
+
+message MemberResponse {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message MemberRequest {
+
+}
+
+message AddMemberRequest {
+  string addr = 1;
+}
+
+message AddMemberResponse {
+
+}
+
+message RemoveMemberRequest {
+  uint64 id = 1;
+}
+
+message RemoveMemberResponse {
+
+}
+
+service Membership {
+  rpc Member(MemberRequest) returns (MemberResponse);
+
+  rpc Add(AddMemberRequest) returns (AddMemberResponse);
+
+  rpc Remove(RemoveMemberRequest) returns (RemoveMemberResponse);
+}

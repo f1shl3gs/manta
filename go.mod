@@ -6,10 +6,10 @@ require (
 	github.com/OneOfOne/xxhash v1.2.6 // indirect
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
-	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/cespare/xxhash v1.1.0
-	github.com/coreos/etcd v3.3.13+incompatible
+	github.com/cockroachdb/pebble v0.0.0-20210526183633-dd2a545f5d75
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dustin/go-humanize v1.0.0
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/btree v1.0.0
@@ -17,9 +17,9 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20191106031601-ce3c9ade29de // indirect
 	github.com/hashicorp/go-hclog v0.12.2 // indirect
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
+	github.com/hashicorp/go-sockaddr v1.0.2
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/influxdata/cron v0.0.0-20200427044617-e2c242fdf59f
-	github.com/json-iterator/go v1.1.10
 	github.com/jsternberg/zap-logfmt v1.2.0
 	github.com/julienschmidt/httprouter v1.3.1-0.20200114094804-8c9f31f047a3
 	github.com/mattn/go-isatty v0.0.12
@@ -31,6 +31,7 @@ require (
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
 	github.com/pyroscope-io/pyroscope v0.0.30
 	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/soheilhy/cmux v0.1.5-0.20210205191134-5ec6847320e5
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -40,7 +41,6 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.etcd.io/bbolt v1.3.5
-	go.etcd.io/etcd/api/v3 v3.5.0-alpha.0
 	go.etcd.io/etcd/pkg/v3 v3.5.0-alpha.0
 	go.etcd.io/etcd/raft/v3 v3.5.0-alpha.0
 	go.etcd.io/etcd/server/v3 v3.5.0-alpha.0

@@ -9,6 +9,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func initDashboardService(t *testing.T) (manta.DashboardService, func()) {
+	svc, closer := NewTestService(t)
+
+	return svc, closer
+}
+
 func TestDashboard(t *testing.T) {
 	t.Run("create dashboard", func(t *testing.T) {
 		svc, closer := NewTestService(t)

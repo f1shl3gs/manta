@@ -1,9 +1,9 @@
 package web
 
 import (
+	"encoding/json"
 	"net/http"
 
-	json "github.com/json-iterator/go"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
