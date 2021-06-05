@@ -1,6 +1,8 @@
 package raftstore
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	ClusterStateFlagNew      = "new"

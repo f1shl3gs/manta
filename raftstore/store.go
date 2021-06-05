@@ -11,9 +11,11 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/cockroachdb/pebble"
 	"github.com/f1shl3gs/manta/pkg/fsutil"
 	"github.com/f1shl3gs/manta/raftstore/internal"
 	"github.com/f1shl3gs/manta/raftstore/membership"
+	"github.com/f1shl3gs/manta/raftstore/rawkv"
 	"github.com/f1shl3gs/manta/raftstore/transport"
 
 	"github.com/pkg/errors"
@@ -155,6 +157,9 @@ type Store struct {
 	proposalsApplied        prometheus.Gauge
 	applySnapshotInProgress prometheus.Gauge
 	learnerStatus           prometheus.Gauge
+
+	// KV
+	engine *pebble.DB
 }
 
 func New(cf *Config, logger *zap.Logger) (*Store, error) {
@@ -165,6 +170,11 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		s  *raft.MemoryStorage
 		id uint64
 	)
+
+	db, err := pebble.Open(cf.DataDir, defaultPebbleOptions())
+	if err != nil {
+		return nil, err
+	}
 
 	if cf.MaxRequestBytes > recommendedMaxRequestBytes {
 		logger.Warn("exceeded recommended request bytes limit",
@@ -251,6 +261,8 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		storage:             NewStorage(w, ss),
 		td:                  contention.NewTimeoutDetector(2 * heartbeat),
 		firstCommitInTermCh: make(chan struct{}),
+		engine:              db,
+		readStateC:          make(chan raft.ReadState, 1),
 
 		slowReadIndex: prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: "manta",
@@ -374,7 +386,7 @@ func (s *Store) start(ctx context.Context) {
 
 	// TODO: if this is an empty log, writes all peer infos
 	// into the first entry
-	s.run(ctx)
+	go s.run(ctx)
 }
 
 func (s *Store) run(ctx context.Context) {
@@ -446,6 +458,14 @@ type progress struct {
 }
 
 func (s *Store) applyAll(p *progress, apply *apply) {
+	start := time.Now()
+	defer func(before uint64) {
+		s.logger.Info("apply all done",
+			zap.Uint64("applied", p.appliedIndex-before),
+			zap.Uint64("applied-index", p.appliedIndex),
+			zap.Duration("elapsed", time.Since(start)))
+	}(p.appliedIndex)
+
 	s.applySnapshot(p, apply)
 	s.applyEntries(p, apply)
 
@@ -790,7 +810,6 @@ func (s *Store) linearizableReadLoop(ctx context.Context) {
 
 		select {
 		case <-s.readWaitCh:
-
 		case <-ctx.Done():
 			return
 		case <-leaderChangeNotifier:
@@ -815,8 +834,19 @@ func (s *Store) linearizableReadLoop(ctx context.Context) {
 
 		appliedIndex := s.getAppliedIndex()
 		if appliedIndex < confirmedIndex {
+			s.logger.Info("wait",
+				zap.Uint64("applied", appliedIndex),
+				zap.Uint64("confirmed", confirmedIndex))
 
+			select {
+			case <-s.applyWait.Wait(confirmedIndex):
+			case <-ctx.Done():
+				return
+			}
 		}
+
+		// unblock all l-reads requested at indices before confirmedIndex
+		nr.notify(nil)
 	}
 }
 
@@ -1137,7 +1167,7 @@ func (s *Store) applyEntries(p *progress, apply *apply) {
 	}
 
 	var shouldStop bool
-	if p.appliedTerm, p.appliedIndex, shouldStop = s.apply(entries, &p.confState); shouldStop {
+	if p.appliedTerm, p.appliedIndex, shouldStop = s.applyBatch(entries, &p.confState); shouldStop {
 		go s.stopWithDelay(10*100*time.Millisecond,
 			fmt.Errorf("the member has been permanently removed from the cluster"))
 	}
@@ -1210,6 +1240,84 @@ func (s *Store) apply(entries []raftpb.Entry, confState *raftpb.ConfState) (uint
 	return appliedTerm, appliedIndex, shouldStop
 }
 
+func (s *Store) applyBatch(entries []raftpb.Entry, confState *raftpb.ConfState) (uint64, uint64, bool) {
+	var (
+		appliedIndex, appliedTerm uint64
+		shouldStop                bool
+		start, i                  int
+	)
+
+	for i = start; i < len(entries); i++ {
+		entry := entries[i]
+		if entry.Type == raftpb.EntryNormal {
+			continue
+		}
+
+		if entry.Type == raftpb.EntryConfChange {
+			// apply pending EntryConfChange
+			s.applyNormalEntries(entries[start:i])
+			s.setAppliedIndex(entry.Index)
+			s.setTerm(entry.Index)
+
+			appliedIndex, appliedTerm = entry.Index, entry.Term
+
+			// apply EntryConfChange
+			var cc raftpb.ConfChange
+			pbutil.MustUnmarshal(&cc, entry.Data)
+			removedSelf, err := s.applyConfChange(cc, confState)
+			s.setAppliedIndex(entry.Index)
+			s.setTerm(entry.Term)
+
+			shouldStop = shouldStop || removedSelf
+			s.wait.Trigger(cc.ID, &confChangeResponse{s.cluster.Members(), err})
+
+			appliedIndex, appliedTerm = entry.Index, entry.Term
+
+			start = i
+
+			continue
+		}
+
+		s.logger.Fatal("unknown entry type, it must be EntryNormal or EntryConfChange",
+			zap.Stringer("type", entries[i].Type))
+	}
+
+	// apply remaining entries
+	if start != len(entries) {
+		entry := entries[len(entries)-1]
+
+		s.applyNormalEntries(entries[start:i])
+		s.setAppliedIndex(entry.Index)
+		s.setTerm(entry.Index)
+
+		appliedIndex, appliedTerm = entry.Index, entry.Term
+	}
+
+	return appliedTerm, appliedIndex, shouldStop
+}
+
+func (s *Store) applyNormalEntries(entries []raftpb.Entry) {
+	wo := &pebble.WriteOptions{Sync: true}
+	batch := s.engine.NewBatch()
+	defer batch.Commit(wo)
+
+	for _, entry := range entries {
+		req := &rawkv.PutRequest{}
+		err := req.Unmarshal(entry.Data)
+		if err != nil {
+			s.wait.Trigger(req.Id, err)
+			continue
+		}
+
+		err = batch.Set(req.Key, req.Value, wo)
+		if err != nil {
+			panic(err)
+		} else {
+			s.wait.Trigger(req.Id, nil)
+		}
+	}
+}
+
 // applyEntryNormal applies an EntryNormal type raftpb request to the Store
 func (s *Store) applyEntryNormal(entry *raftpb.Entry) {
 	s.logger.Debug("apply entry normal",
@@ -1224,7 +1332,21 @@ func (s *Store) applyEntryNormal(entry *raftpb.Entry) {
 	}
 
 	// TODO: apply to KV engine
+	req := &rawkv.PutRequest{}
+	err := req.Unmarshal(entry.Data)
+	if err != nil {
+		s.logger.Warn("decode req failed",
+			zap.Error(err))
+		return
+	}
 
+	err = s.engine.Set(req.Key, req.Value, nil)
+	if err != nil {
+		s.logger.Warn("write kv failed",
+			zap.Error(err))
+	}
+
+	s.wait.Trigger(req.Id, nil)
 }
 
 func (s *Store) notifyAboutFirstCommitInTerm() {

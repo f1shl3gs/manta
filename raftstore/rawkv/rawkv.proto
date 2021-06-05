@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package rawkv;
+
+message PutRequest {
+  uint64 id = 1;
+  bytes key = 2;
+  bytes value = 3;
+}
+
+message Empty {}
+
+message GetRequest {
+  bytes key = 2;
+}
+
+message GetResponse {
+  bytes value = 1;
+}
+
+service RawKV {
+  rpc Put(PutRequest) returns (Empty);
+  rpc Get(GetRequest) returns (GetResponse);
+}

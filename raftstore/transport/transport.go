@@ -77,6 +77,26 @@ type transport struct {
 }
 
 func (trans *transport) Send(msgs []raftpb.Message) {
+
+	/*
+		batches := make(map[uint64][]raftpb.Message)
+
+		for _, m := range msgs {
+			batches[m.To] = append(batches[m.To], m)
+		}
+
+		for to, batch := range batches {
+			trans.mtx.RLock()
+			peer := trans.peers[to]
+			trans.mtx.RUnlock()
+
+			if peer != nil {
+				peer.send()
+			}
+		}
+
+	*/
+
 	for _, m := range msgs {
 		if m.To == 0 {
 			// ignore intentionally dropped message
