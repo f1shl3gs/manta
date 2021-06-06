@@ -36,11 +36,11 @@ const Settings: React.FC = () => {
 
   return (
     <Page titleTag={`Settings | ${activeColumn}`}>
-      <Page.Header fullWidth={true}>
+      <Page.Header fullWidth={false}>
         <Page.Title title={SETTINGS_PAGE_TITLE} />
       </Page.Header>
 
-      <Page.Contents className={pageContentsClassName} fullWidth={true}>
+      <Page.Contents className={pageContentsClassName} fullWidth={false}>
         <Navigation prefix={pagePrefix} tabs={tabs} />
 
         <Tabs.TabContents>

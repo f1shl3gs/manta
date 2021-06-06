@@ -142,7 +142,7 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetri
 	// middlewares
 	h = Trace(h)
 	h = middlewares.Metrics(prometheus.DefaultRegisterer, h)
-	h = middlewares.Gzip(h)
+	// h = middlewares.Gzip(h)
 
 	// access log
 	if accessLog {

@@ -4,14 +4,22 @@ import (
 	"context"
 )
 
+var (
+	ErrScraperNotFound = &Error{
+		Code: ENotFound,
+		Msg:  "scraper not found",
+	}
+)
+
 type ScraperTargetFilter struct {
 	OrgID *ID
 }
 
 type ScraperTargetUpdate struct {
-	Name   *string
-	Desc   *string
-	Labels *map[string]string
+	Name    *string
+	Desc    *string
+	Labels  *map[string]string
+	Targets *[]string
 }
 
 func (upd *ScraperTargetUpdate) Apply(s *ScrapeTarget) {
@@ -25,6 +33,10 @@ func (upd *ScraperTargetUpdate) Apply(s *ScrapeTarget) {
 
 	if upd.Labels != nil {
 		s.Labels = *upd.Labels
+	}
+
+	if upd.Targets != nil {
+		s.Targets = *upd.Targets
 	}
 }
 

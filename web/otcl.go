@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -61,11 +60,10 @@ func (h *otclHandler) getOtcls(w http.ResponseWriter, r *http.Request) {
 
 func (h *otclHandler) getOtcl(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx    = r.Context()
-		params = httprouter.ParamsFromContext(ctx)
+		ctx = r.Context()
 	)
 
-	id, err := idFromParams(params, "id")
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -141,7 +139,7 @@ func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
 		patch manta.OtclPatch
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -167,7 +165,7 @@ func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
 func (h *otclHandler) deleteOtcl(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

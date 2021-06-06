@@ -34,11 +34,11 @@ const AlertsPage: React.FC = () => {
 
   return (
     <Page titleTag={'Alerts | Checks'}>
-      <Page.Header fullWidth={true}>
+      <Page.Header fullWidth={false}>
         <Page.Title title={ALERTS_PAGE_TITLE} />
       </Page.Header>
 
-      <Page.Contents className={pageContentsClassName} fullWidth={true}>
+      <Page.Contents className={pageContentsClassName}>
         <AlertsNavigation prefix={`${pagePrefix}`} tabs={tabs} />
         <Tabs.TabContents>
           <Switch>

@@ -112,7 +112,7 @@ func (h *NotificationEndpointHandler) handleGet(w http.ResponseWriter, r *http.R
 		ctx = r.Context()
 	)
 
-	id, err := idFromURI(r, "id")
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -134,7 +134,7 @@ func (h *NotificationEndpointHandler) handleDelete(w http.ResponseWriter, r *htt
 		ctx = r.Context()
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -150,7 +150,7 @@ func (h *NotificationEndpointHandler) handleDelete(w http.ResponseWriter, r *htt
 }
 
 func decodeNotificationEndpointUpdate(r *http.Request) (manta.ID, manta.NotificationEndpointUpdate, error) {
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		return 0, manta.NotificationEndpointUpdate{}, err
 	}

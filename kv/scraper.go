@@ -47,6 +47,10 @@ func (s *Service) findScraperTargetByID(ctx context.Context, tx Tx, id manta.ID)
 
 	data, err := b.Get(key)
 	if err != nil {
+		if err == ErrKeyNotFound {
+			return nil, manta.ErrScraperNotFound
+		}
+
 		return nil, err
 	}
 
@@ -136,6 +140,8 @@ func (s *Service) findScraperTargets(ctx context.Context, tx Tx, filter manta.Sc
 
 func (s *Service) CreateScraperTarget(ctx context.Context, target *manta.ScrapeTarget) error {
 	target.ID = s.idGen.ID()
+	target.Created = time.Now()
+	target.Updated = time.Now()
 
 	return s.kv.Update(ctx, func(tx Tx) error {
 		return s.putScraperTarget(ctx, tx, target)
@@ -239,6 +245,7 @@ func (s *Service) deleteScraperTarget(ctx context.Context, tx Tx, id manta.ID) e
 		return err
 	}
 
+	// delete target
 	b, err := tx.Bucket(scraperTargetBucket)
 	if err != nil {
 		return err
@@ -251,10 +258,11 @@ func (s *Service) deleteScraperTarget(ctx context.Context, tx Tx, id manta.ID) e
 
 	// delete orgID index
 	fk, _ := st.OrgID.Encode()
+	key := IndexKey(fk, pk)
 	b, err = tx.Bucket(scraperTargetOrgIndexBucket)
 	if err != nil {
 		return err
 	}
 
-	return b.Delete(fk)
+	return b.Delete(key)
 }

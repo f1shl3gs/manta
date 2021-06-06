@@ -17,7 +17,6 @@ import (
 	"github.com/f1shl3gs/manta/raftstore/membership"
 	"github.com/f1shl3gs/manta/raftstore/rawkv"
 	"github.com/f1shl3gs/manta/raftstore/transport"
-
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.etcd.io/etcd/pkg/v3/contention"
@@ -343,10 +342,21 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 func (s *Store) Run(ctx context.Context) error {
 	s.start(ctx)
 
+	/*
+		TODO: figure out why this warn
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d A tick missed to fire. Node blocks too long!
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d A tick missed to fire. Node blocks too long!
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d A tick missed to fire. Node blocks too long!
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d cannot campaign at term 1 since there are still 1 pending configuration changes to apply
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d cannot campaign at term 1 since there are still 1 pending configuration changes to apply
+		    logger.go:130: 2021-06-05T11:26:06.641+0800	WARN	770be00ec67d7a6d A tick missed to fire. Node blocks too long!
+	*/
+	// time.Sleep(5 * time.Second)
+
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-		s.adjustTicks(ctx)
+		// s.adjustTicks(ctx)
 	}()
 
 	s.wg.Add(1)
@@ -458,13 +468,12 @@ type progress struct {
 }
 
 func (s *Store) applyAll(p *progress, apply *apply) {
-	start := time.Now()
-	defer func(before uint64) {
-		s.logger.Info("apply all done",
-			zap.Uint64("applied", p.appliedIndex-before),
-			zap.Uint64("applied-index", p.appliedIndex),
-			zap.Duration("elapsed", time.Since(start)))
-	}(p.appliedIndex)
+	// defer func(before uint64, start time.Time) {
+	// 	s.logger.Debug("apply all done",
+	// 		zap.Uint64("applied", p.appliedIndex-before),
+	// 		zap.Uint64("applied-index", p.appliedIndex),
+	// 		zap.Duration("elapsed", time.Since(start)))
+	// }(p.appliedIndex, time.Now())
 
 	s.applySnapshot(p, apply)
 	s.applyEntries(p, apply)
@@ -698,6 +707,21 @@ func (s *Store) processMessages(messages []raftpb.Message) []raftpb.Message {
 	}
 
 	return messages
+}
+
+func updateCommittedIndexV2(rh ReadyHandler, entries []raftpb.Entry, snapshot *raftpb.Snapshot) {
+	var ci uint64
+	if len(entries) != 0 {
+		ci = entries[len(entries)-1].Index
+	}
+
+	if snapshot.Metadata.Index > ci {
+		ci = snapshot.Metadata.Index
+	}
+
+	if ci != 0 {
+		rh.updateCommittedIndex(ci)
+	}
 }
 
 func updateCommittedIndex(a *apply, rh ReadyHandler) {

@@ -187,7 +187,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 
 			// todo: build annotations
 
-			checker.logger.Info("Alert",
+			checker.logger.Debug("Alert",
 				zap.String("lb", lb.Labels().String()))
 		}
 	}

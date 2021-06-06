@@ -2,10 +2,11 @@ package web
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authz"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 const (
@@ -53,7 +54,7 @@ func (h *UserHandler) viewerHandler(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromURI(r, "id")
+	id, err := idFromRequest(r)
 	if err != nil {
 		err = encodeResponse(ctx, w, http.StatusBadRequest, manta.ErrInvalidID)
 		if err != nil {

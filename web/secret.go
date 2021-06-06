@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -62,11 +61,10 @@ func decodePutSecretRequest(r *http.Request) (string, string, error) {
 
 func (h *SecretHandler) handlePut(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx    = r.Context()
-		params = httprouter.ParamsFromContext(ctx)
+		ctx = r.Context()
 	)
 
-	orgID, err := idFromParams(params, "orgID")
+	orgID, err := orgIDFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

@@ -13,7 +13,6 @@ import (
 	"github.com/f1shl3gs/manta/pkg/cgroups"
 	profiler2 "github.com/f1shl3gs/manta/pkg/profiler"
 	tsdb3 "github.com/f1shl3gs/manta/pkg/tsdb"
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
@@ -23,9 +22,6 @@ import (
 	"github.com/prometheus/prometheus/tsdb"
 	"github.com/pyroscope-io/pyroscope/pkg/agent/profiler"
 	"github.com/soheilhy/cmux"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
-	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
@@ -85,10 +81,9 @@ type Launcher struct {
 func (l *Launcher) Options() []Option {
 	return []Option{
 		{
-			DestP: &l.Listen,
-			Flag:  "listen",
-			// TODO: use 8080 for now
-			Default: ":8080",
+			DestP:   &l.Listen,
+			Flag:    "listen",
+			Default: ":8088",
 		},
 		{
 			DestP:   &l.AccessLog,
@@ -408,12 +403,12 @@ func (l *Launcher) Run() error {
 		return err
 	}
 
-	listen, err := net.Listen("tcp", l.Listen)
+	listener, err := net.Listen("tcp", l.Listen)
 	if err != nil {
 		return err
 	}
 
-	m := cmux.New(listen)
+	m := cmux.New(listener)
 
 	group.Go(m.Serve)
 
@@ -471,7 +466,8 @@ func (l *Launcher) Run() error {
 			Flusher:                     kvStore,
 		}, l.AccessLog, scrapeManager)
 
-		httpListener := m.Match(cmux.HTTP1Fast())
+		_ = m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+		httpListener := m.Match(cmux.HTTP1Fast(http.MethodPatch))
 
 		group.Go(func() error {
 			server := &http.Server{
@@ -508,28 +504,6 @@ func (l *Launcher) Run() error {
 	}
 
 	return group.Wait()
-}
-
-func setupOpentracing(logger *zap.Logger) (io.Closer, error) {
-	cf, err := jaegercfg.FromEnv()
-	if err != nil {
-		return nil, errors.Wrap(err, "create jaeger config failed")
-	}
-
-	jmf := jaegerprom.New(jaegerprom.WithRegisterer(prometheus.DefaultRegisterer))
-	jaegerZapLogger := jaegerzap.NewLogger(logger.With(zap.String("service", "opentracing")))
-
-	tracer, closer, err := cf.NewTracer(
-		jaegercfg.Logger(jaegerZapLogger),
-		jaegercfg.Metrics(jmf),
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "create jaeger tracer failed")
-	}
-
-	opentracing.SetGlobalTracer(tracer)
-
-	return closer, nil
 }
 
 // adjustMaxProcs set GOMAXPROCS (if not overridden by env variables)

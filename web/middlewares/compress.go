@@ -39,6 +39,7 @@ func Gzip(next http.Handler) http.Handler {
 		// detect whether compress is needed
 		if !strings.Contains(r.Header.Get(acceptEncoding), gzipEncoding) {
 			next.ServeHTTP(w, r)
+			return
 		}
 
 		rw := newRecordableResponse(w)

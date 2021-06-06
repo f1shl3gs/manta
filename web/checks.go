@@ -143,7 +143,7 @@ func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -178,7 +178,7 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -204,7 +204,7 @@ func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -226,7 +226,7 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

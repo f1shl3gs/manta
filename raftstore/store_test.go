@@ -63,7 +63,7 @@ func TestStore(t *testing.T) {
 	}()
 
 	go func() {
-		err = http.ListenAndServe(":8088", nil)
+		err = http.ListenAndServe(":8087", nil)
 		if err != nil {
 			panic(err)
 		}

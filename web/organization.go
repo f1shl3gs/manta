@@ -97,7 +97,7 @@ func (h *OrganizationHandler) handleCreateOrg(w http.ResponseWriter, r *http.Req
 func (h *OrganizationHandler) handleDeleteOrg(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -113,7 +113,7 @@ func (h *OrganizationHandler) handleDeleteOrg(w http.ResponseWriter, r *http.Req
 
 func (h *OrganizationHandler) handleGetOrg(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

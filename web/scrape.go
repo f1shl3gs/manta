@@ -27,10 +27,35 @@ func NewScrapeHandler(logger *zap.Logger, router *Router, scrapeService manta.Sc
 		scrapeService: scrapeService,
 	}
 
+	h.HandlerFunc(http.MethodGet, scrapeIDPath, h.handleGet)
 	h.HandlerFunc(http.MethodGet, scrapePrefix, h.handleList)
 	h.HandlerFunc(http.MethodPost, scrapePrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, scrapeIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPatch, scrapeIDPath, h.handlePatch)
+}
+
+//
+func (h *ScrapeTargetHandler) handleGet(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+	)
+
+	id, err := idFromRequest(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	s, err := h.scrapeService.FindScraperTargetByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = encodeResponse(ctx, w, http.StatusOK, s)
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 // handleList returns the scrape targets filter by orgID
@@ -93,7 +118,7 @@ func (h *ScrapeTargetHandler) handleDelete(w http.ResponseWriter, r *http.Reques
 		ctx = r.Context()
 	)
 
-	id, err := idFromURI(r, "id")
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -114,7 +139,7 @@ func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request
 		upd manta.ScraperTargetUpdate
 	)
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

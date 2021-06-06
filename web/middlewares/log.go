@@ -12,6 +12,11 @@ func Log(logger *zap.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rw := newRecordableResponse(w)
 
+		if r.URL.Path == "/metrics" {
+			next.ServeHTTP(rw, r)
+			return
+		}
+
 		start := time.Now()
 		next.ServeHTTP(rw, r)
 		latency := time.Since(start)

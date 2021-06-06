@@ -55,7 +55,7 @@ func (h *DashboardHandler) handleList(w http.ResponseWriter, r *http.Request) {
 func (h *DashboardHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -75,7 +75,7 @@ func (h *DashboardHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 func (h *DashboardHandler) delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -115,11 +115,10 @@ func (h *DashboardHandler) handleCreate(w http.ResponseWriter, r *http.Request) 
 
 func (h *DashboardHandler) handleAddCell(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx    = r.Context()
-		params = httprouter.ParamsFromContext(ctx)
+		ctx = r.Context()
 	)
 
-	id, err := idFromParams(params, "id")
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -160,7 +159,7 @@ func decodeCreateCell(r *http.Request) (*manta.Cell, error) {
 func (h *DashboardHandler) handleReplaceDashboardCells(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -205,7 +204,7 @@ func decodeCells(r *http.Request) ([]manta.Cell, error) {
 func (h *DashboardHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -221,17 +220,16 @@ func (h *DashboardHandler) handleDelete(w http.ResponseWriter, r *http.Request) 
 
 func (h *DashboardHandler) handleGetCell(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx    = r.Context()
-		params = httprouter.ParamsFromContext(ctx)
+		ctx = r.Context()
 	)
 
-	dashID, err := idFromParams(params, "id")
+	dashID, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cellID, err := idFromParams(params, "cellID")
+	cellID, err := cellIDFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -261,7 +259,7 @@ func decodeDashboardUpdate(r *http.Request) (manta.DashboardUpdate, error) {
 
 func (h *DashboardHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id, err := idFromRequestPath(r)
+	id, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -291,13 +289,13 @@ func (h *DashboardHandler) handleUpdateCell(w http.ResponseWriter, r *http.Reque
 		ctx = r.Context()
 	)
 
-	dashboardID, err := idFromURI(r, "id")
+	dashboardID, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cellID, err := idFromURI(r, "cellID")
+	cellID, err := cellIDFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -321,13 +319,13 @@ func (h *DashboardHandler) handleUpdateCell(w http.ResponseWriter, r *http.Reque
 func (h *DashboardHandler) handleDeleteCell(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	dashboardID, err := idFromURI(r, "id")
+	dashboardID, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cellID, err := idFromURI(r, "cellID")
+	cellID, err := cellIDFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -340,4 +338,17 @@ func (h *DashboardHandler) handleDeleteCell(w http.ResponseWriter, r *http.Reque
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func cellIDFromRequest(r *http.Request) (manta.ID, error) {
+	var (
+		id     manta.ID
+		params = httprouter.ParamsFromContext(r.Context())
+	)
+
+	if err := id.DecodeFromString(params.ByName("cellID")); err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

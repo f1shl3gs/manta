@@ -23,7 +23,7 @@ const [ChecksProvider, useChecks] = constate(
       []
     )
 
-    const {patch} = useFetch(`/api/v1/checks/`, {})
+    const {patch} = useFetch(`/api/v1/checks`, {})
 
     const {del} = useFetch(`/api/v1/checks`, {})
 
