@@ -16,7 +16,7 @@ import VariablesControlBar from './variablesControlBar/VariablesControlBar'
 const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`
 
 const DashboardPage: React.FC = () => {
-  const {cells, remoteDataState} = useDashboard()
+  const {cells, remoteDataState, showVariablesControls} = useDashboard()
 
   return (
     <>
@@ -26,7 +26,8 @@ const DashboardPage: React.FC = () => {
           spinnerComponent={<TechnoSpinner />}
         >
           <DashboardHeader />
-          <VariablesControlBar />
+          {/* todo: move VariablesControlBar to DashboardHeader */}
+          {showVariablesControls ? <VariablesControlBar /> : <></>}
 
           <Page.Contents
             fullWidth={true}

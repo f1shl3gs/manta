@@ -22,7 +22,13 @@ import {useDashboard} from './useDashboard'
 import {AutoRefreshDropdownOptions} from 'constants/autoRefresh'
 
 const DashboardHeader = () => {
-  const {name, onRename, addCell} = useDashboard()
+  const {
+    name,
+    onRename,
+    addCell,
+    showVariablesControls,
+    toggleShowVariablesControls,
+  } = useDashboard()
 
   return (
     <Page.Header fullWidth={true}>
@@ -45,6 +51,17 @@ const DashboardHeader = () => {
           text="Add Note"
           onClick={() => console.log('add note')}
           testID="add-note--button"
+        />
+        <Button
+          icon={IconFont.Cube}
+          text={'Variables'}
+          testID={'variables--button'}
+          onClick={toggleShowVariablesControls}
+          color={
+            showVariablesControls
+              ? ComponentColor.Secondary
+              : ComponentColor.Default
+          }
         />
         <PresentationModeToggle />
 

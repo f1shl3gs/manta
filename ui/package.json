@@ -77,7 +77,6 @@
     "@types/recompose": "^0.30.7",
     "cypress": "^6.5.0",
     "eslint-config-react-app": "^6.0.0",
-    "http-proxy-middleware": "^2.0.0",
     "node-sass": "4.14.1",
     "openapi-typescript-codegen": "^0.8.1",
     "prettier": "^2.2.1",
@@ -113,5 +112,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:8088"
 }

@@ -1,4 +1,4 @@
-import {useCallback} from 'react'
+import {useCallback, useState} from 'react'
 import constate from 'constate'
 import {useParams} from 'react-router-dom'
 import {CachePolicies, useFetch} from 'shared/useFetch'
@@ -17,6 +17,10 @@ const [DashboardProvider, useDashboard] = constate(
       },
       []
     )
+    const [showVariablesControls, setShowVariablesControls] = useState(true)
+    const toggleShowVariablesControls = useCallback(() => {
+      setShowVariablesControls(!showVariablesControls)
+    }, [showVariablesControls])
 
     const {post: update} = useFetch(`/api/v1/dashboards/${dashboardID}`, {})
 
@@ -82,6 +86,8 @@ const [DashboardProvider, useDashboard] = constate(
       onRename,
       onLayoutChange,
       deleteCell,
+      showVariablesControls,
+      toggleShowVariablesControls,
       reload: get,
       remoteDataState: remoteDataState(data, error, loading),
     }
