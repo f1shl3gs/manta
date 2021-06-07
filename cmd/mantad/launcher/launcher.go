@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"math"
 	"net"
@@ -11,7 +12,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta/pkg/cgroups"
-	profiler2 "github.com/f1shl3gs/manta/pkg/profiler"
+	"github.com/f1shl3gs/manta/pkg/profiler"
 	tsdb3 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -20,7 +21,6 @@ import (
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/tsdb"
-	"github.com/pyroscope-io/pyroscope/pkg/agent/profiler"
 	"github.com/soheilhy/cmux"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -164,7 +164,12 @@ func (l *Launcher) Run() error {
 		return err
 	}
 
-	defer logger.Sync()
+	defer func() {
+		err = logger.Sync()
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "flush logs failed\n")
+		}
+	}()
 
 	CPUToUse := adjustMaxProcs()
 	if CPUToUse != 0 {
@@ -181,11 +186,6 @@ func (l *Launcher) Run() error {
 
 		defer closer.Close()
 	}
-
-	profiler.Start(profiler.Config{
-		ApplicationName: "mantad",
-		ServerAddress:   "http://localhost:4040", // this will run inside docker-compose, hence `pyroscope` for hostname
-	})
 
 	// init tsdb storage
 	// for now only local TenantStorage is available, aka MultiTSDB
@@ -421,7 +421,7 @@ func (l *Launcher) Run() error {
 			return err
 		}
 
-		hp := profiler2.NewHeapProfiler(path, 0)
+		hp := profiler.NewHeapProfiler(path, 0)
 		ticker := time.NewTicker(10 * time.Second)
 		defer ticker.Stop()
 
