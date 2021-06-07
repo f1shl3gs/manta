@@ -499,10 +499,34 @@ paths:
             type: string
           required: true
           description: The ID of the Otcl to get
+        - in: header
+          name: Accept
+          required: true
+          schema:
+            type: string
+            default: application/yaml
+            enum:
+              - application/json
+              - application/octet-stream
+              - text/yaml
       responses:
         200:
           description: Otcl details
           content:
+            text/yaml:
+              schema:
+                type: string
+              example: |-
+                receivers: []
+                exporters: []
+                services: []
+            application/octet-stream:
+              schema:
+                type: string
+              example: |-
+                receivers: []
+                exporters: []
+                services: []
             application/json:
               schema:
                 $ref: "#/components/schemas/Otcl"

@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"go.uber.org/zap"
 
@@ -75,7 +76,21 @@ func (h *otclHandler) getOtcl(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, c); err != nil {
+	accept := r.Header.Get("Accept")
+	switch {
+	case strings.Contains(accept, "application/json"):
+		err = encodeResponse(ctx, w, http.StatusOK, c)
+	case strings.Contains(accept, "application/octet-stream"):
+		w.WriteHeader(http.StatusOK)
+		_, err = w.Write([]byte(c.Content))
+	default:
+		// On chrome "application/yaml" will download, while "text/yaml" will display
+		w.Header().Set("Content-Type", "text/yaml")
+		w.WriteHeader(http.StatusOK)
+		_, err = w.Write([]byte(c.Content))
+	}
+
+	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
