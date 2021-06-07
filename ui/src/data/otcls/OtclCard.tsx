@@ -13,14 +13,18 @@ import {
   IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
-import CopyButton from '../../shared/components/CopyButton'
+import CopyButton from 'shared/components/CopyButton'
 
 // Types
 import {Otcl} from 'types/otcl'
 
 // Hooks
-import {useOrgID} from '../../shared/useOrg'
+import {useOrgID} from 'shared/useOrg'
 import {useOtcls} from './useOtcls'
+import {
+  useNotification,
+  defaultSuccessNotification,
+} from 'shared/notification/useNotification'
 
 interface Props {
   otcl: Otcl
@@ -32,8 +36,9 @@ const OtclCard: React.FC<Props> = props => {
   const history = useHistory()
   const orgID = useOrgID()
   const {onNameUpdate, onDescUpdate} = useOtcls()
+  const {notify} = useNotification()
 
-  const context = (id: string): JSX.Element => {
+  const context = (id: string, name: string): JSX.Element => {
     return (
       <FlexBox margin={ComponentSize.Small}>
         <FlexBox.Child>
@@ -54,6 +59,12 @@ const OtclCard: React.FC<Props> = props => {
             color={ComponentColor.Default}
             contentName={'cn'}
             size={ComponentSize.ExtraSmall}
+            onClick={() =>
+              notify({
+                ...defaultSuccessNotification,
+                message: `Copy Otcl "${name}" url success`,
+              })
+            }
           />
         </FlexBox.Child>
       </FlexBox>
@@ -61,7 +72,7 @@ const OtclCard: React.FC<Props> = props => {
   }
 
   return (
-    <ResourceCard key={otcl.id} contextMenu={context(otcl.id)}>
+    <ResourceCard key={otcl.id} contextMenu={context(otcl.id, otcl.name)}>
       <ResourceCard.EditableName
         name={otcl.name}
         onClick={() => {
