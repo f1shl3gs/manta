@@ -38,15 +38,13 @@ const CopyButton: React.FC<Props> = props => {
   } = props
 
   const handleCopy = (copiedText: string, isSuccessful: boolean) => {
-    if (onClick) {
-      onClick()
-    }
-
     if (onCopyText) {
       onCopyText(copiedText, isSuccessful)
     }
 
-    console.log('todo notification')
+    if (onClick) {
+      onClick()
+    }
   }
 
   return (
