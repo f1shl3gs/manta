@@ -12,10 +12,12 @@ import Cells from './Cells'
 // Hooks
 import {DashboardProvider, useDashboard} from './useDashboard'
 import VariablesControlBar from './variablesControlBar/VariablesControlBar'
+import {usePresentationMode} from '../../shared/usePresentationMode'
 
 const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`
 
 const DashboardPage: React.FC = () => {
+  const {inPresentationMode} = usePresentationMode()
   const {cells, remoteDataState, showVariablesControls} = useDashboard()
 
   return (
@@ -27,7 +29,11 @@ const DashboardPage: React.FC = () => {
         >
           <DashboardHeader />
           {/* todo: move VariablesControlBar to DashboardHeader */}
-          {showVariablesControls ? <VariablesControlBar /> : <></>}
+          {showVariablesControls && !inPresentationMode ? (
+            <VariablesControlBar />
+          ) : (
+            <></>
+          )}
 
           <Page.Contents
             fullWidth={true}
