@@ -29,7 +29,6 @@ require (
 	github.com/prometheus/client_golang v1.10.0
 	github.com/prometheus/common v0.20.0
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
-	github.com/pyroscope-io/pyroscope v0.0.30
 	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/soheilhy/cmux v0.1.5-0.20210205191134-5ec6847320e5
 	github.com/spf13/cast v1.3.1 // indirect
@@ -61,3 +60,7 @@ replace k8s.io/client-go => k8s.io/client-go v0.20.0
 //
 // While this is necessary, make sure that the require block above does not diverge.
 replace go.etcd.io/etcd/pkg/v3 => go.etcd.io/etcd/pkg/v3 v3.0.0-20201109164711-01844fd28560
+
+// offical httprouter is not support for wildcard paths with other children
+// more info: https://github.com/julienschmidt/httprouter/pull/329 and https://github.com/gin-gonic/gin/pull/2706
+replace github.com/julienschmidt/httprouter v1.3.1-0.20200114094804-8c9f31f047a3 => ./third_party/httprouter

@@ -9,7 +9,6 @@ import {
   UseFetchArrayReturn,
   UseFetchObjectReturn,
   UseFetchArgs,
-  CachePolicies,
   FetchData,
   NoArgs,
   RouteOrBody,
@@ -27,17 +26,12 @@ import {
   sleep,
   makeError,
 } from './utils'
-import useCache from './useCache'
-
-const {CACHE_FIRST} = CachePolicies
 
 function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
   const {host, path, customOptions, requestInit, dependencies} = useFetchArgs(
     ...args
   )
   const {
-    cacheLife,
-    cachePolicy, // 'cache-first' by default
     interceptors,
     onAbort,
     onError,
@@ -53,8 +47,6 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
     timeout,
     ...defaults
   } = customOptions
-
-  const cache = useCache({persist, cacheLife, cachePolicy})
 
   const controller = useRef<AbortController>()
   const res = useRef<Res<TData>>({} as Res<TData>)
@@ -84,8 +76,6 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
           requestInit,
           method,
           theController,
-          cacheLife,
-          cache,
           host,
           path,
           routeOrBody,
@@ -113,11 +103,7 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
         let newRes
 
         try {
-          if (response.isCached && cachePolicy === CACHE_FIRST) {
-            newRes = response.cached as Response
-          } else {
-            newRes = await fetch(url, options)
-          }
+          newRes = await fetch(url, options)
           res.current = newRes.clone()
 
           newData = await tryGetData(newRes, defaults.data, responseType)
@@ -149,10 +135,6 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
           if (shouldRetry) {
             const theData = await retry(opts, routeOrBody, body)
             return theData
-          }
-
-          if (cachePolicy === CACHE_FIRST) {
-            await cache.set(response.id, newRes.clone())
           }
 
           if (Array.isArray(data.current) && !!(data.current.length % perPage))
@@ -238,11 +220,9 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
       host,
       path,
       interceptors,
-      cachePolicy,
       perPage,
       timeout,
       persist,
-      cacheLife,
       onTimeout,
       defaults.data,
       onNewData,
@@ -268,7 +248,6 @@ function useFetch<TData = any>(...args: UseFetchArgs): UseFetch<TData> {
           query: (query: any, variables: any) => post({query, variables}),
           mutate: (mutation: any, variables: any) =>
             post({mutation, variables}),
-          cache,
         },
         {
           loading: {get: () => loading.current},

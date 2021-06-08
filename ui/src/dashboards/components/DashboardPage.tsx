@@ -12,7 +12,7 @@ import Cells from './Cells'
 // Hooks
 import {DashboardProvider, useDashboard} from './useDashboard'
 import VariablesControlBar from './variablesControlBar/VariablesControlBar'
-import {usePresentationMode} from '../../shared/usePresentationMode'
+import {usePresentationMode} from 'shared/usePresentationMode'
 
 const dashRoute = `/orgs/:orgID/dashboards/:dashboardID`
 

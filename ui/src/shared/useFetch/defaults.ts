@@ -1,12 +1,10 @@
-import {Flatten, CachePolicies, UseFetchArgsReturn} from './types'
+import {Flatten, UseFetchArgsReturn} from './types'
 import {isObject} from './utils'
 
 export const useFetchArgsDefaults: UseFetchArgsReturn = {
   host: '',
   path: undefined,
   customOptions: {
-    cacheLife: 0,
-    cachePolicy: CachePolicies.NO_CACHE,
     interceptors: {},
     onAbort: () => {
       /* do nothing */

@@ -3,17 +3,12 @@ package web
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/julienschmidt/httprouter"
 
 	"go.uber.org/zap"
-)
-
-var (
-	ErrParamsNotFound = errors.New("params not found")
 )
 
 func idFromRequest(r *http.Request) (manta.ID, error) {
@@ -31,11 +26,11 @@ func idFromRequest(r *http.Request) (manta.ID, error) {
 
 func orgIDFromRequest(r *http.Request) (manta.ID, error) {
 	var (
-		id  manta.ID
-		txt = r.URL.Query().Get("orgID")
+		id     manta.ID
+		params = httprouter.ParamsFromContext(r.Context())
 	)
 
-	err := id.DecodeFromString(txt)
+	err := id.DecodeFromString(params.ByName("orgID"))
 	if err != nil {
 		return 0, &manta.Error{
 			Code: manta.EInvalid,

@@ -35,13 +35,13 @@ const (
 	StatusSuccess status = "success"
 	StatusError   status = "error"
 
-	instantQueryPath = "/api/v1/query"
-	rangeQueryPath   = "/api/v1/query_range"
+	instantQueryPath = "/api/v1/orgs/:orgID/query"
+	rangeQueryPath   = "/api/v1/orgs/:orgID/query_range"
 
-	promPrefix          = "/api/v1/query/:orgID/"
-	promMetadataPath    = "/api/v1/query/:orgID/api/v1/metadata"
-	promLabelNamesPath  = "/api/v1/query/:orgID/api/v1/labels"
-	promLabelValuesPath = "/api/v1/query/:orgID/api/v1/label/:name/values"
+	promPrefix          = "/api/v1/orgs/:orgID/query/"
+	promMetadataPath    = "/api/v1/orgs/:orgID/query/api/v1/metadata"
+	promLabelNamesPath  = "/api/v1/orgs/:orgID/query/api/v1/labels"
+	promLabelValuesPath = "/api/v1/orgs/:orgID/query/api/v1/label/:name/values"
 )
 
 var (

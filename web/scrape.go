@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	scrapePrefix = "/api/v1/scrapes"
-	scrapeIDPath = "/api/v1/scrapes/:id"
+	scrapePrefix = "/api/v1/orgs/:orgID/scrapes"
+	scrapeIDPath = "/api/v1/orgs/:orgID/scrapes/:id"
 )
 
 type ScrapeTargetHandler struct {

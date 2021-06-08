@@ -13,6 +13,7 @@ import {useOrgID} from 'shared/useOrg'
 // Types
 import {NotificationEndpoint} from '../../client'
 import {RemoteDataState} from '@influxdata/clockface'
+import {useFetch} from '../../shared/useFetch'
 
 const [NotificationEndpointsProvider, useNotificationEndpoints] = constate(
   () => {
@@ -22,10 +23,12 @@ const [NotificationEndpointsProvider, useNotificationEndpoints] = constate(
     const orgID = useOrgID()
     const {notify} = useNotification()
 
+    // const {data = [], error, loading } = useFetch(`/notification_endpoints`, {})
+
     useEffect(() => {
       setLoading(RemoteDataState.Loading)
 
-      fetch(`/api/v1/notification_endpoints?orgID=${orgID}`)
+      fetch(`/notification_endpoints`)
         .then(resp => resp.json())
         .then(data => {
           setEndpoints(data)

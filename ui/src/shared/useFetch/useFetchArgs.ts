@@ -99,11 +99,7 @@ export default function useFetchArgs(
     return defaults.dependencies
   }, [optionsOrOverwriteGlobalOrDeps, deps])
 
-  const {cacheLife, retries, retryDelay, retryOn} = options
-  invariant(
-    Number.isInteger(cacheLife) && cacheLife >= 0,
-    '`cacheLife` must be a number >= 0'
-  )
+  const {retries, retryDelay, retryOn} = options
   invariant(
     Number.isInteger(retries) && retries >= 0,
     '`retries` must be a number >= 0'

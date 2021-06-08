@@ -60,12 +60,10 @@ message User {
 message Template {
   uint64 id = 1 [(gogoproto.customname) = "ID", (gogoproto.casttype) = "ID"];
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   string name = 4;
   string desc = 5;
   string url = 6;
-  string content = 7;
 }
 
 message Resource {

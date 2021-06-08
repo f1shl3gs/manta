@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	otclsPrefix = "/api/v1/otcls"
-	otclsIDPath = "/api/v1/otcls/:id"
+	otclsPrefix = "/api/v1/orgs/:orgID/otcls"
+	otclsIDPath = "/api/v1/orgs/:orgID/otcls/:id"
 )
 
 type otclHandler struct {

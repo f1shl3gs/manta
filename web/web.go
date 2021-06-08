@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/pprof"
+	"strings"
 
 	tsdb2 "github.com/f1shl3gs/manta/pkg/tsdb"
 	"github.com/julienschmidt/httprouter"
@@ -56,6 +57,12 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetri
 	}
 
 	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if strings.HasPrefix(path, "/api/") {
+			http.NotFound(w, r)
+			return
+		}
+
 		assetsHandler.ServeHTTP(w, r)
 	})
 

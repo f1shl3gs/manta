@@ -5,7 +5,7 @@ import {Route, Switch} from 'react-router-dom'
 // Components
 import {Page, Tabs} from '@influxdata/clockface'
 import Navigation from '../layout/resourcePage/Navigation'
-import VariablesPage from './VariablesPage'
+import Variables from './Variables'
 import Todo from '../components/Todo'
 
 // Hooks
@@ -46,7 +46,7 @@ const Settings: React.FC = () => {
         <Tabs.TabContents>
           <Switch>
             <Route path={`${pagePrefix}/variables/:id`} component={Todo} />
-            <Route path={`${pagePrefix}/variables`} component={VariablesPage} />
+            <Route path={`${pagePrefix}/variables`} component={Variables} />
             <Route path={`${pagePrefix}/secrets/:id`} component={Todo} />
             <Route path={`${pagePrefix}/secrets`} component={Todo} />
           </Switch>

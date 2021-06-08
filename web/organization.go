@@ -12,7 +12,7 @@ import (
 
 const (
 	orgsPrefix = "/api/v1/orgs"
-	orgsIDPath = "/api/v1/orgs/:id"
+	orgsIDPath = "/api/v1/orgs/:orgID"
 )
 
 type OrganizationHandler struct {
@@ -29,13 +29,13 @@ func NewOrganizationHandler(logger *zap.Logger, router *Router, b *Backend) {
 		OrganizationService: b.OrganizationService,
 	}
 
-	h.HandlerFunc(http.MethodGet, orgsPrefix, h.handleGetOrgs)
-	h.HandlerFunc(http.MethodPost, orgsPrefix, h.handleCreateOrg)
-	h.HandlerFunc(http.MethodDelete, orgsIDPath, h.handleDeleteOrg)
+	h.HandlerFunc(http.MethodGet, orgsPrefix, h.handleList)
+	h.HandlerFunc(http.MethodPost, orgsPrefix, h.handleCreate)
+	h.HandlerFunc(http.MethodDelete, orgsIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodGet, orgsIDPath, h.handleGetOrg)
 }
 
-func (h *OrganizationHandler) handleGetOrgs(w http.ResponseWriter, r *http.Request) {
+func (h *OrganizationHandler) handleList(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
 	)
@@ -66,7 +66,7 @@ func decodeOrganization(r io.Reader) (*manta.Organization, error) {
 	return org, nil
 }
 
-func (h *OrganizationHandler) handleCreateOrg(w http.ResponseWriter, r *http.Request) {
+func (h *OrganizationHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
 	)
@@ -94,7 +94,7 @@ func (h *OrganizationHandler) handleCreateOrg(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (h *OrganizationHandler) handleDeleteOrg(w http.ResponseWriter, r *http.Request) {
+func (h *OrganizationHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	id, err := idFromRequest(r)
@@ -113,13 +113,14 @@ func (h *OrganizationHandler) handleDeleteOrg(w http.ResponseWriter, r *http.Req
 
 func (h *OrganizationHandler) handleGetOrg(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id, err := idFromRequest(r)
+
+	orgID, err := orgIDFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	org, err := h.OrganizationService.FindOrganizationByID(ctx, id)
+	org, err := h.OrganizationService.FindOrganizationByID(ctx, orgID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

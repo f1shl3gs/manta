@@ -20,65 +20,11 @@ export enum HTTPMethod {
   PUT = 'PUT',
 }
 
-// https://www.apollographql.com/docs/react/api/react/hoc/#optionsfetchpolicy
-export enum CachePolicies {
-  /**
-   * This is the default value where we always try reading data
-   * from your cache first. If all the data needed to fulfill
-   * your query is in the cache then that data will be returned.
-   * useFetch will only fetch from the network if a cached result
-   * is not available. This fetch policy aims to minimize the number
-   * of network requests sent when rendering your component.
-   */
-  CACHE_FIRST = 'cache-first',
-  /**
-   * This fetch policy will have useFetch first trying to read data
-   * from your cache. If all the data needed to fulfill your query
-   * is in the cache then that data will be returned. However,
-   * regardless of whether or not the full data is in your cache
-   * this fetchPolicy will always execute query with the network
-   * interface unlike cache-first which will only execute your query
-   * if the query data is not in your cache. This fetch policy optimizes
-   * for users getting a quick response while also trying to keep
-   * cached data consistent with your server data at the cost of extra
-   * network requests.
-   */
-  CACHE_AND_NETWORK = 'cache-and-network', // not implemented
-  /**
-   * This fetch policy will never return your initial data from the
-   * cache. Instead it will always make a request using your network
-   * interface to the server. This fetch policy optimizes for data
-   * consistency with the server, but at the cost of an instant response
-   * to the user when one is available.
-   */
-  NETWORK_ONLY = 'network-only', // not implemented
-  /**
-   * This fetch policy will never execute a query using your network
-   * interface. Instead it will always try reading from the cache. If the
-   * data for your query does not exist in the cache then an error will be
-   * thrown. This fetch policy allows you to only interact with data in
-   * your local client cache without making any network requests which
-   * keeps your component fast, but means your local data might not be
-   * consistent with what is on the server.
-   */
-  CACHE_ONLY = 'cache-only', // not implemented
-  /**
-   * This fetch policy will never return your initial data from the cache.
-   * Instead it will always make a request using your network interface to
-   * the server. Unlike the network-only policy, it also will not write
-   * any data to the cache after the query completes.
-   */
-  NO_CACHE = 'no-cache', // not implemented
-  EXACT_CACHE_AND_NETWORK = 'exact-cache-and-network', // not implemented
-}
-
 export interface DoFetchArgs {
   url: string
   options: RequestInit
   response: {
-    isCached: boolean
     id: string
-    cached?: Response
   }
 }
 
@@ -141,7 +87,6 @@ export interface ReqBase<TData> {
   data: TData | undefined
   loading: boolean
   error: Error
-  cache: Cache
 }
 
 export interface Res<TData> extends Response {
@@ -187,18 +132,7 @@ export type Interceptors<TData = any> = {
   response?: ({response}: {response: Res<TData>}) => Promise<Res<TData>>
 }
 
-// this also holds the response keys. It mimics js Map
-export type Cache = {
-  get: (name: string) => Promise<Response | undefined>
-  set: (name: string, data: Response) => Promise<void>
-  has: (name: string) => Promise<boolean>
-  delete: (...names: string[]) => Promise<void>
-  clear: () => void
-}
-
 export interface CustomOptions {
-  cacheLife: number
-  cachePolicy: CachePolicies
   data: any
   interceptors: Interceptors
   loading: boolean
@@ -245,8 +179,6 @@ export type UseFetchArgsReturn = {
   host: string
   path?: string
   customOptions: {
-    cacheLife: number
-    cachePolicy: CachePolicies
     interceptors: Interceptors
     onAbort: () => void
     onError: OnError

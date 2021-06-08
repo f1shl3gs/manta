@@ -14,7 +14,7 @@ import {DashboardQuery} from 'types/Dashboard'
 import {Row, transformToRows} from 'utils/transform'
 
 const useQueryResult = (queries: DashboardQuery[], deps?: any[]) => {
-  const {get} = useFetch(`/api/v1/query_range`, {})
+  const {get} = useFetch(`query_range`, {})
   const {start, end, step} = useAutoRefresh()
   const orgID = useOrgID()
   const [errors, setErrors] = useState()

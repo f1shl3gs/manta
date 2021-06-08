@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	SecretPrefix = "/api/v1/orgs/{:orgID}/secrets"
+	SecretPrefix = "/api/v1/orgs/:orgID//secrets"
 )
 
 type SecretHandler struct {

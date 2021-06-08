@@ -1,4 +1,4 @@
-import {HTTPMethod, Interceptors, ValueOf, DoFetchArgs, Cache} from './types'
+import {HTTPMethod, Interceptors, ValueOf, DoFetchArgs} from './types'
 import {invariant, isServer, isString, isBodyObject, addSlash} from './utils'
 
 const {GET} = HTTPMethod
@@ -7,8 +7,6 @@ export default async function doFetchArgs<TData = any>(
   initialOptions: RequestInit,
   method: HTTPMethod,
   controller: AbortController,
-  cacheLife: number,
-  cache: Cache,
   host?: string,
   path?: string,
   routeOrBody?: string | BodyInit | object,
@@ -112,9 +110,7 @@ export default async function doFetchArgs<TData = any>(
     url,
     options,
     response: {
-      isCached: await cache.has(responseID),
       id: responseID,
-      cached: (await cache.get(responseID)) as Response | undefined,
     },
   }
 }

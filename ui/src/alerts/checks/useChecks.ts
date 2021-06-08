@@ -1,6 +1,6 @@
 // Libraries
 import constate from 'constate'
-import {CachePolicies, useFetch} from 'shared/useFetch'
+import {useFetch} from 'shared/useFetch'
 
 import {useOrgID} from 'shared/useOrg'
 import remoteDataState from 'utils/rds'
@@ -15,17 +15,9 @@ interface CheckUpdate {
 const [ChecksProvider, useChecks] = constate(
   () => {
     const orgID = useOrgID()
-    const {data, error, loading, get} = useFetch(
-      `/api/v1/checks?orgID=${orgID}`,
-      {
-        cachePolicy: CachePolicies.NO_CACHE,
-      },
-      []
-    )
-
-    const {patch} = useFetch(`/api/v1/checks`, {})
-
-    const {del} = useFetch(`/api/v1/checks`, {})
+    const {data, error, loading, get} = useFetch(`checks`, {}, [])
+    const {patch} = useFetch(`checks`, {})
+    const {del} = useFetch(`checks`, {})
 
     const patchCheck = useCallback(
       (id: string, udp: CheckUpdate) => {

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	LokiPrefix = "/loki/api/v1"
+	LokiPrefix = "/api/v1/orgs/:orgID/loki"
 )
 
 type lokiHandler struct {

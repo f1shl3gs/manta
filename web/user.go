@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	userPrefix = "/api/v1/users"
-	userIDPath = "/api/v1/users/:id"
+	userPrefix = "/api/v1/orgs/:orgID/users"
+	userIDPath = "/api/v1/orgs/:orgID/users/:id"
 	viewerPath = "/api/v1/viewer"
 )
 
@@ -138,20 +138,3 @@ func (h *UserHandler) handleAdd(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusAccepted)
 }
-
-/*
-func (h *UserHandler) viewerHandler(w http.ResponseWriter, r *http.Request) {
-	var (
-		ctx = r.Context()
-	)
-
-	auth := authorizer.FromContext(r.Context())
-	if auth == nil {
-		encodeResponse(ctx, w, http.StatusUnauthorized, nil)
-		return
-	}
-
-	if err := encodeResponse(ctx, w, http.StatusOK, auth); err != nil {
-		logEncodingError(h.logger, r, err)
-	}
-}*/

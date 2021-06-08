@@ -47,7 +47,7 @@ const [CheckProvider, useCheck] = constate(
       RemoteDataState.NotStarted
     )
 
-    const {get, post} = useFetch(`/api/v1/checks/${id}`, {})
+    const {get, post} = useFetch(`/checks/${id}`, {})
 
     useEffect(() => {
       setRemoteDataState(RemoteDataState.Loading)

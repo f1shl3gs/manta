@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	VariablePrefix = "/api/v1/variables"
-	VariableIDPath = "/api/v1/variables/:id"
+	VariablePrefix = "/api/v1/orgs/:orgID/variables"
+	VariableIDPath = "/api/v1/orgs/:orgID/variables/:id"
 )
 
 type VariableHandler struct {

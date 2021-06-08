@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	DashboardPrefix     = "/api/v1/dashboards"
-	DashboardIDPath     = "/api/v1/dashboards/:id"
-	DashboardCellPrefix = "/api/v1/dashboards/:id/cells"
-	DashboardCellIDPath = "/api/v1/dashboards/:id/cells/:cellID"
+	DashboardPrefix     = "/api/v1/orgs/:orgID/dashboards"
+	DashboardIDPath     = "/api/v1/orgs/:orgID/dashboards/:id"
+	DashboardCellPrefix = "/api/v1/orgs/:orgID/dashboards/:id/cells"
+	DashboardCellIDPath = "/api/v1/orgs/:orgID/dashboards/:id/cells/:cellID"
 )
 
 type DashboardHandler struct {

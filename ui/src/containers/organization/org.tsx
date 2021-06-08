@@ -11,7 +11,7 @@ import Logs from 'logs/Logs'
 import Dashboards from 'dashboards/Dashboards'
 import DashboardPage from 'dashboards/components/DashboardPage'
 import Nav from 'layout/Nav'
-import {useFetch} from 'shared/useFetch'
+import {Provider, useFetch} from 'shared/useFetch'
 import remoteDataState from 'utils/rds'
 import ProfilePage from '../../profile/ProfilePage'
 import PluginsIndex from '../../plugins/PluginsIndex'
@@ -29,50 +29,56 @@ const Org: React.FC = () => {
 
   return (
     <SpinnerContainer loading={rds} spinnerComponent={<TechnoSpinner />}>
-      <OrgProvider initialOrg={data}>
-        <Nav />
+      <Provider url={`/api/v1/orgs/${orgID}`}>
+        <OrgProvider initialOrg={data}>
+          <Nav />
 
-        <Switch>
-          {/* todo: memorize the path with localStorage? */}
-          <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
-          <Route exact path={`${orgPath}/plugins`} component={PluginsIndex} />
-          <Route
-            exact
-            path={`${orgPath}/plugins/:id`}
-            component={PluginDetailsView}
-          />
+          <Switch>
+            {/* todo: memorize the path with localStorage? */}
+            <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
+            <Route exact path={`${orgPath}/plugins`} component={PluginsIndex} />
+            <Route
+              exact
+              path={`${orgPath}/plugins/:id`}
+              component={PluginDetailsView}
+            />
 
-          {/* OpenTelemetry Collectors */}
-          {/* Data */}
-          <Route path={`${orgPath}/data`} component={Data} />
-          {/*<Route path={`${orgPath}/otcls`} component={Otcl} />*/}
+            {/* OpenTelemetry Collectors */}
+            {/* Data */}
+            <Route path={`${orgPath}/data`} component={Data} />
+            {/*<Route path={`${orgPath}/otcls`} component={Otcl} />*/}
 
-          {/* Alerts */}
-          <Route path={`${orgPath}/alerts`} component={AlertsPage} />
+            {/* Alerts */}
+            <Route path={`${orgPath}/alerts`} component={AlertsPage} />
 
-          {/* Traces */}
-          <Route path={`${orgPath}/traces`} component={TracePage} />
+            {/* Traces */}
+            <Route path={`${orgPath}/traces`} component={TracePage} />
 
-          {/* Metrics */}
-          <Route path={`${orgPath}/metrics`} component={Todo} />
+            {/* Metrics */}
+            <Route path={`${orgPath}/metrics`} component={Todo} />
 
-          {/* Logs */}
-          <Route path={`${orgPath}/logs`} component={Logs} />
+            {/* Logs */}
+            <Route path={`${orgPath}/logs`} component={Logs} />
 
-          {/* Profile */}
-          <Route path={`${orgPath}/profile`} component={ProfilePage} />
+            {/* Profile */}
+            <Route path={`${orgPath}/profile`} component={ProfilePage} />
 
-          {/* Dashboards */}
-          <Route exact path={`${orgPath}/dashboards`} component={Dashboards} />
-          <Route
-            path={`${orgPath}/dashboards/:dashboardID`}
-            component={DashboardPage}
-          />
+            {/* Dashboards */}
+            <Route
+              exact
+              path={`${orgPath}/dashboards`}
+              component={Dashboards}
+            />
+            <Route
+              path={`${orgPath}/dashboards/:dashboardID`}
+              component={DashboardPage}
+            />
 
-          {/* Settings */}
-          <Route path={`${orgPath}/settings`} component={Settings} />
-        </Switch>
-      </OrgProvider>
+            {/* Settings */}
+            <Route path={`${orgPath}/settings`} component={Settings} />
+          </Switch>
+        </OrgProvider>
+      </Provider>
     </SpinnerContainer>
   )
 }
