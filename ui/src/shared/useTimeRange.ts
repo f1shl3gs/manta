@@ -10,12 +10,16 @@ import useSearchParams from './useSearchParams'
 
 // Constants
 import {pastHourTimeRange, SELECTABLE_TIME_RANGES} from '../constants/timeRange'
+import {
+  PARAMS_TIME_RANGE_LOW,
+  PARAMS_TIME_RANGE_TYPE,
+} from '../constants/params'
 
 const [TimeRangeProvider, useTimeRange] = constate(
   () => {
     const {params, setParams} = useSearchParams()
     const [timeRange, setTimeRange] = useState<TimeRange>(() => {
-      switch (params.get('_type')) {
+      switch (params.get(PARAMS_TIME_RANGE_TYPE)) {
         case 'selectable-duration':
           const lower = params.get('_type')
           return (
@@ -37,7 +41,7 @@ const [TimeRangeProvider, useTimeRange] = constate(
       }
 
       setParams((prev: URLSearchParams) => {
-        prev.set('_lower', timeRange.lower)
+        prev.set(PARAMS_TIME_RANGE_LOW, timeRange.lower)
         if (timeRange.upper) {
           prev.set('_upper', timeRange.upper)
         }

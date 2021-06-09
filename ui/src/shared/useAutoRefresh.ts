@@ -11,6 +11,7 @@ import {AutoRefresh, AutoRefreshStatus} from 'types/AutoRefresh'
 import {useTimeRange} from './useTimeRange'
 import useSearchParams from './useSearchParams'
 import {parseDuration} from '../utils/duration'
+import {PARAMS_INTERVAL} from '../constants/params'
 
 const MAX_POINT = 1024
 const MIN_STEP = 14
@@ -49,7 +50,7 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(
     const {params} = useSearchParams()
 
     const [autoRefresh, setAutoRefresh] = useState<AutoRefresh>(() => {
-      const val = params.get('_interval')
+      const val = params.get(PARAMS_INTERVAL)
       if (val === null) {
         // todo: set default and update params
         return {

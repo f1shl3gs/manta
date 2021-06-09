@@ -30,7 +30,11 @@ const [OtclProvider, useOtcl] = constate(
       }
 
       setLoading(RemoteDataState.Loading)
-      fetch(`/api/v1/otcls/${id}`)
+      fetch(`/api/v1/otcls/${id}`, {
+        headers: {
+          Accept: 'application/json',
+        },
+      })
         .then(resp => resp.json())
         .then(data => {
           setOtcl(data)

@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	ChecksPrefix = `/api/v1/orgs/:orgID/checks`
-	ChecksIDPath = `/api/v1/orgs/:orgID/checks/:id`
+	ChecksPrefix = `/api/v1/checks`
+	ChecksIDPath = `/api/v1/checks/:id`
 )
 
 type ChecksHandler struct {

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	keyringPrefix = "/api/v1/orgs/:orgID/keyring"
+	keyringPrefix = "/api/v1/keyring"
 )
 
 type keyringHandler struct {

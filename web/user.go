@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	userPrefix = "/api/v1/orgs/:orgID/users"
-	userIDPath = "/api/v1/orgs/:orgID/users/:id"
+	userPrefix = "/api/v1/users"
+	userIDPath = "/api/v1/users/:id"
 	viewerPath = "/api/v1/viewer"
 )
 

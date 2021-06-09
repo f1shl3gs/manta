@@ -1,10 +1,12 @@
 // Libraries
 import constate from 'constate'
+import {useCallback} from 'react'
+
+// Hooks
 import {useFetch} from 'shared/useFetch'
 
-import {useOrgID} from 'shared/useOrg'
+// Utils
 import remoteDataState from 'utils/rds'
-import {useCallback} from 'react'
 
 interface CheckUpdate {
   name?: string
@@ -14,7 +16,6 @@ interface CheckUpdate {
 
 const [ChecksProvider, useChecks] = constate(
   () => {
-    const orgID = useOrgID()
     const {data, error, loading, get} = useFetch(`checks`, {}, [])
     const {patch} = useFetch(`checks`, {})
     const {del} = useFetch(`checks`, {})
@@ -38,7 +39,7 @@ const [ChecksProvider, useChecks] = constate(
       checks: data || [],
       reload: get,
       del: (id: string) => {
-        return del(`/${id}?orgID=${orgID}`)
+        return del(`/${id}`)
       },
     }
   },

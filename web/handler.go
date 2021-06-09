@@ -26,11 +26,11 @@ func idFromRequest(r *http.Request) (manta.ID, error) {
 
 func orgIDFromRequest(r *http.Request) (manta.ID, error) {
 	var (
-		id     manta.ID
-		params = httprouter.ParamsFromContext(r.Context())
+		id   manta.ID
+		text = r.URL.Query().Get("orgID")
 	)
 
-	err := id.DecodeFromString(params.ByName("orgID"))
+	err := id.DecodeFromString(text)
 	if err != nil {
 		return 0, &manta.Error{
 			Code: manta.EInvalid,

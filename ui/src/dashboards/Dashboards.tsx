@@ -26,7 +26,7 @@ import {SortKey, SortTypes} from '../types/sort'
 const useCreateDash = () => {
   const orgID = useOrgID()
 
-  const {post} = useFetch<Dashboard>(`/api/v1/dashboards?orgID=${orgID}`, {
+  const {post} = useFetch<Dashboard>(`/api/v1/orgs/${orgID}/dashboards`, {
     body: {
       orgID,
     },

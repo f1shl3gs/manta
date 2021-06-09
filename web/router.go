@@ -26,7 +26,7 @@ func NewRouter() *Router {
 	}
 }
 
-// implement HTTPErrorHandler
+// HandleHTTPError implement HTTPErrorHandler
 func (r *Router) HandleHTTPError(ctx context.Context, err error, w http.ResponseWriter) {
 	if err == nil {
 		return

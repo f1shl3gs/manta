@@ -6,6 +6,8 @@ import {useFetch} from 'shared/useFetch'
 import remoteDataState from '../../utils/rds'
 import {Cells, Dashboard} from '../../types/Dashboard'
 import {Layout} from 'react-grid-layout'
+import useSearchParams from '../../shared/useSearchParams'
+import {PARAMS_SHOW_VARIABLES_CONTROLS} from '../../constants/params'
 
 const [DashboardProvider, useDashboard] = constate(
   () => {
@@ -15,19 +17,31 @@ const [DashboardProvider, useDashboard] = constate(
       {},
       []
     )
-    const [showVariablesControls, setShowVariablesControls] = useState(true)
+    const {params, setParams} = useSearchParams()
+    const [showVariablesControls, setShowVariablesControls] = useState(() => {
+      const v = params.get(PARAMS_SHOW_VARIABLES_CONTROLS)
+      return v === 'true'
+    })
+
     const toggleShowVariablesControls = useCallback(() => {
       setShowVariablesControls(!showVariablesControls)
-    }, [showVariablesControls])
+      setParams((prev: URLSearchParams) => {
+        prev.set(PARAMS_SHOW_VARIABLES_CONTROLS, `${!showVariablesControls}`)
+        return prev
+      })
+    }, [setParams, showVariablesControls])
 
     const {post: update} = useFetch(`/api/v1/dashboards/${dashboardID}`, {})
 
     // onRename
-    const onRename = useCallback((name: string) => {
-      return update({
-        name,
-      })
-    }, [])
+    const onRename = useCallback(
+      (name: string) => {
+        return update({
+          name,
+        })
+      },
+      [update]
+    )
 
     // addCell
     const {post: addCellPost} = useFetch(
@@ -44,7 +58,7 @@ const [DashboardProvider, useDashboard] = constate(
         // refresh
         get()
       })
-    }, [get])
+    }, [addCellPost, get])
 
     // delete cell by id
     const {del} = useFetch(`/api/v1/dashboards/${dashboardID}/cells/`, {})
@@ -74,7 +88,7 @@ const [DashboardProvider, useDashboard] = constate(
 
         return put(cells)
       },
-      [data]
+      [data, put]
     )
 
     return {

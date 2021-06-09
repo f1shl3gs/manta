@@ -15,6 +15,14 @@ import Context from 'components/context_menu/Context'
 import {useOrgID} from 'shared/useOrg'
 import {useDashboards} from '../useDashboards'
 
+// Constants
+import {
+  PARAMS_INTERVAL,
+  PARAMS_SHOW_VARIABLES_CONTROLS,
+  PARAMS_TIME_RANGE_LOW,
+  PARAMS_TIME_RANGE_TYPE,
+} from 'constants/params'
+
 interface Props {
   id: string
   name: string
@@ -80,9 +88,10 @@ const DashboardCard: React.FC<Props> = props => {
         onClick={() =>
           history.push(
             `/orgs/${orgID}/dashboards/${id}?${new URLSearchParams({
-              _interval: '15s',
-              _lower: 'now() - 1h',
-              _type: 'selectable-duration',
+              [PARAMS_INTERVAL]: '15s',
+              [PARAMS_TIME_RANGE_LOW]: 'now() - 1h',
+              [PARAMS_TIME_RANGE_TYPE]: 'selectable-duration',
+              [PARAMS_SHOW_VARIABLES_CONTROLS]: 'true',
             }).toString()}`
           )
         }

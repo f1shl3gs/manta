@@ -12,7 +12,7 @@ import (
 
 const (
 	orgsPrefix = "/api/v1/orgs"
-	orgsIDPath = "/api/v1/orgs/:orgID"
+	orgsIDPath = "/api/v1/orgs/:id"
 )
 
 type OrganizationHandler struct {
@@ -32,7 +32,7 @@ func NewOrganizationHandler(logger *zap.Logger, router *Router, b *Backend) {
 	h.HandlerFunc(http.MethodGet, orgsPrefix, h.handleList)
 	h.HandlerFunc(http.MethodPost, orgsPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, orgsIDPath, h.handleDelete)
-	h.HandlerFunc(http.MethodGet, orgsIDPath, h.handleGetOrg)
+	h.HandlerFunc(http.MethodGet, orgsIDPath, h.handleGet)
 }
 
 func (h *OrganizationHandler) handleList(w http.ResponseWriter, r *http.Request) {
@@ -111,10 +111,12 @@ func (h *OrganizationHandler) handleDelete(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h *OrganizationHandler) handleGetOrg(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+func (h *OrganizationHandler) handleGet(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+	)
 
-	orgID, err := orgIDFromRequest(r)
+	orgID, err := idFromRequest(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

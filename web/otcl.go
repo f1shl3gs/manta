@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	otclsPrefix = "/api/v1/orgs/:orgID/otcls"
-	otclsIDPath = "/api/v1/orgs/:orgID/otcls/:id"
+	otclsPrefix = "/api/v1/otcls"
+	otclsIDPath = "/api/v1/otcls/:id"
 )
 
 type otclHandler struct {
@@ -30,20 +30,22 @@ func otclService(logger *zap.Logger, router *Router, b *Backend) {
 		otclService: b.OtclService,
 	}
 
-	h.HandlerFunc(http.MethodGet, otclsIDPath, h.getOtcl)
-	h.HandlerFunc(http.MethodGet, otclsPrefix, h.getOtcls)
-	h.HandlerFunc(http.MethodPost, otclsPrefix, h.createOtcl)
-	h.HandlerFunc(http.MethodPatch, otclsIDPath, h.patchOtcl)
-	h.HandlerFunc(http.MethodDelete, otclsIDPath, h.deleteOtcl)
+	h.HandlerFunc(http.MethodGet, otclsIDPath, h.handleGet)
+	h.HandlerFunc(http.MethodGet, otclsPrefix, h.handleList)
+	h.HandlerFunc(http.MethodPost, otclsPrefix, h.handleCreate)
+	h.HandlerFunc(http.MethodPatch, otclsIDPath, h.handlePatch)
+	h.HandlerFunc(http.MethodDelete, otclsIDPath, h.handleDelete)
 }
 
-func (h *otclHandler) getOtcls(w http.ResponseWriter, r *http.Request) {
+func (h *otclHandler) handleList(w http.ResponseWriter, r *http.Request) {
 	var (
 		orgID manta.ID
 		ctx   = r.Context()
+		err   error
 	)
 
-	if err := orgID.DecodeFromString(r.URL.Query().Get("orgID")); err != nil {
+	orgID, err = orgIDFromRequest(r)
+	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
@@ -59,7 +61,7 @@ func (h *otclHandler) getOtcls(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *otclHandler) getOtcl(w http.ResponseWriter, r *http.Request) {
+func (h *otclHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
 	)
@@ -109,7 +111,7 @@ func (h *otclHandler) decodeOtclRequest(r *http.Request) (*manta.Otcl, error) {
 	return otcl, nil
 }
 
-func (h *otclHandler) createOtcl(w http.ResponseWriter, r *http.Request) {
+func (h *otclHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	otcl, err := h.decodeOtclRequest(r)
@@ -147,8 +149,8 @@ func decodeOtclPatch(r *http.Request, p *manta.OtclPatch) error {
 	return nil
 }
 
-// patchOtcl updates a Otcl
-func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
+// handlePatch updates a Otcl
+func (h *otclHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx   = r.Context()
 		patch manta.OtclPatch
@@ -177,7 +179,7 @@ func (h *otclHandler) patchOtcl(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *otclHandler) deleteOtcl(w http.ResponseWriter, r *http.Request) {
+func (h *otclHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
 	id, err := idFromRequest(r)

@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	NotificationEndpointPrefix = "/api/v1/orgs/:orgID/notification_endpoints"
-	NotificationEndpointIDPath = "/api/v1/orgs/:orgID/notification_endpoints/:id"
+	NotificationEndpointPrefix = "/api/v1/notification_endpoints"
+	NotificationEndpointIDPath = "/api/v1/notification_endpoints/:id"
 )
 
 type NotificationEndpointHandler struct {
