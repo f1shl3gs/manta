@@ -9,7 +9,13 @@ import ThresholdRangeInput from './ThresholdRangeInput'
 import ThresholdValueInput from './ThresholdValueInput'
 
 // Types
-import {CheckStatusLevel, Threshold} from '../../../types/Check'
+import {
+  CheckStatusLevel,
+  GreatThanThreshold,
+  InsideThreshold,
+  OutsideThreshold,
+  Threshold,
+} from 'types/Check'
 
 // Constants
 import {LEVEL_COMPONENT_COLORS} from '../../../constants/level'
@@ -22,7 +28,7 @@ interface Props {
 
 const ThresholdCondition: React.FC<Props> = props => {
   const {level, threshold} = props
-  const {onAddCondition} = useCheck()
+  const {onAddCondition, onChangeCondition} = useCheck()
 
   if (!threshold) {
     return (
@@ -41,17 +47,42 @@ const ThresholdCondition: React.FC<Props> = props => {
       level={level}
       threshold={threshold}
       // removeLevel={() => console.log('rl')}
-      changeThresholdType={() => console.log('change threshold type')}
+      changeThresholdType={type =>
+        onChangeCondition({
+          status: level as CheckStatusLevel,
+          threshold: {
+            type,
+            value: 0,
+          } as GreatThanThreshold,
+        })
+      }
     >
       {threshold.type === 'inside' || threshold.type === 'outside' ? (
         <ThresholdRangeInput
           threshold={threshold}
-          changeRange={v => console.log('changeRange', v)}
+          changeRange={(min, max) => {
+            onChangeCondition({
+              status: level as CheckStatusLevel,
+              threshold: {
+                type: threshold.type,
+                min,
+                max,
+              },
+            })
+          }}
         />
       ) : (
         <ThresholdValueInput
           threshold={threshold}
-          changeValue={v => console.log('changeValue', v)}
+          changeValue={v =>
+            onChangeCondition({
+              status: level as CheckStatusLevel,
+              threshold: {
+                type: threshold.type,
+                value: v,
+              },
+            })
+          }
         />
       )}
     </ThresholdStatement>

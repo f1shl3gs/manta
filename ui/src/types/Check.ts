@@ -29,6 +29,7 @@ export interface Check extends Common, CheckStatus {
   expr: string
   conditions: Condition[]
   labels: CheckLabel[]
+  cron: string
 }
 
 export interface ThresholdBase {

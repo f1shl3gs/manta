@@ -23,7 +23,7 @@ import {useCheck} from '../useCheck'
 import {DURATIONS} from 'constants/duration'
 
 const CheckMetaCard: React.FC = () => {
-  const {labels, onSetCron} = useCheck()
+  const {labels, cron, onSetCron} = useCheck()
 
   return (
     <BuilderCard
@@ -37,7 +37,7 @@ const CheckMetaCard: React.FC = () => {
             <Grid.Column widthSM={Columns.Six}>
               <Form.Element label={'Schedule Every'}>
                 <DurationInput
-                  value={'5m'}
+                  value={cron.slice(7)}
                   suggestions={DURATIONS}
                   onSubmit={v => onSetCron(`@every ${v}`)}
                   testID={'schedule-check'}

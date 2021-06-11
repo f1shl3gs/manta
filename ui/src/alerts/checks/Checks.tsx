@@ -1,5 +1,6 @@
 // Libraries
 import React, {useState} from 'react'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -20,14 +21,19 @@ import CheckExplainer from './CheckExplainer'
 
 // Hooks
 import {ChecksProvider, useChecks} from './useChecks'
+import {useOrgID} from 'shared/useOrg'
+
+// Utils
+import withProvider from 'utils/withProvider'
 
 // Types
 import {Check} from 'types/Check'
 import {SortKey, SortTypes} from 'types/sort'
-import withProvider from '../../utils/withProvider'
 
 const Checks: React.FC = () => {
   const {checks} = useChecks()
+  const history = useHistory()
+  const orgID = useOrgID()
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
@@ -64,6 +70,9 @@ const Checks: React.FC = () => {
       color={ComponentColor.Primary}
       titleText={'Create a new Check'}
       status={ComponentStatus.Default}
+      onClick={() => {
+        history.push(`/orgs/${orgID}/alerts/checks/new`)
+      }}
     />
   )
 

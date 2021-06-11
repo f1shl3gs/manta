@@ -38,7 +38,8 @@ const CheckOverlayHeader: React.FC = () => {
   const onSubmit = useCallback(() => {
     onSave()
       .then(() => {
-        history.push(`/orgs/${orgID}/alerts/checks`)
+        console.log('success')
+        // history.push(`/orgs/${orgID}/alerts/checks`)
       })
       .catch(err => {
         const message =

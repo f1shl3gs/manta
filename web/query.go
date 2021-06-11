@@ -21,7 +21,6 @@ import (
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/prometheus/prometheus/util/stats"
-	v1 "github.com/prometheus/prometheus/web/api/v1"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -61,10 +60,10 @@ type QueryHandler struct {
 	tenantStorage tsdb2.TenantStorage
 
 	// todo: dummy
-	targetRetriever v1.TargetRetriever
+	// targetRetriever v1.TargetRetriever
 }
 
-func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb2.TenantStorage, tr v1.TargetRetriever) {
+func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb2.TenantStorage) {
 	engOpts := promql.EngineOpts{
 		Logger:        log.NewZapToGokitLogAdapter(logger),
 		Reg:           prometheus.DefaultRegisterer,
@@ -78,17 +77,16 @@ func NewQueryHandler(logger *zap.Logger, router *Router, tenantStorage tsdb2.Ten
 	engine := promql.NewEngine(engOpts)
 
 	h := &QueryHandler{
-		logger:          logger,
-		Router:          router,
-		tenantStorage:   tenantStorage,
-		now:             time.Now,
-		engine:          engine,
-		targetRetriever: tr,
+		logger:        logger,
+		Router:        router,
+		tenantStorage: tenantStorage,
+		now:           time.Now,
+		engine:        engine,
 	}
 
 	h.HandlerFunc(http.MethodGet, instantQueryPath, h.handleInstantQuery)
 	h.HandlerFunc(http.MethodGet, rangeQueryPath, h.handleRangeQuery)
-	h.HandlerFunc(http.MethodGet, promMetadataPath, h.handleMetadata)
+	// h.HandlerFunc(http.MethodGet, promMetadataPath, h.handleMetadata)
 	h.HandlerFunc(http.MethodGet, promLabelNamesPath, h.handleLabelNames)
 	h.HandlerFunc(http.MethodPost, promLabelNamesPath, h.handleLabelNames)
 	h.HandlerFunc(http.MethodGet, promLabelValuesPath, h.handleLabelValues)
@@ -391,6 +389,7 @@ type metadata struct {
 	Unit string               `json:"unit"`
 }
 
+/*
 func (h *QueryHandler) handleMetadata(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx     = r.Context()
@@ -459,6 +458,7 @@ func (h *QueryHandler) handleMetadata(w http.ResponseWriter, r *http.Request) {
 		logEncodingError(h.logger, r, err)
 	}
 }
+*/
 
 func (h *QueryHandler) handleLabelNames(w http.ResponseWriter, r *http.Request) {
 	var (

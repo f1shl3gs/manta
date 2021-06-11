@@ -27,22 +27,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MemberResponse struct {
+type MembersResponse struct {
 	ID uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *MemberResponse) Reset()         { *m = MemberResponse{} }
-func (m *MemberResponse) String() string { return proto.CompactTextString(m) }
-func (*MemberResponse) ProtoMessage()    {}
-func (*MemberResponse) Descriptor() ([]byte, []int) {
+func (m *MembersResponse) Reset()         { *m = MembersResponse{} }
+func (m *MembersResponse) String() string { return proto.CompactTextString(m) }
+func (*MembersResponse) ProtoMessage()    {}
+func (*MembersResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3cfb3b8ec240c376, []int{0}
 }
-func (m *MemberResponse) XXX_Unmarshal(b []byte) error {
+func (m *MembersResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MemberResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MembersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MemberResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MembersResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -52,40 +52,40 @@ func (m *MemberResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *MemberResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MemberResponse.Merge(m, src)
+func (m *MembersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MembersResponse.Merge(m, src)
 }
-func (m *MemberResponse) XXX_Size() int {
+func (m *MembersResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MemberResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MemberResponse.DiscardUnknown(m)
+func (m *MembersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MembersResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MemberResponse proto.InternalMessageInfo
+var xxx_messageInfo_MembersResponse proto.InternalMessageInfo
 
-func (m *MemberResponse) GetID() uint64 {
+func (m *MembersResponse) GetID() uint64 {
 	if m != nil {
 		return m.ID
 	}
 	return 0
 }
 
-type MemberRequest struct {
+type MembersRequest struct {
 }
 
-func (m *MemberRequest) Reset()         { *m = MemberRequest{} }
-func (m *MemberRequest) String() string { return proto.CompactTextString(m) }
-func (*MemberRequest) ProtoMessage()    {}
-func (*MemberRequest) Descriptor() ([]byte, []int) {
+func (m *MembersRequest) Reset()         { *m = MembersRequest{} }
+func (m *MembersRequest) String() string { return proto.CompactTextString(m) }
+func (*MembersRequest) ProtoMessage()    {}
+func (*MembersRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3cfb3b8ec240c376, []int{1}
 }
-func (m *MemberRequest) XXX_Unmarshal(b []byte) error {
+func (m *MembersRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MemberRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MembersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MemberRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MembersRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -95,17 +95,17 @@ func (m *MemberRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *MemberRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MemberRequest.Merge(m, src)
+func (m *MembersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MembersRequest.Merge(m, src)
 }
-func (m *MemberRequest) XXX_Size() int {
+func (m *MembersRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *MemberRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_MemberRequest.DiscardUnknown(m)
+func (m *MembersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MembersRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MemberRequest proto.InternalMessageInfo
+var xxx_messageInfo_MembersRequest proto.InternalMessageInfo
 
 type AddMemberRequest struct {
 	Addr string `protobuf:"bytes,1,opt,name=addr,proto3" json:"addr,omitempty"`
@@ -268,8 +268,8 @@ func (m *RemoveMemberResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_RemoveMemberResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MemberResponse)(nil), "membership.MemberResponse")
-	proto.RegisterType((*MemberRequest)(nil), "membership.MemberRequest")
+	proto.RegisterType((*MembersResponse)(nil), "membership.MembersResponse")
+	proto.RegisterType((*MembersRequest)(nil), "membership.MembersRequest")
 	proto.RegisterType((*AddMemberRequest)(nil), "membership.AddMemberRequest")
 	proto.RegisterType((*AddMemberResponse)(nil), "membership.AddMemberResponse")
 	proto.RegisterType((*RemoveMemberRequest)(nil), "membership.RemoveMemberRequest")
@@ -279,24 +279,24 @@ func init() {
 func init() { proto.RegisterFile("cluster.proto", fileDescriptor_3cfb3b8ec240c376) }
 
 var fileDescriptor_3cfb3b8ec240c376 = []byte{
-	// 268 bytes of a gzipped FileDescriptorProto
+	// 270 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4d, 0xce, 0x29, 0x2d,
 	0x2e, 0x49, 0x2d, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xca, 0x4d, 0xcd, 0x4d, 0x4a,
 	0x2d, 0x2a, 0xce, 0xc8, 0x2c, 0x90, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x0b, 0xeb, 0x83, 0x58,
-	0x10, 0x15, 0x4a, 0x1a, 0x5c, 0x7c, 0xbe, 0x60, 0x35, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
+	0x10, 0x15, 0x4a, 0x9a, 0x5c, 0xfc, 0xbe, 0x10, 0x35, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
 	0xa9, 0x42, 0x62, 0x5c, 0x4c, 0x99, 0x29, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x2c, 0x4e, 0x6c, 0x8f,
-	0xee, 0xc9, 0x33, 0x79, 0xba, 0x04, 0x31, 0x65, 0xa6, 0x28, 0xf1, 0x73, 0xf1, 0xc2, 0x54, 0x16,
-	0x96, 0xa6, 0x16, 0x97, 0x28, 0xa9, 0x71, 0x09, 0x38, 0xa6, 0xa4, 0xa0, 0x88, 0x09, 0x09, 0x71,
-	0xb1, 0x24, 0xa6, 0xa4, 0x14, 0x81, 0xb5, 0x73, 0x06, 0x81, 0xd9, 0x4a, 0xc2, 0x5c, 0x82, 0x48,
-	0xea, 0x20, 0xb6, 0x28, 0xa9, 0x72, 0x09, 0x07, 0xa5, 0xe6, 0xe6, 0x97, 0xa5, 0xa2, 0xea, 0xe7,
-	0x43, 0x58, 0x0e, 0xb6, 0x54, 0x8c, 0x4b, 0x04, 0x55, 0x19, 0x44, 0xbb, 0xd1, 0x3d, 0x46, 0x2e,
-	0x2e, 0x5f, 0xb8, 0xdf, 0x84, 0xec, 0xb9, 0xd8, 0x20, 0x3c, 0x21, 0x49, 0x3d, 0x84, 0x97, 0xf5,
-	0x50, 0xcc, 0x96, 0x92, 0xc2, 0x26, 0x05, 0xf5, 0xb4, 0x13, 0x17, 0xb3, 0x63, 0x4a, 0x8a, 0x90,
-	0x0c, 0xb2, 0x12, 0x74, 0xcf, 0x49, 0xc9, 0xe2, 0x90, 0x85, 0x9a, 0xe1, 0xcd, 0xc5, 0x06, 0x71,
-	0xab, 0x90, 0x3c, 0xb2, 0x42, 0x2c, 0xde, 0x94, 0x52, 0xc0, 0xad, 0x00, 0x62, 0x98, 0x93, 0xc4,
-	0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c,
-	0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x24, 0xb1, 0x81, 0x23, 0xce, 0x18, 0x10,
-	0x00, 0x00, 0xff, 0xff, 0xa6, 0xc1, 0x23, 0xeb, 0xeb, 0x01, 0x00, 0x00,
+	0xee, 0xc9, 0x33, 0x79, 0xba, 0x04, 0x31, 0x65, 0xa6, 0x28, 0x09, 0x70, 0xf1, 0xc1, 0x95, 0x16,
+	0x96, 0xa6, 0x16, 0x97, 0x28, 0xa9, 0x71, 0x09, 0x38, 0xa6, 0xa4, 0x40, 0x04, 0xa1, 0x62, 0x42,
+	0x42, 0x5c, 0x2c, 0x89, 0x29, 0x29, 0x45, 0x60, 0xfd, 0x9c, 0x41, 0x60, 0xb6, 0x92, 0x30, 0x97,
+	0x20, 0x92, 0x3a, 0x88, 0x35, 0x4a, 0xaa, 0x5c, 0xc2, 0x41, 0xa9, 0xb9, 0xf9, 0x65, 0xa9, 0xa8,
+	0xfa, 0xf9, 0x10, 0xb6, 0x83, 0x6d, 0x15, 0xe3, 0x12, 0x41, 0x55, 0x06, 0xd1, 0x6e, 0xf4, 0x90,
+	0x91, 0x8b, 0xcb, 0x17, 0xee, 0x3b, 0x21, 0x27, 0x2e, 0x76, 0x28, 0x4f, 0x48, 0x4a, 0x0f, 0xe1,
+	0x6b, 0x3d, 0x54, 0x17, 0x4b, 0x49, 0x63, 0x95, 0x83, 0x7a, 0xdc, 0x89, 0x8b, 0xd9, 0x31, 0x25,
+	0x45, 0x48, 0x06, 0x59, 0x0d, 0xba, 0xff, 0xa4, 0x64, 0x71, 0xc8, 0x42, 0xcd, 0xf0, 0xe6, 0x62,
+	0x83, 0x38, 0x57, 0x48, 0x1e, 0x59, 0x21, 0x16, 0x9f, 0x4a, 0x29, 0xe0, 0x56, 0x00, 0x31, 0xcc,
+	0x49, 0xe2, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0,
+	0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0x92, 0xd8, 0xc0, 0xb1, 0x67,
+	0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xd1, 0xa2, 0xb5, 0xee, 0xf0, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -311,7 +311,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MembershipClient interface {
-	Member(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error)
+	Members(ctx context.Context, in *MembersRequest, opts ...grpc.CallOption) (*MembersResponse, error)
 	Add(ctx context.Context, in *AddMemberRequest, opts ...grpc.CallOption) (*AddMemberResponse, error)
 	Remove(ctx context.Context, in *RemoveMemberRequest, opts ...grpc.CallOption) (*RemoveMemberResponse, error)
 }
@@ -324,9 +324,9 @@ func NewMembershipClient(cc *grpc.ClientConn) MembershipClient {
 	return &membershipClient{cc}
 }
 
-func (c *membershipClient) Member(ctx context.Context, in *MemberRequest, opts ...grpc.CallOption) (*MemberResponse, error) {
-	out := new(MemberResponse)
-	err := c.cc.Invoke(ctx, "/membership.Membership/Member", in, out, opts...)
+func (c *membershipClient) Members(ctx context.Context, in *MembersRequest, opts ...grpc.CallOption) (*MembersResponse, error) {
+	out := new(MembersResponse)
+	err := c.cc.Invoke(ctx, "/membership.Membership/Members", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -353,7 +353,7 @@ func (c *membershipClient) Remove(ctx context.Context, in *RemoveMemberRequest, 
 
 // MembershipServer is the server API for Membership service.
 type MembershipServer interface {
-	Member(context.Context, *MemberRequest) (*MemberResponse, error)
+	Members(context.Context, *MembersRequest) (*MembersResponse, error)
 	Add(context.Context, *AddMemberRequest) (*AddMemberResponse, error)
 	Remove(context.Context, *RemoveMemberRequest) (*RemoveMemberResponse, error)
 }
@@ -362,8 +362,8 @@ type MembershipServer interface {
 type UnimplementedMembershipServer struct {
 }
 
-func (*UnimplementedMembershipServer) Member(ctx context.Context, req *MemberRequest) (*MemberResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Member not implemented")
+func (*UnimplementedMembershipServer) Members(ctx context.Context, req *MembersRequest) (*MembersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Members not implemented")
 }
 func (*UnimplementedMembershipServer) Add(ctx context.Context, req *AddMemberRequest) (*AddMemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
@@ -376,20 +376,20 @@ func RegisterMembershipServer(s *grpc.Server, srv MembershipServer) {
 	s.RegisterService(&_Membership_serviceDesc, srv)
 }
 
-func _Membership_Member_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MemberRequest)
+func _Membership_Members_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MembersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MembershipServer).Member(ctx, in)
+		return srv.(MembershipServer).Members(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/membership.Membership/Member",
+		FullMethod: "/membership.Membership/Members",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MembershipServer).Member(ctx, req.(*MemberRequest))
+		return srv.(MembershipServer).Members(ctx, req.(*MembersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -435,8 +435,8 @@ var _Membership_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MembershipServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Member",
-			Handler:    _Membership_Member_Handler,
+			MethodName: "Members",
+			Handler:    _Membership_Members_Handler,
 		},
 		{
 			MethodName: "Add",
@@ -451,7 +451,7 @@ var _Membership_serviceDesc = grpc.ServiceDesc{
 	Metadata: "cluster.proto",
 }
 
-func (m *MemberResponse) Marshal() (dAtA []byte, err error) {
+func (m *MembersResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -461,12 +461,12 @@ func (m *MemberResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MemberResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MembersResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MemberResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MembersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -479,7 +479,7 @@ func (m *MemberResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MemberRequest) Marshal() (dAtA []byte, err error) {
+func (m *MembersRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -489,12 +489,12 @@ func (m *MemberRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MemberRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *MembersRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MemberRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MembersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -617,7 +617,7 @@ func encodeVarintCluster(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MemberResponse) Size() (n int) {
+func (m *MembersResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -629,7 +629,7 @@ func (m *MemberResponse) Size() (n int) {
 	return n
 }
 
-func (m *MemberRequest) Size() (n int) {
+func (m *MembersRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -687,7 +687,7 @@ func sovCluster(x uint64) (n int) {
 func sozCluster(x uint64) (n int) {
 	return sovCluster(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MemberResponse) Unmarshal(dAtA []byte) error {
+func (m *MembersResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -710,10 +710,10 @@ func (m *MemberResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MemberResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MembersResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MemberResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MembersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -759,7 +759,7 @@ func (m *MemberResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MemberRequest) Unmarshal(dAtA []byte) error {
+func (m *MembersRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -782,10 +782,10 @@ func (m *MemberRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MemberRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: MembersRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MemberRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MembersRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

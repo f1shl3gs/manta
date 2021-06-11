@@ -7,6 +7,7 @@ import {useFetch} from 'shared/useFetch'
 
 // Utils
 import remoteDataState from 'utils/rds'
+import {useOrgID} from '../../shared/useOrg'
 
 interface CheckUpdate {
   name?: string
@@ -16,9 +17,14 @@ interface CheckUpdate {
 
 const [ChecksProvider, useChecks] = constate(
   () => {
-    const {data, error, loading, get} = useFetch(`checks`, {}, [])
-    const {patch} = useFetch(`checks`, {})
-    const {del} = useFetch(`checks`, {})
+    const orgID = useOrgID()
+    const {data, error, loading, get} = useFetch(
+      `/api/v1/checks?orgID=${orgID}`,
+      {},
+      []
+    )
+    const {patch} = useFetch(`/api/v1/checks`, {})
+    const {del} = useFetch(`/api/v1/checks`, {})
 
     const patchCheck = useCallback(
       (id: string, udp: CheckUpdate) => {

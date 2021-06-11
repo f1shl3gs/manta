@@ -11,7 +11,6 @@ import (
 	ua "github.com/mileusna/useragent"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	v1 "github.com/prometheus/prometheus/web/api/v1"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -47,7 +46,7 @@ type Backend struct {
 	NotificationEndpointService manta.NotificationEndpointService
 }
 
-func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetriever) http.Handler {
+func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	router := NewRouter()
 
 	assetsHandler := &Assets{
@@ -119,7 +118,7 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool, tr v1.TargetRetri
 
 	NewScrapeHandler(logger, router, backend.ScrapeService)
 
-	NewQueryHandler(logger, router, backend.TenantStorage, tr)
+	NewQueryHandler(logger, router, backend.TenantStorage)
 
 	NewChecksHandler(logger, router, backend.CheckService, backend.TaskService)
 

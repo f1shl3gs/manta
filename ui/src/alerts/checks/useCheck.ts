@@ -1,9 +1,13 @@
 // Libraries
 import constate from 'constate'
 import {useCallback, useEffect, useState} from 'react'
+import {useParams} from 'react-router-dom'
+
+// Hooks
+import {useOrgID} from 'shared/useOrg'
 
 // types
-import {Check, CheckStatusLevel} from '../../types/Check'
+import {Check, CheckStatusLevel, Condition} from '../../types/Check'
 import {useFetch} from 'shared/useFetch'
 
 // Utils
@@ -11,8 +15,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 import {
   defaultErrorNotification,
   useNotification,
-} from '../../shared/notification/useNotification'
-import {useParams} from 'react-router-dom'
+} from 'shared/notification/useNotification'
 
 interface CheckUpdate {
   name: string
@@ -35,6 +38,7 @@ const defaultCheck: Check = {
   desc: '',
   expr: '',
   labels: [],
+  cron: '@every 1m',
 }
 
 const [CheckProvider, useCheck] = constate(
@@ -43,13 +47,20 @@ const [CheckProvider, useCheck] = constate(
     const [tab, setTab] = useState('query')
     const [check, setCheck] = useState<Check>(defaultCheck)
     const {notify} = useNotification()
+    const orgID = useOrgID()
     const [remoteDataState, setRemoteDataState] = useState(
       RemoteDataState.NotStarted
     )
 
-    const {get, post} = useFetch(`/checks/${id}`, {})
+    const {get, post} = useFetch(`/api/v1/checks/${id}`, {})
+    const {put} = useFetch(`/api/v1/checks?orgID=${orgID}`, {})
 
     useEffect(() => {
+      if (id === 'new') {
+        setRemoteDataState(RemoteDataState.Done)
+        return
+      }
+
       setRemoteDataState(RemoteDataState.Loading)
       get()
         .then(data => {
@@ -68,7 +79,7 @@ const [CheckProvider, useCheck] = constate(
             message: `Fetch Check failed, err: ${err.message}`,
           })
         })
-    }, [get, notify])
+    }, [get, id, notify])
 
     const updateCheck = (udp: CheckUpdate) => {
       // @ts-ignore
@@ -81,8 +92,12 @@ const [CheckProvider, useCheck] = constate(
     }
 
     const onSave = useCallback(() => {
-      return post(check)
-    }, [check, post])
+      if (id === 'new') {
+        return put(check)
+      } else {
+        return post(check)
+      }
+    }, [check, id, post, put])
 
     const onRename = useCallback((name: string) => {
       setCheck(prev => {
@@ -147,6 +162,25 @@ const [CheckProvider, useCheck] = constate(
       })
     }, [])
 
+    const onChangeCondition = useCallback((condition: Condition) => {
+      setCheck(prev => {
+        const {conditions} = prev
+
+        const next = conditions.map(item => {
+          if (item.status !== (condition.status as CheckStatusLevel)) {
+            return item
+          }
+
+          return condition
+        })
+
+        return {
+          ...prev,
+          conditions: next,
+        }
+      })
+    }, [])
+
     return {
       ...check,
       tab,
@@ -157,6 +191,7 @@ const [CheckProvider, useCheck] = constate(
       onSetOffset,
       onExprUpdate,
       onAddCondition,
+      onChangeCondition,
       remoteDataState,
       updateCheck,
     }

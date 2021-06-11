@@ -28,7 +28,7 @@ const [NotificationEndpointsProvider, useNotificationEndpoints] = constate(
     useEffect(() => {
       setLoading(RemoteDataState.Loading)
 
-      fetch(`/notification_endpoints?orgID=${orgID}`)
+      fetch(`/api/v1/notification_endpoints?orgID=${orgID}`)
         .then(resp => resp.json())
         .then(data => {
           setEndpoints(data)

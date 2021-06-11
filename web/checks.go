@@ -101,7 +101,7 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 	if err != nil {
 		return nil, &manta.Error{
 			Code: manta.EInvalid,
-			Op:   "Decode check",
+			Msg:  "decode check failed",
 			Err:  err,
 		}
 	}
@@ -110,7 +110,7 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 	if err != nil {
 		return nil, &manta.Error{
 			Code: manta.EInvalid,
-			Op:   "Validate check",
+			Msg:  "validate check failed",
 			Err:  err,
 		}
 	}

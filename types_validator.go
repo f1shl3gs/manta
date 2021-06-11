@@ -33,6 +33,23 @@ func validateStatus(v string) error {
 	return fmt.Errorf("status must be active or inactive")
 }
 
+func (m *Condition) Validate() error {
+	if m.Threshold.Type != "inside" && m.Threshold.Type != "outside" {
+		return nil
+	}
+
+	switch m.Threshold.Type {
+	case "inside", "outside":
+		if m.Threshold.Max <= m.Threshold.Min {
+			return invalidField("max", errors.New("condition.max must be larger than min"))
+		}
+
+	default:
+	}
+
+	return nil
+}
+
 func (m *Check) Validate() error {
 	if m.Name == "" {
 		return invalidField("name", ErrFieldMustBeSet)
@@ -58,7 +75,15 @@ func (m *Check) Validate() error {
 		return invalidField("cron", err)
 	}
 
-	// todo: validate conditions
+	if len(m.Conditions) == 0 {
+		return invalidField("conditions", ErrFieldMustBeSet)
+	}
+
+	for i := 0; i < len(m.Conditions); i++ {
+		if err := m.Conditions[i].Validate(); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

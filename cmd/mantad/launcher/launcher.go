@@ -464,7 +464,7 @@ func (l *Launcher) Run() error {
 			NotificationEndpointService: service,
 			VariableService:             service,
 			Flusher:                     kvStore,
-		}, l.AccessLog, scrapeManager)
+		}, l.AccessLog)
 
 		_ = m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
 		httpListener := m.Match(cmux.HTTP1Fast(http.MethodPatch))

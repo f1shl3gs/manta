@@ -4,11 +4,11 @@ import "gogoproto/gogo.proto";
 
 package membership;
 
-message MemberResponse {
+message MembersResponse {
   uint64 id = 1 [(gogoproto.customname) = "ID"];
 }
 
-message MemberRequest {
+message MembersRequest {
 
 }
 
@@ -29,7 +29,7 @@ message RemoveMemberResponse {
 }
 
 service Membership {
-  rpc Member(MemberRequest) returns (MemberResponse);
+  rpc Members(MembersRequest) returns (MembersResponse);
 
   rpc Add(AddMemberRequest) returns (AddMemberResponse);
 

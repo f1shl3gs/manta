@@ -2,6 +2,9 @@ package web
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"testing"
 
@@ -39,4 +42,19 @@ func NewTestBackend(t *testing.T) (*Backend, *zap.Logger, func()) {
 		err = os.Remove(t.Name())
 		require.NoError(t, err)
 	}
+}
+
+func TestDemoServer(t *testing.T) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data, err := io.ReadAll(r.Body)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(string(data))
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.ListenAndServe(":8080", nil)
 }

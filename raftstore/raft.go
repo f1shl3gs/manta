@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/json"
-	"io"
 	"sort"
 	"strconv"
 	"sync/atomic"
@@ -85,53 +84,6 @@ func startNode(cf *Config, logger *zap.Logger, cl membership.Cluster) (uint64, r
 	}
 
 	return id, n, s, w
-}
-
-func readWAL(
-	logger *zap.Logger,
-	waldir string,
-	snapshot walpb.Snapshot,
-) (w *wal.WAL, id, cid uint64, st raftpb.HardState, ents []raftpb.Entry) {
-	var (
-		err      error
-		metadata []byte
-	)
-
-	repaired := false
-	for {
-		if w, err = wal.Open(logger, waldir, snapshot); err != nil {
-			logger.Fatal("failed to open WAL",
-				zap.String("dir", waldir),
-				zap.Error(err))
-		}
-
-		metadata, st, ents, err = w.ReadAll()
-		if err == nil {
-			break
-		}
-
-		// trying to repair WAL
-		w.Close()
-		// we can only repair ErrUnexpectedEOF and we never repair twice
-		if repaired || err != io.ErrUnexpectedEOF {
-			logger.Fatal("failed to read WAL, cannot be repaired",
-				zap.Error(err))
-		}
-
-		if !wal.Repair(logger, waldir) {
-			logger.Fatal("failed to repair WAL",
-				zap.Error(err))
-		} else {
-			logger.Info("repaired WAL",
-				zap.Error(err))
-			repaired = true
-		}
-	}
-
-	id = binary.BigEndian.Uint64(metadata)
-	cid = binary.BigEndian.Uint64(metadata[8:])
-
-	return w, id, cid, st, ents
 }
 
 // getIDs returns an ordered set of IDs included in the given snapshot
