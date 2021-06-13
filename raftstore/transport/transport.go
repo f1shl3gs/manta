@@ -19,6 +19,7 @@ var (
 	ErrPeerNotFound     = errors.New("peer not found")
 )
 
+// TODO: maybe delete later
 type Resolver interface {
 	Resolve(id uint64) (string, error)
 }
@@ -50,6 +51,7 @@ type Transporter interface {
 	// it panics
 	UpdatePeer(id uint64, addr string)
 
+	// ActiveSince return the last time we communicate with
 	ActiveSince(id uint64) time.Time
 
 	// ActivePeers returns the number of active peers
@@ -184,19 +186,52 @@ func (trans *transport) RemovePeer(id uint64) error {
 }
 
 func (trans *transport) RemoveAllPeers() {
-	panic("implement me")
+	trans.mtx.Lock()
+	peers := trans.peers
+	trans.peers = make(map[uint64]*Peer)
+	trans.mtx.Unlock()
+
+	for _, peer := range peers {
+		peer.stop()
+	}
 }
 
 func (trans *transport) UpdatePeer(id uint64, addr string) {
-	panic("implement me")
+	trans.mtx.Lock()
+	defer trans.mtx.Lock()
+
+	peer := trans.peers[id]
+	if peer.addr == addr {
+		return
+	}
+
+	peer.stop()
+	peer, err := newPeer(id, addr)
+	if err != nil {
+		// TODO: handle error properly
+		panic(err)
+	}
+
+	trans.peers[id] = peer
 }
 
 func (trans *transport) ActiveSince(id uint64) time.Time {
-	panic("implement me")
+	trans.mtx.RLock()
+	peer := trans.peers[id]
+	trans.mtx.RUnlock()
+
+	return peer.activeSince
 }
 
 func (trans *transport) Stop() {
-	panic("implement me")
+	trans.mtx.Lock()
+	peers := trans.peers
+	trans.peers = nil
+	trans.mtx.Unlock()
+
+	for _, peer := range peers {
+		peer.stop()
+	}
 }
 
 func (trans *transport) ActivePeers() int {

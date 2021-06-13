@@ -33,13 +33,26 @@ type Peer struct {
 	stopCh chan struct{}
 	logger *zap.Logger
 
+	cc     *grpc.ClientConn
+	client RaftClient
+
 	mtx         sync.RWMutex
 	active      bool
 	activeSince time.Time
 }
 
 func (peer *Peer) send(msg raftpb.Message) {
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultConnWriteTimeout)
+	defer cancel()
 
+	_, err := peer.client.Send(ctx, &msg)
+	if err != nil {
+		peer.logger.Warn("send message failed",
+			zap.Error(err))
+		return
+	}
+
+	return
 }
 
 func (peer *Peer) sendSnapshot(msg snap.Message) {
@@ -47,7 +60,7 @@ func (peer *Peer) sendSnapshot(msg snap.Message) {
 }
 
 func (peer *Peer) stop() {
-
+	close(peer.stopCh)
 }
 
 func newPeer(id uint64, addr string) (*Peer, error) {
@@ -62,6 +75,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 		return nil, err
 	}
 
+	// send message asynchronously
 	go func() {
 		defer cc.Close()
 

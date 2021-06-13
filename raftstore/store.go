@@ -25,7 +25,6 @@ import (
 	"go.etcd.io/etcd/pkg/v3/wait"
 	"go.etcd.io/etcd/raft/v3"
 	"go.etcd.io/etcd/raft/v3/raftpb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp"
 	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
 	"go.etcd.io/etcd/server/v3/wal"
 	"go.uber.org/zap"
@@ -771,13 +770,13 @@ func (s *Store) adjustTicks(ctx context.Context) {
 	s.logger.Info("starting initial election tick advance",
 		zap.Int("election-ticks", s.config.ElectionTicks))
 
-	// retry up to "rafthttp.ConnReadTimeout", which is 5-sec
+	// retry up to "transport.DefaultConnReadTimeout", which is 5-sec
 	// until peer connection reports; otherwise:
 	// 1. all connection s fails
 	// 2. no active peers
 	// 3. restarted single-node with no snapshot
 	// then, do nothing, because advancing ticks would have no effect
-	waitTime := rafthttp.ConnReadTimeout
+	waitTime := transport.DefaultConnReadTimeout
 	itv := 50 * time.Millisecond
 	for i := int64(0); i < int64(waitTime/itv); i++ {
 		select {

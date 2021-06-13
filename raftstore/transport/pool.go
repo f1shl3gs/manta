@@ -22,12 +22,16 @@ type pool struct {
 
 func (pool *pool) Get() (RaftClient, error) {
 	var (
-		cli RaftClient
+		cli  RaftClient
+		idle RaftClient
 	)
 
 	pool.mtx.Lock()
 	elmt := pool.clients.Front()
 	size := pool.clients.Len()
+	if size > MaxPoolSize {
+		idle = pool.clients.Back().Value.(RaftClient)
+	}
 	pool.mtx.Unlock()
 
 	if elmt == nil {
@@ -43,13 +47,9 @@ func (pool *pool) Get() (RaftClient, error) {
 	}
 
 	// try to gc
-	if size > MaxPoolSize {
-		pool.mtx.Lock()
-		elmt = pool.clients.Back()
-		pool.mtx.Unlock()
-
-		idle := elmt.Value.(*raftClient)
-		_ = idle.cc.Close()
+	if idle != nil {
+		rc := idle.(*raftClient)
+		_ = rc.cc.Close()
 	}
 
 	return cli, nil

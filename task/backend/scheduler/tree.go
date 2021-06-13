@@ -2,7 +2,6 @@ package scheduler
 
 import (
 	"context"
-	"encoding/binary"
 	"errors"
 	"fmt"
 	"runtime/debug"
@@ -10,7 +9,7 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
-	"github.com/cespare/xxhash"
+	"github.com/f1shl3gs/manta/pkg/jumphash"
 	"github.com/google/btree"
 )
 
@@ -251,9 +250,14 @@ func (s *TreeScheduler) iterator(ts time.Time) btree.ItemIterator {
 		}
 		// distribute to the right worker.
 		{
-			buf := [8]byte{}
-			binary.LittleEndian.PutUint64(buf[:], uint64(it.id))
-			wc := xxhash.Sum64(buf[:]) % uint64(len(s.workchans)) // we just hash so that the number is uniformly distributed
+			// old implement
+			// buf := [8]byte{}
+			// binary.LittleEndian.PutUint64(buf[:], uint64(it.id))
+			// wc := xxhash.Sum64(buf[:]) % uint64(len(s.workchans)) // we just hash so that the number is uniformly distributed
+
+			// we just hash so that the number is uniformly distributed
+			wc := jumphash.Hash(uint64(it.id), len(s.workchans))
+
 			select {
 			case s.workchans[wc] <- it:
 				s.items.toDelete = append(s.items.toDelete, it)

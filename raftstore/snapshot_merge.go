@@ -6,7 +6,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/dustin/go-humanize"
 	"github.com/f1shl3gs/manta/raftstore/internal"
 	"go.etcd.io/etcd/raft/v3/raftpb"
 	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
@@ -35,7 +34,6 @@ func (s *Store) sendMergedSnap(merged snap.Message) {
 		zap.String("from", internal.IDToString(s.id)),
 		zap.String("to", internal.IDToString(merged.To)),
 		zap.Int64("bytes", merged.TotalSize),
-		zap.String("size", humanize.Bytes(uint64(merged.TotalSize))),
 	}
 
 	start := time.Now()

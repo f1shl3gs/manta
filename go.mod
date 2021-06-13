@@ -3,18 +3,14 @@ module github.com/f1shl3gs/manta
 go 1.16
 
 require (
-	github.com/OneOfOne/xxhash v1.2.6 // indirect
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
-	github.com/cespare/xxhash v1.1.0
 	github.com/cockroachdb/pebble v0.0.0-20210526183633-dd2a545f5d75
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/dustin/go-humanize v1.0.0
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.5
-	github.com/gopherjs/gopherjs v0.0.0-20191106031601-ce3c9ade29de // indirect
 	github.com/hashicorp/go-hclog v0.12.2 // indirect
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.2
@@ -29,13 +25,10 @@ require (
 	github.com/prometheus/client_golang v1.10.0
 	github.com/prometheus/common v0.20.0
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
-	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/soheilhy/cmux v0.1.5-0.20210205191134-5ec6847320e5
-	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.7.1
+	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
@@ -48,7 +41,6 @@ require (
 	golang.org/x/tools v0.1.0
 	google.golang.org/grpc v1.36.1
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
-	gopkg.in/ini.v1 v1.57.0 // indirect
 	k8s.io/client-go v12.0.0+incompatible // indirect
 )
 
