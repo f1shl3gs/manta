@@ -108,7 +108,10 @@ func (s *KVStore) Open(ctx context.Context) error {
 	}
 
 	// Open database file.
-	db, err := bolt.Open(s.path, 0600, &bolt.Options{Timeout: 1 * time.Second, InitialMmapSize: 32 * 1024 * 1024})
+	db, err := bolt.Open(s.path, 0600, &bolt.Options{
+		Timeout:         1 * time.Second,
+		InitialMmapSize: 32 * 1024 * 1024,
+	})
 	if err != nil {
 		return fmt.Errorf("unable to open boltdb file %v", err)
 	}
