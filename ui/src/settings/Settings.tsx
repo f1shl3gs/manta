@@ -5,7 +5,7 @@ import {Route, Switch} from 'react-router-dom'
 // Components
 import {Page, Tabs} from '@influxdata/clockface'
 import Navigation from '../layout/resourcePage/Navigation'
-import Variables from './Variables'
+import Variables from './variables/Variables'
 import Todo from '../components/Todo'
 
 // Hooks

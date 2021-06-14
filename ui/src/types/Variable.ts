@@ -1,10 +1,8 @@
-export interface Variable {
-  id: string
-  created: string
-  updated: string
+import {Common} from './Common'
+
+export interface Variable extends Common {
   name: string
-  desc: string
-  orgID: string
+  desc?: string
   type: 'query' | 'static'
   value: string
 }
