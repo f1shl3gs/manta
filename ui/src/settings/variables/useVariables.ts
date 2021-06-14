@@ -8,7 +8,7 @@ import {useOrgID} from '../../shared/useOrg'
 import {
   useNotification,
   defaultErrorNotification,
-} from '../../shared/notification/useNotification'
+} from 'shared/notification/useNotification'
 
 // Types
 import {Variable} from 'types/Variable'
@@ -22,6 +22,7 @@ const [VariablesProvider, useVariables] = constate(
     const [variables, setVariables] = useState(new Array<Variable>())
     const {get} = useFetch<Variable[]>(`/api/v1/variables?orgID=${orgID}`)
     const {patch, del} = useFetch(`/api/v1/variables`)
+    const [reload, setReload] = useState(0)
 
     useEffect(() => {
       setLoading(RemoteDataState.Loading)
@@ -36,27 +37,48 @@ const [VariablesProvider, useVariables] = constate(
             message: `Fetch variables failed, ${err.message}`,
           })
         })
-    }, [get, notify])
+    }, [get, notify, reload])
 
     const onNameUpdate = useCallback(
       (id: string, name: string) => {
-        return patch(`${id}`, {id, name})
+        patch(`/${id}`, {id, name})
+          .then(() => setReload(prev => prev + 1))
+          .catch(err => {
+            notify({
+              ...defaultErrorNotification,
+              message: `Update variable's name failed, err: ${err}`,
+            })
+          })
       },
-      [patch]
+      [notify, patch]
     )
 
     const onDescUpdate = useCallback(
       (id: string, desc: string) => {
-        return patch(`/${id}`, {id, desc})
+        patch(`/${id}`, {id, desc})
+          .then(() => setReload(prev => prev + 1))
+          .catch(err => {
+            notify({
+              ...defaultErrorNotification,
+              message: `Update variable's desc failed, err: ${err} `,
+            })
+          })
       },
-      [patch]
+      [notify, patch]
     )
 
     const onDelete = useCallback(
       (v: Variable) => {
-        return del(`/${v.id}`)
+        del(`/${v.id}`)
+          .then(() => setReload(prev => prev + 1))
+          .catch(err => {
+            notify({
+              ...defaultErrorNotification,
+              message: `Delete Variable failed, err: ${v.name}`,
+            })
+          })
       },
-      [del]
+      [del, notify]
     )
 
     return {
