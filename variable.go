@@ -13,11 +13,16 @@ type VariableFilter struct {
 // VariableUpdate describes a set of changes that can be applied to a Variable
 type VariableUpdate struct {
 	Name *string `json:"name"`
+	Desc *string `json:"desc"`
 }
 
 func (udp *VariableUpdate) Apply(v *Variable) {
 	if udp.Name != nil {
 		v.Name = *udp.Name
+	}
+
+	if udp.Desc != nil {
+		v.Desc = *udp.Desc
 	}
 }
 
