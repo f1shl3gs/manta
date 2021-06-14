@@ -27,6 +27,13 @@ const [PresentationModeProvider, usePresentationMode] = constate(
 
     const setPresentation = useCallback(
       (b: boolean) => {
+        // History will recorde all urls pushed before, even if the are all the same,
+        // in which case when user click `go back`, they will see nothing changed,
+        // cause the url is the same
+        if (inPresentationMode === b) {
+          return
+        }
+
         const params = new URLSearchParams(location.search)
         params.set(PRESENTATION_KEY, b ? 'true' : 'false')
         history.push(`${location.pathname}?${params.toString()}`)
@@ -34,7 +41,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(
         setInPresentationMode(b)
         dispatchResizeEvent()
       },
-      [history, location]
+      [history, location, inPresentationMode]
     )
 
     const toggle = useCallback(() => {
@@ -43,11 +50,15 @@ const [PresentationModeProvider, usePresentationMode] = constate(
 
     const escapePresentationMode = useCallback(
       event => {
+        if (!inPresentationMode) {
+          return
+        }
+
         if (event.key === 'Escape' || event.keyCode === escapeKeyCode) {
           setPresentation(false)
         }
       },
-      [setPresentation]
+      [setPresentation, inPresentationMode]
     )
 
     useEffect(() => {
