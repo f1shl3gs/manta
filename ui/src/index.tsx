@@ -15,19 +15,10 @@ import Authentication from './components/Authentication'
 import NotFound from './components/NotFound'
 import {AuthenticationProvider} from './shared/useAuthentication'
 import {OrgsProvider} from './shared/useOrgs'
-import combineProviders from './utils/combine'
-
-import {Provider as FetchProvider} from 'shared/useFetch'
 import {NotificationProvider} from './shared/notification/useNotification'
 import {TimeRangeProvider} from './shared/useTimeRange'
 import {AutoRefreshProvider} from './shared/useAutoRefresh'
 import {SearchParamsProvider} from './shared/useSearchParams'
-
-const CombinedProvider = combineProviders([
-  AuthenticationProvider,
-  PresentationModeProvider,
-  [FetchProvider, {}],
-])
 
 declare global {
   interface Window {

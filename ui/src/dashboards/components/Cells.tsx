@@ -1,9 +1,14 @@
-import React from 'react'
+// Libraries
+import React, {useEffect} from 'react'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
-import {Cell} from 'types/Dashboard'
 
+// Components
 import CellComponent from './CellComponent'
 import GradientBorder from './GradientBorder'
+
+// Types
+import {Cell} from 'types/Dashboard'
+
 import {useDashboard} from './useDashboard'
 
 const Grid = WidthProvider(ReactGridLayout)
@@ -40,12 +45,12 @@ const eventHandler = () => {
 const Cells: React.FC = () => {
   const {cells, onLayoutChange} = useDashboard()
 
-  // useEffect(() => {
-  //   window.addEventListener('resize', eventHandler);
-  //   return () => {
-  //     window.removeEventListener('resize', eventHandler);
-  //   };
-  // });
+  useEffect(() => {
+    window.addEventListener('resize', eventHandler)
+    return () => {
+      window.removeEventListener('resize', eventHandler)
+    }
+  })
 
   return (
     <Grid
