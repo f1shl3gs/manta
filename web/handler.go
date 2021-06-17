@@ -11,6 +11,12 @@ import (
 	"go.uber.org/zap"
 )
 
+func paramFromRequest(r *http.Request, key string) string {
+	ctx := r.Context()
+	params := httprouter.ParamsFromContext(ctx)
+	return params.ByName(key)
+}
+
 func idFromRequest(r *http.Request) (manta.ID, error) {
 	var (
 		id     manta.ID

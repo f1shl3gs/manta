@@ -9,6 +9,11 @@ var (
 		Code: EInvalid,
 		Msg:  "user already exist",
 	}
+
+	ErrUserNotFound = &Error{
+		Code: ENotFound,
+		Msg:  "user not found",
+	}
 )
 
 // UserFilter represents a set of filter that restrict the returned results.

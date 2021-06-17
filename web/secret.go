@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	SecretPrefix = "/api/v1/secrets"
+	SecretPrefix  = "/api/v1/secrets"
+	SecretKeyPath = "/api/v1/secrets/:key"
 )
 
 type SecretHandler struct {
@@ -29,6 +30,8 @@ func NewSecretHandler(logger *zap.Logger, router *Router, secretService manta.Se
 	}
 
 	h.HandlerFunc(http.MethodPut, SecretPrefix, h.handlePut)
+	h.HandlerFunc(http.MethodGet, SecretPrefix, h.handleKeys)
+	h.HandlerFunc(http.MethodDelete, SecretKeyPath, h.handleDelete)
 }
 
 type SecretField struct {
@@ -83,4 +86,43 @@ func (h *SecretHandler) handlePut(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h *SecretHandler) handleKeys(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := orgIDFromRequest(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	keys, err := h.secretService.GetSecretKeys(ctx, orgID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	err = encodeResponse(ctx, w, http.StatusOK, keys)
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *SecretHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	orgID, err := orgIDFromRequest(r)
+	if err != nil {
+		return
+	}
+
+	key := paramFromRequest(r, "key")
+	err = h.secretService.DeleteSecret(ctx, orgID, key)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

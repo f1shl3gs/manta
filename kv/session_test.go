@@ -2,16 +2,15 @@ package kv_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
-
-	"github.com/google/go-cmp/cmp"
-	"github.com/stretchr/testify/require"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/mock"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -44,7 +43,7 @@ func TestSessionService(t *testing.T) {
 	}
 
 	var init initSessionService = func(t *testing.T) (context.Context, manta.SessionService, func()) {
-		idGen := &mock.IDGenerator{Next: mockUID}
+		idGen := mock.NewIncrementalIDGenerator(1)
 		svc, closer := NewTestService(t, kv.WithIDGenerator(idGen))
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 
@@ -75,9 +74,26 @@ func CreatSession(t *testing.T, init initSessionService) {
 		fn   func(t *testing.T, ctx context.Context, svc manta.SessionService)
 	}{
 		{
-			name: "create",
+			name: "create with invalid uid",
 			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
+				uid := manta.ID(0)
+				_, err := svc.CreateSession(ctx, uid)
+				require.Equal(t, manta.ErrInvalidID, err)
+			},
+		},
+		{
+			name: "create multiple times",
+			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
+				uid := manta.ID(1)
+				s1, err := svc.CreateSession(ctx, uid)
+				require.NoError(t, err)
+				require.Equal(t, s1.UID, uid)
+				require.EqualValues(t, s1.ID, 2)
 
+				s2, err := svc.CreateSession(ctx, uid)
+				require.NoError(t, err)
+				require.Equal(t, s2.UID, uid)
+				require.EqualValues(t, s2.ID, 3)
 			},
 		},
 	}
@@ -177,7 +193,7 @@ func RevokeSession(t *testing.T, init initSessionService) {
 			name: "revoke none exist",
 			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
 				err := svc.RevokeSession(ctx, manta.ID(2))
-				fmt.Println(err)
+				require.NoError(t, err)
 			},
 		},
 	}

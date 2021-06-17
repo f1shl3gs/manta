@@ -47,6 +47,10 @@ func (s *Service) findUserByID(ctx context.Context, tx Tx, id manta.ID) (*manta.
 
 	data, err := b.Get(key)
 	if err != nil {
+		if err == ErrKeyNotFound {
+			return nil, manta.ErrUserNotFound
+		}
+
 		return nil, err
 	}
 

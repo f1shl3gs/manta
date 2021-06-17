@@ -9,9 +9,11 @@
 - dep: replace testify with custom package in `pkg`, which should save
 
 ### Shrunk binary
+
 MantaD is build by command `CGO_ENABLED=0 go build --ldflags "-s -w"`
 
 #### TODO
+
 - remove viper, we don't need it that much, and it will reduce 808KB
 
 | Size | Delta | Changes
@@ -20,3 +22,4 @@ MantaD is build by command `CGO_ENABLED=0 go build --ldflags "-s -w"`
 | 37322752 | 0 | remove direct dependency `github.com/cespare/xxhash from scheduler` |
 | 37298176 | -24k | remove `go.etcd.io/etcd/server/v3/etcdserver/api/rafthttp` |
 | 37298176 | 0 | remove direct dependency `github.com/dustin/go-humanize`  |
+| 37064704 | -228k | remove direct dependency `github.com/prometheus/client_golang/prometheus/promhttp`

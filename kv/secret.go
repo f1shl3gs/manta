@@ -7,8 +7,62 @@ import (
 )
 
 var (
-	secretBucket = []byte("secrets")
+	secretBucket         = []byte("secrets")
+	secretOrgIndexBucket = []byte("secretorgindex")
 )
+
+func (s *Service) GetSecretKeys(ctx context.Context, orgID manta.ID) ([]string, error) {
+	var (
+		keys []string
+		err  error
+	)
+
+	err = s.kv.View(ctx, func(tx Tx) error {
+		keys, err = s.getSecretKeys(tx, orgID)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return keys, nil
+}
+
+func (s *Service) getSecretKeys(tx Tx, orgID manta.ID) ([]string, error) {
+	b, err := tx.Bucket(secretOrgIndexBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	prefix, err := orgID.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := b.ForwardCursor(prefix, WithCursorPrefix(prefix))
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close()
+
+	keys := make([]string, 0, 8)
+	for {
+		k, v := cursor.Next()
+		if k == nil {
+			break
+		}
+
+		keys = append(keys, string(v))
+	}
+
+	if err = cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return keys, nil
+}
 
 func (s *Service) FindSecret(ctx context.Context, orgID manta.ID, k string) (string, error) {
 	var (

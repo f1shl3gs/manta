@@ -10,7 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	ua "github.com/mileusna/useragent"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/expfmt"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -41,6 +41,7 @@ type Backend struct {
 	AuthorizationService        manta.AuthorizationService
 	Keyring                     manta.Keyring
 	SessionService              manta.SessionService
+	SecretService               manta.SecretService
 	ScrapeService               manta.ScraperTargetService
 	VariableService             manta.VariableService
 	NotificationEndpointService manta.NotificationEndpointService
@@ -78,11 +79,31 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 
 	{
 		// prometheus
-		mh := promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
-			MaxRequestsInFlight: 3,
-		})
+		router.HandlerFunc(http.MethodGet, "/metrics", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
 
-		router.Handler(http.MethodGet, "/metrics", mh)
+			mfs, err := prometheus.DefaultGatherer.Gather()
+			if err != nil {
+				logger.Error("gathering metrics failed",
+					zap.Error(err))
+				router.HandleHTTPError(ctx, err, w)
+				return
+			}
+
+			enc := expfmt.NewEncoder(w, expfmt.FmtText)
+			for _, mf := range mfs {
+				err = enc.Encode(mf)
+				if err != nil {
+					logger.Warn("encode metric family failed",
+						zap.Stringp("name", mf.Name),
+						zap.Error(err))
+				}
+			}
+
+			if closer, ok := enc.(expfmt.Closer); ok {
+				closer.Close()
+			}
+		})
 	}
 
 	{
@@ -125,6 +146,8 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	NewNotificationEndpointHandler(logger, router, backend.NotificationEndpointService)
 
 	NewVariableHandler(logger, router, backend.VariableService)
+
+	NewSecretHandler(logger, router, backend.SecretService)
 
 	// and more
 

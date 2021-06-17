@@ -18,7 +18,8 @@ type SessionService interface {
 	// FindSession find session by key
 	FindSession(ctx context.Context, id ID) (*Session, error)
 
-	// RevokeSession delete the session
+	// RevokeSession delete the session, if the session does not
+	// exist then nothing is done and a nil error is returned.
 	RevokeSession(ctx context.Context, id ID) error
 
 	// RenewSession renew the session and update the ExpireAt

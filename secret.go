@@ -4,6 +4,9 @@ import "context"
 
 // SecretService a service for storing and retrieving secrets
 type SecretService interface {
+	// GetSecretKeys retrieves all secret keys that are stored for the organization orgID
+	GetSecretKeys(ctx context.Context, orgID ID) ([]string, error)
+
 	// FindSecret retrieves the secret value v found at key k for organization orgID
 	FindSecret(ctx context.Context, orgID ID, k string) (string, error)
 
