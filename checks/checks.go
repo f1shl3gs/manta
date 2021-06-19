@@ -40,7 +40,7 @@ func NewChecker(logger *zap.Logger, cs manta.CheckService, es manta.EventService
 		Logger: log.NewZapToGokitLogAdapter(logger),
 		// Reg:           prometheus.DefaultRegisterer,
 		MaxSamples:    50000000,
-		Timeout:       2 * time.Minute,
+		Timeout:       10 * time.Second,
 		LookbackDelta: 5 * time.Minute,
 		NoStepSubqueryIntervalFn: func(rangeMillis int64) int64 {
 			return time.Minute.Milliseconds()

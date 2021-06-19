@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
@@ -33,6 +34,7 @@ func NewTestBackend(t *testing.T) (*Backend, *zap.Logger, func()) {
 	service := kv.NewService(logger, store)
 	backend := &Backend{
 		OrganizationService: service,
+		SecretService:       service,
 	}
 
 	return backend, logger, func() {
@@ -42,6 +44,18 @@ func NewTestBackend(t *testing.T) (*Backend, *zap.Logger, func()) {
 		err = os.Remove(t.Name())
 		require.NoError(t, err)
 	}
+}
+
+func NewTestBackendWithOrg(t *testing.T) (*Backend, *zap.Logger, manta.ID, func()) {
+	backend, logger, closer := NewTestBackend(t)
+	org := &manta.Organization{
+		Name: "test",
+		Desc: "test",
+	}
+
+	err := backend.OrganizationService.CreateOrganization(context.Background(), org)
+	require.NoError(t, err)
+	return backend, logger, org.ID, closer
 }
 
 func TestDemoServer(t *testing.T) {

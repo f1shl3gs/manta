@@ -1,6 +1,32 @@
 package manta
 
-import "context"
+import (
+	"context"
+	"errors"
+)
+
+type SecretField struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+func (s *SecretField) Validate() error {
+	if len(s.Key) == 0 {
+		return errors.New("secret key cannot be empty")
+	}
+
+	for i, b := range s.Key {
+		if !((b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z') || b == '_' || (b >= '0' && b <= '9' && i > 0)) {
+			return errors.New("invalid char for key")
+		}
+	}
+
+	if s.Value == "" {
+		return errors.New("secret value cannot be empty")
+	}
+
+	return nil
+}
 
 // SecretService a service for storing and retrieving secrets
 type SecretService interface {

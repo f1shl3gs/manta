@@ -1,6 +1,7 @@
 UISOURCES  := $(shell find ./ui -type f -not \( -path ./ui/dist/\* -o -path ./ui/src/.umi/\* -o -path ./ui/node_modules/\* -o -path ./ui/.cache/\* -o -name Makefile -prune \) )
 GOSROUCES  := $(shell find . -type f -name '*.go') go.mod go.sum
 DOCSOURCES := $(shell find ./docs -not \( -path ./docs/resources/\* -o -prune \) )
+ASSETS     := $(shell find ./ui/build)
 
 VERSION 	:= 0.9.0
 GIT_SHA 	:= $(shell git rev-parse --short HEAD)
@@ -14,8 +15,11 @@ export GOBUILD=${GO} build -ldflags ${LDFLAGS}
 
 .PHONY: proto tidy deps
 
-mantad: $(GOSROUCES) ui
+mantad: $(GOSROUCES) assets
 	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
+
+assets: $(ASSETS) ui
+	tar czf assets.tgz ui/build
 
 deps:
 	go mod download

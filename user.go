@@ -23,10 +23,13 @@ type UserFilter struct {
 }
 
 type UserUpdate struct {
-	Name     *string
-	Nickname *string
-	Role     *string
-	Contacts map[string]string
+	Name *string
+}
+
+func (upd *UserUpdate) Apply(user *User) {
+	if upd.Name != nil {
+		user.Name = *upd.Name
+	}
 }
 
 type UserService interface {

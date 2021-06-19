@@ -202,11 +202,7 @@ func (s *Service) createUser(ctx context.Context, tx Tx, user *manta.User) error
 }
 
 func (s *Service) putUser(ctx context.Context, tx Tx, user *manta.User) error {
-	b, err := tx.Bucket(userBucket)
-	if err != nil {
-		return err
-	}
-
+	// create user
 	pk, err := user.ID.Encode()
 	if err != nil {
 		return err
@@ -217,12 +213,17 @@ func (s *Service) putUser(ctx context.Context, tx Tx, user *manta.User) error {
 		return err
 	}
 
+	b, err := tx.Bucket(userBucket)
+	if err != nil {
+		return err
+	}
+
 	err = b.Put(pk, data)
 	if err != nil {
 		return err
 	}
 
-	// name index
+	// create name index
 	fk := []byte(user.Name)
 	b, err = tx.Bucket(userNameIndexBucket)
 	if err != nil {
@@ -233,7 +234,58 @@ func (s *Service) putUser(ctx context.Context, tx Tx, user *manta.User) error {
 }
 
 func (s *Service) UpdateUser(ctx context.Context, id manta.ID, udp manta.UserUpdate) (*manta.User, error) {
-	panic("implement me")
+	var (
+		user *manta.User
+		err  error
+	)
+
+	err = s.kv.Update(ctx, func(tx Tx) error {
+		user, err = s.updateUser(ctx, tx, id, udp)
+		return err
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *Service) updateUser(ctx context.Context, tx Tx, id manta.ID, udp manta.UserUpdate) (*manta.User, error) {
+	prev, err := s.findUserByID(ctx, tx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	user := *prev
+	udp.Apply(&user)
+	user.Updated = time.Now()
+
+	err = s.putUser(ctx, tx, &user)
+	if err != nil {
+		return nil, err
+	}
+
+	// update user name index
+	if prev.Name == user.Name {
+		return &user, nil
+	}
+
+	b, err := tx.Bucket(userNameIndexBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = b.Delete([]byte(prev.Name)); err != nil {
+		return nil, err
+	}
+
+	pk, _ := id.Encode()
+	if err = b.Put([]byte(user.Name), pk); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (s *Service) DeleteUser(ctx context.Context, id manta.ID) error {
@@ -243,15 +295,31 @@ func (s *Service) DeleteUser(ctx context.Context, id manta.ID) error {
 }
 
 func (s *Service) deleteUser(ctx context.Context, tx Tx, id manta.ID) error {
-	pk, err := id.Encode()
+	user, err := s.findUserByID(ctx, tx, id)
 	if err != nil {
 		return err
 	}
 
+	// delete user
 	b, err := tx.Bucket(userBucket)
 	if err != nil {
 		return err
 	}
 
-	return b.Delete(pk)
+	pk, err := id.Encode()
+	if err != nil {
+		return err
+	}
+
+	if err = b.Delete(pk); err != nil {
+		return err
+	}
+
+	// delete user name index
+	b, err = tx.Bucket(userNameIndexBucket)
+	if err != nil {
+		return err
+	}
+
+	return b.Delete([]byte(user.Name))
 }

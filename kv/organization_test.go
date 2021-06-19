@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/kv"
 )
 
 func TestOrganization(t *testing.T) {
@@ -17,6 +16,11 @@ func TestOrganization(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	err := svc.CreateOrganization(ctx, &manta.Organization{Name: "foo"})
+	require.NoError(t, err)
+	err = svc.CreateOrganization(ctx, &manta.Organization{Name: "bar"})
+	require.NoError(t, err)
 
 	t.Run("find all organizations", func(t *testing.T) {
 		orgs, _, err := svc.FindOrganizations(ctx, manta.OrganizationFilter{})
@@ -40,6 +44,6 @@ func TestOrganization(t *testing.T) {
 			Name: "foo",
 			Desc: "foo",
 		})
-		require.Equal(t, kv.ErrKeyConflict, err)
+		require.Equal(t, manta.ErrOrgAlreadyExist, err)
 	})
 }

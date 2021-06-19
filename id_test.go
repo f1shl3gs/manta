@@ -185,3 +185,7 @@ func BenchmarkIDDecode(b *testing.B) {
 		id.DecodeFromString("5ca1ab1eba5eba11")
 	}
 }
+
+func TestName(t *testing.T) {
+	fmt.Println(10e3)
+}

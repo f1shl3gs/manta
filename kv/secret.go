@@ -103,10 +103,20 @@ func (s *Service) findSecret(ctx context.Context, tx Tx, orgID manta.ID, k strin
 
 func (s *Service) PutSecret(ctx context.Context, orgID manta.ID, k, v string) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
+		_, err := s.findOrganizationByID(ctx, tx, orgID)
+		if err != nil {
+			return &manta.Error{
+				Code: manta.ENotFound,
+				Op:   "PutSecret",
+				Err:  err,
+			}
+		}
+
 		return s.putSecret(ctx, tx, orgID, k, v)
 	})
 }
 
+// putSecret save the sec
 func (s *Service) putSecret(ctx context.Context, tx Tx, orgID manta.ID, k, v string) error {
 	b, err := tx.Bucket(secretBucket)
 	if err != nil {

@@ -16,6 +16,11 @@ var (
 		Code: EInvalid,
 		Msg:  "Organization already exist",
 	}
+
+	ErrOrgNotFound = &Error{
+		Code: ENotFound,
+		Msg:  "Organization not found",
+	}
 )
 
 type OrganizationFilter struct {

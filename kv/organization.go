@@ -53,6 +53,10 @@ func (s *Service) findOrganizationByID(ctx context.Context, tx Tx, id manta.ID) 
 
 	v, err := b.Get(key)
 	if err != nil {
+		if err == ErrKeyNotFound {
+			return nil, manta.ErrOrgNotFound
+		}
+
 		return nil, err
 	}
 

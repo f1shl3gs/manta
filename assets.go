@@ -4,5 +4,5 @@ import (
 	"embed"
 )
 
-//go:embed ui/build
+//go:embed assets.tgz
 var Assets embed.FS

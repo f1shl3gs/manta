@@ -50,10 +50,9 @@ type Backend struct {
 func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 	router := NewRouter()
 
-	assetsHandler := &Assets{
-		logger:  logger,
-		Prefix:  "/ui/build",
-		Default: "/ui/build",
+	assetsHandler, err := NewAssetsHandler(logger)
+	if err != nil {
+		panic(err)
 	}
 
 	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -2,7 +2,6 @@ package web
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -34,29 +33,17 @@ func NewSecretHandler(logger *zap.Logger, router *Router, secretService manta.Se
 	h.HandlerFunc(http.MethodDelete, SecretKeyPath, h.handleDelete)
 }
 
-type SecretField struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-func (s *SecretField) Validate() error {
-	if s.Key == "" {
-		return errors.New("secret key cannot be empty")
-	}
-
-	if s.Value == "" {
-		return errors.New("secret value cannot be empty")
-	}
-
-	return nil
-}
-
 func decodePutSecretRequest(r *http.Request) (string, string, error) {
-	var sf SecretField
+	var sf manta.SecretField
 
 	err := json.NewDecoder(r.Body).Decode(&sf)
 	if err != nil {
 		return "", "", err
+	}
+
+	err = sf.Validate()
+	if err != nil {
+		return "", "", &manta.Error{Code: manta.EInvalid, Msg: "invalid secret"}
 	}
 
 	return sf.Key, sf.Value, nil

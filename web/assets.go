@@ -1,31 +1,59 @@
 package web
 
 import (
+	"compress/gzip"
 	"fmt"
 	"io/fs"
 	"net/http"
 	"strings"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tarfs"
 	"go.uber.org/zap"
 )
 
-type Assets struct {
-	Prefix  string
-	Default string
+const (
+	assetsPrefix = "ui/build"
+)
 
+type AssetsHandler struct {
+	fs     fs.FS
 	logger *zap.Logger
 }
 
-func (a *Assets) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	sfs, err := fs.Sub(manta.Assets, "ui/build")
+func NewAssetsHandler(logger *zap.Logger) (*AssetsHandler, error) {
+	f, err := manta.Assets.Open("assets.tgz")
 	if err != nil {
-		panic(err)
+		return nil, err
+	}
+	defer f.Close()
+
+	gr, err := gzip.NewReader(f)
+	if err != nil {
+		return nil, err
+	}
+	defer gr.Close()
+
+	tfs, err := tarfs.New(gr)
+	if err != nil {
+		return nil, err
 	}
 
-	fileServer := http.FileServer(http.FS(sfs))
+	sfs, err := fs.Sub(tfs, assetsPrefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AssetsHandler{
+		fs:     sfs,
+		logger: logger,
+	}, nil
+}
+
+func (a *AssetsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fileServer := http.FileServer(http.FS(a.fs))
 	filename := strings.TrimPrefix(r.URL.Path, "/")
-	f, err := sfs.Open(filename)
+	f, err := a.fs.Open(filename)
 	defer func() {
 		if f != nil {
 			f.Close()
@@ -33,7 +61,7 @@ func (a *Assets) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	if err == nil {
-		if err = addCacheHeaders(sfs, filename, w); err != nil {
+		if err = addCacheHeaderFromFile(f, w); err != nil {
 			panic(err)
 		}
 
@@ -43,7 +71,7 @@ func (a *Assets) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.URL.Path = "/"
 	filename = "index.html"
-	if err = addCacheHeaders(sfs, filename, w); err != nil {
+	if err = addCacheHeaders(a.fs, filename, w); err != nil {
 		panic(err)
 	}
 	fileServer.ServeHTTP(w, r)
@@ -56,7 +84,11 @@ func addCacheHeaders(sfs fs.FS, filename string, w http.ResponseWriter) error {
 		return err
 	}
 
-	fi, err := file.Stat()
+	return addCacheHeaderFromFile(file, w)
+}
+
+func addCacheHeaderFromFile(f fs.File, w http.ResponseWriter) error {
+	fi, err := f.Stat()
 	if err != nil {
 		return err
 	}
