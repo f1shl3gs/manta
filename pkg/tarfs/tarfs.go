@@ -12,15 +12,20 @@ import (
 	"strings"
 )
 
-// TarFS implement fs.FS
+var (
+	ErrInvalidCharacterInPath = errors.New("invalid character in path")
+)
+
+// TarFS implement fs.FS, so it can be wrapped as http.FileSystem
 type TarFS struct {
 	files map[string]file
 }
 
+// Open implement fs.FS
 func (tarfs *TarFS) Open(name string) (fs.File, error) {
 	if filepath.Separator != '/' && strings.IndexRune(name, filepath.Separator) >= 0 ||
 		strings.Contains(name, "\x00") {
-		return nil, errors.New("http: invalid character in file path")
+		return nil, ErrInvalidCharacterInPath
 	}
 
 	f, exists := tarfs.files[path.Join("/", name)]
@@ -68,6 +73,8 @@ func New(r io.Reader) (*TarFS, error) {
 	return &TarFS{files: files}, nil
 }
 
+// readAll reads from r until an error or EOF and returns the data it read.
+// It only allocate 1 time per call, so there is no slice growth overhead.
 func readAll(r io.Reader, hdr *tar.Header) ([]byte, error) {
 	buf := make([]byte, 0, hdr.Size)
 
