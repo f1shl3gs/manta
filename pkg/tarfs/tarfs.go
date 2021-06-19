@@ -50,7 +50,7 @@ func New(r io.Reader) (*TarFS, error) {
 
 		var data []byte
 		if hdr.Size != 0 {
-			data = make([]byte, hdr.Size)
+			data, err = readAll(tr, hdr)
 			_, err = tr.Read(data)
 			if err != nil {
 				if err != io.EOF {
@@ -66,6 +66,22 @@ func New(r io.Reader) (*TarFS, error) {
 	}
 
 	return &TarFS{files: files}, nil
+}
+
+func readAll(r io.Reader, hdr *tar.Header) ([]byte, error) {
+	buf := make([]byte, 0, hdr.Size)
+
+	for {
+		n, err := r.Read(buf[len(buf):cap(buf)])
+		buf = buf[:len(buf)+n]
+		if err != nil {
+			if err == io.EOF {
+				err = nil
+			}
+
+			return buf, err
+		}
+	}
 }
 
 func (tarfs *TarFS) Walk(fn func(name string, fi os.FileInfo)) {
