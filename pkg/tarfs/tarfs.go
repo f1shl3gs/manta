@@ -48,9 +48,15 @@ func New(r io.Reader) (*TarFS, error) {
 			return nil, err
 		}
 
-		data, err := io.ReadAll(tr)
-		if err != nil {
-			return nil, err
+		var data []byte
+		if hdr.Size != 0 {
+			data = make([]byte, hdr.Size)
+			_, err = tr.Read(data)
+			if err != nil {
+				if err != io.EOF {
+					return nil, err
+				}
+			}
 		}
 
 		files[path.Join("/", hdr.Name)] = file{
