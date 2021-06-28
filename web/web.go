@@ -148,6 +148,8 @@ func New(logger *zap.Logger, backend *Backend, accessLog bool) http.Handler {
 
 	NewSecretHandler(logger, router, backend.SecretService)
 
+	NewProfileHandler(logger, router)
+
 	// and more
 
 	if backend.Flusher != nil {

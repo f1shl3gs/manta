@@ -6,6 +6,7 @@ import (
 	"github.com/f1shl3gs/manta/raftstore/internal"
 	"github.com/f1shl3gs/manta/raftstore/rawkv"
 	"github.com/f1shl3gs/manta/raftstore/transport"
+	bolt "go.etcd.io/bbolt"
 
 	"go.etcd.io/etcd/raft/v3/raftpb"
 	"go.uber.org/zap"
@@ -59,12 +60,13 @@ func (s *Store) Get(ctx context.Context, req *rawkv.GetRequest) (*rawkv.GetRespo
 		return nil, err
 	}
 
-	val, closer, err := s.engine.Get(req.Key)
-	if err != nil {
-		return nil, err
-	}
+	var val []byte
 
-	defer closer.Close()
+	err = s.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("kv"))
+		val = b.Get(req.Key)
+		return nil
+	})
 
 	return &rawkv.GetResponse{Value: val}, nil
 }

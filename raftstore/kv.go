@@ -4,7 +4,6 @@ import (
 	"context"
 	"io"
 
-	"github.com/cockroachdb/pebble"
 	"github.com/f1shl3gs/manta/kv"
 )
 
@@ -49,7 +48,6 @@ func (b *bucket) ForwardCursor(seek []byte, opts ...kv.CursorOption) (kv.Forward
 type txn struct {
 	readOnly bool
 	ctx      context.Context
-	db       *pebble.DB
 
 	// TODO: add readSet and writeSet
 }

@@ -1,7 +1,6 @@
-apiVersion: manta/alpha1
+apiVersion: manta/v1
 kind: Dashboard
-metadata:
-  name: Manta
+name: Manta
 spec:
   name: Manta
   cells:
@@ -173,10 +172,9 @@ spec:
         yColumn: value
         hoverDimension: x
 ---
-apiVersion: manta/alpha1
+apiVersion: manta/v1
 kind: Scraper
-metadata:
-  name: Selfstat
+name: Selfstat
 spec:
   name: Selfstat
   desc: collect metrics from manta itself

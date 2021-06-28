@@ -6,19 +6,21 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/cockroachdb/pebble"
 	"github.com/f1shl3gs/manta/pkg/fsutil"
 	"github.com/f1shl3gs/manta/raftstore/internal"
 	"github.com/f1shl3gs/manta/raftstore/membership"
 	"github.com/f1shl3gs/manta/raftstore/rawkv"
 	"github.com/f1shl3gs/manta/raftstore/transport"
+
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/etcd/pkg/v3/contention"
 	"go.etcd.io/etcd/pkg/v3/idutil"
 	"go.etcd.io/etcd/pkg/v3/pbutil"
@@ -157,7 +159,7 @@ type Store struct {
 	learnerStatus           prometheus.Gauge
 
 	// KV
-	engine *pebble.DB
+	db *bolt.DB
 }
 
 func New(cf *Config, logger *zap.Logger) (*Store, error) {
@@ -169,7 +171,13 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		id uint64
 	)
 
-	db, err := pebble.Open(cf.DataDir, defaultPebbleOptions())
+	opt := *bolt.DefaultOptions
+	opt.InitialMmapSize = 128 * 1024 * 1024
+	opt.NoSync = true
+	opt.NoGrowSync = true
+	opt.FreelistType = bolt.FreelistMapType
+
+	db, err := bolt.Open(filepath.Join(cf.DataDir, "manta.bolt"), 0600, &opt)
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +267,7 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		storage:             NewStorage(w, ss),
 		td:                  contention.NewTimeoutDetector(2 * heartbeat),
 		firstCommitInTermCh: make(chan struct{}),
-		engine:              db,
+		db:                  db,
 		readStateC:          make(chan raft.ReadState, 1),
 
 		slowReadIndex: prometheus.NewCounter(prometheus.CounterOpts{
@@ -1320,10 +1328,6 @@ func (s *Store) applyBatch(entries []raftpb.Entry, confState *raftpb.ConfState) 
 }
 
 func (s *Store) applyNormalEntries(entries []raftpb.Entry) {
-	wo := &pebble.WriteOptions{Sync: true}
-	batch := s.engine.NewBatch()
-	defer batch.Commit(wo)
-
 	for _, entry := range entries {
 		req := &rawkv.PutRequest{}
 		err := req.Unmarshal(entry.Data)
@@ -1332,12 +1336,16 @@ func (s *Store) applyNormalEntries(entries []raftpb.Entry) {
 			continue
 		}
 
-		err = batch.Set(req.Key, req.Value, wo)
-		if err != nil {
-			panic(err)
-		} else {
-			s.wait.Trigger(req.Id, nil)
-		}
+		err = s.db.Update(func(tx *bolt.Tx) error {
+			b, err := tx.CreateBucketIfNotExists([]byte("kv"))
+			if err != nil {
+				return err
+			}
+
+			return b.Put(req.Key, req.Value)
+		})
+
+		s.wait.Trigger(req.Id, err)
 	}
 }
 
@@ -1363,13 +1371,20 @@ func (s *Store) applyEntryNormal(entry *raftpb.Entry) {
 		return
 	}
 
-	err = s.engine.Set(req.Key, req.Value, nil)
+	err = s.db.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte("kv"))
+		if err != nil {
+			return err
+		}
+
+		return b.Put(req.Key, req.Value)
+	})
 	if err != nil {
 		s.logger.Warn("write kv failed",
 			zap.Error(err))
 	}
 
-	s.wait.Trigger(req.Id, nil)
+	s.wait.Trigger(req.Id, err)
 }
 
 func (s *Store) notifyAboutFirstCommitInTerm() {

@@ -5,7 +5,6 @@ go 1.16
 require (
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
-	github.com/cockroachdb/pebble v0.0.0-20210526183633-dd2a545f5d75
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
@@ -41,6 +40,8 @@ require (
 	golang.org/x/tools v0.1.0
 	google.golang.org/grpc v1.36.1
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
+	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/client-go v12.0.0+incompatible // indirect
 )
 
