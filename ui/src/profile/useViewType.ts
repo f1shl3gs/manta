@@ -10,6 +10,9 @@ export enum ViewType {
 
 const [ViewTypeProvider, useViewType] = constate(
   () => {
+    const location = useLocation()
+    const history = useHistory()
+
     const [viewType, setViewType] = useState(() => {
       const params = new URLSearchParams(window.location.search)
       switch (params.get('viewType')) {
@@ -23,8 +26,6 @@ const [ViewTypeProvider, useViewType] = constate(
           return ViewType.Both
       }
     })
-    const location = useLocation()
-    const history = useHistory()
 
     const svt = useCallback(
       (vt: ViewType) => {
