@@ -1,24 +1,12 @@
 import constate from 'constate'
-import {useState} from 'react'
 
-export enum ViewType {
-  FlameGraph = 'FlameGraph',
-  Table = 'Table',
-  Both = 'Both',
-}
+import testData from './components/testData'
 
-const [ProfileProvider, useProfile, useViewType] = constate(
+const [ProfileProvider, useProfile] = constate(
   () => {
-    const [viewType, setViewType] = useState(ViewType.Both)
-    return {viewType, setViewType}
+    return testData
   },
-  values => values,
-  values => {
-    return {
-      viewType: values.viewType,
-      setViewType: values.setViewType,
-    }
-  }
+  values => values
 )
 
-export {ProfileProvider, useProfile, useViewType}
+export {ProfileProvider, useProfile}

@@ -1,23 +1,23 @@
 // Libraries
-import React, {useState} from 'react'
+import React from 'react'
 
 // Components
 import {
   AlignItems,
-  Columns,
   ComponentSize,
   FlexBox,
   FlexDirection,
-  Grid,
   Page,
   Panel,
 } from '@influxdata/clockface'
-import FlameGraphControlBar from './FlameGraphControlBar'
-import TablePanel from './components/TablePanel'
-import FlameGraphPanel from './components/FlameGraphPanel'
 import withProvider from '../utils/withProvider'
-import {ProfileProvider} from './useProfile'
 import ProfilePanelHeader from './ProfilePanelHeader'
+import ProfilePanelBody from './ProfilePanelBody'
+import TimelineChart from './TimelineChart'
+
+// Hooks
+import {ProfileProvider} from './useProfile'
+import {ViewTypeProvider} from './useViewType'
 
 const Title = 'Profile'
 
@@ -37,7 +37,9 @@ const ProfilePage: React.FC = () => {
           testID={'profile--flexbox'}
         >
           <Panel>
-            <Panel.Body>Timeline</Panel.Body>
+            <Panel.Body>
+              <TimelineChart />
+            </Panel.Body>
           </Panel>
 
           <Panel>
@@ -46,8 +48,7 @@ const ProfilePage: React.FC = () => {
             </Panel.Header>
 
             <Panel.Body direction={FlexDirection.Row}>
-              <TablePanel />
-              <FlameGraphPanel />
+              <ProfilePanelBody />
             </Panel.Body>
           </Panel>
         </FlexBox>
@@ -56,4 +57,7 @@ const ProfilePage: React.FC = () => {
   )
 }
 
-export default withProvider(ProfileProvider, ProfilePage)
+export default withProvider(
+  ViewTypeProvider,
+  withProvider(ProfileProvider, ProfilePage)
+)

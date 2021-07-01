@@ -21,10 +21,10 @@ const ProfilePanelHeader: React.FC = () => {
       </Grid.Column>
 
       <Grid.Column
-        offsetLG={Columns.Four}
-        offsetMD={Columns.Four}
-        offsetSM={Columns.Four}
-        offsetXS={Columns.Four}
+        offsetLG={Columns.Six}
+        offsetMD={Columns.Six}
+        offsetSM={Columns.Six}
+        offsetXS={Columns.Six}
         widthLG={Columns.Three}
         widthMD={Columns.Three}
         widthSM={Columns.Three}

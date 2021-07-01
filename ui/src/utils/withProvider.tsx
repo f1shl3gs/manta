@@ -1,9 +1,6 @@
 import React from 'react'
 
-const withProvider = (
-  Provider: React.FC,
-  Component: React.FC
-): React.ComponentType<any> => {
+const withProvider = (Provider: React.FC, Component: React.FC): React.FC => {
   return () => (
     <Provider>
       <Component />
