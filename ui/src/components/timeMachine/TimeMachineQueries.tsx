@@ -8,10 +8,12 @@ import SubmitQueryButton from './SubmitQueryButton'
 import QueryEditor from './QueryEditor'
 
 // Hooks
-import {useActiveQuery} from './useQueries'
+import {useQueries} from './useQueries'
 
 const TimeMachineQueries: React.FC = () => {
-  const {activeQuery, onSetText} = useActiveQuery()
+  const {activeIndex, queries, onSetText} = useQueries()
+  console.log('queries', queries, 'active', activeIndex)
+  const activeQuery = queries[activeIndex]
 
   return (
     <div className={'time-machine-queries'}>

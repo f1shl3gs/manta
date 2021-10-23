@@ -52,7 +52,7 @@ const CheckOverlayHeader: React.FC = () => {
           message,
         })
       })
-  }, [onSave, history, orgID, id, name, notify])
+  }, [onSave, id, name, notify])
 
   return (
     <>

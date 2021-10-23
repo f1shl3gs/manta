@@ -1,9 +1,9 @@
-import React, {createRef, useState} from 'react'
+import React, {createRef} from 'react'
 import classnames from 'classnames'
 import {DashboardQuery} from '../../types/Dashboard'
 import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
 import QueryTabName from './QueryTabName'
-import {useActiveQuery, useQueries} from './useQueries'
+import {useQueries} from './useQueries'
 
 interface Props {
   queryIndex: number
@@ -12,20 +12,15 @@ interface Props {
 
 const QueryTab: React.FC<Props> = props => {
   const {query, queryIndex} = props
-  const {activeIndex} = useActiveQuery()
-  const {removeQuery, setActiveIndex, queries} = useQueries()
+  const {activeIndex, removeQuery, setActiveIndex, queries} = useQueries()
+  const activeQuery = queries[activeIndex]
 
-  const [editing, setEditing] = useState(false)
   const triggerRef = createRef<HTMLDivElement>()
   const queryTabClass = classnames('query-tab', {
     'query-tab__active': queryIndex === activeIndex,
     'query-tab__hidden': query.hidden,
   })
   const hideButton = () => {
-    if (editing) {
-      return null
-    }
-
     const icon = query.hidden ? IconFont.EyeClosed : IconFont.EyeOpen
     return (
       <div
@@ -38,11 +33,7 @@ const QueryTab: React.FC<Props> = props => {
   }
 
   const removeButton = () => {
-    if (editing) {
-      return null
-    }
-
-    if (queries.length == 1) {
+    if (queries.length === 1) {
       return null
     }
 
@@ -70,8 +61,15 @@ const QueryTab: React.FC<Props> = props => {
         ref={triggerRef}
       >
         {hideButton()}
-        <QueryTabName />
-        {removeButton()}
+        <QueryTabName name={activeQuery.name || ''} />
+        {queries.length === 1 ? null : (
+          <div
+            className={'query-tab--close'}
+            onClick={() => removeQuery(queryIndex)}
+          >
+            <Icon glyph={IconFont.Remove} />
+          </div>
+        )}
       </div>
 
       <RightClick triggerRef={triggerRef} color={ComponentColor.Primary}>

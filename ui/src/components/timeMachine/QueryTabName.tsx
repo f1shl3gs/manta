@@ -1,9 +1,12 @@
+// Libraries
 import React from 'react'
-import {useActiveQuery} from './useQueries'
 
-const QueryTabName: React.FC = () => {
-  const {activeQuery} = useActiveQuery()
-  const {name = 'Query'} = activeQuery
+interface Props {
+  name: string
+}
+
+const QueryTabName: React.FC<Props> = props => {
+  const {name} = props
 
   return (
     <div className={'query-tab--name'} title={name}>

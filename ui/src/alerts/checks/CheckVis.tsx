@@ -34,6 +34,8 @@ const CheckVis: React.FC<Props> = ({query}) => {
       },
     ]
   }, [query])
+
+  // todo: Error query
   const {
     result: {table, fluxGroupKeyUnion},
     errs,

@@ -10,9 +10,12 @@ import ViewOptions from './ViewOptions'
 
 // Types
 import {ViewProperties} from 'types/Dashboard'
-import {useViewOption} from 'shared/useViewOption'
-import {QueriesProvider} from './useQueries'
 import {INITIAL_RESIZER_HANDLE} from 'constants/timeMachine'
+
+// Hooks
+import {useViewOption} from 'dashboards/components/useViewOption'
+import {QueriesProvider} from './useQueries'
+import {useViewProperties} from 'shared/useViewProperties'
 
 interface Props {
   viewProperties: ViewProperties
@@ -20,6 +23,7 @@ interface Props {
 }
 
 const TimeMachine: React.FC<Props> = props => {
+  const {viewProperties} = useViewProperties()
   const {isViewingVisOptions} = useViewOption()
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 

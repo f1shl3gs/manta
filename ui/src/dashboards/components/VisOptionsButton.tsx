@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useViewOption} from '../../shared/useViewOption'
+import {useViewOption} from './useViewOption'
 
 const VisOptionsButton: React.FC = () => {
   const {isViewingVisOptions, onToggleVisOptions} = useViewOption()

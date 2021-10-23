@@ -134,18 +134,6 @@ const generateNavItems = (orgID: string): NavItem[] => {
       activeKeywords: ['profile'],
     },
     {
-      id: 'data-explorer',
-      testID: 'nav-item-data-explorer',
-      icon: IconFont.GraphLine,
-      label: 'Data Explorer',
-      shortLabel: 'Explore',
-      link: {
-        type: 'link',
-        location: `${orgPrefix}/data-explorer`,
-      },
-      activeKeywords: ['data-explorer'],
-    },
-    {
       id: 'dashboards',
       testID: 'nav-item-dashboards',
       icon: IconFont.Dashboards,

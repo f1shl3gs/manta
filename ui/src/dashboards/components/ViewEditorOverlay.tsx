@@ -11,9 +11,8 @@ import {ViewProperties} from 'types/Dashboard'
 
 // Hooks
 import {CellProvider, useCell} from './useCell'
+import {ViewOptionProvider} from 'dashboards/components/useViewOption'
 import {ViewPropertiesProvider} from 'shared/useViewProperties'
-
-import {ViewOptionProvider} from 'shared/useViewOption'
 
 interface Props {}
 

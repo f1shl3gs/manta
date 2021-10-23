@@ -1,16 +1,20 @@
+// Libraries
 import {useCallback, useState} from 'react'
 import constate from 'constate'
 
-import {DashboardQuery, ViewProperties} from 'types/Dashboard'
+// Hooks
 import {useViewProperties} from 'shared/useViewProperties'
 
-const [QueriesProvider, useQueries, useActiveQuery] = constate(
+// Types
+import {DashboardQuery, ViewProperties} from 'types/Dashboard'
+
+const [QueriesProvider, useQueries] = constate(
   () => {
     const {viewProperties, setViewProperties} = useViewProperties()
     const {queries = [{text: '', hidden: false}]} = viewProperties
+    const [activeIndex, setActiveIndex] = useState(0)
 
     const setQueries = (queries: DashboardQuery[]) => {
-      // @ts-ignore
       setViewProperties((prev: ViewProperties) => {
         return {
           ...prev,
@@ -18,8 +22,6 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
         }
       })
     }
-
-    const [activeIndex, setActiveIndex] = useState(0)
 
     return {
       activeIndex,
@@ -30,7 +32,7 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
   },
   // useQueries
   value => {
-    const {queries, setQueries, setActiveIndex} = value
+    const {queries, setQueries, setActiveIndex, activeIndex} = value
     const addQuery = useCallback(() => {
       const next = queries.slice().concat({
         hidden: false,
@@ -39,29 +41,29 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
       })
 
       setQueries(next)
-    }, [queries])
+    }, [queries, setQueries])
 
     const removeQuery = useCallback(
       (queryIndex: number) => {
+        if (queries.length === 1) {
+          // nothing to delete anymore
+          return
+        }
+
         console.log('remove', queryIndex)
 
         const next = queries.filter((item, index) => index !== queryIndex)
+        console.log('set index', 0)
         setActiveIndex(0)
+        console.log('set index done')
+
+        console.log('set queries', next)
         setQueries(next)
+        console.log('set queries done')
       },
-      [queries]
+      [queries, setActiveIndex, setQueries]
     )
 
-    return {
-      queries,
-      addQuery,
-      removeQuery,
-      setActiveIndex,
-    }
-  },
-  // useActiveQuery
-  value => {
-    const {activeIndex, queries, setQueries} = value
     const onSetText = useCallback(
       (text: string) => {
         const next = queries.map((item, queryIndex) => {
@@ -77,15 +79,18 @@ const [QueriesProvider, useQueries, useActiveQuery] = constate(
 
         setQueries(next)
       },
-      [activeIndex, queries]
+      [activeIndex, queries, setQueries]
     )
 
     return {
       activeIndex,
+      queries,
+      addQuery,
+      removeQuery,
+      setActiveIndex,
       onSetText,
-      activeQuery: value.queries[activeIndex],
     }
   }
 )
 
-export {QueriesProvider, useQueries, useActiveQuery}
+export {QueriesProvider, useQueries}

@@ -1,5 +1,8 @@
+// Libraries
 import React from 'react'
+import {useHistory} from 'react-router-dom'
 
+// Components
 import {
   ComponentColor,
   ComponentSize,
@@ -8,11 +11,12 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import RenamablePageTitle from 'components/RenamablePageTitle'
+import ViewTypeDropdown from 'components/timeMachine/ViewTypeDropdown'
 import VisOptionsButton from './VisOptionsButton'
-import {useHistory} from 'react-router-dom'
+
+// Hooks
 import {useCell} from './useCell'
-import ViewTypeDropdown from '../../components/timeMachine/ViewTypeDropdown'
-import {useViewProperties} from '../../shared/useViewProperties'
+import {useViewProperties} from 'shared/useViewProperties'
 
 const saveButtonClass = 'veo-header--save-cell-button'
 
