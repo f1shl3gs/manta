@@ -130,7 +130,7 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) (
 		return nil, err
 	}
 
-	token, err := o.tokenGen.Token()
+	tk, err := o.tokenGen.Token()
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +138,7 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) (
 	err = o.authorizationService.CreateAuthorization(ctx, &Authorization{
 		UID:         user.ID,
 		Status:      "active",
-		Token:       token,
+		Token:       tk,
 		Permissions: append(OwnerPermissions(org.ID), MePermissions(user.ID)...),
 	})
 	if err != nil {
