@@ -37,22 +37,22 @@ type AuthenticationHandler struct {
 }
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
+	var (
+		ctx        = r.Context()
+		authorizer manta.Authorizer
+		err        error
+		path       = r.URL.Path
+	)
+
 	if !strings.HasPrefix(path, "/api") {
 		h.handler.ServeHTTP(w, r)
 		return
 	}
 
-	if handler, _, _ := h.noAuthRouter.Lookup(r.Method, r.URL.Path); handler != nil {
+	if handler, _, _ := h.noAuthRouter.Lookup(r.Method, path); handler != nil {
 		h.handler.ServeHTTP(w, r)
 		return
 	}
-
-	var (
-		ctx        = r.Context()
-		authorizer manta.Authorizer
-		err        error
-	)
 
 	switch probeAuthType(r) {
 	case "token":
