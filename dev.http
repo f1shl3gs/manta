@@ -1,4 +1,4 @@
-# Onboarding
+### Onboarding
 POST http://localhost:8088/api/v1/setup
 Content-Type: application/json
 
@@ -7,3 +7,26 @@ Content-Type: application/json
   "password": "password",
   "org": "testOrg"
 }
+
+
+### Create vertex scraper
+POST http://localhost:8088/api/v1/scrapes?orgID=0879ce1020c55000
+Content-Type: application/json
+Cookie: manta_session=0879ce23e2055000
+
+{
+  "orgID": "0879ce1020c55000",
+  "name": "Vertex",
+  "targets": [
+    "127.0.0.1:9101"
+  ],
+  "labels": {
+    "component": "vertex"
+  }
+}
+
+###
+DELETE http://localhost:8088/api/v1/scrapes/0879d2626aa80000?orgID=0879ce1020c55000
+Content-Type: application/json
+Cookie: manta_session=0879ce23e2055000
+

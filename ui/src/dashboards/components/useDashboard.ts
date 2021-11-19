@@ -31,7 +31,7 @@ const [DashboardProvider, useDashboard] = constate(
       })
     }, [setParams, showVariablesControls])
 
-    const {post: update} = useFetch(`/api/v1/dashboards/${dashboardID}`, {})
+    const {patch: update} = useFetch(`/api/v1/dashboards/${dashboardID}`, {})
 
     // onRename
     const onRename = useCallback(
