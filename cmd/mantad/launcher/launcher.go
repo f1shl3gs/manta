@@ -98,7 +98,7 @@ func (l *Launcher) Options() []Option {
 		{
 			DestP:   &l.Opentracing,
 			Flag:    "opentracing",
-			Default: true,
+			Default: false,
 		},
 		{
 			DestP:   &l.LogLevel,
