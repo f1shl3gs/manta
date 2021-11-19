@@ -1,0 +1,9 @@
+# Onboarding
+POST http://localhost:8088/api/v1/setup
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password",
+  "org": "testOrg"
+}
