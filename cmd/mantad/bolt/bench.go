@@ -48,7 +48,10 @@ func bench() *cobra.Command {
 			}
 			duration := time.Since(start)
 
-			fmt.Printf("Write: %d %fs\n", count, duration.Seconds())
+			fmt.Printf("Keys:        %d\n", count)
+			fmt.Printf("Batch-Size:  %d\n", batchSize)
+			fmt.Printf("Duration:    %fs\n", duration.Seconds())
+			fmt.Printf("Throughput:  %f w/s\n", float64(count)/duration.Seconds())
 
 			return nil
 		},
