@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/f1shl3gs/manta/cmd/mantad/bolt"
 	"github.com/f1shl3gs/manta/cmd/mantad/cluster"
 	"github.com/f1shl3gs/manta/cmd/mantad/completion"
 	"github.com/f1shl3gs/manta/cmd/mantad/launcher"
@@ -15,6 +16,7 @@ func main() {
 	rootCmd.AddCommand(version.New())
 	rootCmd.AddCommand(cluster.New())
 	rootCmd.AddCommand(completion.New())
+	rootCmd.AddCommand(bolt.New())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
