@@ -2,6 +2,7 @@ package bolt
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -10,6 +11,11 @@ import (
 
 	"github.com/spf13/cobra"
 	bolt "go.etcd.io/bbolt"
+)
+
+var (
+	// ErrInvalidValue is returned when a benchmark reads an unexpected value.
+	ErrInvalidValue = errors.New("invalid value")
 )
 
 func bench() *cobra.Command {
@@ -48,10 +54,23 @@ func bench() *cobra.Command {
 			}
 			duration := time.Since(start)
 
-			fmt.Printf("Keys:        %d\n", count)
-			fmt.Printf("Batch-Size:  %d\n", batchSize)
-			fmt.Printf("Duration:    %fs\n", duration.Seconds())
-			fmt.Printf("Throughput:  %f w/s\n", float64(count)/duration.Seconds())
+			fmt.Println("Write:")
+			fmt.Printf("    Keys:        %d\n", count)
+			fmt.Printf("    Batch-Size:  %d\n", batchSize)
+			fmt.Printf("    Duration:    %fs\n", duration.Seconds())
+			fmt.Printf("    Throughput:  %f w/s\n", float64(count)/duration.Seconds())
+
+			start = time.Now()
+			if reads, err := runReads(db); err != nil {
+				return err
+			} else {
+				duration := time.Since(start)
+
+				fmt.Println("Read:")
+				fmt.Printf("    Keys:        %d\n", reads)
+				fmt.Printf("    Duration:    %fs\n", duration.Seconds())
+				fmt.Printf("    Throughput:  %f r/s\n", float64(count)/duration.Seconds())
+			}
 
 			return nil
 		},
@@ -106,4 +125,42 @@ func runWrites(db *bolt.DB, count, batchSize int) error {
 	}
 
 	return nil
+}
+
+// Read from the database
+func runReads(db *bolt.DB) (int, error) {
+	var count int
+
+	err := db.View(func(tx *bolt.Tx) error {
+		t := time.Now()
+
+		for {
+			var top = tx.Bucket(benchBucketName)
+			if err := top.ForEach(func(name, _ []byte) error {
+				if b := top.Bucket(name); b != nil {
+					c := b.Cursor()
+					for k, v := c.First(); k != nil; k, v = c.Next() {
+						if v == nil {
+							return ErrInvalidValue
+						}
+
+						count += 1
+					}
+				}
+
+				return nil
+			}); err != nil {
+				return err
+			}
+
+			// Make sure we do this for at least a second
+			if time.Since(t) >= time.Second {
+				break
+			}
+		}
+
+		return nil
+	})
+
+	return count, err
 }
