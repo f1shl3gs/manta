@@ -48,28 +48,52 @@ func bench() *cobra.Command {
 			db.NoSync = noSync
 			defer db.Close()
 
+			// Random Writes
+			r := rand.New(rand.NewSource(time.Now().UnixNano()))
+			keySource := func() uint32 {
+				return r.Uint32()
+			}
 			start := time.Now()
-			if err = runWrites(db, count, batchSize); err != nil {
+			if err = runWritesWithSource(db, count, batchSize, keySource); err != nil {
 				return err
 			}
 			duration := time.Since(start)
 
-			fmt.Println("Write:")
+			fmt.Println("Random Write:")
 			fmt.Printf("    Keys:        %d\n", count)
 			fmt.Printf("    Batch-Size:  %d\n", batchSize)
 			fmt.Printf("    Duration:    %fs\n", duration.Seconds())
 			fmt.Printf("    Throughput:  %f w/s\n", float64(count)/duration.Seconds())
 
+			// Sequential Writes
+			var i = uint32(0)
+			keySource = func() uint32 {
+				i++
+				return i
+			}
 			start = time.Now()
-			if reads, err := runReads(db); err != nil {
+			if err := runWritesWithSource(db, count, batchSize, keySource); err != nil {
+				return err
+			}
+			duration = time.Since(start)
+
+			fmt.Println("Sequential Write:")
+			fmt.Printf("    Keys:        %d\n", count)
+			fmt.Printf("    Batch-Size:  %d\n", batchSize)
+			fmt.Printf("    Duration:    %fs\n", duration.Seconds())
+			fmt.Printf("    Throughput:  %f w/s\n", float64(count)/duration.Seconds())
+
+			// Sequential Reads
+			start = time.Now()
+			if reads, err := runReadsSequential(db); err != nil {
 				return err
 			} else {
 				duration := time.Since(start)
 
-				fmt.Println("Read:")
+				fmt.Println("Sequential Read:")
 				fmt.Printf("    Keys:        %d\n", reads)
 				fmt.Printf("    Duration:    %fs\n", duration.Seconds())
-				fmt.Printf("    Throughput:  %f r/s\n", float64(count)/duration.Seconds())
+				fmt.Printf("    Throughput:  %f r/s\n", float64(reads)/duration.Seconds())
 			}
 
 			return nil
@@ -86,13 +110,9 @@ func bench() *cobra.Command {
 
 var benchBucketName = []byte("bench")
 
-func runWrites(db *bolt.DB, count, batchSize int) error {
+func runWritesWithSource(db *bolt.DB, count, batchSize int, keySource func() uint32) error {
 	keySize := 8
 	valueSize := 256
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	keySource := func() uint32 {
-		return r.Uint32()
-	}
 
 	if batchSize == 0 {
 		batchSize = count
@@ -127,30 +147,20 @@ func runWrites(db *bolt.DB, count, batchSize int) error {
 	return nil
 }
 
-// Read from the database
-func runReads(db *bolt.DB) (int, error) {
+func runReadsSequential(db *bolt.DB) (int, error) {
 	var count int
 
 	err := db.View(func(tx *bolt.Tx) error {
 		t := time.Now()
 
 		for {
-			var top = tx.Bucket(benchBucketName)
-			if err := top.ForEach(func(name, _ []byte) error {
-				if b := top.Bucket(name); b != nil {
-					c := b.Cursor()
-					for k, v := c.First(); k != nil; k, v = c.Next() {
-						if v == nil {
-							return ErrInvalidValue
-						}
-
-						count += 1
-					}
+			c := tx.Bucket(benchBucketName).Cursor()
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				if v == nil {
+					return errors.New("invalid value")
 				}
 
-				return nil
-			}); err != nil {
-				return err
+				count += 1
 			}
 
 			// Make sure we do this for at least a second
