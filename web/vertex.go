@@ -33,7 +33,7 @@ func NewVertexHandler(logger *zap.Logger, router *Router) {
 	h := &VertexHandler{
 		Router:    router,
 		logger:    logger,
-		instances: make(map[string]instance),
+		instances: make(map[string]*instance),
 	}
 
 	h.HandlerFunc(http.MethodGet, VertexPrefix, h.handleGet)
