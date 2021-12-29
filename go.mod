@@ -8,7 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
-	github.com/google/btree v1.0.0
+	github.com/google/btree v1.0.1
 	github.com/google/go-cmp v0.5.5
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-hclog v0.12.2 // indirect
@@ -22,24 +22,24 @@ require (
 	github.com/mileusna/useragent v1.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.10.0
-	github.com/prometheus/common v0.20.0
+	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/common v0.26.0
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
-	github.com/soheilhy/cmux v0.1.5-0.20210205191134-5ec6847320e5
-	github.com/spf13/cobra v1.1.1
+	github.com/soheilhy/cmux v0.1.5
+	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.0
 	github.com/stretchr/testify v1.7.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
-	go.etcd.io/bbolt v1.3.5
-	go.etcd.io/etcd/pkg/v3 v3.5.0-alpha.0
-	go.etcd.io/etcd/raft/v3 v3.5.0-alpha.0
-	go.etcd.io/etcd/server/v3 v3.5.0-alpha.0
-	go.uber.org/zap v1.16.1-0.20210329175301-c23abee72d19
+	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/etcd/pkg/v3 v3.5.1
+	go.etcd.io/etcd/raft/v3 v3.5.1
+	go.etcd.io/etcd/server/v3 v3.5.1
+	go.uber.org/zap v1.17.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/tools v0.1.0
-	google.golang.org/grpc v1.36.1
+	golang.org/x/tools v0.1.2
+	google.golang.org/grpc v1.38.0
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/client-go v12.0.0+incompatible // indirect
