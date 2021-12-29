@@ -59,7 +59,7 @@
     "@types/lodash": "^4.14.178",
     "@types/react-datepicker": "^3.1.2",
     "@types/react-grid-layout": "^1.1.1",
-    "@types/react-icons": "2.2.7",
+    "@types/react-icons": "3.0.0",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
     "@types/react-virtualized": "^9.21.10",
