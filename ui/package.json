@@ -56,7 +56,7 @@
     "@types/classnames": "^2.2.11",
     "@types/color": "^3.0.1",
     "@types/deep-freeze": "^0.1.2",
-    "@types/lodash": "^4.14.165",
+    "@types/lodash": "^4.14.178",
     "@types/react-datepicker": "^3.1.2",
     "@types/react-grid-layout": "^1.1.1",
     "@types/react-icons": "2.2.7",
