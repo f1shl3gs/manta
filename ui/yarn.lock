@@ -1917,10 +1917,10 @@
     "@codemirror/state" "^0.18.0"
     "@codemirror/view" "^0.18.0"
 
-"@codemirror/highlight@^0.18.3":
-  version "0.18.3"
-  resolved "https://registry.npm.taobao.org/@codemirror/highlight/download/@codemirror/highlight-0.18.3.tgz#50e268630f113c322a2dc97c9f68d71934fffcb0"
-  integrity sha1-UOJoYw8RPDIqLcl8n2jXGTT//LA=
+"@codemirror/highlight@^0.18.4":
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/@codemirror/highlight/-/highlight-0.18.4.tgz#83dfd402d7cbfe67dc9d0cb93a25755321014829"
+  integrity sha512-3azJntqWrShOIq/0kVcdMc9k7ACL0LQErgK+A6aWXmCj5Mx0gShq+Iajy8AMQ2zB0v3nhCBgFaniL1LLD5m5hQ==
   dependencies:
     "@codemirror/language" "^0.18.0"
     "@codemirror/rangeset" "^0.18.0"
