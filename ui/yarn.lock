@@ -2825,20 +2825,12 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-icon-base@*":
-  version "2.1.3"
-  resolved "https://registry.npm.taobao.org/@types/react-icon-base/download/@types/react-icon-base-2.1.3.tgz#0faf840b854a9dbc3fa6fe1935c7c40eb4153114"
-  integrity sha1-D6+EC4VKnbw/pv4ZNcfEDrQVMRQ=
+"@types/react-icons@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-icons/-/react-icons-3.0.0.tgz#27ca2823a6add881d06a371bfff093afc1b9c829"
+  integrity sha512-Vefs6LkLqF61vfV7AiAqls+vpR94q67gunhMueDznG+msAkrYgRxl7gYjNem/kZ+as2l2mNChmF1jRZzzQQtMg==
   dependencies:
-    "@types/react" "*"
-
-"@types/react-icons@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.npm.taobao.org/@types/react-icons/download/@types/react-icons-2.2.7.tgz#ed0a767293ba827f26552504714eebbd80403fc1"
-  integrity sha1-7Qp2cpO6gn8mVSUEcU7rvYBAP8E=
-  dependencies:
-    "@types/react" "*"
-    "@types/react-icon-base" "*"
+    react-icons "*"
 
 "@types/react-router-dom@^5.1.6":
   version "5.1.6"
@@ -11394,6 +11386,11 @@ react-icon-base@2.1.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/react-icon-base/download/react-icon-base-2.1.0.tgz#a196e33fdf1e7aaa1fda3aefbb68bdad9e82a79d"
   integrity sha1-oZbjP98eeqof2jrvu2i9rZ6Cp50=
+
+react-icons@*:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.3.1.tgz#2fa92aebbbc71f43d2db2ed1aed07361124e91ca"
+  integrity sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==
 
 react-icons@2.2.7:
   version "2.2.7"
