@@ -4,8 +4,7 @@ on:
   workflow_dispatch: {}
   pull_request: {}
 
-env:
-  CI: true
+env: {}
 
 jobs:
   cancel-previous:
