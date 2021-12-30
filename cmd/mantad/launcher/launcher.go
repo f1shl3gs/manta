@@ -345,7 +345,7 @@ func (l *Launcher) Run() error {
 
 			orgID := org.ID
 			group.Go(func() error {
-				mgr := scrape.NewManager(kl, app)
+				mgr := scrape.NewManager(nil, kl, app)
 				errCh := make(chan error)
 				go func() {
 					scrapeManager = mgr

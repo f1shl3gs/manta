@@ -9,7 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/prometheus/prometheus/tsdb"
 	"go.uber.org/zap"
@@ -278,7 +278,7 @@ func (m *MultiTSDB) startTSDB(zl *zap.Logger, tenantID manta.ID, tenant *Tenant)
 	opts := *m.tsdbOpts
 	kitlog := log.NewZapToGokitLogAdapter(zl)
 
-	s, err := tsdb.Open(dataDir, kitlog, &UnRegisterer{Registerer: reg}, &opts)
+	s, err := tsdb.Open(dataDir, kitlog, &UnRegisterer{Registerer: reg}, &opts, nil)
 	if err != nil {
 		m.mtx.Lock()
 		delete(m.tenants, tenantID)

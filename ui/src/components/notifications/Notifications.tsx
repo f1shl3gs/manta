@@ -13,7 +13,7 @@ import {get} from '../../utils/object'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
-    [NotificationStyle.Primary]: Gradients.Primary,
+    [NotificationStyle.Primary]: Gradients.Info,
     [NotificationStyle.Warning]: Gradients.WarningLight,
     [NotificationStyle.Success]: Gradients.HotelBreakfast,
     [NotificationStyle.Error]: Gradients.DangerDark,

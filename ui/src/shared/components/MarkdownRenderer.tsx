@@ -8,7 +8,7 @@ interface Props {
 }
 
 const MarkdownRenderer: React.FC<Props> = ({className, text}) => {
-  return <ReactMarkdown source={text} className={className} />
+  return <ReactMarkdown className={className} >{text}</ReactMarkdown>
 }
 
 export default MarkdownRenderer

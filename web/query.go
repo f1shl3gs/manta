@@ -14,9 +14,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/model"
-	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/pkg/textparse"
-	"github.com/prometheus/prometheus/pkg/timestamp"
+	"github.com/prometheus/prometheus/model/labels"
+	"github.com/prometheus/prometheus/model/textparse"
+	"github.com/prometheus/prometheus/model/timestamp"
 	"github.com/prometheus/prometheus/promql"
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/prometheus/prometheus/storage"
@@ -643,8 +643,8 @@ func (h *QueryHandler) handleLabelValues(w http.ResponseWriter, r *http.Request)
 	if len(matcherSets) > 0 {
 		var callWarnings storage.Warnings
 		labelValuesSet := make(map[string]struct{})
-		for _, matchers := range matcherSets {
-			vals, callWarnings, err = q.LabelValues(name, matchers...)
+		for range matcherSets {
+			vals, callWarnings, err = q.LabelValues(name)
 			if err != nil {
 				// todo: add warnings
 				h.HandleHTTPError(ctx, &apiError{errorExec, err}, w)

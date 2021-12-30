@@ -14,8 +14,6 @@ import Nav from 'layout/Nav'
 import {Provider, useFetch} from 'shared/useFetch'
 import remoteDataState from 'utils/rds'
 import ProfilePage from '../../profile/ProfilePage'
-import PluginsIndex from '../../plugins/PluginsIndex'
-import PluginDetailsView from '../../plugins/PluginDetailsView'
 import AlertsPage from '../../alerts/AlertsPage'
 import Settings from '../../settings/Settings'
 import Data from '../../data/Data'
@@ -35,12 +33,6 @@ const Org: React.FC = () => {
         <Switch>
           {/* todo: memorize the path with localStorage? */}
           <Redirect exact from={`${orgPath}/`} to={`${orgPath}/dashboards`} />
-          <Route exact path={`${orgPath}/plugins`} component={PluginsIndex} />
-          <Route
-            exact
-            path={`${orgPath}/plugins/:id`}
-            component={PluginDetailsView}
-          />
 
           {/* OpenTelemetry Collectors */}
           {/* Data */}

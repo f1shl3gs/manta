@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta/pkg/tsdb"
-	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/promql"
 	"go.uber.org/zap"
 
