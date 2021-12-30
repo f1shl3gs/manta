@@ -11,15 +11,13 @@ LDFLAGS    	:= "-extldflags '-static' -s -w -X manta/version.Version=${VERSION} 
 GO			:= go
 
 export GOOS=$(shell go env GOOS)
-export GOBUILD=${GO} build -ldflags ${LDFLAGS}
+export GOBUILD=${GO} build -tags assets -ldflags ${LDFLAGS}
 
 .PHONY: proto tidy deps
 
-mantad: $(GOSROUCES) assets
-	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
-
-assets: $(ASSETS) ui
+mantad: $(GOSROUCES) $(ASSETS) ui
 	tar czf assets.tgz ui/build
+	CGO_ENABLED=0 $(GOBUILD) -o bin/$@ ./cmd/$(shell basename "$@")
 
 deps:
 	go mod download

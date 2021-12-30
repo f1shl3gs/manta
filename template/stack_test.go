@@ -1,7 +1,6 @@
 package template
 
 import (
-	"os"
 	"testing"
 
 	"github.com/f1shl3gs/manta"
@@ -27,13 +26,4 @@ spec:
 	st, ok := obj.Spec.(*manta.ScrapeTarget)
 	require.True(t, ok)
 	require.Equal(t, "Selfstat", st.Name)
-}
-
-func TestApplyYAML(t *testing.T) {
-	f, err := os.Open("testdata/stack.yml")
-	require.NoError(t, err)
-	defer f.Close()
-
-	err = ApplyYAML(nil, f)
-	require.NoError(t, err)
 }
