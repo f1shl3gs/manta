@@ -3,7 +3,6 @@ module github.com/f1shl3gs/manta
 go 1.17
 
 require (
-	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/benbjohnson/clock v1.0.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
@@ -11,14 +10,10 @@ require (
 	github.com/google/btree v1.0.1
 	github.com/google/go-cmp v0.5.6
 	github.com/gorilla/websocket v1.4.2
-	github.com/hashicorp/go-hclog v0.12.2 // indirect
-	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
-	github.com/hashicorp/go-sockaddr v1.0.2
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/influxdata/cron v0.0.0-20200427044617-e2c242fdf59f
 	github.com/jsternberg/zap-logfmt v1.2.0
 	github.com/julienschmidt/httprouter v1.3.1-0.20200114094804-8c9f31f047a3
-	github.com/mattn/go-isatty v0.0.12
+	github.com/mattn/go-isatty v0.0.14
 	github.com/mileusna/useragent v1.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
@@ -81,7 +76,6 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/goleak v1.1.12 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/net v0.0.0-20211020060615-d418f374d309 // indirect
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1 // indirect
 	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 // indirect
