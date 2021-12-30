@@ -23,7 +23,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
-	github.com/prometheus/common v0.26.0
+	github.com/prometheus/common v0.32.1
 	github.com/prometheus/prometheus v1.8.2-0.20210327162702-0f74bea24ec8
 	github.com/soheilhy/cmux v0.1.5
 	github.com/spf13/cobra v1.1.3
