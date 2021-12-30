@@ -2,9 +2,6 @@ package web
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"testing"
 
@@ -56,19 +53,4 @@ func NewTestBackendWithOrg(t *testing.T) (*Backend, *zap.Logger, manta.ID, func(
 	err := backend.OrganizationService.CreateOrganization(context.Background(), org)
 	require.NoError(t, err)
 	return backend, logger, org.ID, closer
-}
-
-func TestDemoServer(t *testing.T) {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		data, err := io.ReadAll(r.Body)
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println(string(data))
-
-		w.WriteHeader(http.StatusOK)
-	})
-
-	http.ListenAndServe(":8080", nil)
 }

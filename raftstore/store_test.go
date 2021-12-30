@@ -1,5 +1,6 @@
 package raftstore
 
+/*
 import (
 	"context"
 	"encoding/binary"
@@ -182,25 +183,6 @@ const (
 	valueSize = 256
 )
 
-/*
-Pebble with sync
-Total 100000
-Connections 100
-Clients 1000
-Key/Value Size 8 256
-Time 1.687833309s
-Throughput 14.916758555998495 MB/s
-OPS 59247.556892479835
-
-Bolt without sync
-Total 100000
-Connections 100
-Clients 1000
-Key/Value Size 8 256
-Time 2.887417119s
-Throughput 8.719558316480633 MB/s
-OPS 34633.0287169015
-*/
 func TestBenchPut(t *testing.T) {
 	value := make([]byte, valueSize)
 	for i := 0; i < valueSize; i++ {
@@ -221,25 +203,6 @@ func TestBenchPut(t *testing.T) {
 	})
 }
 
-/*
-pebble:
-Total 100000
-Connections 100
-Clients 1000
-Key/Value Size 8 256
-Time 498.91609ms
-Throughput 50.46339947289533 MB/s
-OPS 200434.50593064658
-
-BoltDB without sync
-Total 100000
-Connections 100
-Clients 1000
-Key/Value Size 8 256
-Time 464.221365ms
-Throughput 54.23490569660662 MB/s
-OPS 215414.47149895827
-*/
 func TestBenchGet(t *testing.T) {
 	bench(t, 100, 1000, 100000, func(ctx context.Context, id int64, cli rawkv.RawKVClient) {
 		var key = make([]byte, 8)
@@ -258,3 +221,4 @@ func TestBenchGet(t *testing.T) {
 		}
 	})
 }
+*/
