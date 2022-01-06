@@ -33,7 +33,7 @@ require (
 	go.etcd.io/etcd/server/v3 v3.5.1
 	go.uber.org/zap v1.20.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/tools v0.1.7
+	golang.org/x/tools v0.1.8
 	google.golang.org/grpc v1.42.0
 	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
