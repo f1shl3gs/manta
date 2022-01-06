@@ -3,7 +3,7 @@ module github.com/f1shl3gs/manta
 go 1.17
 
 require (
-	github.com/benbjohnson/clock v1.1.0
+	github.com/benbjohnson/clock v1.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.2
