@@ -3478,12 +3478,11 @@ code-point-at@^1.0.0:
   resolved "https://registry.npmmirror.com/code-point-at/download/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror-promql@0.13.0:
-  version "0.13.0"
-  resolved "https://registry.npmmirror.com/codemirror-promql/download/codemirror-promql-0.13.0.tgz#5cfae3bf23522686dc8d8af0c02444d38df2662a"
-  integrity sha1-XPrjvyNSJobcjYrwwCRE043yZio=
+codemirror-promql@0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/codemirror-promql/-/codemirror-promql-0.19.0.tgz#584780b8ead1e9dd8b81273e858cba9e94469a38"
+  integrity sha512-SUomAfs8S2+UihtCYMEG7e+5DYCDJTJiTOJjqSXSAylHacgyx5z/V20vA4KA7uSe+KHgKXxjM6R9ZOfkz4SJPg==
   dependencies:
-    lezer-promql "^0.17.0"
     lru-cache "^6.0.0"
 
 codemirror@5.36.0:
@@ -6939,11 +6938,6 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
-
-lezer-promql@^0.17.0:
-  version "0.17.0"
-  resolved "https://registry.npmmirror.com/lezer-promql/download/lezer-promql-0.17.0.tgz#9dcd19f08f34dc8d82572cc7f4ed78f7256af8fe"
-  integrity sha1-nc0Z8I803I2CVyzH9O149yVq+P4=
 
 lezer-tree@^0.13.0, lezer-tree@^0.13.2:
   version "0.13.2"
