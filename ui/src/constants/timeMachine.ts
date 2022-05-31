@@ -1,1 +1,0 @@
-export const INITIAL_RESIZER_HANDLE = 0.5
