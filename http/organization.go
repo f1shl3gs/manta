@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	organizationPrefix = apiV1Prefix + "/organizations"
+	organizationPrefix = apiV1Prefix + "/orgs"
 )
 
 type OrganizationHandler struct {

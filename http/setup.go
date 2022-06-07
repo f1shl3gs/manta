@@ -23,7 +23,26 @@ func NewSetupHandler(backend *Backend, logger *zap.Logger) {
 		onBoardingService: backend.OnBoardingService,
 	}
 
+	h.HandlerFunc(http.MethodGet, setupPath, h.onBoarded)
 	h.HandlerFunc(http.MethodPost, setupPath, h.onBoarding)
+}
+
+type OnboardedResult struct {
+	Allow bool `json:"allow"`
+}
+
+func (h *SetupHandler) onBoarded(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	allow, err := h.onBoardingService.Onboarded(ctx)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, OnboardedResult{Allow: !allow}); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *SetupHandler) onBoarding(w http.ResponseWriter, r *http.Request) {

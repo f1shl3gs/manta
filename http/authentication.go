@@ -3,11 +3,9 @@ package http
 import (
 	"context"
 	"errors"
-	"net/http"
-	"strings"
-
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
+	"net/http"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authz"
@@ -33,11 +31,6 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		err        error
 		path       = r.URL.Path
 	)
-
-	if !strings.HasPrefix(path, "/api") {
-		h.handler.ServeHTTP(w, r)
-		return
-	}
 
 	if handler, _, _ := h.noAuthRouter.Lookup(r.Method, path); handler != nil {
 		h.handler.ServeHTTP(w, r)

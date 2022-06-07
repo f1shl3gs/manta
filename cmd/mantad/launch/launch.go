@@ -179,7 +179,8 @@ func (l *Launcher) run() error {
 		}
 
 		hl := logger.With(zap.String("service", "http"))
-		handler := httpservice.Service(hl, &httpservice.Backend{
+		handler := httpservice.New(hl, &httpservice.Backend{
+			OnBoardingService:    service,
 			BackupService:        kvStore,
 			OrganizationService:  service,
 			UserService:          service,
