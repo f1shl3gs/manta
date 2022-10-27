@@ -1,0 +1,114 @@
+/* First & Last Steps */
+.wizard--bookend-step {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .button {
+    position: relative;
+    white-space: nowrap;
+    margin: 0 $ix-marg-a;
+  }
+}
+
+.splash-logo {
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  flex: 0.5;
+
+  &.primary {
+    background-image: url('../../assets/images/cubo_doodle.svg');
+  }
+
+  &.secondary {
+    background-image: url('../../assets/images/cubo_doodle_green.svg');
+  }
+  &.secondary + h3 {
+    margin-top: $ix-marg-d;
+  }
+}
+
+.onboarding-step {
+  flex: 1 0 0;
+  min-width: 100%;
+  text-align: center;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  .cf-form--wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    flex: 1 0 0;
+  }
+}
+
+.wizard-step--scroll-area {
+  flex: 1 0 0;
+  width: 100%;
+}
+
+.wizard-step--scroll-content {
+  width: 90%;
+  height: 90%;
+  margin: 0 auto $ix-marg-d auto;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Titles */
+.wizard-step--title {
+  font-size: 32px;
+  font-weight: 300;
+  color: $cf-grey-85;
+  margin-bottom: $ix-marg-b;
+  justify-content: flex-start;
+  @include no-user-select();
+}
+
+.wizard-step--sub-title {
+  margin-top: $ix-marg-b;
+  margin-bottom: $ix-marg-d;
+  font-size: 16px;
+  font-weight: 400;
+  color: $cf-grey-65;
+  @include no-user-select();
+
+  a {
+    color: $c-pool;
+  }
+}
+
+/* General */
+.wizard-contents {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  border-radius: $radius;
+  background-color: $cf-grey-5;
+  margin: $ix-marg-d;
+  margin-top: $ix-marg-a;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.wizard-step--container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: $cf-grey-15;
+  border-radius: $radius;
+  padding: $ix-marg-c;
+  flex: 1 0 0;
+}

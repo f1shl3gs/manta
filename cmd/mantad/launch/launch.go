@@ -36,9 +36,6 @@ type Launcher struct {
 	// log
 	LogLevel string
 
-	// http service
-	AccessLog bool
-
 	// bolt store
 	BoltPath string
 
@@ -64,11 +61,6 @@ func (l *Launcher) Options() []Option {
 			DestP:   &l.Listen,
 			Flag:    "listen",
 			Default: ":8088",
-		},
-		{
-			DestP:   &l.AccessLog,
-			Flag:    "http.access_log",
-			Default: false,
 		},
 		{
 			DestP:   &l.BoltPath,
@@ -137,7 +129,7 @@ func (l *Launcher) run() error {
 
 	CPUToUse := adjustMaxProcs()
 	if CPUToUse != 0 {
-		logger.Info("starting mantad",
+		logger.Info("Starting mantad",
 			zap.Int("GOMAXPROCS", CPUToUse))
 	}
 

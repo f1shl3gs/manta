@@ -10,7 +10,8 @@ tags:
   - name: Setup
   - name: Organization
   - name: User
-  - name: Dashboard
+  - name: Dashboards
+  - name: Session
 
 paths:
   /setup:
@@ -18,16 +19,16 @@ paths:
       operationId: Setup
       tags:
         - Setup
-      summary: Setup manta
+      summary: setup manta
       parameters:
-        - $ref: "#/components/parameters/TraceSpan"
+        - $ref: '#/components/parameters/TraceSpan'
       requestBody:
         description: User and Organization to create
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OnBoardingRequest"
+              $ref: '#/components/schemas/OnBoardingRequest'
       responses:
         201:
           description: Create success
@@ -36,10 +37,200 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
+  /flush:
+    get:
+      operationId: Flush
+      tags:
+        - debug
+      summary: Clear all data
+      responses:
+        200:
+          description: All data cleared
 
+  /signin:
+    post:
+      operationId: SignIn
+      summary: Create a user session
+      description: Authenticates
+      tags:
+        - Session
+      security:
+        - BasicAuthentication: []
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        204:
+          description: Success
+        401:
+          description: |
+            Unauthorized.
+            This error may be caused by one of the following problems:
+            - The user doesn't exist.
+            - The user passed incorrect credentials in the request.
+            - The credentials are formatted incorrectly in the request.
+
+  /signout:
+    delete:
+      operationId: SignOut
+      summary: Expire a user session
+      tags:
+        - Session
+      description: Expires the current UI session for the user.
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      responses:
+        204:
+          description: Session expired successfully
+        401:
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unsuccessful session expiry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /viewer:
+    get:
+      operationId: getInformationOfCurrentUser
+      summary: Get current user information
+      tags:
+        - Session
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Viewer'
+        401:
+          $ref: '#/responses/401'
+        default:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /orgs/:id:
+    get:
+      operationId: getOrganizationByID
+      tags:
+        - Organization
+      summary: Get organization by ID
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - name: id
+          in: path
+          description: ID of organization
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /dashboards:
+    get:
+      operationId: getAllDashboards
+      tags:
+        - Dashboards
+      description: Get all dashboards of this organization
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - name: orgId
+          in: query
+          required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dashboard'
+        default:
+          $ref: '#/components/responses/default'
+
+    post:
+      operationId: createDashboards
+      tags:
+        - Dashboards
+      description: Create a dashboard
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        default:
+          $ref: '#/components/responses/default'
+
+  /users:
+    get:
+      operationId: getAllUsers
+      tags:
+        - User
+      description: Get all users
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - name: orgId
+          in: query
+          required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        default:
+          $ref: '#/components/responses/default'
 
 components:
+  responses:
+    401:
+      description: Unauthorized
+    404:
+      description: Not found
+    default:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     TraceSpan:
       in: header
@@ -48,8 +239,8 @@ components:
         type: string
       description: OpenTracing span context
       example:
-        trace_id: "1"
-        span_id: "1"
+        trace_id: '1'
+        span_id: '1'
         baggage:
           key: value
       required: false
@@ -63,6 +254,22 @@ components:
         password:
           type: string
         organization:
+          type: string
+
+    SignInRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    Viewer:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
           type: string
 
     Error:
@@ -87,4 +294,135 @@ components:
           readOnly: true
           description: Message is a human-readable message.
           type: string
-      required: [ code, message ]
+      required: [code, message]
+
+    Organization:
+      type: object
+      properties:
+        id:
+          required: true
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        name:
+          type: string
+        desc:
+          type: string
+
+    Axis:
+      type: object
+      properties:
+        bounds:
+          type: array
+          items:
+            type: string
+        label:
+          type: string
+        prefix:
+          type: string
+        suffix:
+          type: string
+        base:
+          type: string
+
+    Axes:
+      type: object
+      properties:
+        x:
+          $ref: '#/components/schemas/Axis'
+        y:
+          $ref: '#/components/schemas/Axis'
+
+    Query:
+      type: object
+      properties:
+        name:
+          type: string
+        text:
+          type: string
+        legend:
+          type: string
+        hidden:
+          type: boolean
+
+    GaugeViewProperties:
+      type: object
+      properties:
+        type:
+          type: string
+        axes:
+          $ref: '#/components/schemas/Axes'
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Query'
+
+    Cell:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        x:
+          type: integer
+        y:
+          type: integer
+        w:
+          type: integer
+        h:
+          type: integer
+        minH:
+          required: false
+          type: integer
+        minW:
+          required: false
+          type: integer
+        viewProperties:
+          oneOf:
+            - $ref: '#/components/schemas/GaugeViewProperties'
+
+    Dashboard:
+      type: object
+      properties:
+        id:
+          required: true
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        name:
+          type: string
+        desc:
+          type: string
+        orgId:
+          required: true
+          type: string
+        cells:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cell'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          required: true
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        name:
+          type: string

@@ -241,8 +241,8 @@ message Dashboard {
   google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  string name = 4;
-  string desc = 5;
+  string name = 4 [(gogoproto.jsontag) = "name"];
+  string desc = 5 [(gogoproto.jsontag) = "desc"];
   uint64 orgID = 6 [(gogoproto.customname) = "OrgID", (gogoproto.casttype) = "ID"];
 
   repeated Cell cells = 7 [(gogoproto.nullable) = false];

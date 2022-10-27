@@ -48,7 +48,7 @@ func (s *Service) Setup(ctx context.Context, req *manta.OnBoardingRequest) (*man
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		if err = s.createOrganization(ctx, tx, org); err != nil {
+		if org, err = s.createOrganization(ctx, tx, org); err != nil {
 			return err
 		}
 
@@ -67,8 +67,8 @@ func (s *Service) Setup(ctx context.Context, req *manta.OnBoardingRequest) (*man
 	}
 
 	return &manta.OnboardingResult{
-		Username: "",
-		Org:      nil,
-		Auth:     nil,
+		User: user,
+		Org:  org,
+		Auth: nil,
 	}, nil
 }

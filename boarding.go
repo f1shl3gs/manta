@@ -49,9 +49,9 @@ func (r *OnBoardingRequest) Validate() error {
 }
 
 type OnboardingResult struct {
-	Username string         `json:"username"`
-	Org      *Organization  `json:"org"`
-	Auth     *Authorization `json:"auth"`
+	User *User          `json:"user"`
+	Org  *Organization  `json:"org"`
+	Auth *Authorization `json:"auth"`
 }
 
 type OnBoardingService interface {
@@ -146,7 +146,7 @@ func (o *onBoardingService) Setup(ctx context.Context, req *OnBoardingRequest) (
 	}
 
 	return &OnboardingResult{
-		Username: req.Username,
-		Org:      org,
+		User: user,
+		Org:  org,
 	}, nil
 }

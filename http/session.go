@@ -11,6 +11,7 @@ import (
 const (
 	signinPath  = apiV1Prefix + "/signin"
 	signoutPath = apiV1Prefix + "/signout"
+	viewerPath  = apiV1Prefix + "/viewer"
 
 	SessionCookieKey = "manta_session"
 )
@@ -41,6 +42,7 @@ func NewSessionHandler(
 
 	h.HandlerFunc(http.MethodPost, signinPath, h.handleSignin)
 	h.HandlerFunc(http.MethodDelete, signoutPath, h.handleSignout)
+	h.HandlerFunc(http.MethodGet, viewerPath, h.handleViewer)
 
 	return h
 }
@@ -141,4 +143,36 @@ func (h *SessionHandler) encodeCookie(ctx context.Context, w http.ResponseWriter
 	})
 
 	return nil
+}
+
+func (h *SessionHandler) handleViewer(w http.ResponseWriter, r *http.Request) {
+	var ctx = r.Context()
+
+	cookie, err := r.Cookie(SessionCookieKey)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	var sessId manta.ID
+	if err = sessId.DecodeFromString(cookie.Value); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	sess, err := h.sessionService.FindSession(ctx, sessId)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	user, err := h.userService.FindUserByID(ctx, sess.UID)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, user); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }

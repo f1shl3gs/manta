@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	organizationPrefix = apiV1Prefix + "/orgs"
+	organizationPrefix = apiV1Prefix + "/organizations"
 )
 
 type OrganizationHandler struct {
@@ -26,6 +26,7 @@ func NewOrganizationHandler(backend *Backend, logger *zap.Logger) *OrganizationH
 	}
 
 	h.HandlerFunc(http.MethodGet, organizationPrefix, h.listOrganizations)
+	h.HandlerFunc(http.MethodGet, organizationPrefix+"/:orgId", h.getOrganization)
 
 	return h
 }
@@ -44,4 +45,30 @@ func (h *OrganizationHandler) listOrganizations(w http.ResponseWriter, r *http.R
 	if err := encodeResponse(ctx, w, http.StatusOK, organizations); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+func (h *OrganizationHandler) getOrganization(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx = r.Context()
+		id  manta.ID
+	)
+
+	if err := id.DecodeFromString(ExtractParamFromContext(ctx, "orgId")); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	org, err := h.organizationService.FindOrganizationByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusOK, org); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *OrganizationHandler) deleteOrganization(w http.ResponseWriter, r *http.Request) {
+
 }

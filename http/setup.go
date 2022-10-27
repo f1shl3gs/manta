@@ -14,6 +14,7 @@ type SetupHandler struct {
 
 	logger            *zap.Logger
 	onBoardingService manta.OnBoardingService
+	sessionService    manta.SessionService
 }
 
 func NewSetupHandler(backend *Backend, logger *zap.Logger) {
@@ -21,6 +22,7 @@ func NewSetupHandler(backend *Backend, logger *zap.Logger) {
 		Router:            backend.router,
 		logger:            logger,
 		onBoardingService: backend.OnBoardingService,
+		sessionService:    backend.SessionService,
 	}
 
 	h.HandlerFunc(http.MethodGet, setupPath, h.onBoarded)
@@ -65,8 +67,21 @@ func (h *SetupHandler) onBoarding(w http.ResponseWriter, r *http.Request) {
 		zap.String("username", br.Username),
 	)
 
-	if err = encodeResponse(ctx, w, http.StatusOK, result); err != nil {
-		logEncodingError(h.logger, r, err)
+	if sess, err := h.sessionService.CreateSession(ctx, result.User.ID); err != nil {
+		h.logger.Error("Create initial session failed", zap.Error(err))
+		h.HandleHTTPError(ctx, err, w)
+	} else {
+		http.SetCookie(w, &http.Cookie{
+			Name:     SessionCookieKey,
+			Value:    sess.ID.String(),
+			HttpOnly: true,
+			// Secure:   true,
+			SameSite: http.SameSiteStrictMode,
+		})
+
+		if err = encodeResponse(ctx, w, http.StatusOK, result); err != nil {
+			logEncodingError(h.logger, r, err)
+		}
 	}
 }
 

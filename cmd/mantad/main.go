@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/f1shl3gs/manta/cmd/mantad/launch"
 	"os"
+
+	"github.com/f1shl3gs/manta/cmd/mantad/launch"
 )
 
 func main() {

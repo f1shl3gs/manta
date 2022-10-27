@@ -1,0 +1,22 @@
+// Modules
+@import 'modules';
+
+// Components
+@import 'src/setup/SetupWizard';
+@import 'src/signin/LoginPage';
+@import 'src/organizations/OrganizationsSwitcher';
+@import 'src/dashboards/DashboardCards';
+
+// Shards
+@import 'src/shared/components/wizard/WizardProgressHeader';
+@import 'src/shared/components/wizard/WizardFullScreen';
+@import 'src/shared/components/VersionInfo';
+@import 'src/shared/components/SearchWidget';
+@import '../shared/components/context_menu/ContextMenu';
+
+// External
+@import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';
+
+.cf-resource-card {
+  margin-bottom: $cf-border;
+}

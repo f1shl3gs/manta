@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Requirements
-if [[ $(protoc --version | cut -f2 -d' ') != "3.14.0" ]]; then
+if [[ $(protoc --version | cut -f2 -d' ') != "3.21.5" ]]; then
   echo "could not find protoc 3.14.0, is it installed + in PATH?"
   exit 255
 fi

@@ -6,12 +6,14 @@ import (
 	"go.uber.org/zap"
 )
 
+const DebugFlushPath = "/debug/flush"
+
 func NewFlushHandler(logger *zap.Logger, router *Router, flusher Flusher) {
 	if flusher == nil {
 		return
 	}
 
-	router.HandlerFunc(http.MethodGet, "/flush", func(w http.ResponseWriter, r *http.Request) {
+	router.HandlerFunc(http.MethodGet, DebugFlushPath, func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		err := flusher.Flush(ctx)

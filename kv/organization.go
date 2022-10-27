@@ -178,7 +178,7 @@ func (s *Service) findAllOrganizations(ctx context.Context, tx Tx) ([]*manta.Org
 
 func (s *Service) CreateOrganization(ctx context.Context, org *manta.Organization) error {
 	err := s.kv.Update(ctx, func(tx Tx) error {
-		if err := s.createOrganization(ctx, tx, org); err != nil {
+		if _, err := s.createOrganization(ctx, tx, org); err != nil {
 			return err
 		}
 
@@ -192,7 +192,7 @@ func (s *Service) CreateOrganization(ctx context.Context, org *manta.Organizatio
 	return nil
 }
 
-func (s *Service) createOrganization(ctx context.Context, tx Tx, org *manta.Organization) error {
+func (s *Service) createOrganization(ctx context.Context, tx Tx, org *manta.Organization) (*manta.Organization, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
@@ -200,7 +200,11 @@ func (s *Service) createOrganization(ctx context.Context, tx Tx, org *manta.Orga
 	org.Created = time.Now()
 	org.Updated = time.Now()
 
-	return s.putOrganization(ctx, tx, org)
+	if err := s.putOrganization(ctx, tx, org); err != nil {
+		return nil, err
+	}
+
+	return org, nil
 }
 
 func (s *Service) putOrganization(ctx context.Context, tx Tx, org *manta.Organization) error {
@@ -261,7 +265,7 @@ func (s *Service) UpdateOrganization(ctx context.Context, id manta.ID, u manta.O
 		}
 
 		current.Updated = time.Now()
-		err = s.createOrganization(ctx, tx, current)
+		_, err = s.createOrganization(ctx, tx, current)
 		if err != nil {
 			return err
 		}

@@ -4,11 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/http/middlewares"
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/middlewares"
 )
 
 const (
@@ -50,6 +51,8 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewSetupHandler(backend, logger)
 	NewSessionHandler(backend.router, logger, backend.UserService, backend.PasswordService, backend.SessionService)
 	NewFlushHandler(logger, backend.router, backend.Flusher)
+	NewDashboardsHandler(backend, logger)
+	NewUserHandler(logger, backend)
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -64,6 +67,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodPost, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodPost, signinPath)
+	ah.RegisterNoAuthRoute(http.MethodGet, DebugFlushPath)
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)
