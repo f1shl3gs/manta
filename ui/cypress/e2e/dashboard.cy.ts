@@ -8,7 +8,7 @@ describe('Dashboard', () => {
 
   it('Creat and Delete', () => {
     // should be empty
-    cy.contains('Looks like you don\'t have any Dashboards')
+    cy.getByTestID('dashboard-card').should('have.length', 0)
 
     // create and redirect to
     cy.getByTestID('button-create-dashboard')
@@ -28,6 +28,6 @@ describe('Dashboard', () => {
     cy.getByTestID('context_menu-delete').click()
 
     // should be empty
-    cy.contains('Looks like you don\'t have any Dashboards')
+    cy.getByTestID('dashboard-card').should('have.length', 0)
   })
 })
