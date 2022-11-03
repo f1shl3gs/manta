@@ -1,3 +1,5 @@
+import {DefaultUsername, DefaultPassword, DefaultOrganization} from '../support/commands';
+
 describe('Onboard redirect', () => {
   beforeEach(() => {
     cy.flush().then(() => cy.visit('/'))
@@ -19,9 +21,9 @@ describe('Onboard', () => {
     cy.getByTestID('get-start').click()
 
     // fill form
-    cy.getByTestID('input-username').type('admin')
-    cy.getByTestID('input-password').type('password')
-    cy.getByTestID('input-organization').type('test')
+    cy.getByTestID('input-username').type(DefaultUsername)
+    cy.getByTestID('input-password').type(DefaultPassword)
+    cy.getByTestID('input-organization').type(DefaultOrganization)
     cy.getByTestID('button-next').click()
 
     // after setup, user will be redirect to /orgs/[orgID]

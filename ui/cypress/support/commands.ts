@@ -1,6 +1,6 @@
-const Username = 'admin'
-const Password = 'password'
-const Organization = 'test'
+export const DefaultUsername = 'admin'
+export const DefaultPassword = 'password'
+export const DefaultOrganization = 'test'
 
 export const flush = (): Cypress.Chainable => {
   return cy
@@ -15,14 +15,14 @@ export const flush = (): Cypress.Chainable => {
 }
 
 export const setupUser = (): Cypress.Chainable => {
-  return cy
+  return cy.flush()
     .request({
       method: 'POST',
       url: `/api/v1/setup`,
       body: {
-        username: Username,
-        password: Password,
-        organization: Organization,
+        username: DefaultUsername,
+        password: DefaultPassword,
+        organization: DefaultOrganization,
       },
     })
     .then(resp => {
@@ -36,8 +36,8 @@ export const signin = (): Cypress.Chainable => {
       method: 'POST',
       url: `/api/v1/signin`,
       body: {
-        username: Username,
-        password: Password,
+        username: DefaultUsername,
+        password: DefaultPassword,
       },
     })
     .then(resp => {

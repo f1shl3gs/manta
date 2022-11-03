@@ -1,6 +1,6 @@
 describe('NavMenu', () => {
   beforeEach(() => {
-    cy.flush().setupUser()
+    cy.setupUser()
       .then(() => cy.visit('/'))
   })
 
@@ -13,6 +13,4 @@ describe('NavMenu', () => {
     cy.contains('Switch organization')
     cy.contains('Logout')
   })
-
-  
 })
