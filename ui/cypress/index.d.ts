@@ -1,4 +1,4 @@
-import {flush, setupUser, signin} from './support/commands'
+import {flush, setupUser, signin, getByTestID} from './support/commands'
 
 declare global {
   namespace Cypress {
@@ -6,6 +6,7 @@ declare global {
       flush: typeof flush
       signin: typeof signin
       setupUser: typeof setupUser
+      getByTestID: typeof getByTestID
     }
   }
 }

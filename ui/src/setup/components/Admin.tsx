@@ -52,6 +52,7 @@ export const Admin: FC = () => {
                 >
                   <Form.Element label="Username">
                     <Input
+                      testID={'input-username'}
                       autoFocus={true}
                       value={username}
                       onChange={e => setUsername(e.target.value)}
@@ -66,6 +67,7 @@ export const Admin: FC = () => {
                 >
                   <Form.Element label="Password">
                     <Input
+                      testID={'input-password'}
                       type={InputType.Password}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
@@ -80,6 +82,7 @@ export const Admin: FC = () => {
                 >
                   <Form.Element label="Organization">
                     <Input
+                      testID={'input-organization'}
                       value={organization}
                       onChange={e => setOrganization(e.target.value)}
                     ></Input>
@@ -92,6 +95,7 @@ export const Admin: FC = () => {
                   offsetMD={Columns.Five}
                 >
                   <Button
+                    testID={'button-next'}
                     text="Next"
                     color={ComponentColor.Primary}
                     status={submitStatus}

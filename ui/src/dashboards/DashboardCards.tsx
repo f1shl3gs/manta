@@ -16,7 +16,6 @@ const DashboardCards: FunctionComponent<Props> = props => {
   const {sortOption, search} = props
   const {resources, reload} = useResources()
 
-
   return (
     <FilterList<Dashboard>
       list={resources}
@@ -40,7 +39,7 @@ const DashboardCards: FunctionComponent<Props> = props => {
                 <DashboardCard
                   key={dashboard.id}
                   dashboard={dashboard}
-                  onDelete={() => console.log('onDelete', dashboard.id)}
+                  onDelete={reload}
                 />
               ))}
             </div>

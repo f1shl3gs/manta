@@ -24,6 +24,7 @@ export const Welcome: FC = () => {
         color={ComponentColor.Primary}
         text="Get Started"
         size={ComponentSize.Large}
+        testID={'get-start'}
         onClick={next}
       />
     </div>

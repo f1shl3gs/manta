@@ -10,6 +10,7 @@ import (
 
 const (
 	dashboardsPrefix = apiV1Prefix + `/dashboards`
+    dashboardsWithID = dashboardsPrefix + `/:id`
 )
 
 type DashboardsHandler struct {
@@ -30,6 +31,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.list)
 	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.create)
+    h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
 
 	return h
 }
@@ -84,4 +86,20 @@ func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
 	if err := encodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
+}
+
+func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request)  {
+    var ctx = r.Context()
+
+    id, err := IDFromPath(r)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    err = h.dashboardService.DeleteDashboard(ctx, id)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
 }

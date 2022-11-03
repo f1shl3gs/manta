@@ -1,10 +1,10 @@
-import {useCallback, useEffect, useReducer, useRef} from 'react'
+import {useCallback, useEffect, useReducer} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
 
 interface State<T> {
   data?: T
   error?: Error
-  loading: RemoteDataState,
+  loading: RemoteDataState
   run: () => void
 }
 
@@ -14,19 +14,18 @@ type Action<T> =
   | {type: 'error'; payload: Error}
 
 interface RequestOptions<T> {
-  method?: string,
-  body?: object | string,
-  manual?: boolean,
+  method?: string
+  body?: object | string
 
-  onSuccess?: (data: T | undefined) => void,
+  onSuccess?: (data?: T) => void
   onError?: (err: Error) => void
 }
 
-function useFetch<T = any>(
-  url: string,
-  options?: RequestOptions<T>,
-): State<T> {
-  const { method, body, manual, onError, onSuccess} = options ||  {method: 'GET', body: undefined, manual: false}
+function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
+  const {method, body, onError, onSuccess} = options || {
+    method: 'GET',
+    body: undefined,
+  }
 
   // Keep state logic separated
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
@@ -47,13 +46,18 @@ function useFetch<T = any>(
     data: undefined,
     error: undefined,
     // @ts-ignore
-    run: () => {console.error('not implement')}
+    run: () => {
+      /* void */
+    },
   })
 
   const run = useCallback(() => {
     dispatch({type: 'loading'})
 
-    const headers = typeof body === 'object' ? {'Content-type': 'application/json'} : undefined
+    const headers =
+      typeof body === 'object'
+        ? {'Content-type': 'application/json'}
+        : undefined
 
     fetch(url, {
       method,
@@ -62,8 +66,7 @@ function useFetch<T = any>(
     })
       .then(resp => {
         const cloned = resp.clone()
-        return cloned.json()
-          .catch(_ => resp.text())
+        return cloned.json().catch(_ => resp.text())
       })
       .then(data => {
         dispatch({type: 'fetched', payload: data})
@@ -82,16 +85,16 @@ function useFetch<T = any>(
   }, [url, body, method, onSuccess, onError])
 
   useEffect(() => {
-    if (manual) {
+    if (method !== 'GET') {
       return
     }
 
     run()
-  }, [manual, run])
+  }, [method, run])
 
   return {
     ...state,
-    run
+    run,
   }
 }
 

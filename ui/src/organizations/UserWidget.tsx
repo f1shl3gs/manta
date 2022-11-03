@@ -10,13 +10,13 @@ const UserWidget: FunctionComponent = () => {
   const org = useOrganization()
 
   return (
-    <>
+    <div>
       <OrganizationsSwitcher
         visible={switcherVisible}
         dismiss={() => setSwitcherVisible(false)}
       />
 
-      <TreeNav.User username={user.name} team={org.name}>
+      <TreeNav.User username={user.name} team={org.name} testID={'tree-nav-user'}>
         <TreeNav.SubHeading label="Team" />
         <TreeNav.UserItem id="members" label="Members" />
         <TreeNav.UserItem id="about" label="About" />
@@ -29,7 +29,7 @@ const UserWidget: FunctionComponent = () => {
         />
         <TreeNav.UserItem id="logout" label="Logout" />
       </TreeNav.User>
-    </>
+    </div>
   )
 }
 

@@ -33,6 +33,12 @@ func OrgIdFromQuery(r *http.Request) (manta.ID, error) {
 	return parseId(text)
 }
 
+func IDFromPath(r *http.Request) (manta.ID, error) {
+    text := ExtractParamFromContext(r.Context(), "id")
+
+    return parseId(text)
+}
+
 func parseId(s string) (id manta.ID, err error) {
 	err = id.DecodeFromString(s)
 

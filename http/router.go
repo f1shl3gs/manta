@@ -43,7 +43,7 @@ func (h *Router) HandleHTTPError(ctx context.Context, err error, w http.Response
 }
 
 func encodeResponse(ctx context.Context, w http.ResponseWriter, status int, payload interface{}) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Content-type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
 
 	if payload != nil {

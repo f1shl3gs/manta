@@ -16,6 +16,9 @@ import {
   PARAMS_TIME_RANGE_LOW,
   PARAMS_TIME_RANGE_TYPE,
 } from './constants'
+import useFetch from 'shared/useFetch'
+import {useNotification} from '../shared/components/notifications/useNotification';
+import {NotificationStyle} from '../types/Notification';
 
 interface Props {
   dashboard: Dashboard
@@ -26,6 +29,30 @@ const DashboardCard: FunctionComponent<Props> = props => {
   const {dashboard, onDelete} = props
   const navigate = useNavigate()
   const {id: orgId} = useOrganization()
+  const {notify} = useNotification()
+  const {run: deleteDashboard} = useFetch(
+    `/api/v1/dashboards/${dashboard.id}`,
+    {
+      method: 'DELETE',
+      onError: err => {
+        notify({
+          style: NotificationStyle.Error,
+          icon: IconFont.AlertTriangle,
+          message: `Delete dashboard ${dashboard.name} failed, err: ${err}`
+        })
+      },
+      onSuccess: _ => {
+        console.log('success')
+
+        onDelete()
+        notify({
+          style: NotificationStyle.Success,
+          icon: IconFont.CheckMark_New,
+          message: `Delete dashboard ${dashboard.name} success`
+        })
+      },
+    }
+  )
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -50,7 +77,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
       >
         <Context.Item
           label="Delete"
-          action={onDelete}
+          action={deleteDashboard}
           testID="context_menu-delete"
         />
       </Context.Menu>
@@ -58,8 +85,9 @@ const DashboardCard: FunctionComponent<Props> = props => {
   )
 
   return (
-    <ResourceCard key={dashboard.id} contextMenu={contextMenu()}>
+    <ResourceCard key={dashboard.id} contextMenu={contextMenu()} testID={'dashboard-card'}>
       <ResourceCard.EditableName
+        testID={'dashboard-editable-name'}
         name={dashboard.name}
         onUpdate={v => console.log('onupdate', v)}
         onClick={() => {

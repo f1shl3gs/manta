@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, FormEvent, useCallback, useState} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
 import {
@@ -29,15 +29,14 @@ export const SignInForm: FC = () => {
 
   const {run: submit} = useFetch(`/api/v1/signin`, {
     method: 'POST',
-    manual: true,
     body: {
       username,
-      password
+      password,
     },
     onSuccess: () => navigate(returnTo),
     onError: err => {
       console.log('signin error', err)
-    }
+    },
   })
 
   return (
