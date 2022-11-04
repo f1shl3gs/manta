@@ -51,7 +51,7 @@ export const SignInForm: FC = () => {
                 onChange={ev => setUsername(ev.target.value)}
                 size={ComponentSize.Medium}
                 autoFocus={true}
-                testID="username"
+                testID="username-input"
               />
             </FormElement>
           </GridColumn>
@@ -60,6 +60,7 @@ export const SignInForm: FC = () => {
             <FormElement label="Password">
               <Input
                 name="password"
+                testID={'password-input'}
                 value={password}
                 onChange={ev => setPassword(ev.target.value)}
                 size={ComponentSize.Medium}
@@ -76,6 +77,7 @@ export const SignInForm: FC = () => {
                 size={ComponentSize.Medium}
                 type={ButtonType.Submit}
                 id="submit-signin"
+                testID={'signin-button'}
               />
             </FormFooter>
           </GridColumn>
