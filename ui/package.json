@@ -42,7 +42,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "pretty-quick --config .prettierrc.json --check '{src,cypress}/**/*.{ts,tsx}'",
-    "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'"
+    "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "eslintConfig": {
     "extends": [
