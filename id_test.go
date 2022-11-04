@@ -49,7 +49,7 @@ func TestEncode(t *testing.T) {
 
 func TestDecodeFromAllZeros(t *testing.T) {
 	var id manta.ID
-	err := id.Decode(make([]byte, id.IDLength))
+	err := id.Decode(make([]byte, manta.IDLength))
 	if err == nil {
 		t.Errorf("expecting all zeros ID to not be a valid ID")
 	}
@@ -118,7 +118,7 @@ func TestMarshalling(t *testing.T) {
 
 	// When used as a map key, IDs must use their string encoding.
 	// If you only implement json.Marshaller, they will be encoded with Go's default integer encoding.
-	b, err := json.Marshal(map[id2.ID]int{0x1234: 5678})
+	b, err := json.Marshal(map[manta.ID]int{0x1234: 5678})
 	if err != nil {
 		t.Error(err)
 	}
@@ -127,7 +127,7 @@ func TestMarshalling(t *testing.T) {
 		t.Errorf("expected map to json.Marshal as %s; got %s", exp, string(b))
 	}
 
-	var idMap map[id2.ID]int
+	var idMap map[manta.ID]int
 	if err := json.Unmarshal(b, &idMap); err != nil {
 		t.Error(err)
 	}
@@ -145,7 +145,7 @@ func TestValid(t *testing.T) {
 		t.Errorf("expecting initial ID to be invalid")
 	}
 
-	if id.InvalidID() != 0 {
+	if id != 0 {
 		t.Errorf("expecting invalid ID to return a zero ID, thus invalid")
 	}
 }

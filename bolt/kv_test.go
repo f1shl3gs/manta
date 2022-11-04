@@ -7,12 +7,13 @@ import (
 	"os"
 	"testing"
 
+    "github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/tests"
 	"go.uber.org/zap/zaptest"
 )
 
-func NewTestKVStore(t *testing.T) (*KVStore, func(), error) {
+func NewTestKVStore(t *testing.T) (*bolt.KVStore, func(), error) {
 	f, err := ioutil.TempFile("", "manta-bolt")
 	if err != nil {
 		return nil, nil, errors.New("unable to open temporary boltdb file")
@@ -20,7 +21,7 @@ func NewTestKVStore(t *testing.T) (*KVStore, func(), error) {
 	f.Close()
 
 	path := f.Name()
-	s := NewKVStore(zaptest.NewLogger(t), path, WithNoSync)
+	s := bolt.NewKVStore(zaptest.NewLogger(t), path, bolt.WithNoSync)
 	if err := s.Open(context.TODO()); err != nil {
 		return nil, nil, err
 	}
