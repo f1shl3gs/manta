@@ -1,8 +1,9 @@
-// Fleet staff
+# Fleet staff
 .fleet
 
-// test or dev bolt database
+# test or dev bolt database
 *.bolt
+ui/cypress/videos
 
-// temp files
+# temp files
 tmp.*
