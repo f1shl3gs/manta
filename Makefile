@@ -15,3 +15,8 @@ genproto: dep
 .PHONY: ui
 ui: $(UISOURCES)
 	cd ui && yarn build
+
+.PHONY: fmt
+fmt: $(UISOURCES) $(GOSROUCES)
+	go fmt
+	cd ui && yarn prettier:fix
