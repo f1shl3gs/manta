@@ -21,7 +21,7 @@ export const reportError = (
     additionalContext = {...additionalOptions.context}
   }
 
-  const context = {
+  const _context = {
     ...additionalContext,
     // ...getUserFlags(),
   }

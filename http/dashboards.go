@@ -32,6 +32,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.list)
 	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.create)
     h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
+    h.HandlerFunc(http.MethodPatch, dashboardsWithID, h.updateMeta)
 
 	return h
 }
@@ -88,7 +89,7 @@ func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request)  {
+func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request) {
     var ctx = r.Context()
 
     id, err := IDFromPath(r)
@@ -101,5 +102,27 @@ func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request)  {
     if err != nil {
         h.HandleHTTPError(ctx, err, w)
         return
+    }
+}
+
+func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
+    var (
+        ctx = r.Context()
+        upd manta.DashboardUpdate
+    )
+
+    id, err := IDFromPath(r)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    if _, err = h.dashboardService.UpdateDashboard(ctx, id, upd); err != nil {
+        h.HandleHTTPError(ctx, err, w)
     }
 }

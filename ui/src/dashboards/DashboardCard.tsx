@@ -17,16 +17,19 @@ import {
   PARAMS_TIME_RANGE_TYPE,
 } from './constants'
 import useFetch from 'shared/useFetch'
-import {useNotification} from '../shared/components/notifications/useNotification';
-import {NotificationStyle} from '../types/Notification';
+import {
+  useNotification,
+  defaultErrorNotification,
+  defaultSuccessNotification,
+} from 'shared/components/notifications/useNotification'
 
 interface Props {
   dashboard: Dashboard
-  onDelete: () => void
+  reload: () => void
 }
 
 const DashboardCard: FunctionComponent<Props> = props => {
-  const {dashboard, onDelete} = props
+  const {dashboard, reload} = props
   const navigate = useNavigate()
   const {id: orgId} = useOrganization()
   const {notify} = useNotification()
@@ -36,23 +39,24 @@ const DashboardCard: FunctionComponent<Props> = props => {
       method: 'DELETE',
       onError: err => {
         notify({
-          style: NotificationStyle.Error,
-          icon: IconFont.AlertTriangle,
-          message: `Delete dashboard ${dashboard.name} failed, err: ${err}`
+          ...defaultErrorNotification,
+          message: `Delete dashboard ${dashboard.name} failed, err: ${err}`,
         })
       },
       onSuccess: _ => {
-        console.log('success')
+        reload()
 
-        onDelete()
         notify({
-          style: NotificationStyle.Success,
-          icon: IconFont.CheckMark_New,
-          message: `Delete dashboard ${dashboard.name} success`
+          ...defaultSuccessNotification,
+          message: `Delete dashboard ${dashboard.name} success`,
         })
       },
     }
   )
+  const {run: update} = useFetch(`/api/v1/dashboards/${dashboard.id}`, {
+    method: 'PATCH',
+    onSuccess: reload,
+  })
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -85,11 +89,17 @@ const DashboardCard: FunctionComponent<Props> = props => {
   )
 
   return (
-    <ResourceCard key={dashboard.id} contextMenu={contextMenu()} testID={'dashboard-card'}>
+    <ResourceCard
+      key={dashboard.id}
+      contextMenu={contextMenu()}
+      testID={'dashboard-card'}
+    >
       <ResourceCard.EditableName
         testID={'dashboard-editable-name'}
         name={dashboard.name}
-        onUpdate={v => console.log('onupdate', v)}
+        onUpdate={name => {
+          update({name})
+        }}
         onClick={() => {
           navigate(
             `/orgs/${orgId}/dashboards/${dashboard.id}?${new URLSearchParams({
@@ -105,7 +115,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
       <ResourceCard.EditableDescription
         description={dashboard.desc}
         placeholder={`Describe ${dashboard.name}`}
-        onUpdate={() => console.log('update desc')}
+        onUpdate={desc => update({desc})}
       />
 
       <ResourceCard.Meta>

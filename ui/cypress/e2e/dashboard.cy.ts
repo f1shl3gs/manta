@@ -21,11 +21,12 @@ describe('Dashboard', () => {
     cy.getByTestID('nav-item-dashboard').click()
     cy.getByTestID('dashboard-editable-name').click()
     cy.location('pathname').should('include', 'orgs').should('include', 'dashboards')
-
+    
     // delete dashboard from list
     cy.getByTestID('nav-item-dashboard').click()
     cy.getByTestID('dashboard-card-context--delete').click()
     cy.getByTestID('context_menu-delete').click()
+    cy.getByTestID('notification-success').should('have.length', 1)
 
     // should be empty
     cy.getByTestID('dashboard-card').should('have.length', 0)

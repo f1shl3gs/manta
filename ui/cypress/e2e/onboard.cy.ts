@@ -1,4 +1,8 @@
-import {DefaultUsername, DefaultPassword, DefaultOrganization} from '../support/commands';
+import {
+  DefaultUsername,
+  DefaultPassword,
+  DefaultOrganization,
+} from '../support/commands'
 
 describe('Onboard redirect', () => {
   beforeEach(() => {

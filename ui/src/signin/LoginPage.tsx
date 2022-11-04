@@ -14,7 +14,7 @@ import {
 import {SignInForm} from './SignInForm'
 import {VersionInfo} from 'shared/components/VersionInfo'
 
-export const LoginPage: FC = () => {
+const LoginPage: FC = () => {
   return (
     <AppWrapper>
       <FunnelPage className="signin-page" testID="signin-page">
@@ -35,3 +35,5 @@ export const LoginPage: FC = () => {
     </AppWrapper>
   )
 }
+
+export default LoginPage

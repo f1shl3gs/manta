@@ -1,10 +1,17 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
+
+// Components
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useOrganization} from '../organizations/useOrganizations'
-import {useNotification} from '../shared/components/notifications/useNotification'
-import {NotificationStyle} from '../types/Notification'
+
+// Hooks
+import {
+  useNotification,
+  defaultErrorNotification,
+} from 'shared/components/notifications/useNotification'
 import {useNavigate} from 'react-router-dom'
-import useFetch from '../shared/useFetch'
+import {useOrganization} from 'organizations/useOrganizations'
+import useFetch from 'shared/useFetch'
 
 const CreateDashboardButton: FunctionComponent = () => {
   const {id: orgId} = useOrganization()
@@ -17,8 +24,7 @@ const CreateDashboardButton: FunctionComponent = () => {
     },
     onError: err => {
       notify({
-        icon: IconFont.AlertTriangle,
-        style: NotificationStyle.Error,
+        ...defaultErrorNotification,
         message: `Create new dashboard failed\n${err}`,
       })
     },
@@ -33,7 +39,7 @@ const CreateDashboardButton: FunctionComponent = () => {
       text="Create Dashboard"
       icon={IconFont.Plus_New}
       color={ComponentColor.Primary}
-      onClick={create}
+      onClick={() => create()}
     />
   )
 }

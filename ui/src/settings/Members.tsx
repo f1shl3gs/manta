@@ -1,5 +1,5 @@
-import React, {FunctionComponent, useState} from 'react'
-import {GetResources, ResourceType} from '../shared/components/GetResources'
+import React, {FunctionComponent} from 'react'
+import {GetResources, ResourceType} from 'shared/components/GetResources'
 import MemberList from './MemberList'
 
 const Members: FunctionComponent = () => {

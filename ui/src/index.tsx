@@ -1,35 +1,21 @@
 // Libraries
-import React from 'react'
+import React, {lazy, Suspense} from 'react'
 import ReactDOM from 'react-dom/client'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 // Components
 import App from './App'
 import {PresentationModeProvider} from 'shared/usePresentationMode'
-import NotFound from './NotFound'
+import SetupWrapper from 'setup/SetupWrapper'
+import PageSpinner from 'shared/components/PageSpinner'
 
 // Styles
 import '@influxdata/clockface/dist/index.css'
 import 'style/manta.scss'
 
 import reportWebVitals from './reportWebVitals'
-import {LoginPage} from 'signin/LoginPage'
-import Setup from 'setup/SetupWizard'
 
-// const router = createBrowserRouter(
-//   createRoutesFromElements(
-//     <Route>
-//       <Route path='/' element={
-//         <PresentationModeProvider>
-//           <App/>
-//         </PresentationModeProvider>
-//       } />
-//       <Route path={'/signin'} element={<LoginPage/>}/>
-//       <Route path={'/setup'} element={<Setup/>}/>
-//       <Route element={<NotFound/>}/>
-//     </Route>
-//   )
-// )
+const SignInPage = lazy(() => import('signin/LoginPage'))
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -41,22 +27,22 @@ root.render(
     <RouterProvider router={router} />
   </React.StrictMode>
 */
-
   <BrowserRouter>
-    <Routes>
-      <Route
-        path="/*"
-        element={
-          <PresentationModeProvider>
-            <App />
-          </PresentationModeProvider>
-        }
-      />
-
-      <Route path={'/signin'} element={<LoginPage />} />
-      <Route path={'/setup'} element={<Setup />} />
-      <Route element={<NotFound />} />
-    </Routes>
+    <SetupWrapper>
+      <Suspense fallback={<PageSpinner />}>
+        <Routes>
+          <Route path={'/signin'} element={<SignInPage />} />
+          <Route
+            path="/*"
+            element={
+              <PresentationModeProvider>
+                <App />
+              </PresentationModeProvider>
+            }
+          />
+        </Routes>
+      </Suspense>
+    </SetupWrapper>
   </BrowserRouter>
 )
 

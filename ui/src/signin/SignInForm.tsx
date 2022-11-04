@@ -18,7 +18,7 @@ import {
   InputType,
 } from '@influxdata/clockface'
 import {useNavigate, useSearchParams} from 'react-router-dom'
-import useFetch from '../shared/useFetch'
+import useFetch from 'shared/useFetch'
 
 export const SignInForm: FC = () => {
   const [username, setUsername] = useState('')
@@ -40,7 +40,7 @@ export const SignInForm: FC = () => {
   })
 
   return (
-    <Form onSubmit={submit}>
+    <Form onSubmit={() => submit()}>
       <Grid>
         <GridRow>
           <GridColumn widthXS={Columns.Twelve}>

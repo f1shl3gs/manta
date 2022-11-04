@@ -1,17 +1,29 @@
 import {useCallback, useEffect, useReducer} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
+import {useNavigate} from 'react-router-dom'
 
 interface State<T> {
   data?: T
   error?: Error
   loading: RemoteDataState
-  run: () => void
+  run: (body?: any) => void
 }
 
 type Action<T> =
   | {type: 'loading'}
   | {type: 'fetched'; payload: T}
   | {type: 'error'; payload: Error}
+
+function generateRequestInit(method?: string, body?: object): RequestInit {
+  const headers =
+    typeof body === 'object' ? {'Content-type': 'application/json'} : undefined
+
+  return {
+    method,
+    headers,
+    body: typeof body === 'object' ? JSON.stringify(body) : null,
+  }
+}
 
 interface RequestOptions<T> {
   method?: string
@@ -22,6 +34,8 @@ interface RequestOptions<T> {
 }
 
 function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
+  const navigate = useNavigate()
+
   const {method, body, onError, onSuccess} = options || {
     method: 'GET',
     body: undefined,
@@ -51,38 +65,42 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
     },
   })
 
-  const run = useCallback(() => {
-    dispatch({type: 'loading'})
+  const run = useCallback(
+    (nb?: any) => {
+      dispatch({type: 'loading'})
 
-    const headers =
-      typeof body === 'object'
-        ? {'Content-type': 'application/json'}
-        : undefined
+      fetch(url, generateRequestInit(method, nb || body))
+        .then(resp => {
+          if (resp.status === 401) {
+            const path = window.location.pathname
+            if (path === '/signin') {
+              return
+            }
 
-    fetch(url, {
-      method,
-      headers,
-      body: typeof body === 'object' ? JSON.stringify(body) : null,
-    })
-      .then(resp => {
-        const cloned = resp.clone()
-        return cloned.json().catch(_ => resp.text())
-      })
-      .then(data => {
-        dispatch({type: 'fetched', payload: data})
+            navigate(`/signin?returnTo=${encodeURIComponent(path)}`)
+            return
+          }
 
-        if (onSuccess) {
-          onSuccess(data)
-        }
-      })
-      .catch(err => {
-        dispatch({type: 'error', payload: err})
+          const cloned = resp.clone()
+          return cloned.json().catch(_ => resp.text())
+        })
+        .then(data => {
+          dispatch({type: 'fetched', payload: data})
 
-        if (onError) {
-          onError(err)
-        }
-      })
-  }, [url, body, method, onSuccess, onError])
+          if (onSuccess) {
+            onSuccess(data)
+          }
+        })
+        .catch(err => {
+          dispatch({type: 'error', payload: err})
+
+          if (onError) {
+            onError(err)
+          }
+        })
+    },
+    [url, body, method, onSuccess, onError]
+  )
 
   useEffect(() => {
     if (method !== 'GET') {

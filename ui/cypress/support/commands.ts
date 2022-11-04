@@ -1,5 +1,5 @@
 export const DefaultUsername = 'admin'
-export const DefaultPassword = 'password'
+export const DefaultPassword = 'pass'
 export const DefaultOrganization = 'test'
 
 export const flush = (): Cypress.Chainable => {
@@ -15,7 +15,8 @@ export const flush = (): Cypress.Chainable => {
 }
 
 export const setupUser = (): Cypress.Chainable => {
-  return cy.flush()
+  return cy
+    .flush()
     .request({
       method: 'POST',
       url: `/api/v1/setup`,
@@ -49,7 +50,9 @@ export const signin = (): Cypress.Chainable => {
 // DOM node getters
 export const getByTestID = (
   dataTest: string,
-  options?: Partial<Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow>
+  options?: Partial<
+    Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
+  >
 ): Cypress.Chainable => {
   return cy.get(`[data-testid="${dataTest}"]`, options)
 }

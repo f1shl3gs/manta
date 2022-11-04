@@ -222,6 +222,42 @@ paths:
         default:
           $ref: '#/components/responses/default'
 
+  /dashboards/:id:
+    get:
+      operationId: getDashboard
+      tags:
+        - Dashboards
+      description: Get dashboard
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        default:
+          $ref: '#/components/responses/default'
+
+    patch:
+      operationId: updateDashboard
+      tags:
+        - Dashboards
+      description: Update dashboard info
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardUpdate'
+      responses:
+        200:
+          description: Success
+        default:
+          $ref: '#/components/responses/default'
+
   /users:
     get:
       operationId: getAllUsers
@@ -454,3 +490,13 @@ components:
           format: date-time
         name:
           type: string
+
+    DashboardUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          required: false
+        desc:
+          type: string
+          required: false

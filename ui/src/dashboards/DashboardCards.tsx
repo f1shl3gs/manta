@@ -39,7 +39,7 @@ const DashboardCards: FunctionComponent<Props> = props => {
                 <DashboardCard
                   key={dashboard.id}
                   dashboard={dashboard}
-                  onDelete={reload}
+                  reload={reload}
                 />
               ))}
             </div>

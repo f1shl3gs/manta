@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useOnboard} from '../useOnboard'
+import {useOnboard} from 'setup/useOnboard'
 
 export const Admin: FC = () => {
   const {
@@ -99,7 +99,7 @@ export const Admin: FC = () => {
                     text="Next"
                     color={ComponentColor.Primary}
                     status={submitStatus}
-                    onClick={onboard}
+                    onClick={_ => onboard()}
                   />
                 </Grid.Column>
               </Grid.Row>

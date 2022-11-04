@@ -3,9 +3,10 @@ package http
 import (
 	"context"
 	"encoding/json"
-	"github.com/f1shl3gs/manta"
-	"go.uber.org/zap"
 	"net/http"
+
+    "github.com/f1shl3gs/manta"
+    "go.uber.org/zap"
 )
 
 const (
