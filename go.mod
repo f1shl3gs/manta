@@ -9,7 +9,7 @@ require (
 	github.com/jsternberg/zap-logfmt v1.2.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-isatty v0.0.14
-	github.com/mileusna/useragent v1.0.2
+	github.com/mileusna/useragent v1.2.1
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.1
