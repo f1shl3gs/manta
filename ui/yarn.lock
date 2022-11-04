@@ -1272,10 +1272,10 @@
     "@types/react-window" "^1.8.5"
     react-window "^1.8.7"
 
-"@influxdata/giraffe@^2.37.1":
-  version "2.37.1"
-  resolved "https://registry.npmmirror.com/@influxdata/giraffe/-/giraffe-2.37.1.tgz#63439ea226093c96564f1c1a6e438318c70a9f63"
-  integrity sha512-ISUmUKNhqrWk0JNVwCa20CGO9DzTOaGZUg8Ma0OeG5OhhX0z1niJQZ/MoonYC/virTWm+iERo0URBUZeMtwcIw==
+"@influxdata/giraffe@^2.38.1":
+  version "2.38.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.38.1.tgz#9cfea756d704b357564b73d4137fed0ddae6adaf"
+  integrity sha512-pk6K4dwkKK6aAxrN+HRpOmk5ObTmEy+0QD+Z/cV5aTE0zcOTgsoTMfwh70JwpIxjDhgDEETlbqULyZx740K0Pg==
   dependencies:
     merge-images "^2.0.0"
 
