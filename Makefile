@@ -20,3 +20,7 @@ ui: $(UISOURCES)
 fmt: $(UISOURCES) $(GOSROUCES)
 	go fmt
 	cd ui && yarn prettier:fix
+
+.PHONY: test
+test: $(GOSROUCES) $(UISOURCES)
+	go test ./...
