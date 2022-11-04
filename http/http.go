@@ -71,6 +71,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)
+    handler = middlewares.Trace(handler)
 
 	// enable access log middleware
 	if logger.Core().Enabled(zapcore.DebugLevel) {
