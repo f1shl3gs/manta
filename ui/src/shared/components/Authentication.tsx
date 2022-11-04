@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import {useAuthentication} from './useAuthentication'
+import PageSpinner from './PageSpinner'
 
 interface Props {
   children: any
@@ -9,11 +9,7 @@ interface Props {
 const Authentication: FunctionComponent<Props> = ({children}) => {
   const {loading} = useAuthentication()
 
-  return (
-    <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
-      {children}
-    </SpinnerContainer>
-  )
+  return <PageSpinner loading={loading}>{children}</PageSpinner>
 }
 
 export default Authentication

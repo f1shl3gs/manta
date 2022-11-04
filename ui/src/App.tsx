@@ -9,7 +9,8 @@ import {Route, Routes} from 'react-router-dom'
 import Organizations from 'organizations/Organizations'
 import {NotificationProvider} from 'shared/components/notifications/useNotification'
 import Notifications from 'shared/components/notifications/Notifications'
-import PageSpinner from './shared/components/PageSpinner'
+import PageSpinner from 'shared/components/PageSpinner'
+import Authentication from 'shared/components/Authentication'
 
 const Introduce = lazy(() => import('Introduce'))
 const DashboardsPage = lazy(() => import('dashboards/DashboardsPage'))
@@ -23,27 +24,29 @@ const App: FC = () => {
     <AppWrapper presentationMode={inPresentationMode}>
       <AuthenticationProvider>
         <NotificationProvider>
-          <Notifications />
+          <Authentication>
+            <Notifications />
 
-          <Organizations>
-            <Suspense fallback={<PageSpinner />}>
-              <Routes>
-                <Route path="orgs/:orgId" element={<Introduce />} />
-                <Route
-                  path="orgs/:orgId/dashboards"
-                  element={<DashboardsPage />}
-                />
-                <Route
-                  path="orgs/:orgId/dashboards/:dashboardId"
-                  element={<DashboardPage />}
-                />
-                <Route
-                  path="orgs/:orgId/settings/*"
-                  element={<SettingsPage />}
-                />
-              </Routes>
-            </Suspense>
-          </Organizations>
+            <Organizations>
+              <Suspense fallback={<PageSpinner />}>
+                <Routes>
+                  <Route path="orgs/:orgId" element={<Introduce />} />
+                  <Route
+                    path="orgs/:orgId/dashboards"
+                    element={<DashboardsPage />}
+                  />
+                  <Route
+                    path="orgs/:orgId/dashboards/:dashboardId"
+                    element={<DashboardPage />}
+                  />
+                  <Route
+                    path="orgs/:orgId/settings/*"
+                    element={<SettingsPage />}
+                  />
+                </Routes>
+              </Suspense>
+            </Organizations>
+          </Authentication>
         </NotificationProvider>
       </AuthenticationProvider>
     </AppWrapper>
