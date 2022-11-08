@@ -21,5 +21,7 @@ module.exports = {
       {varsIgnorePattern: '^_', argsIgnorePattern: '^_'},
     ],
     'react/no-find-dom-node': 'off',
+    // for wdyr
+    '@typescript-eslint/no-var-requires': 'off',
   },
 }

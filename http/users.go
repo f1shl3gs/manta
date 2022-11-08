@@ -18,7 +18,7 @@ type UsersHandler struct {
 	userService manta.UserService
 }
 
-func NewUserHandler(logger *zap.Logger, backend *Backend) *UsersHandler {
+func NewUserHandler(backend *Backend, logger *zap.Logger) *UsersHandler {
 	h := &UsersHandler{
 		Router:      backend.router,
 		logger:      logger.With(zap.String("handler", "users")),

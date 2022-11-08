@@ -12,7 +12,8 @@
 @import 'src/shared/components/wizard/WizardFullScreen';
 @import 'src/shared/components/VersionInfo';
 @import 'src/shared/components/SearchWidget';
-@import '../shared/components/context_menu/ContextMenu';
+@import 'src/shared/components/context_menu/ContextMenu';
+@import 'src/shared/components/TabsPage';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

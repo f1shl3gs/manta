@@ -4,6 +4,8 @@
 # test or dev bolt database
 *.bolt
 ui/cypress/videos
+ui/node_modules
+ui/build
 
 # temp files
 tmp.*

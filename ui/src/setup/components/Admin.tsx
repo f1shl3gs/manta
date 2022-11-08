@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useOnboard} from 'setup/useOnboard'
+import {useOnboard} from 'src/setup/useOnboard'
 
 export const Admin: FC = () => {
   const {

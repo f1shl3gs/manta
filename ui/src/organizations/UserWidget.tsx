@@ -1,10 +1,10 @@
 import React, {FunctionComponent, useState} from 'react'
 import {TreeNav} from '@influxdata/clockface'
-import OrganizationsSwitcher from './OrganizationsSwitcher'
-import {useUser} from '../shared/components/useAuthentication'
-import {useOrganization} from './useOrganizations'
-import useFetch from '../shared/useFetch'
-import {useNavigate} from 'react-router-dom';
+import OrganizationsSwitcher from 'src/organizations/OrganizationsSwitcher'
+import {useUser} from 'src/shared/components/useAuthentication'
+import {useOrganization} from 'src/organizations/useOrganizations'
+import useFetch from 'src/shared/useFetch'
+import {useNavigate} from 'react-router-dom'
 
 const UserWidget: FunctionComponent = () => {
   const [switcherVisible, setSwitcherVisible] = useState(false)
@@ -13,7 +13,7 @@ const UserWidget: FunctionComponent = () => {
   const navigate = useNavigate()
   const {run: logout} = useFetch(`/api/v1/signout`, {
     method: 'DELETE',
-    onSuccess: _ => navigate(`/signin`)
+    onSuccess: _ => navigate(`/signin`),
   })
 
   return (
@@ -37,6 +37,11 @@ const UserWidget: FunctionComponent = () => {
           id="switch"
           label="Switch organization"
           onClick={() => setSwitcherVisible(true)}
+        />
+        <TreeNav.UserItem
+          id={'create-org'}
+          label="Create organization"
+          onClick={() => navigate('/orgs/new')}
         />
         <TreeNav.UserItem
           id="logout"

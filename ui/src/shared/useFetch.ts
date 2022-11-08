@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useReducer} from 'react'
+import {DependencyList, useCallback, useEffect, useReducer, useRef} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
 import {useNavigate} from 'react-router-dom'
 
@@ -23,6 +23,12 @@ function generateRequestInit(method?: string, body?: object): RequestInit {
     headers,
     body: typeof body === 'object' ? JSON.stringify(body) : null,
   }
+}
+
+function useDeepCompareMemoize(value: DependencyList) {
+  const ref = useRef<DependencyList>()
+  if (JSON.stringify(value) !== JSON.stringify(ref.current)) ref.current = value
+  return ref.current as DependencyList
 }
 
 interface RequestOptions<T> {
@@ -99,7 +105,7 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
           }
         })
     },
-    [url, body, method, onSuccess, onError]
+    useDeepCompareMemoize([url, body, method, onSuccess, onError, navigate])
   )
 
   useEffect(() => {

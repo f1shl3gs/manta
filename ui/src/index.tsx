@@ -1,21 +1,25 @@
+// Why did you render
+// import './wdyr'
+
 // Libraries
 import React, {lazy, Suspense} from 'react'
 import ReactDOM from 'react-dom/client'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 // Components
-import App from './App'
-import {PresentationModeProvider} from 'shared/usePresentationMode'
-import SetupWrapper from 'setup/SetupWrapper'
-import PageSpinner from 'shared/components/PageSpinner'
+import App from 'src/App'
+import {PresentationModeProvider} from 'src/shared/usePresentationMode'
+import SetupWrapper from 'src/setup/SetupWrapper'
+import PageSpinner from 'src/shared/components/PageSpinner'
 
 // Styles
 import '@influxdata/clockface/dist/index.css'
-import 'style/manta.scss'
+import 'src/style/manta.scss'
+import 'react-virtualized/styles.css'
 
-import reportWebVitals from './reportWebVitals'
+import reportWebVitals from 'src/reportWebVitals'
 
-const SignInPage = lazy(() => import('signin/LoginPage'))
+const SignInPage = lazy(() => import('src/signin/LoginPage'))
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -32,8 +36,9 @@ root.render(
       <Suspense fallback={<PageSpinner />}>
         <Routes>
           <Route path={'/signin'} element={<SignInPage />} />
+
           <Route
-            path="/*"
+            path="/orgs/*"
             element={
               <PresentationModeProvider>
                 <App />

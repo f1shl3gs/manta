@@ -1,6 +1,6 @@
 import React, {PureComponent, ReactElement} from 'react'
 import ReactDOM from 'react-dom'
-import {ErrorHandling} from 'shared/decorators/errors'
+import {ErrorHandling} from 'src/shared/decorators/errors'
 
 interface Props {
   children: ReactElement<any>

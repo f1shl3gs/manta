@@ -12,6 +12,8 @@ func Migration0000Initial() Spec {
 			[]byte("authorizations"),
 			[]byte("authorizationtokenindex"),
 			[]byte("authorizationuserindex"),
+            kv.ConfigurationBucket,
+            kv.ConfigurationOrgIndexBucket,
 			[]byte("dashboards"),
 			[]byte("dashboardorgindex"),
 			[]byte("organizations"),

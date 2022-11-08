@@ -1,4 +1,4 @@
-[*.{tsx,ts}]
+[*.{tsx,ts,js}]
 indent_size = 2
 indent_style = space
 ij_continuation_indent_size = 2

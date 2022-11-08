@@ -8,10 +8,10 @@ import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 import {
   useNotification,
   defaultErrorNotification,
-} from 'shared/components/notifications/useNotification'
+} from 'src/shared/components/notifications/useNotification'
 import {useNavigate} from 'react-router-dom'
-import {useOrganization} from 'organizations/useOrganizations'
-import useFetch from 'shared/useFetch'
+import {useOrganization} from 'src/organizations/useOrganizations'
+import useFetch from 'src/shared/useFetch'
 
 const CreateDashboardButton: FunctionComponent = () => {
   const {id: orgId} = useOrganization()

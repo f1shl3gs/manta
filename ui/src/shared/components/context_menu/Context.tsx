@@ -3,13 +3,13 @@ import React, {PureComponent} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ContextMenu from './ContextMenu'
-import ContextMenuItem from './ContextMenuItem'
+import {ContextMenu} from 'src/shared/components/context_menu/ContextMenu'
+import {ContextMenuItem} from 'src/shared/components/context_menu/ContextMenuItem'
 
 // Types
 import {Alignment} from '@influxdata/clockface'
 
-import {ErrorHandling} from 'shared/decorators/errors'
+import {ErrorHandling} from 'src/shared/decorators/errors'
 
 interface Props {
   children: JSX.Element | JSX.Element[]
@@ -22,7 +22,7 @@ interface State {
 }
 
 @ErrorHandling
-class Context extends PureComponent<Props, State> {
+export class Context extends PureComponent<Props, State> {
   public static defaultProps = {
     align: Alignment.Right,
   }
@@ -44,7 +44,7 @@ class Context extends PureComponent<Props, State> {
     return (
       <div className={this.className}>
         {React.Children.map(children, (child: JSX.Element) => {
-          if (child.type === ContextMenu) {
+          if (child?.type === ContextMenu) {
             return (
               <ContextMenu
                 {...child.props}

@@ -5,7 +5,7 @@ import React, {MouseEvent} from 'react'
 import {Dropdown, Sort} from '@influxdata/clockface'
 
 // Types
-import {SortKey, SortTypes} from 'types/Sort'
+import {SortKey, SortTypes} from 'src/types/Sort'
 
 export interface SortDropdownItem {
   label: string

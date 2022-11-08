@@ -12,7 +12,7 @@ interface Props {
   onCollapseMenu?: () => void
 }
 
-class ContextMenuItem extends Component<Props> {
+export class ContextMenuItem extends Component<Props> {
   public static defaultProps = {
     description: '',
     testID: 'context-menu-item',
@@ -42,12 +42,13 @@ class ContextMenuItem extends Component<Props> {
     })
   }
 
-  // @ts-ignore
   private get description(): JSX.Element {
     const {description} = this.props
     if (description) {
-      return <div className="context-menu--item-description">{description}</div>
+      return <div className="contex-menu--item-description">{description}</div>
     }
+
+    return <></>
   }
 
   private handleClick = (): void => {
@@ -60,5 +61,3 @@ class ContextMenuItem extends Component<Props> {
     }
   }
 }
-
-export default ContextMenuItem

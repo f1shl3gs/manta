@@ -18,7 +18,7 @@ import {
   InputType,
 } from '@influxdata/clockface'
 import {useNavigate, useSearchParams} from 'react-router-dom'
-import useFetch from 'shared/useFetch'
+import useFetch from 'src/shared/useFetch'
 
 export const SignInForm: FC = () => {
   const [username, setUsername] = useState('')

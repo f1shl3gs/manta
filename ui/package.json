@@ -8,10 +8,13 @@
     "@influxdata/react-custom-scrollbars": "4.3.8",
     "classnames": "^2.3.2",
     "constate": "^3.3.2",
+    "monaco-yaml": "^4.0.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-monaco-editor": "^0.50.1",
     "react-router-dom": "^6.4.3",
     "react-scripts": "5.0.1",
+    "react-virtualized": "^9.22.3",
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
@@ -24,6 +27,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.42.0",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "cypress": "^10.10.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",

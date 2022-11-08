@@ -1,6 +1,6 @@
 import constate from 'constate'
 import {useState} from 'react'
-import useFetch from 'shared/useFetch'
+import useFetch from 'src/shared/useFetch'
 
 export const [OnboardProvider, useOnboard] = constate(() => {
   const [username, setUsername] = useState('')

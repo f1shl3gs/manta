@@ -12,10 +12,10 @@ import {
   TreeNavSubMenu,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
-import UserWidget from './UserWidget'
+import UserWidget from 'src/organizations/UserWidget'
 
 // Hooks
-import {useOrganization} from './useOrganizations'
+import {useOrganization} from 'src/organizations/useOrganizations'
 
 const getNavItemActivation = (
   keywords: string[],
@@ -59,6 +59,38 @@ const generateNavItems = (orgId: string): NavItem[] => {
 
   return [
     {
+      id: 'data',
+      testID: 'nav-item-data',
+      label: 'Data',
+      icon: IconFont.Upload_New,
+      shortLabel: 'Data',
+      activeKeywords: ['vertex', 'data'],
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/data`,
+      },
+      menu: [
+        {
+          id: 'vertex',
+          testID: 'vertex',
+          label: 'Vertex',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/data/vertex`,
+          },
+        },
+        {
+          id: 'config',
+          testID: 'config',
+          label: 'Config',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/data/config`,
+          },
+        },
+      ],
+    },
+    {
       id: 'dashboards',
       testID: 'nav-item-dashboard',
       label: 'Dashboards',
@@ -68,6 +100,18 @@ const generateNavItems = (orgId: string): NavItem[] => {
       link: {
         type: 'link',
         location: `${orgPrefix}/dashboards`,
+      },
+    },
+    {
+      id: 'todo',
+      testID: 'todo',
+      label: 'Todo',
+      icon: IconFont.Annotate_New,
+      shortLabel: 'Todo',
+      activeKeywords: ['todo'],
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/todo`,
       },
     },
     {

@@ -17,7 +17,7 @@
     "noEmit": true,
     "noImplicitAny": false,
     "jsx": "react-jsx",
-    "baseUrl": "./src"
+    "baseUrl": "./"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["assets", "build", "node_modules", "cypress"]

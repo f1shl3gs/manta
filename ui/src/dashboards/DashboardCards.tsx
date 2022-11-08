@@ -1,11 +1,11 @@
 import React, {FunctionComponent} from 'react'
-import {useResources} from 'shared/components/GetResources'
-import FilterList from 'shared/components/FilterList'
-import {Dashboard} from 'types/Dashboard'
-import EmptyDashboards from './EmptyDashboards'
-import {getSortedResources} from 'shared/utils/sort'
-import DashboardCard from './DashboardCard'
-import {SortOption} from 'types/Sort'
+import {useResources} from 'src/shared/components/GetResources'
+import FilterList from 'src/shared/components/FilterList'
+import {Dashboard} from 'src/types/Dashboard'
+import EmptyDashboards from 'src/dashboards/EmptyDashboards'
+import {getSortedResources} from 'src/shared/utils/sort'
+import DashboardCard from 'src/dashboards/DashboardCard'
+import {SortOption} from 'src/types/Sort'
 
 interface Props {
   search: string

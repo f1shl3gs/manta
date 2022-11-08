@@ -3,8 +3,9 @@ package http
 import (
 	"context"
 	"net/http"
+    "strings"
 
-	"github.com/julienschmidt/httprouter"
+    "github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -33,15 +34,35 @@ type Backend struct {
 	AuthorizationService manta.AuthorizationService
 	SessionService       manta.SessionService
 	OnBoardingService    manta.OnBoardingService
+    ConfigurationService manta.ConfigurationService
 }
 
 type Service struct {
-	http.Handler
+	apiHandler http.Handler
 
-	backend *Backend
+    assetsHandler http.Handler
+}
+
+func (s *Service ) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    path := r.URL.Path
+
+    if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/debug") {
+        s.apiHandler.ServeHTTP(w, r)
+        return
+    }
+
+    // assets handler
+    s.assetsHandler.ServeHTTP(w, r)
 }
 
 func New(logger *zap.Logger, backend *Backend) *Service {
+    // assets handler
+    assetsHandler, err := NewAssetsHandler(logger)
+    if err != nil {
+        panic(err)
+    }
+
+    // build api handler
 	backend.router = &Router{
 		Router: httprouter.New(),
 		logger: logger,
@@ -52,7 +73,8 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewSessionHandler(backend.router, logger, backend.UserService, backend.PasswordService, backend.SessionService)
 	NewFlushHandler(logger, backend.router, backend.Flusher)
 	NewDashboardsHandler(backend, logger)
-	NewUserHandler(logger, backend)
+	NewUserHandler(backend, logger)
+    NewConfigurationService(backend, logger)
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -68,6 +90,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodGet, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodPost, signinPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, DebugFlushPath)
+    ah.RegisterNoAuthRoute(http.MethodGet, "/")
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)
@@ -79,7 +102,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	}
 
 	return &Service{
-		Handler: handler,
-		backend: backend,
+		apiHandler: handler,
+        assetsHandler: assetsHandler,
 	}
 }

@@ -1,7 +1,7 @@
 import constate from 'constate'
 import {useCallback, useState} from 'react'
 
-import {Notification} from 'types/Notification'
+import {Notification} from 'src/types/Notification'
 
 export * from './defaults'
 

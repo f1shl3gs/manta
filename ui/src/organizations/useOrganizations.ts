@@ -3,7 +3,7 @@ import constate from 'constate'
 import {useEffect, useState} from 'react'
 
 // Types
-import {Organization} from 'types/Organization'
+import {Organization} from 'src/types/Organization'
 import {matchPath, useNavigate} from 'react-router-dom'
 
 const [OrganizationsProvider, useOrganizations, useOrganization] = constate(
@@ -16,7 +16,7 @@ const [OrganizationsProvider, useOrganizations, useOrganization] = constate(
       if (matchPath('/orgs/*', window.location.pathname) === null) {
         navigate(`/orgs/${organizations[current].id}`)
       }
-    }, [organizations, current])
+    }, [organizations, current, navigate])
 
     return {
       current,

@@ -7,6 +7,7 @@ import constate from 'constate'
 enum ResourceType {
   Dashboards = 'dashboards',
   Users = 'users',
+  Configurations = 'configurations',
 }
 
 interface State<T> {
@@ -37,4 +38,21 @@ const GetResources: FunctionComponent<Props> = ({children, type, url}) => {
   )
 }
 
-export {ResourceType, GetResources, useResources}
+const withResources = (
+  WrappedComponent: FunctionComponent,
+  type: ResourceType
+) => {
+  const component = () => {
+    return (
+      <GetResources type={type}>
+        <WrappedComponent />
+      </GetResources>
+    )
+  }
+
+  component.displayName = `withResources(${WrappedComponent.displayName})`
+
+  return component
+}
+
+export {ResourceType, GetResources, useResources, withResources}

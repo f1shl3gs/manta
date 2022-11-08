@@ -1,27 +1,27 @@
 import React, {FunctionComponent} from 'react'
-import {Dashboard} from 'types/Dashboard'
+import {Dashboard} from 'src/types/Dashboard'
 import {
   ButtonShape,
   ComponentColor,
   IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
-import Context from 'shared/components/context_menu/Context'
+import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
-import {fromNow} from 'shared/duration'
-import {useOrganization} from '../organizations/useOrganizations'
+import {fromNow} from 'src/shared/duration'
+import {useOrganization} from 'src/organizations/useOrganizations'
 import {
   PARAMS_INTERVAL,
   PARAMS_SHOW_VARIABLES_CONTROLS,
   PARAMS_TIME_RANGE_LOW,
   PARAMS_TIME_RANGE_TYPE,
-} from './constants'
-import useFetch from 'shared/useFetch'
+} from 'src/dashboards/constants'
+import useFetch from 'src/shared/useFetch'
 import {
   useNotification,
   defaultErrorNotification,
   defaultSuccessNotification,
-} from 'shared/components/notifications/useNotification'
+} from 'src/shared/components/notifications/useNotification'
 
 interface Props {
   dashboard: Dashboard

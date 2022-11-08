@@ -3,9 +3,9 @@ import React, {Component} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ContextMenuItem from './ContextMenuItem'
+import {ContextMenuItem} from 'src/shared/components/context_menu/ContextMenuItem'
+import {ClickOutside} from 'src/shared/components/ClickOutside'
 import {Button} from '@influxdata/clockface'
-import {ClickOutside} from 'shared/components/ClickOutside'
 
 // Types
 import {
@@ -15,7 +15,7 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 
-import {ErrorHandling} from 'shared/decorators/errors'
+import {ErrorHandling} from 'src/shared/decorators/errors'
 
 interface Props {
   children: JSX.Element | JSX.Element[]
@@ -25,6 +25,8 @@ interface Props {
   color: ComponentColor
   shape: ButtonShape
   testID: string
+  size?: ComponentSize
+  style?: React.CSSProperties
 }
 
 interface State {
@@ -32,12 +34,13 @@ interface State {
 }
 
 @ErrorHandling
-class ContextMenu extends Component<Props, State> {
+export class ContextMenu extends Component<Props, State> {
   public static defaultProps = {
     color: ComponentColor.Primary,
     shape: ButtonShape.Square,
     text: '',
     testID: 'context-menu',
+    size: ComponentSize.ExtraSmall,
   }
 
   constructor(props: Props) {
@@ -49,7 +52,7 @@ class ContextMenu extends Component<Props, State> {
   }
 
   public render() {
-    const {icon, text, shape, color, testID} = this.props
+    const {icon, text, shape, color, testID, size, style} = this.props
 
     return (
       <ClickOutside onClickOutside={this.handleCollapseMenu}>
@@ -60,9 +63,10 @@ class ContextMenu extends Component<Props, State> {
             text={text}
             shape={shape}
             icon={icon}
-            size={ComponentSize.ExtraSmall}
+            size={size}
             color={color}
             testID={testID}
+            style={style}
           />
           {this.menu}
         </div>
@@ -137,5 +141,3 @@ class ContextMenu extends Component<Props, State> {
     })
   }
 }
-
-export default ContextMenu

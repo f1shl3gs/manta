@@ -1,62 +1,22 @@
-import React, {FunctionComponent, lazy, useMemo} from 'react'
-import {
-  Orientation,
-  Page,
-  PageContents,
-  PageHeader,
-  PageTitle,
-  Tabs,
-  TabsContainer,
-} from '@influxdata/clockface'
-import {Route, Routes, useNavigate} from 'react-router-dom'
+import React, {FunctionComponent, lazy} from 'react'
+import TabsPage from 'src/shared/components/TabsPage'
 
-const Members = lazy(() => import('settings/Members'))
-const Secrets = lazy(() => import('settings/Secrets'))
+const Members = lazy(() => import('src/settings/Members'))
+const Secrets = lazy(() => import('src/settings/Secrets'))
 
 const SettingsPage: FunctionComponent = () => {
-  const navigate = useNavigate()
-  const pathname = window.location.pathname
-  const selected = useMemo(
-    () => pathname.split('/').pop() as string,
-    [pathname]
-  )
+  const tabs = [
+    {
+      name: 'members',
+      element: <Members />,
+    },
+    {
+      name: 'secrets',
+      element: <Secrets />,
+    },
+  ]
 
-  return (
-    <Page titleTag={`Settings | ${selected}`}>
-      <PageHeader fullWidth={false}>
-        <PageTitle title="Settings" />
-      </PageHeader>
-
-      <PageContents>
-        <TabsContainer orientation={Orientation.Horizontal}>
-          <Tabs>
-            {['members', 'secrets'].map(key => (
-              <Tabs.Tab
-                key={key}
-                active={selected === key}
-                id={key}
-                text={key}
-                onClick={() => {
-                  if (selected === key) {
-                    return
-                  }
-
-                  navigate(window.location.pathname.replace(selected, key))
-                }}
-              />
-            ))}
-          </Tabs>
-
-          <Tabs.TabContents>
-            <Routes>
-              <Route path={'members'} element={<Members />} />
-              <Route path={'secrets'} element={<Secrets />} />
-            </Routes>
-          </Tabs.TabContents>
-        </TabsContainer>
-      </PageContents>
-    </Page>
-  )
+  return <TabsPage title={'Settings'} tabs={tabs} />
 }
 
 export default SettingsPage

@@ -181,6 +181,7 @@ func (l *Launcher) run() error {
 			DashboardService:     service,
 			SessionService:       service,
 			Flusher:              kvStore,
+            ConfigurationService: service,
 		})
 
 		group.Go(func() error {

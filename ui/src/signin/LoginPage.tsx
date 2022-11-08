@@ -11,8 +11,8 @@ import {
   PanelBody,
   PanelFooter,
 } from '@influxdata/clockface'
-import {SignInForm} from './SignInForm'
-import {VersionInfo} from 'shared/components/VersionInfo'
+import {SignInForm} from 'src/signin/SignInForm'
+import {VersionInfo} from 'src/shared/components/VersionInfo'
 
 const LoginPage: FC = () => {
   return (

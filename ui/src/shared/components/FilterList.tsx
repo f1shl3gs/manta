@@ -1,5 +1,5 @@
 // Utils
-import {get} from 'shared/utils/object'
+import {get} from 'src/shared/utils/object'
 
 interface Props<T> {
   list: T[]

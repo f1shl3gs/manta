@@ -12,6 +12,7 @@ tags:
   - name: User
   - name: Dashboards
   - name: Session
+  - name: Configuration
 
 paths:
   /setup:
@@ -282,6 +283,45 @@ paths:
                   $ref: '#/components/schemas/User'
         default:
           $ref: '#/components/responses/default'
+  /configurations:
+    get:
+      operationId: getAllConfigurations
+      tags:
+        - Configuration
+      description: Get all configurations of the specified org
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+        - name: orgId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Configuration'
+        default:
+          $ref: '#/components/responses/default'
+    post:
+      operationId: createConfiguration
+      tags:
+        - Configuration
+      description: Create a configuration
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationUpdate'
+      responses:
+        201:
+          description: Created
 
 components:
   responses:
@@ -498,5 +538,39 @@ components:
           type: string
           required: false
         desc:
+          type: string
+          required: false
+
+    Configuration:
+      type: object
+      properties:
+        id:
+          type: string
+          required: true
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        name:
+          type: string
+          required: true
+        desc:
+          type: string
+        data:
+          type: string
+          required: true
+
+    ConfigurationUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          required: false
+        desc:
+          type: string
+          required: false
+        data:
           type: string
           required: false

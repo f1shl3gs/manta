@@ -2,7 +2,7 @@
 import React, {FC, useState} from 'react'
 
 // Components
-import ErrorBoundary from 'shared/components/ErrorBoundary'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {
   Page,
   PageContents,
@@ -13,12 +13,12 @@ import {
   PageTitle,
   Sort,
 } from '@influxdata/clockface'
-import {GetResources, ResourceType} from 'shared/components/GetResources'
-import SearchWidget from 'shared/components/SearchWidget'
-import ResourceSortDropdown from 'shared/components/ResourceSortDropdown'
-import {SortKey, SortTypes} from 'types/Sort'
-import CreateDashboardButton from './CreateDashboardButton'
-import DashboardCards from './DashboardCards'
+import {GetResources, ResourceType} from 'src/shared/components/GetResources'
+import SearchWidget from 'src/shared/components/SearchWidget'
+import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
+import {SortKey, SortTypes} from 'src/types/Sort'
+import CreateDashboardButton from 'src/dashboards/CreateDashboardButton'
+import DashboardCards from 'src/dashboards/DashboardCards'
 
 export const DashboardsPage: FC = () => {
   const [search, setSearch] = useState('')

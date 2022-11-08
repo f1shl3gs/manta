@@ -2,7 +2,7 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import {useResources} from 'shared/components/GetResources'
+import {useResources} from 'src/shared/components/GetResources'
 import {
   ComponentColor,
   IconFont,
@@ -10,8 +10,8 @@ import {
   ResourceList,
   Sort,
 } from '@influxdata/clockface'
-import {fromNow} from 'shared/duration'
-import Context from 'shared/components/context_menu/Context'
+import {fromNow} from 'src/shared/duration'
+import Context from 'src/shared/components/context_menu/Context'
 
 const MemberList: FunctionComponent = () => {
   const {resources: members} = useResources()

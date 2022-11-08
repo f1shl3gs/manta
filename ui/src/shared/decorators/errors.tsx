@@ -1,5 +1,5 @@
 import React, {Component, ComponentType, ErrorInfo} from 'react'
-import DefaultErrorMessage from 'shared/components/DefaultErrorMessage'
+import DefaultErrorMessage from 'src/shared/components/DefaultErrorMessage'
 
 export type ErrorMessageComponent = ComponentType<{error: Error}>
 
