@@ -6,7 +6,7 @@ require (
 	github.com/go-kit/kit v0.12.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/go-cmp v0.5.9
-	github.com/jsternberg/zap-logfmt v1.2.0
+	github.com/jsternberg/zap-logfmt v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-isatty v0.0.16
 	github.com/mileusna/useragent v1.2.1
