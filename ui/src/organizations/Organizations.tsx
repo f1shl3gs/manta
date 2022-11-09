@@ -10,11 +10,15 @@ interface Props {
 }
 
 const Organizations: FunctionComponent<Props> = ({children}) => {
-  const {data = [], loading} = useFetch<[Organization]>('/api/v1/organizations')
+  const {
+    data = [],
+    loading,
+    run: refetch,
+  } = useFetch<[Organization]>('/api/v1/organizations')
 
   return (
     <PageSpinner loading={loading}>
-      <OrganizationsProvider organizations={data}>
+      <OrganizationsProvider organizations={data} refetch={refetch}>
         <Nav />
 
         {children}

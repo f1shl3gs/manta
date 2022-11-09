@@ -120,7 +120,7 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
   return {
     ...state,
     run,
-  }
+  } as const
 }
 
 export default useFetch

@@ -1,31 +1,43 @@
 // Libraries
 import constate from 'constate'
-import {useEffect, useState} from 'react'
+import {useLayoutEffect} from 'react'
 
 // Types
 import {Organization} from 'src/types/Organization'
-import {matchPath, useNavigate} from 'react-router-dom'
+import useLocalStorage from 'src/shared/useLocalStorage'
+
+interface State {
+  organizations: Organization[]
+  refetch: () => void
+}
 
 const [OrganizationsProvider, useOrganizations, useOrganization] = constate(
-  (state: {organizations: Organization[]}) => {
-    const organizations = state.organizations
-    const [current, setCurrent] = useState(0)
-    const navigate = useNavigate()
+  (state: State) => {
+    const {organizations, refetch} = state
+    const [current, setCurrent] = useLocalStorage(
+      'org',
+      organizations[organizations.length - 1]
+    )
 
-    useEffect(() => {
-      if (matchPath('/orgs/*', window.location.pathname) === null) {
-        navigate(`/orgs/${organizations[current].id}`)
+    // stored organization might outdated, so we must re-store the updated one
+    useLayoutEffect(() => {
+      const found = organizations.indexOf(current)
+
+      if (found === -1) {
+        // not found
+        setCurrent(organizations[organizations.length - 1])
       }
-    }, [organizations, current, navigate])
+    }, [current, setCurrent, organizations])
 
     return {
       current,
       organizations,
       setCurrent,
+      refetch,
     }
   },
   value => value,
-  value => value.organizations[value.current]
+  value => value.current
 )
 
 export {OrganizationsProvider, useOrganizations, useOrganization}

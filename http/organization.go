@@ -1,7 +1,8 @@
 package http
 
 import (
-	"net/http"
+    "encoding/json"
+    "net/http"
 
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
@@ -27,6 +28,7 @@ func NewOrganizationHandler(backend *Backend, logger *zap.Logger) *OrganizationH
 
 	h.HandlerFunc(http.MethodGet, organizationPrefix, h.listOrganizations)
 	h.HandlerFunc(http.MethodGet, organizationPrefix+"/:orgId", h.getOrganization)
+    h.HandlerFunc(http.MethodPost, organizationPrefix, h.createOrganization)
 
 	return h
 }
@@ -71,4 +73,28 @@ func (h *OrganizationHandler) getOrganization(w http.ResponseWriter, r *http.Req
 
 func (h *OrganizationHandler) deleteOrganization(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (h *OrganizationHandler) createOrganization(w http.ResponseWriter, r *http.Request) {
+    var (
+        ctx = r.Context()
+        org manta.Organization
+    )
+
+    err := json.NewDecoder(r.Body).Decode(&org)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    err = h.organizationService.CreateOrganization(ctx, &org)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    err = encodeResponse(ctx, w, http.StatusCreated, &org)
+    if err != nil {
+        logEncodingError(h.logger, r, err)
+    }
 }

@@ -38,7 +38,7 @@ root.render(
           <Route path={'/signin'} element={<SignInPage />} />
 
           <Route
-            path="/orgs/*"
+            path="*"
             element={
               <PresentationModeProvider>
                 <App />

@@ -1,6 +1,7 @@
 import {Overlay} from '@influxdata/clockface'
 import React, {FunctionComponent, useCallback, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
+import useKeyPress from '../../shared/useKeyPress'
 
 const ConfigurationWizard: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -14,19 +15,7 @@ const ConfigurationWizard: FunctionComponent = () => {
   }, [navigate])
 
   // handle esc key press
-  useEffect(() => {
-    const handleEsc = event => {
-      if (event.keyCode === 27) {
-        onDismiss()
-      }
-    }
-
-    window.addEventListener('keydown', handleEsc)
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc)
-    }
-  }, [onDismiss])
+  useKeyPress('Escape', onDismiss)
 
   return (
     <Overlay visible={true}>

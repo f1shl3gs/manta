@@ -13,6 +13,7 @@ import PageSpinner from 'src/shared/components/PageSpinner'
 import Authentication from 'src/shared/components/Authentication'
 import CreateOrgOverlay from './organizations/CreateOrgOverlay'
 import Todo from './Todo'
+import ToOrg from 'src/organizations/ToOrg'
 
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
@@ -33,19 +34,23 @@ const App: FC = () => {
             <Organizations>
               <Suspense fallback={<PageSpinner />}>
                 <Routes>
-                  <Route path="new" element={<CreateOrgOverlay />} />
+                  <Route index element={<ToOrg />} />
 
-                  <Route path=":orgId">
-                    <Route index={true} element={<Introduce />} />
-                    <Route path="data/*" element={<DataPage />} />
-                    <Route path="todo" element={<Todo />} />
-                    <Route path="dashboards" element={<DashboardsPage />} />
-                    <Route
-                      path="dashboards/:dashboardId"
-                      element={<DashboardPage />}
-                    />
+                  <Route path="orgs">
+                    <Route path="new" element={<CreateOrgOverlay />} />
 
-                    <Route path="settings/*" element={<SettingsPage />} />
+                    <Route path=":orgId">
+                      <Route index={true} element={<Introduce />} />
+                      <Route path="data/*" element={<DataPage />} />
+                      <Route path="todo" element={<Todo />} />
+                      <Route path="dashboards" element={<DashboardsPage />} />
+                      <Route
+                        path="dashboards/:dashboardId"
+                        element={<DashboardPage />}
+                      />
+
+                      <Route path="settings/*" element={<SettingsPage />} />
+                    </Route>
                   </Route>
                 </Routes>
               </Suspense>

@@ -147,6 +147,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /orgs:
+    post:
+      operationId: createAnOrganization
+      tags:
+        - Organization
+      summary: Create an organization
+      parameters:
+        - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        201:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        default:
+          $ref: '#/components/responses/default'
+
   /orgs/:id:
     get:
       operationId: getOrganizationByID

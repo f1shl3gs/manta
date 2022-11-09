@@ -34,3 +34,7 @@ fmt: $(UISOURCES) $(GOSROUCES)
 .PHONY: test
 test: $(GOSROUCES) $(UISOURCES)
 	go test ./...
+
+.PHONY: cypress
+cypress:
+	cd ui && yarn cypress:run

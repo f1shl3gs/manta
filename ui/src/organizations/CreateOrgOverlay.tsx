@@ -7,12 +7,22 @@ import {
   Input,
   Overlay,
 } from '@influxdata/clockface'
-import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
+import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
+import useFetch from 'src/shared/useFetch'
+import useKeyPress from 'src/shared/useKeyPress'
+import {Organization} from 'src/types/Organization'
+import {
+  defaultErrorNotification,
+  useNotification,
+} from 'src/shared/components/notifications/useNotification'
+import {useOrganizations} from 'src/organizations/useOrganizations'
 
 const CreateOrgOverlay: FunctionComponent = () => {
   const [name, setName] = useState('')
+  const {refetch} = useOrganizations()
   const navigate = useNavigate()
+  const {notify} = useNotification()
   const onDismiss = useCallback(() => {
     navigate(-1)
   }, [navigate])
@@ -24,19 +34,20 @@ const CreateOrgOverlay: FunctionComponent = () => {
       ? 'Invalid organization name'
       : ''
 
-  // handle esc
-  useEffect(() => {
-    const handleEsc = event => {
-      if (event.keyCode === 27) {
-        onDismiss()
-      }
-    }
+  useKeyPress('Escape', onDismiss)
 
-    window.addEventListener('keydown', handleEsc)
-
-    return () => {
-      window.removeEventListener('keydown', handleEsc)
-    }
+  const {run: createOrg} = useFetch<Organization>(`/api/v1/organizations`, {
+    method: 'POST',
+    onSuccess: org => {
+      refetch()
+      navigate(`/orgs/${org?.id}`)
+    },
+    onError: err => {
+      notify({
+        ...defaultErrorNotification,
+        message: `Create new organization failed, ${err}`,
+      })
+    },
   })
 
   return (
@@ -48,7 +59,13 @@ const CreateOrgOverlay: FunctionComponent = () => {
           onDismiss={onDismiss}
         />
 
-        <Form onSubmit={() => console.log('create')}>
+        <Form
+          onSubmit={() => {
+            createOrg({
+              name,
+            })
+          }}
+        >
           <Overlay.Body>
             <Form.Element
               label={'Organization Name'}

@@ -28,19 +28,19 @@ const UserWidget: FunctionComponent = () => {
         team={org.name}
         testID={'tree-nav-user'}
       >
-        <TreeNav.SubHeading label="Team" />
         <TreeNav.UserItem id="members" label="Members" />
         <TreeNav.UserItem id="about" label="About" />
 
-        <TreeNav.SubHeading label={user.name} lowercase />
         <TreeNav.UserItem
           id="switch"
           label="Switch organization"
+          testID="switch organization"
           onClick={() => setSwitcherVisible(true)}
         />
         <TreeNav.UserItem
           id={'create-org'}
           label="Create organization"
+          testID="create-org"
           onClick={() => navigate('/orgs/new')}
         />
         <TreeNav.UserItem

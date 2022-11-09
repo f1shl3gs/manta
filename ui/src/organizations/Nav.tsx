@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FunctionComponent, useState} from 'react'
 
 // Components
 import {
@@ -148,7 +148,7 @@ const generateNavItems = (orgId: string): NavItem[] => {
   ]
 }
 
-const Nav: FC = () => {
+const Nav: FunctionComponent = () => {
   const [collapse, setCollapse] = useState(false)
   const {id: orgId} = useOrganization()
   const navItems = generateNavItems(orgId)

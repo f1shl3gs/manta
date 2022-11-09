@@ -35,8 +35,8 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
           <p className="org-switcher--prompt">Choose an organization</p>
 
           <List>
-            {organizations.map((org, index) => {
-              const selected = current === index
+            {organizations.map(org => {
+              const selected = org === current
 
               return (
                 <ListItem
@@ -50,7 +50,7 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
                       return
                     }
 
-                    setCurrent(index)
+                    setCurrent(org)
                     dismiss()
                     navigate(`/orgs/${org.id}/dashboards`)
                   }}
