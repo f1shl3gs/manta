@@ -2,10 +2,10 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import {StepSwitcher} from './components/StepSwitcher'
+import {StepSwitcher} from 'src/setup/components/StepSwitcher'
 import {AppWrapper} from '@influxdata/clockface'
-import {WizardFullScreen} from '../shared/components/wizard/WizardFullScreen'
-import {StepProvider} from './useStep'
+import {WizardFullScreen} from 'src/shared/components/wizard/WizardFullScreen'
+import {StepProvider} from 'src/setup/useStep'
 
 const Setup: FunctionComponent = () => {
   return (

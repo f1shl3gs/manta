@@ -12,7 +12,7 @@ import {
   OverlayContainer,
   OverlayHeader,
 } from '@influxdata/clockface'
-import {useOrganizations} from './useOrganizations'
+import {useOrganizations} from 'src/organizations/useOrganizations'
 
 interface Props {
   visible: boolean

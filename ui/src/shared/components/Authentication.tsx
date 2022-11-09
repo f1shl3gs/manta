@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
-import {useAuthentication} from './useAuthentication'
-import PageSpinner from './PageSpinner'
+import {useAuthentication} from 'src/shared/components/useAuthentication'
+import PageSpinner from 'src/shared/components/PageSpinner'
 
 interface Props {
   children: any

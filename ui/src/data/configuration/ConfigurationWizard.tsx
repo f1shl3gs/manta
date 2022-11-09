@@ -1,7 +1,7 @@
 import {Overlay} from '@influxdata/clockface'
-import React, {FunctionComponent, useCallback, useEffect} from 'react'
+import React, {FunctionComponent, useCallback} from 'react'
 import {useNavigate} from 'react-router-dom'
-import useKeyPress from '../../shared/useKeyPress'
+import useKeyPress from 'src/shared/useKeyPress'
 
 const ConfigurationWizard: FunctionComponent = () => {
   const navigate = useNavigate()

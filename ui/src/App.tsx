@@ -11,8 +11,8 @@ import {NotificationProvider} from 'src/shared/components/notifications/useNotif
 import Notifications from 'src/shared/components/notifications/Notifications'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import Authentication from 'src/shared/components/Authentication'
-import CreateOrgOverlay from './organizations/CreateOrgOverlay'
-import Todo from './Todo'
+import CreateOrgOverlay from 'src/organizations/CreateOrgOverlay'
+import Todo from 'src/Todo'
 import ToOrg from 'src/organizations/ToOrg'
 
 const Introduce = lazy(() => import('src/Introduce'))

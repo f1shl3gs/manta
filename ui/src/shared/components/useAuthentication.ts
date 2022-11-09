@@ -1,6 +1,6 @@
 // Libraries
 import constate from 'constate'
-import useFetch from '../useFetch'
+import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
 import {useEffect} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'

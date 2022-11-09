@@ -1,4 +1,4 @@
-import {DashboardColor} from './Colors'
+import {DashboardColor} from 'src/types/Colors'
 
 export interface Axis {
   bounds?: string[]

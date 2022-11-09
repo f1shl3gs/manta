@@ -1,6 +1,9 @@
-import {ComponentSize, EmptyState} from '@influxdata/clockface'
+// Libraries
 import React, {FunctionComponent} from 'react'
-import CreateConfigurationButton from './CreateConfigurationButton'
+
+// Components
+import {ComponentSize, EmptyState} from '@influxdata/clockface'
+import CreateConfigurationButton from 'src/data/configuration/CreateConfigurationButton'
 
 interface Props {
   searchTerm: string

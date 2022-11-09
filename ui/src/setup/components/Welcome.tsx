@@ -5,7 +5,7 @@ import React, {FC} from 'react'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 
 // Hooks
-import {useStep} from '../useStep'
+import {useStep} from 'src/setup/useStep'
 
 export const Welcome: FC = () => {
   const {next} = useStep()

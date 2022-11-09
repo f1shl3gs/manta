@@ -1,6 +1,6 @@
 import React, {FunctionComponent, ReactNode} from 'react'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import useFetch from '../useFetch'
+import useFetch from 'src/shared/useFetch'
 import {useParams} from 'react-router-dom'
 import constate from 'constate'
 

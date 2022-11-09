@@ -3,7 +3,7 @@ import React from 'react'
 
 // Components
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
-import CreateDashboardButton from './CreateDashboardButton'
+import CreateDashboardButton from 'src/dashboards/CreateDashboardButton'
 
 interface Props {
   searchTerm: string

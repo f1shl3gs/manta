@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import {Todo} from '../Todo'
+import {Todo} from 'src/Todo'
 
 const Secrets: FunctionComponent = () => {
   return <Todo />
