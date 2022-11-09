@@ -7,7 +7,7 @@ export GOOS=$(shell go env GOOS)
 export GOBUILD=${GO} build -tags assets -ldflags ${LDFLAGS}
 
 .PHONY: build
-build:
+build: ui
 	tar czf assets.tgz ui/build
 	CGO_ENABLED=0 $(GOBUILD) -o bin/mantad ./cmd/mantad
 
@@ -15,19 +15,16 @@ build:
 ui: $(UISOURCES)
 	cd ui && yarn && yarn build
 
-.PHONY: assets
-assets: $(ASSETS) ui
-	tar czf assets.tgz ui/build
+.PHONY: clean
+clean:
+	rm -rf bin
+	rm -rf ui/build
 
 dep:
 	go mod download
 
 genproto: dep
 	./scripts/genproto.sh
-
-.PHONY: ui
-ui: $(UISOURCES)
-	cd ui && yarn build
 
 .PHONY: fmt
 fmt: $(UISOURCES) $(GOSROUCES)
