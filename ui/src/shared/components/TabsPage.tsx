@@ -23,7 +23,7 @@ interface Props {
 const TabsPage: FunctionComponent<Props> = ({title, tabs}) => {
   const navigate = useNavigate()
   const pathname = window.location.pathname
-  const selected = useMemo(() => pathname.split('/')[4]!, [pathname])
+  const selected = useMemo(() => pathname.split('/')[4], [pathname])
 
   return (
     <Page titleTag={`${title} | ${selected}`}>

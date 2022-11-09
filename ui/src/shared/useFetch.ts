@@ -105,6 +105,7 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
           }
         })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useDeepCompareMemoize([url, body, method, onSuccess, onError, navigate])
   )
 

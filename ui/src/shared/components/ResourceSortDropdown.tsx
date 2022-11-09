@@ -53,6 +53,7 @@ const sortDropdownItems = [
 const ResourceSortDropdown: React.FC<Props> = props => {
   const {sortKey, sortType, sortDirection, onSelect, width = 210} = props
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const {label} = sortDropdownItems.find(
     item =>
       item.sortKey === sortKey &&

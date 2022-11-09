@@ -15,7 +15,7 @@ const CreateOrgOverlay: FunctionComponent = () => {
   const navigate = useNavigate()
   const onDismiss = useCallback(() => {
     navigate(-1)
-  }, [])
+  }, [navigate])
   const submitStatus = /^[a-zA-Z0-9]+$/.test(name)
     ? ComponentStatus.Valid
     : ComponentStatus.Disabled
