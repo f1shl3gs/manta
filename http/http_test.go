@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap/zaptest"
 )
 
-func NewTestHTTPService(t *testing.T) *Service {
+func NewTestHTTPService(t *testing.T) (*Service, *Backend) {
 	logger := zaptest.NewLogger(t)
 	tmpFile := t.TempDir() + "/" + t.Name()
 	store := bolt.NewKVStore(logger, tmpFile, bolt.WithNoSync)
@@ -45,5 +45,5 @@ func NewTestHTTPService(t *testing.T) *Service {
 	// will be deleted when this test process exit.
 	_ = os.RemoveAll(tmpFile)
 
-	return New(logger, backend)
+	return New(logger, backend), backend
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"strings"
+    "strings"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tarfs"
@@ -21,8 +21,13 @@ type AssetsHandler struct {
 	logger *zap.Logger
 }
 
-func NewAssetsHandler(logger *zap.Logger) (*AssetsHandler, error) {
+func NewAssetsHandler(logger *zap.Logger) (http.Handler, error) {
 	f, err := manta.Assets.Open("assets.tgz")
+    if _, ok := err.(*fs.PathError); ok {
+        // assets noop
+        return http.NotFoundHandler(), nil
+    }
+
 	if err != nil {
 		return nil, err
 	}

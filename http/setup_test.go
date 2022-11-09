@@ -19,7 +19,7 @@ func TestSetup(t *testing.T) {
 			orgName  = "org"
 			username = "foo"
 			password = "password"
-			service  = NewTestHTTPService(t)
+			service, backend  = NewTestHTTPService(t)
 		)
 
 		buf := bytes.NewBuffer(nil)
@@ -38,9 +38,7 @@ func TestSetup(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code, "body: %s", w.Body.String())
 
 		// check org and user
-		backend := service.backend
-
-		onboarded, err := backend.OnBoardingService.Onboarded(ctx)
+        onboarded, err := backend.OnBoardingService.Onboarded(ctx)
 		assert.NoError(t, err)
 		assert.True(t, onboarded)
 
