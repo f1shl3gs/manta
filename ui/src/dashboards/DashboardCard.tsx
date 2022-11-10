@@ -96,6 +96,8 @@ const DashboardCard: FunctionComponent<Props> = props => {
     >
       <ResourceCard.EditableName
         testID={'dashboard-editable-name'}
+        buttonTestID={'dashboard-editable-name--button'}
+        inputTestID={'dashboard-editable-name--input'}
         name={dashboard.name}
         onUpdate={name => {
           update({name})
@@ -113,6 +115,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
       />
 
       <ResourceCard.EditableDescription
+        testID={'dashboard-editable-desc'}
         description={dashboard.desc}
         placeholder={`Describe ${dashboard.name}`}
         onUpdate={desc => update({desc})}
