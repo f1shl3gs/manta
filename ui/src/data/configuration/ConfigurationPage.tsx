@@ -18,6 +18,8 @@ import EmptyConfigurations from 'src/data/configuration/EmptyConfigurations'
 import ConfigurationCard from 'src/data/configuration/ConfigurationCard'
 import {getSortedResources} from 'src/shared/utils/sort'
 import ConfigurationExplainer from 'src/data/configuration/ConfigurationExplainer'
+import {Route, Routes} from 'react-router-dom'
+import ConfigurationWizard from './ConfigurationWizard'
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
@@ -62,6 +64,10 @@ const ConfigurationPage: FunctionComponent = () => {
 
   return (
     <>
+      <Routes>
+        <Route path="new" element={<ConfigurationWizard />} />
+      </Routes>
+
       <AutoSizer>
         {({width, height}) => {
           const heightWithPagination =

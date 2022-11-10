@@ -6,6 +6,8 @@
 @import 'src/signin/LoginPage';
 @import 'src/organizations/OrganizationsSwitcher';
 @import 'src/dashboards/DashboardCards';
+@import 'src/data/configuration/ConfigurationOverlay';
+@import 'src/shared/components/Editor';
 
 // Shards
 @import 'src/shared/components/wizard/WizardProgressHeader';

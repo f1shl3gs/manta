@@ -1,0 +1,21 @@
+.qx-editor--monaco {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  &.qx-editor--monaco__autogrow {
+    position: initial;
+    top: initial;
+    left: initial;
+    width: initial;
+    height: initial;
+  }
+}
+
+.editor--embeded {
+  @extend .qx-editor--monaco;
+
+  border-radius: $cf-radius;
+  border: $cf-border solid $cf-grey-25;
+  overflow: hidden;
+}

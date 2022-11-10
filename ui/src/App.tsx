@@ -42,7 +42,9 @@ const App: FC = () => {
 
                     <Route path=":orgId">
                       <Route index={true} element={<Introduce />} />
+
                       <Route path="data/*" element={<DataPage />} />
+
                       <Route path="todo" element={<Todo />} />
                       <Route path="dashboards" element={<DashboardsPage />} />
                       <Route

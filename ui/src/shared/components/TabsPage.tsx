@@ -55,7 +55,7 @@ const TabsPage: FunctionComponent<Props> = ({title, tabs}) => {
           <Tabs.TabContents>
             <Routes>
               {tabs.map(({name, element}) => (
-                <Route key={name} path={`${name}`} element={element} />
+                <Route key={name} path={`${name}/*`} element={element} />
               ))}
             </Routes>
           </Tabs.TabContents>
