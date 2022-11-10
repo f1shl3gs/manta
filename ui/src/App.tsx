@@ -14,12 +14,13 @@ import Authentication from 'src/shared/components/Authentication'
 import CreateOrgOverlay from 'src/organizations/CreateOrgOverlay'
 import Todo from 'src/Todo'
 import ToOrg from 'src/organizations/ToOrg'
+// DataPage is just a simple tabed page, it's small enough and it can reduce re-render
+import DataPage from 'src/data/DataPage'
 
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
 const DashboardPage = lazy(() => import('src/dashboards/DashboardPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
-const DataPage = lazy(() => import('src/data/DataPage'))
 
 const App: FC = () => {
   const {inPresentationMode} = usePresentationMode()
