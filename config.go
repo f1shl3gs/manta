@@ -14,13 +14,13 @@ type Configuration struct {
 	OrgID ID     `json:"orgID"`
 	Name  string `json:"name"`
 	Desc  string `json:"desc"`
-	Data  []byte `json:"data"`
+	Data  string `json:"data"`
 }
 
 type ConfigurationUpdate struct {
 	Name *string `json:"name,omitempty"`
 	Desc *string `json:"desc,omitempty"`
-	Data *[]byte `json:"data,omitempty"`
+	Data *string `json:"data,omitempty"`
 }
 
 func (upd *ConfigurationUpdate) Apply(cf *Configuration) {
@@ -42,7 +42,7 @@ type ConfigurationFilter struct {
 }
 
 type ConfigurationService interface {
-	CreateConfiguration(ctx context.Context, cf Configuration) error
+	CreateConfiguration(ctx context.Context, cf *Configuration) error
 
 	GetConfiguration(ctx context.Context, id ID) (*Configuration, error)
 

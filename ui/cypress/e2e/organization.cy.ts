@@ -1,6 +1,6 @@
 describe('Organization', () => {
   beforeEach(() => {
-    cy.setupUser().then(() => cy.visit('/'))
+    cy.setup().then(() => cy.visit('/'))
   })
 
   it('Create and switch', () => {

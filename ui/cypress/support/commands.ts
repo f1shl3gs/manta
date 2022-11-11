@@ -1,3 +1,5 @@
+import {Organization} from '../../src/types/Organization';
+
 export const DefaultUsername = 'admin'
 export const DefaultPassword = 'pass'
 export const DefaultOrganization = 'test'
@@ -14,7 +16,7 @@ export const flush = (): Cypress.Chainable => {
     })
 }
 
-export const setupUser = (): Cypress.Chainable => {
+export const setup = (): Cypress.Chainable => {
   return cy
     .flush()
     .request({
@@ -28,6 +30,9 @@ export const setupUser = (): Cypress.Chainable => {
     })
     .then(resp => {
       expect(resp.status).eq(200)
+
+      const org = resp.body.org as Organization
+      return cy.wrap(org).as('org')
     })
 }
 
@@ -63,5 +68,5 @@ Cypress.Commands.add('flush', flush)
 Cypress.Commands.add('getByTestID', getByTestID)
 
 // Account
-Cypress.Commands.add('setupUser', setupUser)
+Cypress.Commands.add('setup', setup)
 Cypress.Commands.add('signin', signin)

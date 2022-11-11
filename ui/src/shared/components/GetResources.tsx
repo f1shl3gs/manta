@@ -1,8 +1,13 @@
+// Libraries
 import React, {FunctionComponent, ReactNode} from 'react'
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-import useFetch from 'src/shared/useFetch'
 import {useParams} from 'react-router-dom'
 import constate from 'constate'
+
+// Components
+import PageSpinner from 'src/shared/components/PageSpinner'
+
+// Hooks
+import useFetch from 'src/shared/useFetch'
 
 enum ResourceType {
   Dashboards = 'dashboards',
@@ -30,11 +35,11 @@ const GetResources: FunctionComponent<Props> = ({children, type, url}) => {
   const {run, data, loading} = useFetch(u)
 
   return (
-    <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+    <PageSpinner loading={loading}>
       <ResourcesProvider resources={data} reload={run}>
         {children}
       </ResourcesProvider>
-    </SpinnerContainer>
+    </PageSpinner>
   )
 }
 

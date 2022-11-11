@@ -1,3 +1,8 @@
+// Libraries
+import React, {FunctionComponent, useCallback, useState} from 'react'
+import {useNavigate} from 'react-router-dom'
+
+// Components
 import {
   AlignItems,
   Button,
@@ -11,14 +16,25 @@ import {
   Overlay,
   Panel,
 } from '@influxdata/clockface'
-import React, {FunctionComponent, useCallback, useState} from 'react'
-import {useNavigate} from 'react-router-dom'
 import YamlMonacoEditor from 'src/shared/components/YamlMonacoEditor'
+
+// Hooks
 import useKeyPress from 'src/shared/useKeyPress'
+import useFetch from 'src/shared/useFetch'
+import {
+  defaultErrorNotification,
+  defaultSuccessNotification,
+  useNotification,
+} from 'src/shared/components/notifications/useNotification'
+import {useOrganization} from 'src/organizations/useOrganizations';
+import {useResources} from 'src/shared/components/GetResources';
 
 const ConfigurationWizard: FunctionComponent = () => {
   const [content, setContent] = useState('')
   const navigate = useNavigate()
+  const {notify} = useNotification()
+  const {id: orgId} = useOrganization()
+  const {reload} = useResources()
   const onDismiss = useCallback(() => {
     if (window.history.state.idx > 0) {
       navigate(-1)
@@ -27,6 +43,24 @@ const ConfigurationWizard: FunctionComponent = () => {
       navigate(pathname)
     }
   }, [navigate])
+  const {run: create} = useFetch('/api/v1/configurations', {
+    method: 'POST',
+    onError: err => {
+      notify({
+        ...defaultErrorNotification,
+        message: `Create new configuration failed, ${err}`,
+      })
+    },
+    onSuccess: _ => {
+      notify({
+        ...defaultSuccessNotification,
+        message: 'Create new configuration success',
+      })
+
+      onDismiss()
+      reload()
+    },
+  })
 
   // handle esc key press
   useKeyPress('Escape', onDismiss)
@@ -67,10 +101,22 @@ const ConfigurationWizard: FunctionComponent = () => {
           <Button
             color={ComponentColor.Tertiary}
             text={'Cancel'}
-            onClick={() => console.log('cancel')}
+            onClick={onDismiss}
           />
 
-          <Button color={ComponentColor.Success} text="Save" />
+          <Button
+            color={ComponentColor.Success}
+            text="Save"
+            testID={'create-configuration--button'}
+            onClick={() => {
+              create({
+                orgId,
+                data: content,
+                name: '',
+                desc: '',
+              })
+            }}
+          />
         </Overlay.Footer>
       </Overlay.Container>
     </Overlay>

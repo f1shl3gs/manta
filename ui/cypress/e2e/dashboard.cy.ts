@@ -1,6 +1,6 @@
 describe('Dashboard', () => {
   beforeEach(() => {
-    cy.setupUser()
+    cy.setup()
     .then(() => cy.visit('/'))
 
     cy.getByTestID('nav-item-dashboard').click()

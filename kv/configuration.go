@@ -13,15 +13,14 @@ var (
     ConfigurationOrgIndexBucket = []byte("configurationorgindex")
 )
 
-func (s *Service) CreateConfiguration(ctx context.Context, cf manta.Configuration) error {
+func (s *Service) CreateConfiguration(ctx context.Context, cf *manta.Configuration) error {
     now := time.Now()
     cf.ID = s.idGen.ID()
     cf.Created = now
     cf.Updated = now
 
     return s.kv.Update(ctx, func(tx Tx) error {
-
-        return s.putConfiguration(ctx, tx, &cf)
+        return s.putConfiguration(ctx, tx, cf)
     })
 }
 

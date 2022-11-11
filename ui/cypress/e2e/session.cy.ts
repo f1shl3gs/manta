@@ -2,7 +2,7 @@ import {DefaultUsername, DefaultPassword} from '../support/commands'
 
 describe('Session', () => {
   beforeEach(() => {
-    cy.setupUser()
+    cy.setup()
   })
 
   it('SignIn', () => {

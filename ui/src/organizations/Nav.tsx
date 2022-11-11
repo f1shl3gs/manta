@@ -72,7 +72,7 @@ const generateNavItems = (orgId: string): NavItem[] => {
       menu: [
         {
           id: 'vertex',
-          testID: 'vertex',
+          testID: 'nav-item-data--vertex',
           label: 'Vertex',
           link: {
             type: 'link',
@@ -81,7 +81,7 @@ const generateNavItems = (orgId: string): NavItem[] => {
         },
         {
           id: 'config',
-          testID: 'config',
+          testID: 'nav-item-data--config',
           label: 'Config',
           link: {
             type: 'link',

@@ -1,6 +1,6 @@
 describe('NavMenu', () => {
   beforeEach(() => {
-    cy.setupUser()
+    cy.setup()
       .then(() => cy.visit('/'))
   })
 

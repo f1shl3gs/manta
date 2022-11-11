@@ -124,10 +124,12 @@ func (h *ConfigurationHandler) createConfiguration(w http.ResponseWriter, r *htt
         return
     }
 
-    if err = h.configurationService.CreateConfiguration(ctx, c); err != nil {
+    if err = h.configurationService.CreateConfiguration(ctx, &c); err != nil {
         h.HandleHTTPError(ctx, err, w)
         return
     }
 
-    w.WriteHeader(http.StatusCreated)
+    if err = encodeResponse(ctx, w, http.StatusCreated, &c); err != nil {
+        logEncodingError(h.logger, r, err)
+    }
 }

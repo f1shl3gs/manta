@@ -10,6 +10,9 @@ import {fromNow} from 'src/shared/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
 import {useOrganization} from 'src/organizations/useOrganizations'
+import useFetch from 'src/shared/useFetch';
+import {useResources} from 'src/shared/components/GetResources'
+import {defaultSuccessNotification, defaultErrorNotification, useNotification} from 'src/shared/components/notifications/useNotification';
 
 interface Props {
   configuration: Configuration
@@ -18,6 +21,28 @@ interface Props {
 const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   const navigate = useNavigate()
   const {id: orgId} = useOrganization()
+  const {reload} = useResources()
+  const {notify} = useNotification()
+  const {run: deleteConfig} = useFetch(
+    `/api/v1/configurations/${configuration.id}`,
+    {
+      method: 'DELETE',
+      onSuccess: _ => {
+        notify({
+          ...defaultSuccessNotification,
+          message: `Delete configuration ${configuration.name} success`
+        })
+
+        reload()
+      },
+      onError: err => {
+        notify({
+          ...defaultErrorNotification,
+          message: `Delete configuration ${configuration.name} failed, ${err}`
+        })
+      }
+    }
+  )
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -29,7 +54,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
       >
         <Context.Item
           label={'Delete'}
-          action={() => console.log('delete')}
+          action={() => deleteConfig()}
           testID={'context_menu-delete'}
         />
       </Context.Menu>
@@ -39,7 +64,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   return (
     <ResourceCard
       key={configuration.id}
-      testID={'configration-card'}
+      testID={'configuration-card'}
       contextMenu={contextMenu()}
     >
       <ResourceCard.EditableName
