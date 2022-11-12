@@ -39,7 +39,7 @@ type Backend struct {
 
 type Service struct {
 	apiHandler http.Handler
-
+    docHandler http.Handler
     assetsHandler http.Handler
 }
 
@@ -48,6 +48,11 @@ func (s *Service ) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/debug") {
         s.apiHandler.ServeHTTP(w, r)
+        return
+    }
+
+    if strings.HasPrefix(path, "/docs") {
+        s.docHandler.ServeHTTP(w, r)
         return
     }
 
@@ -103,6 +108,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 
 	return &Service{
 		apiHandler: handler,
+        docHandler: Redoc(),
         assetsHandler: assetsHandler,
 	}
 }
