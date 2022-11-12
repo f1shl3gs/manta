@@ -6,12 +6,10 @@ GO			:= go
 export GOOS=$(shell go env GOOS)
 export GOBUILD=${GO} build -tags assets -ldflags ${LDFLAGS}
 
-.PHONY: build
-build: ui
-	tar czf assets.tgz ui/build
+build: ui $(GOSROUCES) assets.tgz
+	tar czf assets.tgz ui/build http/openapi.yaml
 	CGO_ENABLED=0 $(GOBUILD) -o bin/mantad ./cmd/mantad
 
-.PHONY: ui
 ui: $(UISOURCES)
 	cd ui && yarn && yarn build
 
@@ -20,6 +18,7 @@ clean:
 	rm -rf bin
 	rm -rf ui/build
 
+.PHONY: dep
 dep:
 	go mod download
 
