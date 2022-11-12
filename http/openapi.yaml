@@ -358,6 +358,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Configuration'
+        default:
+          $ref: '#/components/responses/default'
 
 components:
   responses:
