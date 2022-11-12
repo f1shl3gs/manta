@@ -55,6 +55,15 @@ paths:
       responses:
         201:
           description: Create success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  org:
+                    $ref: '#/components/schemas/Organization'
         default:
           description: Unexpected error
           content:
@@ -341,10 +350,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfigurationUpdate'
+              $ref: '#/components/schemas/Configuration'
       responses:
         201:
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration'
 
 components:
   responses:
