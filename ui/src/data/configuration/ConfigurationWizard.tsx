@@ -28,6 +28,7 @@ import {
 } from 'src/shared/components/notifications/useNotification'
 import {useOrganization} from 'src/organizations/useOrganizations';
 import {useResources} from 'src/shared/components/GetResources';
+import { downloadTextFile } from 'src/shared/download'
 
 const ConfigurationWizard: FunctionComponent = () => {
   const [content, setContent] = useState('')
@@ -87,7 +88,7 @@ const ConfigurationWizard: FunctionComponent = () => {
                 icon={IconFont.Download_New}
                 color={ComponentColor.Secondary}
                 text={'Download Config'}
-                onClick={() => console.log('download config')}
+                onClick={() => downloadTextFile(content, 'vertex', '.conf')}
               />
             </Panel.Body>
           </Panel>
