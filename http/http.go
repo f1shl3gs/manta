@@ -2,11 +2,11 @@ package http
 
 import (
 	"context"
-    "github.com/prometheus/client_golang/prometheus/promhttp"
     "net/http"
     "strings"
 
     "github.com/julienschmidt/httprouter"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
