@@ -5,9 +5,7 @@ import (
 	"github.com/f1shl3gs/manta"
 )
 
-type OrganizationService struct {
-	s manta.OrganizationService
-}
+type OrganizationService struct {}
 
 func (o *OrganizationService) FindOrganizationByID(ctx context.Context, id manta.ID) (*manta.Organization, error) {
 	panic("implement me")

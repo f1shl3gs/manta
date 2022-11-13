@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/f1shl3gs/manta"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -33,7 +34,8 @@ func TestEncode(t *testing.T) {
 		t.Errorf("encoding an invalid ID should not be possible")
 	}
 
-	id.DecodeFromString("5ca1ab1eba5eba11")
+	err := id.DecodeFromString("5ca1ab1eba5eba11")
+	assert.NoError(t, err)
 	want := []byte{53, 99, 97, 49, 97, 98, 49, 101, 98, 97, 53, 101, 98, 97, 49, 49}
 	got, _ := id.Encode()
 	if !bytes.Equal(want, got) {
@@ -107,7 +109,8 @@ func TestMarshalling(t *testing.T) {
 	}
 
 	var id2 manta.ID
-	json.Unmarshal(serialized, &id2)
+	err = json.Unmarshal(serialized, &id2)
+	assert.NoError(t, err)
 
 	bytes1, _ := id1.Encode()
 	bytes2, _ := id2.Encode()
@@ -170,7 +173,11 @@ func TestID_GoString(t *testing.T) {
 
 func BenchmarkIDEncode(b *testing.B) {
 	var id manta.ID
-	id.DecodeFromString("5ca1ab1eba5eba11")
+	err := id.DecodeFromString("5ca1ab1eba5eba11")
+	if err != nil {
+		panic(err)
+	}
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		b, _ := id.Encode()
@@ -181,7 +188,8 @@ func BenchmarkIDEncode(b *testing.B) {
 func BenchmarkIDDecode(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		var id manta.ID
-		id.DecodeFromString("5ca1ab1eba5eba11")
+		_ = id.DecodeFromString("5ca1ab1eba5eba11")
+
 	}
 }
 

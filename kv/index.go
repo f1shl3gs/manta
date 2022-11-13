@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+type FilterFn func(key []byte, decodedVal interface{}) bool
+
 func IndexKey(foreignKey, primaryKey []byte) []byte {
 	key := make([]byte, len(foreignKey)+len(primaryKey)+1)
 
@@ -168,16 +170,20 @@ func (i *Index) Walk(ctx context.Context, tx Tx, foreignKey []byte, visitFn Visi
 		return err
 	}
 
-	return indexWalk(ctx, cursor, sourceBucket, visitFn)
+	return indexWalk(foreignKey, cursor, sourceBucket, visitFn)
 }
 
 // indexWalk consumes the IndexKey and primaryKey pairs in the index bucket and looks up their
 // associated primaryKey's value in the provided source bucket.
 // When an item is located in the source, the provided visit function is called with primary key and associated value.
-func indexWalk(ctx context.Context, indexCursor ForwardCursor, sourceBucket Bucket, visit VisitFunc) (err error) {
+func indexWalk(foreignKey []byte, indexCursor ForwardCursor, sourceBucket Bucket, visit VisitFunc) (err error) {
 	var keys [][]byte
 	for ik, pk := indexCursor.Next(); ik != nil; ik, pk = indexCursor.Next() {
-		keys = append(keys, pk)
+        if fk, _, err := indexKeyParts(ik); err != nil {
+            return err
+        } else if string(fk) == string(foreignKey) {
+            keys = append(keys, pk)
+        }
 	}
 
 	if err := indexCursor.Err(); err != nil {

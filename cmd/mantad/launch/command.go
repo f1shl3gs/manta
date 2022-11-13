@@ -172,10 +172,10 @@ func bindOptions(cmd *cobra.Command, opts []Option) {
 				flagset.Var(destP, o.Flag, o.Desc)
 			}
 			if o.Default != nil {
-				destP.Set(o.Default.(string))
+				_ = destP.Set(o.Default.(string))
 			}
 			mustBindPFlag(o.Flag, flagset)
-			destP.Set(viper.GetString(envVar))
+			_ = destP.Set(viper.GetString(envVar))
 		default:
 			// if you get a panic here, sorry about that!
 			// anyway, go ahead and make a PR and add another type.

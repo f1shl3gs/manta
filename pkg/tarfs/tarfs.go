@@ -23,7 +23,7 @@ type TarFS struct {
 
 // Open implement fs.FS
 func (tarfs *TarFS) Open(name string) (fs.File, error) {
-	if filepath.Separator != '/' && strings.IndexRune(name, filepath.Separator) >= 0 ||
+	if filepath.Separator != '/' && strings.ContainsRune(name, filepath.Separator) ||
 		strings.Contains(name, "\x00") {
 		return nil, ErrInvalidCharacterInPath
 	}
@@ -56,6 +56,10 @@ func New(r io.Reader) (*TarFS, error) {
 		var data []byte
 		if hdr.Size != 0 {
 			data, err = readAll(tr, hdr)
+            if err != nil {
+                return nil, err
+            }
+
 			_, err = tr.Read(data)
 			if err != nil {
 				if err != io.EOF {
@@ -102,7 +106,6 @@ type file struct {
 	buf   *bytes.Buffer
 	data  []byte
 	fi    os.FileInfo
-	files []os.FileInfo
 }
 
 func (f *file) Stat() (fs.FileInfo, error) {

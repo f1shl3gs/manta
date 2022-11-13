@@ -176,22 +176,12 @@ func (s *KVStore) View(ctx context.Context, fn func(tx kv.Tx) error) error {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	start := time.Now()
-	tx, err := s.db.Begin(false)
-	if err != nil {
-		return err
-	}
-
-	defer tx.Rollback()
-
-	err = fn(&Tx{
-		tx:  tx,
-		ctx: ctx,
-	})
-
-	s.viewSec.Observe(time.Since(start).Seconds())
-
-	return err
+    return s.db.View(func(tx *bolt.Tx) error {
+        return fn(&Tx{
+            ctx: ctx,
+            tx: tx,
+        })
+    })
 }
 
 // Update opens up an update transaction against the store.
@@ -199,29 +189,12 @@ func (s *KVStore) Update(ctx context.Context, fn func(tx kv.Tx) error) error {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	start := time.Now()
-	tx, err := s.db.Begin(true)
-	if err != nil {
-		return err
-	}
-
-	defer tx.Commit()
-
-	err = fn(&Tx{
-		tx:  tx,
-		ctx: ctx,
-	})
-
-	s.updateSec.Observe(time.Since(start).Seconds())
-	s.commitSec.Observe(time.Since(start).Seconds())
-	s.writeSec.Observe(tx.Stats().WriteTime.Seconds())
-
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	return nil
+    return s.db.Update(func(tx *bolt.Tx) error {
+        return fn(&Tx{
+            ctx: ctx,
+            tx: tx,
+        })
+    })
 }
 
 // CreateBucket creates a bucket in the underlying boltdb store if it

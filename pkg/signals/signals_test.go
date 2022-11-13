@@ -14,7 +14,7 @@ func ExampleWithSignals() {
 	go func() {
 		time.Sleep(500 * time.Millisecond) // after some time SIGUSR1 is sent
 		// mimicking a signal from the outside
-		syscall.Kill(syscall.Getpid(), syscall.SIGUSR1)
+		_ = syscall.Kill(syscall.Getpid(), syscall.SIGUSR1)
 	}()
 
 	<-ctx.Done()
@@ -31,7 +31,7 @@ func Example_withUnregisteredSignals() {
 	go func() {
 		time.Sleep(10 * time.Millisecond) // after some time SIGUSR2 is sent
 		// mimicking a signal from the outside, WithSignals will not handle it
-		syscall.Kill(syscall.Getpid(), syscall.SIGUSR2)
+		_ = syscall.Kill(syscall.Getpid(), syscall.SIGUSR2)
 	}()
 
 	<-ctx.Done()
@@ -62,7 +62,7 @@ func TestWithSignals(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := WithSignals(tt.ctx, tt.sigs...)
-			syscall.Kill(syscall.Getpid(), syscall.SIGUSR2)
+			_ = syscall.Kill(syscall.Getpid(), syscall.SIGUSR2)
 			timer := time.NewTimer(500 * time.Millisecond)
 			select {
 			case <-ctx.Done():

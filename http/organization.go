@@ -10,6 +10,8 @@ import (
 
 const (
 	organizationPrefix = apiV1Prefix + "/organizations"
+
+    organizationWithID = organizationPrefix+"/:orgId"
 )
 
 type OrganizationHandler struct {
@@ -27,8 +29,9 @@ func NewOrganizationHandler(backend *Backend, logger *zap.Logger) *OrganizationH
 	}
 
 	h.HandlerFunc(http.MethodGet, organizationPrefix, h.listOrganizations)
-	h.HandlerFunc(http.MethodGet, organizationPrefix+"/:orgId", h.getOrganization)
+	h.HandlerFunc(http.MethodGet, organizationWithID, h.getOrganization)
     h.HandlerFunc(http.MethodPost, organizationPrefix, h.createOrganization)
+    h.HandlerFunc(http.MethodDelete, organizationWithID, h.deleteOrganization)
 
 	return h
 }
