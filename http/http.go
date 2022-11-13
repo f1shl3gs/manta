@@ -2,7 +2,8 @@ package http
 
 import (
 	"context"
-	"net/http"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+    "net/http"
     "strings"
 
     "github.com/julienschmidt/httprouter"
@@ -40,6 +41,7 @@ type Backend struct {
 type Service struct {
 	apiHandler http.Handler
     docHandler http.Handler
+    metricHandler http.Handler
     assetsHandler http.Handler
 }
 
@@ -53,6 +55,11 @@ func (s *Service ) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     if strings.HasPrefix(path, "/docs") {
         s.docHandler.ServeHTTP(w, r)
+        return
+    }
+
+    if path == "/metrics" {
+        s.metricHandler.ServeHTTP(w, r)
         return
     }
 
@@ -109,6 +116,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	return &Service{
 		apiHandler: handler,
         docHandler: Redoc(),
+        metricHandler: promhttp.Handler(),
         assetsHandler: assetsHandler,
 	}
 }
