@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@influxdata/clockface": "^6.3.7",
+    "@influxdata/clockface": "^6.3.9",
     "@influxdata/giraffe": "^2.38.1",
     "@influxdata/react-custom-scrollbars": "4.3.8",
     "classnames": "^2.3.2",
