@@ -94,9 +94,9 @@ jobs:
           path: ./mantad
 
       - name: Run
-        run: nohup ./mantad &
+        run: chmod +x ./mantad && nohup ./mantad &
 
       - uses: cypress-io/github-action@v4
         with:
           browser: chrome
-          working-directory: ./ui
+          project: ./ui/cypress
