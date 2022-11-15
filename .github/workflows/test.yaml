@@ -100,3 +100,4 @@ jobs:
         with:
           browser: chrome
           project: ./ui/cypress
+          working-directory: ./ui
