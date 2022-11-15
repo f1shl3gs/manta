@@ -38,6 +38,7 @@ test: $(GOSROUCES) $(UISOURCES)
 cypress:
 	cd ui && yarn cypress:run
 
-.PHONY: golint
-golint:
+.PHONY: lint
+lint:
 	golangci-lint run ./...
+	cd ui && yarn prettier
