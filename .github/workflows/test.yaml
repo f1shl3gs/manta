@@ -56,8 +56,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v3.3.1
+          version: latest
       - name: prettier
         run: cd ui && yarn
 
@@ -89,9 +88,10 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/upload-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
-          name: mantad
+          name: manta
+          path: ./manta
 
       - name: Run
         run: nohup ./manta &
