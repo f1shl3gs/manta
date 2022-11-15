@@ -90,11 +90,11 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: manta
-          path: ./manta
+          name: mantad
+          path: ./mantad
 
       - name: Run
-        run: nohup ./manta &
+        run: nohup ./mantad &
 
       - uses: cypress-io/github-action@v4
         with:
