@@ -82,10 +82,9 @@ jobs:
       - name: Run
         run: chmod +x ./mantad && nohup ./mantad &
       - uses: cypress-io/github-action@v4
-        env:
-          CYPRESS_host: localhost
-          CYPRESS_port: 8088
         with:
           browser: chrome
           working-directory: ./ui
           record: false
+          config: 'baseUrl=http://localhost:8088'
+          wait-on: 'http://localhost:8088'
