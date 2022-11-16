@@ -80,7 +80,8 @@ jobs:
         run: make
 
       - name: Run
-        run: chmod +x ./mantad && nohup ./mantad &
+        run: nohup ./bin/mantad &
+
       - uses: cypress-io/github-action@v4
         with:
           browser: chrome
