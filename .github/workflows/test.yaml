@@ -82,5 +82,7 @@ jobs:
         with:
           browser: chrome
           working-directory: ./ui
-          env: port=8088
           record: false
+          env:
+            CYPRESS_host: localhost
+            CYPRESS_port: 8088
