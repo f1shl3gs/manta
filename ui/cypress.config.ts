@@ -7,4 +7,5 @@ export default defineConfig({
     },
     baseUrl: 'http://localhost:3000',
   },
+  retries: 5,
 })
