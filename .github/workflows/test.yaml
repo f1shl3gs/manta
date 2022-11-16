@@ -102,3 +102,5 @@ jobs:
           project: ./ui/cypress
           working-directory: ./ui
           env: port=8088
+          record: false
+          install: false
