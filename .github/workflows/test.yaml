@@ -60,8 +60,8 @@ jobs:
       - name: prettier
         run: cd ui && yarn
 
-  build:
-    name: Build
+  cypress:
+    name: Cypress
     runs-on: ubuntu-20.04
     needs:
       - cancel-previous
@@ -76,31 +76,11 @@ jobs:
           cache: yarn
           cache-dependency-path: 'ui/yarn.lock'
       - run: make
-      - uses: actions/upload-artifact@v3
-        with:
-          name: mantad
-          path: bin/mantad
-          if-no-files-found: error
-
-  cypress:
-    name: Cypress
-    runs-on: ubuntu-20.04
-    needs:
-      - build
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-        with:
-          name: mantad
-          path: ./mantad
-
       - name: Run
         run: chmod +x ./mantad && nohup ./mantad &
-
       - uses: cypress-io/github-action@v4
         with:
           browser: chrome
-          project: ./ui/cypress
           working-directory: ./ui
           env: port=8088
           record: false
