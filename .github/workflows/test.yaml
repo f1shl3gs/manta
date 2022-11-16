@@ -75,14 +75,17 @@ jobs:
           node-version: '18.x'
           cache: yarn
           cache-dependency-path: 'ui/yarn.lock'
-      - run: make
+
+      - name: Build
+        run: make
+
       - name: Run
         run: chmod +x ./mantad && nohup ./mantad &
       - uses: cypress-io/github-action@v4
+        env:
+          CYPRESS_host: localhost
+          CYPRESS_port: 8088
         with:
           browser: chrome
           working-directory: ./ui
           record: false
-          env:
-            CYPRESS_host: localhost
-            CYPRESS_port: 8088
