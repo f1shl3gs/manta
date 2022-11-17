@@ -43,6 +43,15 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
       }
     }
   )
+  const {run: update} = useFetch(
+    `/api/v1/configurations/${configuration.id}`,
+    {
+      method: 'PATCH',
+      onSuccess: _ => {
+        reload()
+      }
+    }
+  )
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -69,7 +78,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
     >
       <ResourceCard.EditableName
         name={configuration.name}
-        onUpdate={t => console.log(t)}
+        onUpdate={name => update({name})}
         onClick={() => {
           navigate(`/orgs/${orgId}/data/config/${configuration.id}`)
         }}
@@ -78,7 +87,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
       <ResourceCard.EditableDescription
         description={configuration.desc}
         placeholder={`Describe ${configuration.name}`}
-        onUpdate={desc => console.log('update', desc)}
+        onUpdate={desc => update({desc})}
       />
 
       <ResourceCard.Meta>

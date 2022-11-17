@@ -5,7 +5,7 @@ const ConfigurationExplainer: FunctionComponent = () => {
   return (
     <Panel gradient={Gradients.PolarExpress} border={true}>
       <Panel.Header>
-        <h5>What is a Bucket?</h5>
+        <h5>What is a Configuration?</h5>
       </Panel.Header>
 
       <Panel.Body>

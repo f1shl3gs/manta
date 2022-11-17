@@ -185,7 +185,7 @@ func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd mant
         upd.Apply(c)
         c.Updated = time.Now()
 
-        return nil
+        return s.putConfiguration(ctx, tx, c)
     })
 }
 

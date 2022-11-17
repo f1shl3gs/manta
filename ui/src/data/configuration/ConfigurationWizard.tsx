@@ -26,12 +26,38 @@ import {
   defaultSuccessNotification,
   useNotification,
 } from 'src/shared/components/notifications/useNotification'
-import {useOrganization} from 'src/organizations/useOrganizations';
-import {useResources} from 'src/shared/components/GetResources';
+import {useOrganization} from 'src/organizations/useOrganizations'
+import {useResources} from 'src/shared/components/GetResources'
+
+// Utils
 import { downloadTextFile } from 'src/shared/download'
 
+const defaultConfig = `sources:
+  # expose process metrics, e.g. cpu, memory and open files
+  selfstat:
+    type: selfstat
+  node:
+    type: node_metrics
+
+transforms:
+  metrics:
+    type: add_tags
+    input:
+      - selfstat
+      - node
+    tags:
+      host: \${HOSTNAME} # from env
+
+sinks:
+  prom:
+    type: prometheus_exporter
+    inputs:
+      - metrics
+    endpoint: 0.0.0.0:9100
+`
+
 const ConfigurationWizard: FunctionComponent = () => {
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState(defaultConfig)
   const navigate = useNavigate()
   const {notify} = useNotification()
   const {id: orgId} = useOrganization()
