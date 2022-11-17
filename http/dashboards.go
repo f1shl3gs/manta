@@ -30,6 +30,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 	}
 
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.list)
+    h.HandlerFunc(http.MethodGet, dashboardsWithID, h.get)
 	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.create)
     h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
     h.HandlerFunc(http.MethodPatch, dashboardsWithID, h.updateMeta)
@@ -68,6 +69,26 @@ func decodeDashboard(r *http.Request) (*manta.Dashboard, error) {
 	// force reset orgID!?
 
 	return &dashboard, nil
+}
+
+func (h *DashboardsHandler ) get(w http.ResponseWriter, r *http.Request)  {
+    var ctx = r.Context()
+
+    id, err := IDFromPath(r)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    d, err :=        h.dashboardService.FindDashboardByID(ctx, id)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
+    if err := encodeResponse(ctx, w, http.StatusOK, d); err != nil {
+        logEncodingError(h.logger, r, err)
+    }
 }
 
 func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
