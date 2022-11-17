@@ -1,6 +1,8 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, lazy, useState} from 'react'
+import {Route, Routes} from 'react-router-dom'
 
+// Components
 import {Columns, Grid, Sort} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import {AutoSizer} from 'react-virtualized'
@@ -11,15 +13,19 @@ import {
 } from 'src/shared/components/GetResources'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
-import {Configuration} from 'src/types/Configuration'
-import {SortKey, SortTypes} from 'src/types/Sort'
 import CreateConfigurationButton from 'src/data/configuration/CreateConfigurationButton'
 import EmptyConfigurations from 'src/data/configuration/EmptyConfigurations'
 import ConfigurationCard from 'src/data/configuration/ConfigurationCard'
 import {getSortedResources} from 'src/shared/utils/sort'
 import ConfigurationExplainer from 'src/data/configuration/ConfigurationExplainer'
-import {Route, Routes} from 'react-router-dom'
-import ConfigurationWizard from './ConfigurationWizard'
+
+// Types
+import {SortKey, SortTypes} from 'src/types/Sort'
+import {Configuration} from 'src/types/Configuration'
+
+const ConfigurationWizard = lazy(
+  () => import('src/data/configuration/ConfigurationWizard')
+)
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
