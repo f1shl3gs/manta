@@ -101,8 +101,10 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodPost, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodPost, signinPath)
-	ah.RegisterNoAuthRoute(http.MethodGet, DebugFlushPath)
+	ah.RegisterNoAuthRoute(http.MethodGet, debugFlushPath)
     ah.RegisterNoAuthRoute(http.MethodGet, "/")
+    // TODO: add auth in the future
+    ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)
