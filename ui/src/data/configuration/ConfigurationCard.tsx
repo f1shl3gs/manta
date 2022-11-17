@@ -10,9 +10,13 @@ import {fromNow} from 'src/shared/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
 import {useOrganization} from 'src/organizations/useOrganizations'
-import useFetch from 'src/shared/useFetch';
+import useFetch from 'src/shared/useFetch'
 import {useResources} from 'src/shared/components/GetResources'
-import {defaultSuccessNotification, defaultErrorNotification, useNotification} from 'src/shared/components/notifications/useNotification';
+import {
+  defaultSuccessNotification,
+  defaultErrorNotification,
+  useNotification,
+} from 'src/shared/components/notifications/useNotification'
 
 interface Props {
   configuration: Configuration
@@ -30,7 +34,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
       onSuccess: _ => {
         notify({
           ...defaultSuccessNotification,
-          message: `Delete configuration ${configuration.name} success`
+          message: `Delete configuration ${configuration.name} success`,
         })
 
         reload()
@@ -38,20 +42,17 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
       onError: err => {
         notify({
           ...defaultErrorNotification,
-          message: `Delete configuration ${configuration.name} failed, ${err}`
+          message: `Delete configuration ${configuration.name} failed, ${err}`,
         })
-      }
+      },
     }
   )
-  const {run: update} = useFetch(
-    `/api/v1/configurations/${configuration.id}`,
-    {
-      method: 'PATCH',
-      onSuccess: _ => {
-        reload()
-      }
-    }
-  )
+  const {run: update} = useFetch(`/api/v1/configurations/${configuration.id}`, {
+    method: 'PATCH',
+    onSuccess: _ => {
+      reload()
+    },
+  })
 
   const contextMenu = (): JSX.Element => (
     <Context>

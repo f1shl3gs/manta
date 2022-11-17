@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types/Organization';
+import {Organization} from '../../src/types/Organization'
 
 export const DefaultUsername = 'admin'
 export const DefaultPassword = 'pass'
