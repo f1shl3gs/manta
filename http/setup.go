@@ -20,7 +20,7 @@ type SetupHandler struct {
 func NewSetupHandler(backend *Backend, logger *zap.Logger) {
 	h := &SetupHandler{
 		Router:            backend.router,
-		logger:            logger,
+		logger:            logger.With(zap.String("handler", "setup")),
 		onBoardingService: backend.OnBoardingService,
 		sessionService:    backend.SessionService,
 	}

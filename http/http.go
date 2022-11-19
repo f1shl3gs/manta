@@ -94,7 +94,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewScrapeHandler(backend, logger)
 
 	ah := &AuthenticationHandler{
-		logger:               logger,
+		logger:               logger.With(zap.String("handler", "authentication")),
 		AuthorizationService: backend.AuthorizationService,
 		UserService:          backend.UserService,
 		SessionService:       backend.SessionService,

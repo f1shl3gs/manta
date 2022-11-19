@@ -35,7 +35,7 @@ func NewSessionHandler(
 ) *SessionHandler {
 	h := &SessionHandler{
 		Router:          router,
-		logger:          logger,
+		logger:          logger.With(zap.String("handler", "session")),
 		userService:     userService,
 		passwordService: passwordService,
 		sessionService:  sessionService,

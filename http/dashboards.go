@@ -25,7 +25,7 @@ type DashboardsHandler struct {
 func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandler {
 	h := &DashboardsHandler{
 		Router:              backend.router,
-		logger:              logger,
+		logger:              logger.With(zap.String("handler", "dashboard")),
 		organizationService: backend.OrganizationService,
 		dashboardService:    backend.DashboardService,
 	}

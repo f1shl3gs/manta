@@ -60,7 +60,7 @@ type PromAPIHandler struct {
 
 func NewPromAPIHandler(backend *Backend, logger *zap.Logger) {
 	engOpts := promql.EngineOpts{
-		Logger:        log.NewZapToGokitLogAdapter(logger),
+		Logger:        log.NewZapToGokitLogAdapter(logger.With(zap.String("handler", "prom_api"))),
 		Reg:           prometheus.DefaultRegisterer,
 		MaxSamples:    50000000,
 		Timeout:       2 * time.Minute,
