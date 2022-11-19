@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-    "github.com/f1shl3gs/manta/bolt"
+	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/tests"
 	"go.uber.org/zap/zaptest"

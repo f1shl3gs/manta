@@ -1,9 +1,9 @@
 package http
 
 import (
-    "embed"
-    "fmt"
-    "net/http"
+	"embed"
+	"fmt"
+	"net/http"
 )
 
 //go:embed openapi.yaml
@@ -31,29 +31,28 @@ const indexTemplate = `<!DOCTYPE html>
 `
 
 func Redoc() http.HandlerFunc {
-    const specPath = "/docs/openapi.yaml"
+	const specPath = "/docs/openapi.yaml"
 
-    var index = []byte(fmt.Sprintf(indexTemplate, specPath))
+	var index = []byte(fmt.Sprintf(indexTemplate, specPath))
 
-    return func(w http.ResponseWriter, r *http.Request) {
-        if r.URL.Path == specPath {
-            w.Header().Set("Content-Type", "text/yaml")
-            w.WriteHeader(http.StatusOK)
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == specPath {
+			w.Header().Set("Content-Type", "text/yaml")
+			w.WriteHeader(http.StatusOK)
 
-            data, err := OpenAPI.ReadFile("openapi.yaml")
-            if err != nil {
-                panic("read openapi.yaml failed")
-            }
+			data, err := OpenAPI.ReadFile("openapi.yaml")
+			if err != nil {
+				panic("read openapi.yaml failed")
+			}
 
-            _, _ = w.Write(data)
+			_, _ = w.Write(data)
 
-            return
-        }
+			return
+		}
 
-        w.Header().Set("Content-Type", "text/html; charset=utf-8")
-        w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
 
-        _, _ = w.Write(index)
-    }
+		_, _ = w.Write(index)
+	}
 }
-

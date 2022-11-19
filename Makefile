@@ -25,12 +25,9 @@ clean:
 dep:
 	go mod download
 
-genproto: dep
-	./scripts/genproto.sh
-
 .PHONY: fmt
 fmt: $(UISOURCES) $(GOSROUCES)
-	go fmt
+	go fmt ./...
 	cd ui && yarn prettier:fix
 
 .PHONY: test

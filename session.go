@@ -2,6 +2,7 @@ package manta
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"time"
 )
@@ -10,6 +11,22 @@ var (
 	ErrSessionNotFound = errors.New("session not found")
 	ErrSessionExpired  = errors.New("session has expired")
 )
+
+type Session struct {
+	ID          ID           `json:"id,omitempty"`
+	Created     time.Time    `json:"created"`
+	ExpiresAt   time.Time    `json:"expiresAt"`
+	UID         ID           `json:"userId,omitempty"`
+	Permissions []Permission `json:"permissions"`
+}
+
+func (s *Session) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, s)
+}
+
+func (s *Session) Marshal() ([]byte, error) {
+	return json.Marshal(s)
+}
 
 type SessionService interface {
 	// CreateSession create a new session

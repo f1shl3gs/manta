@@ -179,11 +179,11 @@ func (i *Index) Walk(ctx context.Context, tx Tx, foreignKey []byte, visitFn Visi
 func indexWalk(foreignKey []byte, indexCursor ForwardCursor, sourceBucket Bucket, visit VisitFunc) (err error) {
 	var keys [][]byte
 	for ik, pk := indexCursor.Next(); ik != nil; ik, pk = indexCursor.Next() {
-        if fk, _, err := indexKeyParts(ik); err != nil {
-            return err
-        } else if string(fk) == string(foreignKey) {
-            keys = append(keys, pk)
-        }
+		if fk, _, err := indexKeyParts(ik); err != nil {
+			return err
+		} else if string(fk) == string(foreignKey) {
+			keys = append(keys, pk)
+		}
 	}
 
 	if err := indexCursor.Err(); err != nil {
@@ -205,6 +205,184 @@ func indexWalk(foreignKey []byte, indexCursor ForwardCursor, sourceBucket Bucket
 				return err
 			}
 		}
+	}
+
+	return nil
+}
+
+func findOrgIndexed[
+	T any,
+	PT interface {
+		Unmarshal([]byte) error
+		*T
+	},
+](ctx context.Context, tx Tx, orgID manta.ID, dataBucket, indexBucket []byte) ([]PT, error) {
+	fk, err := orgID.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(indexBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	cursor, err := b.ForwardCursor(fk)
+	if err != nil {
+		return nil, err
+	}
+
+	keys := make([][]byte, 0, 16)
+	err = WalkCursor(ctx, cursor, func(k, v []byte) error {
+		keys = append(keys, v)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	b, err = tx.Bucket(dataBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	values, err := b.GetBatch(keys...)
+	if err != nil {
+		return nil, err
+	}
+
+	list := make([]PT, 0, len(values))
+	for _, val := range values {
+		if val == nil {
+			continue
+		}
+
+		t := PT(new(T))
+		if err = t.Unmarshal(val); err != nil {
+			return nil, err
+		}
+
+		list = append(list, t)
+	}
+
+	return list, nil
+}
+
+func putOrgIndexed[
+	T interface {
+		GetID() manta.ID
+		GetOrgID() manta.ID
+		Marshal() ([]byte, error)
+	},
+](tx Tx, obj T, dataBucket, indexBucket []byte) error {
+	pk, err := obj.GetID().Encode()
+	if err != nil {
+		return err
+	}
+
+	fk, err := obj.GetOrgID().Encode()
+	if err != nil {
+		return err
+	}
+
+	// store org index
+	indexKey := IndexKey(fk, pk)
+	b, err := tx.Bucket(indexBucket)
+	if err != nil {
+		return err
+	}
+
+	if err = b.Put(indexKey, pk); err != nil {
+		return err
+	}
+
+	// store data
+	b, err = tx.Bucket(dataBucket)
+	if err != nil {
+		return err
+	}
+
+	val, err := obj.Marshal()
+	if err != nil {
+		return err
+	}
+
+	return b.Put(pk, val)
+}
+
+func getOrgIndexed[
+	T any,
+	PT interface {
+		Unmarshal([]byte) error
+		*T
+	},
+](tx Tx, id manta.ID, dataBucket []byte) (PT, error) {
+	pk, err := id.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(dataBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := b.Get(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	obj := PT(new(T))
+	if err = obj.Unmarshal(val); err != nil {
+		return nil, err
+	}
+
+	return obj, nil
+}
+
+// obj must have a valid ID
+func deleteOrgIndexed[
+	T any,
+	PT interface {
+		GetID() manta.ID
+		GetOrgID() manta.ID
+		Unmarshal([]byte) error
+		*T
+	},
+](tx Tx, id manta.ID, dataBucket, indexBucket []byte) error {
+	o, err := getOrgIndexed[T, PT](tx, id, dataBucket)
+	if err != nil {
+		return err
+	}
+
+	pk, err := id.Encode()
+	if err != nil {
+		return err
+	}
+
+	fk, err := o.GetOrgID().Encode()
+	if err != nil {
+		return err
+	}
+
+	// delete object
+	b, err := tx.Bucket(dataBucket)
+	if err != nil {
+		return err
+	}
+
+	if err = b.Delete(pk); err != nil {
+		return err
+	}
+
+	// delete org index
+	b, err = tx.Bucket(indexBucket)
+	if err != nil {
+		return err
+	}
+
+	if err = b.Delete(IndexKey(fk, pk)); err != nil {
+		return err
 	}
 
 	return nil

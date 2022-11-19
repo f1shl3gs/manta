@@ -2,11 +2,12 @@ package http
 
 import (
 	"context"
-    "net/http"
-    "strings"
+	"github.com/f1shl3gs/manta/multitsdb"
+	"net/http"
+	"strings"
 
-    "github.com/julienschmidt/httprouter"
-    "github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/julienschmidt/httprouter"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -35,46 +36,48 @@ type Backend struct {
 	AuthorizationService manta.AuthorizationService
 	SessionService       manta.SessionService
 	OnBoardingService    manta.OnBoardingService
-    ConfigurationService manta.ConfigurationService
+	ConfigurationService manta.ConfigurationService
+	TenantStorage        multitsdb.TenantStorage
+	ScraperTargetService manta.ScraperTargetService
 }
 
 type Service struct {
-	apiHandler http.Handler
-    docHandler http.Handler
-    metricHandler http.Handler
-    assetsHandler http.Handler
+	apiHandler    http.Handler
+	docHandler    http.Handler
+	metricHandler http.Handler
+	assetsHandler http.Handler
 }
 
-func (s *Service ) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    path := r.URL.Path
+func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
 
-    if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/debug") {
-        s.apiHandler.ServeHTTP(w, r)
-        return
-    }
+	if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/debug") {
+		s.apiHandler.ServeHTTP(w, r)
+		return
+	}
 
-    if strings.HasPrefix(path, "/docs") {
-        s.docHandler.ServeHTTP(w, r)
-        return
-    }
+	if strings.HasPrefix(path, "/docs") {
+		s.docHandler.ServeHTTP(w, r)
+		return
+	}
 
-    if path == "/metrics" {
-        s.metricHandler.ServeHTTP(w, r)
-        return
-    }
+	if path == "/metrics" {
+		s.metricHandler.ServeHTTP(w, r)
+		return
+	}
 
-    // assets handler
-    s.assetsHandler.ServeHTTP(w, r)
+	// assets handler
+	s.assetsHandler.ServeHTTP(w, r)
 }
 
 func New(logger *zap.Logger, backend *Backend) *Service {
-    // assets handler
-    assetsHandler, err := NewAssetsHandler(logger)
-    if err != nil {
-        panic(err)
-    }
+	// assets handler
+	assetsHandler, err := NewAssetsHandler(logger)
+	if err != nil {
+		panic(err)
+	}
 
-    // build api handler
+	// build api handler
 	backend.router = &Router{
 		Router: httprouter.New(),
 		logger: logger,
@@ -86,7 +89,9 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewFlushHandler(logger, backend.router, backend.Flusher)
 	NewDashboardsHandler(backend, logger)
 	NewUserHandler(backend, logger)
-    NewConfigurationService(backend, logger)
+	NewConfigurationService(backend, logger)
+	NewPromAPIHandler(backend, logger)
+	NewScrapeHandler(backend, logger)
 
 	ah := &AuthenticationHandler{
 		logger:               logger,
@@ -102,13 +107,13 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodGet, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodPost, signinPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, debugFlushPath)
-    ah.RegisterNoAuthRoute(http.MethodGet, "/")
-    // TODO: add auth in the future
-    ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
+	ah.RegisterNoAuthRoute(http.MethodGet, "/")
+	// TODO: add auth in the future
+	ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)
-    handler = middlewares.Trace(handler)
+	handler = middlewares.Trace(handler)
 
 	// enable access log middleware
 	if logger.Core().Enabled(zapcore.DebugLevel) {
@@ -116,9 +121,9 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	}
 
 	return &Service{
-		apiHandler: handler,
-        docHandler: Redoc(),
-        metricHandler: promhttp.Handler(),
-        assetsHandler: assetsHandler,
+		apiHandler:    handler,
+		docHandler:    Redoc(),
+		metricHandler: promhttp.Handler(),
+		assetsHandler: assetsHandler,
 	}
 }

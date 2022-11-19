@@ -185,7 +185,7 @@ export interface Cell {
   minW?: number
   maxW?: number
 
-  viewProperties: ViewProperties
+  viewProperties?: ViewProperties
 }
 
 export type Cells = Cell[]

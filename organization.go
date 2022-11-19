@@ -2,7 +2,9 @@ package manta
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"time"
 )
 
 var (
@@ -22,6 +24,22 @@ var (
 		Msg:  "Organization not found",
 	}
 )
+
+type Organization struct {
+	ID      ID        `json:"id"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
+	Name    string    `json:"name"`
+	Desc    string    `json:"desc,omitempty"`
+}
+
+func (o *Organization) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, o)
+}
+
+func (o *Organization) Marshal() ([]byte, error) {
+	return json.Marshal(o)
+}
 
 type OrganizationFilter struct {
 	Name *string

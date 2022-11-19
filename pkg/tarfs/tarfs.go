@@ -56,9 +56,9 @@ func New(r io.Reader) (*TarFS, error) {
 		var data []byte
 		if hdr.Size != 0 {
 			data, err = readAll(tr, hdr)
-            if err != nil {
-                return nil, err
-            }
+			if err != nil {
+				return nil, err
+			}
 
 			_, err = tr.Read(data)
 			if err != nil {
@@ -103,9 +103,9 @@ func (tarfs *TarFS) Walk(fn func(name string, fi os.FileInfo)) {
 
 // file implement fs.File
 type file struct {
-	buf   *bytes.Buffer
-	data  []byte
-	fi    os.FileInfo
+	buf  *bytes.Buffer
+	data []byte
+	fi   os.FileInfo
 }
 
 func (f *file) Stat() (fs.FileInfo, error) {

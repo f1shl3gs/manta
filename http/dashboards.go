@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	dashboardsPrefix = apiV1Prefix + `/dashboards`
-    dashboardsWithID = dashboardsPrefix + `/:id`
+	dashboardsPrefix     = apiV1Prefix + `/dashboards`
+	dashboardsWithID     = dashboardsPrefix + `/:id`
+	dashboardCellsPrefix = dashboardsWithID + `/cells`
 )
 
 type DashboardsHandler struct {
@@ -29,16 +30,18 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 		dashboardService:    backend.DashboardService,
 	}
 
-	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.list)
-    h.HandlerFunc(http.MethodGet, dashboardsWithID, h.get)
+	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.listDashboard)
+	h.HandlerFunc(http.MethodGet, dashboardsWithID, h.getDashboard)
 	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.create)
-    h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
-    h.HandlerFunc(http.MethodPatch, dashboardsWithID, h.updateMeta)
+	h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
+	h.HandlerFunc(http.MethodPatch, dashboardsWithID, h.updateMeta)
+
+	h.HandlerFunc(http.MethodPost, dashboardCellsPrefix, h.createCell)
 
 	return h
 }
 
-func (h *DashboardsHandler) list(w http.ResponseWriter, r *http.Request) {
+func (h *DashboardsHandler) listDashboard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	orgID, err := OrgIdFromQuery(r)
@@ -71,24 +74,24 @@ func decodeDashboard(r *http.Request) (*manta.Dashboard, error) {
 	return &dashboard, nil
 }
 
-func (h *DashboardsHandler ) get(w http.ResponseWriter, r *http.Request)  {
-    var ctx = r.Context()
+func (h *DashboardsHandler) getDashboard(w http.ResponseWriter, r *http.Request) {
+	var ctx = r.Context()
 
-    id, err := IDFromPath(r)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	id, err := IDFromPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    d, err :=        h.dashboardService.FindDashboardByID(ctx, id)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	d, err := h.dashboardService.FindDashboardByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    if err := encodeResponse(ctx, w, http.StatusOK, d); err != nil {
-        logEncodingError(h.logger, r, err)
-    }
+	if err := encodeResponse(ctx, w, http.StatusOK, d); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
@@ -111,39 +114,80 @@ func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request) {
-    var ctx = r.Context()
+	var ctx = r.Context()
 
-    id, err := IDFromPath(r)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	id, err := IDFromPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    err = h.dashboardService.DeleteDashboard(ctx, id)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	err = h.dashboardService.DeleteDashboard(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 }
 
 func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
-    var (
-        ctx = r.Context()
-        upd manta.DashboardUpdate
-    )
+	var (
+		ctx = r.Context()
+		upd manta.DashboardUpdate
+	)
 
-    id, err := IDFromPath(r)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	id, err := IDFromPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    if _, err = h.dashboardService.UpdateDashboard(ctx, id, upd); err != nil {
-        h.HandleHTTPError(ctx, err, w)
-    }
+	if _, err = h.dashboardService.UpdateDashboard(ctx, id, upd); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+	}
+}
+
+func decodeCreateCell(r *http.Request) (*manta.Cell, error) {
+	var cc struct {
+		W, H, X, Y int32
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&cc)
+	if err != nil {
+		return nil, err
+	}
+
+	return &manta.Cell{
+		W: cc.W,
+		H: cc.H,
+		X: cc.X,
+		Y: cc.Y,
+	}, nil
+}
+
+func (h *DashboardsHandler) createCell(w http.ResponseWriter, r *http.Request) {
+	var ctx = r.Context()
+
+	id, err := IDFromPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	cell, err := decodeCreateCell(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err := h.dashboardService.AddDashboardCell(ctx, id, cell); err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }

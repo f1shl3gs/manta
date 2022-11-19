@@ -3,9 +3,153 @@ package manta
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/pkg/errors"
 )
+
+type Dashboard struct {
+	ID      ID        `json:"id"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
+	Name    string    `json:"name"`
+	Desc    string    `json:"desc,omitempty"`
+	OrgID   ID        `json:"orgID"`
+	Cells   []Cell    `json:"cells,omitempty"`
+}
+
+func (d *Dashboard) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, d)
+}
+
+func (d *Dashboard) Marshal() ([]byte, error) {
+	return json.Marshal(d)
+}
+
+type ViewProperties interface {
+	GetType() string
+}
+
+type Axis struct {
+	Bounds []string `json:"bounds,omitempty"`
+	Label  string   `json:"label,omitempty"`
+	Prefix string   `json:"prefix,omitempty"`
+	Suffix string   `json:"suffix,omitempty"`
+	Base   string   `json:"base"`
+}
+
+type Axes struct {
+	X Axis `json:"x"`
+	Y Axis `json:"y"`
+}
+
+type Query struct {
+	Name   string `json:"name,omitempty"`
+	Text   string `json:"text,omitempty"`
+	Legend string `json:"legend,omitempty"`
+	Hidden bool   `json:"hidden,omitempty"`
+}
+
+type DashboardColor struct {
+	Id    string `json:"id,omitempty"`
+	Type  string `json:"type,omitempty"`
+	Hex   string `json:"hex,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Value int64  `json:"value,omitempty"`
+}
+
+type Cell struct {
+	ID   ID     `json:"id"`
+	Name string `json:"name,omitempty"`
+	Desc string `json:"desc,omitempty"`
+	X    int32  `json:"x"`
+	Y    int32  `json:"y"`
+	W    int32  `json:"w,omitempty"`
+	H    int32  `json:"h,omitempty"`
+	MinH int32  `json:"minH,omitempty"`
+	MinW int32  `json:"minW,omitempty"`
+	MaxW int32  `json:"maxW,omitempty"`
+
+	// Types that are valid to be assigned to ViewProperties:
+	//	*Gauge
+	//	*XY
+	//	*SingleStat
+	//	*LinePlusSingleStat
+	//	*Markdown
+	ViewProperties ViewProperties `json:"viewProperties,omitempty"`
+}
+
+type GaugeViewProperties struct {
+	Type    string  `json:"type,omitempty"`
+	Axes    Axes    `json:"axes"`
+	Queries []Query `json:"queries,omitempty"`
+}
+
+func (g *GaugeViewProperties) GetType() string {
+	return g.Type
+}
+
+type XYViewProperties struct {
+	Type           string  `json:"type,omitempty"`
+	Axes           Axes    `json:"axes"`
+	Queries        []Query `json:"queries,omitempty"`
+	TimeFormat     string  `json:"timeFormat,omitempty"`
+	XColumn        string  `json:"xColumn,omitempty"`
+	YColumn        string  `json:"yColumn,omitempty"`
+	HoverDimension string  `json:"hoverDimension,omitempty"`
+	Position       string  `son:"position,omitempty"`
+	Geom           string  `json:"geom,omitempty"`
+}
+
+func (x *XYViewProperties) GetType() string {
+	return x.Type
+}
+
+type SingleStatViewProperties struct {
+	Type              string           `json:"type,omitempty"`
+	Note              string           `json:"note,omitempty"`
+	Queries           []Query          `json:"queries"`
+	Prefix            string           `json:"prefix,omitempty"`
+	Suffix            string           `json:"suffix,omitempty"`
+	TickPrefix        string           `json:"tickPrefix,omitempty"`
+	TickSuffix        string           `json:"tickSuffix,omitempty"`
+	ShowNoteWhenEmpty bool             `json:"showNoteWhenEmpty,omitempty"`
+	Colors            []DashboardColor `json:"colors"`
+}
+
+func (s *SingleStatViewProperties) GetType() string {
+	return s.Type
+}
+
+type DecimalPlaces struct {
+	IsEnforced bool  `json:"isEnforced,omitempty"`
+	Digits     int32 `json:"digits,omitempty"`
+}
+
+type LinePlusSingleStatViewProperties struct {
+	Type              string        `json:"type,omitempty"`
+	Note              string        `json:"note,omitempty"`
+	Queries           []Query       `json:"queries"`
+	Prefix            string        `json:"prefix,omitempty"`
+	Suffix            string        `json:"suffix,omitempty"`
+	TickPrefix        string        `json:"tickPrefix,omitempty"`
+	TickSuffix        string        `json:"tickSuffix,omitempty"`
+	ShowNoteWhenEmpty bool          `json:"showNoteWhenEmpty,omitempty"`
+	DecimalPlaces     DecimalPlaces `json:"decimalPlaces"`
+}
+
+func (s *LinePlusSingleStatViewProperties) GetType() string {
+	return s.Type
+}
+
+type MarkdownViewProperties struct {
+	Type    string `json:"type,omitempty"`
+	Content string `json:"content,omitempty"`
+}
+
+func (s *MarkdownViewProperties) GetType() string {
+	return s.Type
+}
 
 type DashboardFilter struct {
 	OrganizationID *ID
@@ -30,7 +174,7 @@ type DashboardCellUpdate struct {
 	Name           *string
 	Desc           *string
 	W, H, X, Y     *int32
-	ViewProperties isCell_ViewProperties
+	ViewProperties ViewProperties
 }
 
 func (udp DashboardCellUpdate) Apply(cell *Cell) {
@@ -198,7 +342,7 @@ type Validator interface {
 	Validate() error
 }
 
-func unmarshalCellPropertiesJSON(b []byte) (isCell_ViewProperties, error) {
+func unmarshalCellPropertiesJSON(b []byte) (ViewProperties, error) {
 	var t struct {
 		Type string `json:"type"`
 	}

@@ -15,11 +15,11 @@ import (
 func TestSetup(t *testing.T) {
 	t.Run("setup", func(t *testing.T) {
 		var (
-			ctx      = context.Background()
-			orgName  = "org"
-			username = "foo"
-			password = "password"
-			service, backend  = NewTestHTTPService(t)
+			ctx              = context.Background()
+			orgName          = "org"
+			username         = "foo"
+			password         = "password"
+			service, backend = NewTestHTTPService(t)
 		)
 
 		buf := bytes.NewBuffer(nil)
@@ -38,7 +38,7 @@ func TestSetup(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Code, "body: %s", w.Body.String())
 
 		// check org and user
-        onboarded, err := backend.OnBoardingService.Onboarded(ctx)
+		onboarded, err := backend.OnBoardingService.Onboarded(ctx)
 		assert.NoError(t, err)
 		assert.True(t, onboarded)
 

@@ -17,6 +17,22 @@ type Configuration struct {
 	Data  string `json:"data"`
 }
 
+func (c *Configuration) GetID() ID {
+	return c.ID
+}
+
+func (c *Configuration) GetOrgID() ID {
+	return c.OrgID
+}
+
+func (c *Configuration) Marshal() ([]byte, error) {
+	return json.Marshal(c)
+}
+
+func (c *Configuration) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, c)
+}
+
 type ConfigurationUpdate struct {
 	Name *string `json:"name,omitempty"`
 	Desc *string `json:"desc,omitempty"`
@@ -51,12 +67,4 @@ type ConfigurationService interface {
 	UpdateConfiguration(ctx context.Context, id ID, upd ConfigurationUpdate) error
 
 	DeleteConfiguration(ctx context.Context, id ID) error
-}
-
-func (cs *Configuration) Marshal() ([]byte, error) {
-	return json.Marshal(cs)
-}
-
-func (cs *Configuration) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, cs)
 }

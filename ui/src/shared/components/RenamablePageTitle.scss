@@ -1,0 +1,135 @@
+/*
+RenamablePageTitle Component Styles
+------------------------------------------------------------------------------
+*/
+
+$renamable-page-title--height: $cf-space-l + $cf-space-s;
+$renamable-page-title--padding: 0;
+
+.renamable-page-title {
+  width: 100%;
+  max-width: 850px;
+  position: relative;
+  height: $renamable-page-title--height;
+  font-size: $cf-body-text;
+
+  &:hover,
+  &:hover * {
+    cursor: text;
+  }
+}
+
+.renamable-page-title > .cf-heading.cf-page--title,
+.cf-input.renamable-page-title--input > input {
+  font-size: $cf-page--title-size;
+  font-weight: $cf-page--title-weight;
+  font-family: $cf-header-font;
+  padding: 0 $renamable-page-title--padding;
+  height: $renamable-page-title--height;
+  letter-spacing: 0;
+}
+
+.renamable-page-title > .cf-heading.cf-page--title,
+.renamable-page-title--input {
+  position: absolute;
+  top: 0;
+  width: calc(
+    100% + #{($renamable-page-title--padding + $ix-border) * 2}
+  ) !important;
+  left: -($renamable-page-title--padding + $ix-border);
+}
+
+.cf-input-sm.renamable-page-title--input {
+  height: $renamable-page-title--height;
+  font-size: $cf-body-text;
+}
+
+.renamable-page-title > .cf-heading.cf-page--title {
+  border-radius: $radius;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  transition: color 0.25s ease, background-color 0.25s ease,
+    border-color 0.25s ease;
+  line-height: $renamable-page-title--height - ($ix-border * 2);
+  border: $cf-border solid transparent;
+}
+
+.renamable-page-title.untitled > .cf-heading.cf-page--title {
+  color: $cf-grey-45;
+  font-style: italic;
+}
+
+.renamable-page-title:hover > .cf-heading.cf-page--title {
+  color: $cf-white;
+  border-color: $cf-grey-15;
+}
+
+.renamable-page-title--icon {
+  position: absolute;
+  font-size: 1.5em;
+  top: 50%;
+  right: $renamable-page-title--height * 0.5;
+  transform: translate(50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  color: $cf-grey-65;
+
+  .renamable-page-title:hover & {
+    opacity: 1;
+  }
+}
+
+/* Ensure placeholder text matches font weight of title */
+.cf-input.renamable-page-title--input > input {
+  &::-webkit-input-placeholder {
+    font-weight: $cf-page--title-weight !important;
+  }
+  &::-moz-placeholder {
+    font-weight: $cf-page--title-weight !important;
+  }
+  &:-ms-input-placeholder {
+    font-weight: $cf-page--title-weight !important;
+  }
+  &:-moz-placeholder {
+    font-weight: $cf-page--title-weight !important;
+  }
+}
+
+/*
+Light Mode
+------------------------------------------------------------------------------
+*/
+
+.clockface--app-wrapper.dashboard-light-mode {
+  .renamable-page-title > .cf-heading.cf-page--title,
+  .cf-input.renamable-page-title--input > input {
+    color: $cf-grey-45;
+  }
+  .renamable-page-title.untitled > .cf-heading.cf-page--title {
+    color: $cf-grey-85;
+  }
+
+  .renamable-page-title:hover > .cf-heading.cf-page--title {
+    color: $cf-grey-55;
+    border-color: $cf-grey-85;
+  }
+
+  .cf-input.renamable-page-title--input > input {
+    background-color: $cf-white;
+
+    &::-webkit-input-placeholder {
+      color: $cf-grey-85;
+    }
+    &::-moz-placeholder {
+      color: $cf-grey-85;
+    }
+    &:-ms-input-placeholder {
+      color: $cf-grey-85;
+    }
+    &:-moz-placeholder {
+      color: $cf-grey-85;
+    }
+  }
+}

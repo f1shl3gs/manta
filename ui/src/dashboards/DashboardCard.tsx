@@ -10,18 +10,18 @@ import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
 import {fromNow} from 'src/shared/duration'
 import {useOrganization} from 'src/organizations/useOrganizations'
-import {
-  PARAMS_INTERVAL,
-  PARAMS_SHOW_VARIABLES_CONTROLS,
-  PARAMS_TIME_RANGE_LOW,
-  PARAMS_TIME_RANGE_TYPE,
-} from 'src/dashboards/constants'
 import useFetch from 'src/shared/useFetch'
 import {
   useNotification,
   defaultErrorNotification,
   defaultSuccessNotification,
 } from 'src/shared/components/notifications/useNotification'
+import {
+  PARAMS_INTERVAL,
+  PARAMS_TIME_RANGE_LOW,
+  PARAMS_TIME_RANGE_TYPE,
+  PARAMS_SHOW_VARIABLES_CONTROLS,
+} from 'src/shared/useTimeRange'
 
 interface Props {
   dashboard: Dashboard

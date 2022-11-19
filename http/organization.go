@@ -1,8 +1,8 @@
 package http
 
 import (
-    "encoding/json"
-    "net/http"
+	"encoding/json"
+	"net/http"
 
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
@@ -11,7 +11,7 @@ import (
 const (
 	organizationPrefix = apiV1Prefix + "/organizations"
 
-    organizationWithID = organizationPrefix+"/:orgId"
+	organizationWithID = organizationPrefix + "/:orgId"
 )
 
 type OrganizationHandler struct {
@@ -30,8 +30,8 @@ func NewOrganizationHandler(backend *Backend, logger *zap.Logger) *OrganizationH
 
 	h.HandlerFunc(http.MethodGet, organizationPrefix, h.listOrganizations)
 	h.HandlerFunc(http.MethodGet, organizationWithID, h.getOrganization)
-    h.HandlerFunc(http.MethodPost, organizationPrefix, h.createOrganization)
-    h.HandlerFunc(http.MethodDelete, organizationWithID, h.deleteOrganization)
+	h.HandlerFunc(http.MethodPost, organizationPrefix, h.createOrganization)
+	h.HandlerFunc(http.MethodDelete, organizationWithID, h.deleteOrganization)
 
 	return h
 }
@@ -79,25 +79,25 @@ func (h *OrganizationHandler) deleteOrganization(w http.ResponseWriter, r *http.
 }
 
 func (h *OrganizationHandler) createOrganization(w http.ResponseWriter, r *http.Request) {
-    var (
-        ctx = r.Context()
-        org manta.Organization
-    )
+	var (
+		ctx = r.Context()
+		org manta.Organization
+	)
 
-    err := json.NewDecoder(r.Body).Decode(&org)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	err := json.NewDecoder(r.Body).Decode(&org)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    err = h.organizationService.CreateOrganization(ctx, &org)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	err = h.organizationService.CreateOrganization(ctx, &org)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
-    err = encodeResponse(ctx, w, http.StatusCreated, &org)
-    if err != nil {
-        logEncodingError(h.logger, r, err)
-    }
+	err = encodeResponse(ctx, w, http.StatusCreated, &org)
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }

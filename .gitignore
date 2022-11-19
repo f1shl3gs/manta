@@ -7,6 +7,7 @@ ui/cypress/videos
 ui/cypress/screenshots
 ui/node_modules
 ui/build
+data/**
 
 # binary files
 bin

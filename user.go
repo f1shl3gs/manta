@@ -2,6 +2,8 @@ package manta
 
 import (
 	"context"
+	"encoding/json"
+	"time"
 )
 
 var (
@@ -15,6 +17,22 @@ var (
 		Msg:  "user not found",
 	}
 )
+
+type User struct {
+	ID      ID        `json:"id,omitempty"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
+	Name    string    `json:"name,omitempty"`
+	Status  string    `json:"status,omitempty"`
+}
+
+func (u *User) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, u)
+}
+
+func (u *User) Marshal() ([]byte, error) {
+	return json.Marshal(u)
+}
 
 // UserFilter represents a set of filter that restrict the returned results.
 type UserFilter struct {

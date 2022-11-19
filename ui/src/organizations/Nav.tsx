@@ -88,6 +88,15 @@ const generateNavItems = (orgId: string): NavItem[] => {
             location: `${orgPrefix}/data/config`,
           },
         },
+        {
+          id: 'scrape',
+          testID: 'nav-item-data--scrape',
+          label: 'Scrape',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/data/scrape`,
+          },
+        },
       ],
     },
     {

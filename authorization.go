@@ -2,8 +2,10 @@ package manta
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 )
 
 var (
@@ -14,6 +16,36 @@ var (
 	// ErrInvalidAction notes that the provided action is invalid
 	ErrInvalidAction = errors.New("unknown action for permission")
 )
+
+type Resource struct {
+	Type  ResourceType `json:"type,omitempty"`
+	ID    ID           `json:"id,omitempty"`
+	OrgID ID           `json:"orgId,omitempty"`
+}
+
+type Permission struct {
+	Action   Action   `json:"action,omitempty"`
+	Resource Resource `json:"resource"`
+}
+
+type Authorization struct {
+	ID      ID        `json:"id,omitempty"`
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
+	UID     ID        `json:"uid,omitempty"`
+	Token   string    `json:"token,omitempty"`
+	Status  string    `json:"status,omitempty"`
+	// add more about permissions
+	Permissions []Permission `json:"permissions"`
+}
+
+func (a *Authorization) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, a)
+}
+
+func (a *Authorization) Marshal() ([]byte, error) {
+	return json.Marshal(a)
+}
 
 type UpdateAuthorization struct {
 	Token  *string

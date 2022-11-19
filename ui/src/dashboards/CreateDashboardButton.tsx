@@ -21,6 +21,7 @@ const CreateDashboardButton: FunctionComponent = () => {
     method: 'POST',
     body: {
       orgId,
+      cells: [],
     },
     onError: err => {
       notify({

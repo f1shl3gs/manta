@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-    "github.com/f1shl3gs/manta"
-    "go.uber.org/zap"
+	"github.com/f1shl3gs/manta"
+	"go.uber.org/zap"
 )
 
 const (

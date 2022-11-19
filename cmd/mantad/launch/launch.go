@@ -11,22 +11,30 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/f1shl3gs/manta/bolt"
-	httpservice "github.com/f1shl3gs/manta/http"
-	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/kv/migration"
-	"github.com/f1shl3gs/manta/pkg/cgroups"
-	"github.com/f1shl3gs/manta/pkg/log"
-	"github.com/f1shl3gs/manta/pkg/signals"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/model"
+	promconfig "github.com/prometheus/prometheus/config"
+	"github.com/prometheus/prometheus/discovery/targetgroup"
+	"github.com/prometheus/prometheus/scrape"
+	"github.com/prometheus/prometheus/tsdb"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
 	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/bolt"
+	httpservice "github.com/f1shl3gs/manta/http"
+	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/kv/migration"
+	"github.com/f1shl3gs/manta/multitsdb"
+	"github.com/f1shl3gs/manta/pkg/cgroups"
+	"github.com/f1shl3gs/manta/pkg/log"
+	"github.com/f1shl3gs/manta/pkg/signals"
 )
 
 type Launcher struct {
@@ -163,6 +171,153 @@ func (l *Launcher) run() error {
 
 	prometheus.MustRegister(kvStore)
 
+	var tenantStorage multitsdb.TenantStorage
+	{
+		tsdbOpts := &tsdb.Options{
+			MinBlockDuration:  int64(2 * time.Hour / time.Millisecond),
+			MaxBlockDuration:  int64(2 * time.Hour / time.Millisecond),
+			RetentionDuration: int64(15 * 24 * time.Hour / time.Millisecond),
+			NoLockfile:        false,
+			WALCompression:    true,
+		}
+
+		mtsdb := multitsdb.NewMultiTSDB(l.StorageDir, logger, prometheus.DefaultRegisterer, tsdbOpts, nil, false)
+		if err := mtsdb.Open(); err != nil {
+			return err
+		}
+
+		defer func() {
+			logger.Info("Staring flush storage")
+			start := time.Now()
+			if err = mtsdb.Flush(); err != nil {
+				logger.Error("Flush storage failed", zap.Error(err))
+			} else {
+				logger.Error("Flush storage success", zap.Duration("duration", time.Since(start)))
+			}
+
+			if err = mtsdb.Close(); err != nil {
+				logger.Error("Close storage failed", zap.Error(err))
+			}
+		}()
+
+		tenantStorage = mtsdb
+	}
+
+	{
+		// scrape service
+		var scrapeTargetService manta.ScraperTargetService = service
+
+		syncTargetCh := func(orgID manta.ID, mgr *scrape.Manager) chan map[string][]*targetgroup.Group {
+			ch := make(chan map[string][]*targetgroup.Group)
+
+			go func() {
+				ticker := time.NewTicker(time.Minute)
+				defer ticker.Stop()
+
+				for {
+					// sync tset as soon as possible
+					targets, err := scrapeTargetService.FindScraperTargets(ctx, manta.ScraperTargetFilter{
+						OrgID: &orgID,
+					})
+					if err != nil {
+						logger.Warn("Find scrape targets failed", zap.Error(err))
+					} else {
+						scf := &promconfig.Config{
+							GlobalConfig: promconfig.GlobalConfig{
+								ScrapeInterval: model.Duration(15 * time.Second),
+								ScrapeTimeout:  model.Duration(10 * time.Second),
+							},
+						}
+
+						tset := make(map[string][]*targetgroup.Group)
+						for _, tg := range targets {
+							scf.ScrapeConfigs = append(scf.ScrapeConfigs, &promconfig.ScrapeConfig{
+								JobName:        tg.Name,
+								ScrapeInterval: model.Duration(15 * time.Second),
+								ScrapeTimeout:  model.Duration(10 * time.Second),
+								MetricsPath:    "/metrics",
+								Scheme:         "http",
+							})
+
+							labelSet := model.LabelSet{}
+							for k, v := range tg.Labels {
+								labelSet[model.LabelName(k)] = model.LabelValue(v)
+							}
+
+							targetLs := make([]model.LabelSet, 0, len(tg.Targets))
+							for _, addr := range tg.Targets {
+								targetLs = append(targetLs, model.LabelSet{
+									model.AddressLabel: model.LabelValue(addr),
+								})
+							}
+
+							tset[tg.Name] = append(tset[tg.Name], &targetgroup.Group{
+								Source:  tg.ID.String(),
+								Labels:  labelSet,
+								Targets: targetLs,
+							})
+						}
+
+						err := mgr.ApplyConfig(scf)
+						if err != nil {
+							logger.Warn("Apply scrape config failed", zap.Error(err))
+						} else {
+							logger.Debug("Apply scrape config success")
+						}
+
+						select {
+						case <-ctx.Done():
+							return
+						case <-ticker.C:
+						}
+					}
+
+					select {
+					case <-ctx.Done():
+						return
+					case <-ticker.C:
+					}
+				}
+			}()
+
+			return ch
+		}
+
+		orgs, _, err := service.FindOrganizations(ctx, manta.OrganizationFilter{})
+		if err != nil {
+			return err
+		}
+
+		for _, org := range orgs {
+			app, err := tenantStorage.Appendable(ctx, org.ID)
+			if err != nil {
+				return err
+			}
+
+			kl := log.NewZapToGokitLogAdapter(logger.With(
+				zap.String("service", "scrape"),
+				zap.String("tenant", org.ID.String()),
+			))
+
+			orgID := org.ID
+			group.Go(func() error {
+				mgr := scrape.NewManager(nil, kl, app)
+				errCh := make(chan error)
+				go func() {
+					errCh <- mgr.Run(syncTargetCh(orgID, mgr))
+				}()
+
+				select {
+				case <-ctx.Done():
+					mgr.Stop()
+					return nil
+				case err = <-errCh:
+					return err
+				}
+			})
+		}
+	}
+
 	{
 		// http service
 		listener, err := net.Listen("tcp", l.Listen)
@@ -181,7 +336,9 @@ func (l *Launcher) run() error {
 			DashboardService:     service,
 			SessionService:       service,
 			Flusher:              kvStore,
-            ConfigurationService: service,
+			ConfigurationService: service,
+			TenantStorage:        tenantStorage,
+            ScraperTargetService: service,
 		})
 
 		group.Go(func() error {

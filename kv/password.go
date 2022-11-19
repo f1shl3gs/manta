@@ -47,7 +47,7 @@ func (s *Service) ComparePassword(ctx context.Context, uid manta.ID, password st
 			return err
 		}
 
-        sp := string(v)
+		sp := string(v)
 
 		if sp == password {
 			return nil
