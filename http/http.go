@@ -2,8 +2,8 @@ package http
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/multitsdb"
 	"net/http"
+	_ "net/http/pprof"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -13,6 +13,7 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/http/middlewares"
+	"github.com/f1shl3gs/manta/multitsdb"
 )
 
 const (
@@ -36,9 +37,12 @@ type Backend struct {
 	AuthorizationService manta.AuthorizationService
 	SessionService       manta.SessionService
 	OnBoardingService    manta.OnBoardingService
+	CheckService         manta.CheckService
 	ConfigurationService manta.ConfigurationService
-	TenantStorage        multitsdb.TenantStorage
 	ScraperTargetService manta.ScraperTargetService
+
+	TenantStorage         multitsdb.TenantStorage
+	TenantTargetRetriever multitsdb.TenantTargetRetriever
 }
 
 type Service struct {
@@ -51,8 +55,13 @@ type Service struct {
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 
-	if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/debug") {
+	if strings.HasPrefix(path, "/api") || path == "/debug/flush" {
 		s.apiHandler.ServeHTTP(w, r)
+		return
+	}
+
+	if path == "/metrics" {
+		s.metricHandler.ServeHTTP(w, r)
 		return
 	}
 
@@ -61,8 +70,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if path == "/metrics" {
-		s.metricHandler.ServeHTTP(w, r)
+	if strings.HasPrefix(path, "/debug") {
+		http.DefaultServeMux.ServeHTTP(w, r)
 		return
 	}
 
@@ -106,8 +115,9 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodPost, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, setupPath)
 	ah.RegisterNoAuthRoute(http.MethodPost, signinPath)
-	ah.RegisterNoAuthRoute(http.MethodGet, debugFlushPath)
+	// ah.RegisterNoAuthRoute(http.MethodGet, debugFlushPath)
 	ah.RegisterNoAuthRoute(http.MethodGet, "/")
+	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/*wild")
 	// TODO: add auth in the future
 	ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
 

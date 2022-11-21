@@ -24,7 +24,7 @@ const EmptyConfigurations: FunctionComponent<Props> = ({searchTerm}) => {
   }
 
   return (
-    <EmptyState size={ComponentSize.Large} testID={'empty-dashboards-list'}>
+    <EmptyState size={ComponentSize.Large} testID={'empty-configuration-list'}>
       <EmptyState.Text>
         Looks like you don't have any <b>Configurations</b>, why not create one?
       </EmptyState.Text>

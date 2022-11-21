@@ -42,3 +42,7 @@ cypress:
 lint:
 	golangci-lint run ./...
 	cd ui && yarn prettier
+
+.PHONY: lines
+lines:
+	@./scripts/lines.sh

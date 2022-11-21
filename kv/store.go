@@ -18,6 +18,8 @@ var (
 	// WithCursorPrefix
 	ErrSeekMissingPrefix = errors.New("seek missing prefix bytes")
 
+	ErrNotImplement = errors.New("not implement")
+
 	// ErrKeyConflict is returned when id or index key conflict with existing keys
 	ErrKeyConflict = errors.New("key conflict")
 	// ErrIndexConflict is returned when the index key conflict with existing one

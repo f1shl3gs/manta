@@ -3,12 +3,27 @@ package kv
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/pkg/errors"
 )
 
 type FilterFn func(key []byte, decodedVal interface{}) bool
+
+func indexIDKey(pk, fk manta.ID) ([]byte, error) {
+	fp, err := fk.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	pp, err := pk.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	return IndexKey(fp, pp), nil
+}
 
 func IndexKey(foreignKey, primaryKey []byte) []byte {
 	key := make([]byte, len(foreignKey)+len(primaryKey)+1)
@@ -208,6 +223,30 @@ func indexWalk(foreignKey []byte, indexCursor ForwardCursor, sourceBucket Bucket
 	}
 
 	return nil
+}
+
+func findByID[T any, PT interface{ *T }](tx Tx, id manta.ID, bucket []byte) (PT, error) {
+	pk, err := id.Encode()
+	if err != nil {
+		return nil, err
+	}
+
+	b, err := tx.Bucket(bucket)
+	if err != nil {
+		return nil, err
+	}
+
+	val, err := b.Get(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	obj := PT(new(T))
+	if err = json.Unmarshal(val, obj); err != nil {
+		return nil, err
+	}
+
+	return obj, nil
 }
 
 func findOrgIndexed[

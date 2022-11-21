@@ -90,26 +90,17 @@ func (h *ScrapeTargetHandler) handleCreate(w http.ResponseWriter, r *http.Reques
 		ctx = r.Context()
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	err := json.NewDecoder(r.Body).Decode(s)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
-
-	err = json.NewDecoder(r.Body).Decode(s)
-	if err != nil {
-		h.HandleHTTPError(ctx, err, w)
-		return
-	}
-
-	s.OrgID = orgID
 
 	err = h.scrapeService.CreateScraperTarget(ctx, s)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
-		return
 	} else {
-		w.WriteHeader(http.StatusAccepted)
+		w.WriteHeader(http.StatusCreated)
 	}
 }
 

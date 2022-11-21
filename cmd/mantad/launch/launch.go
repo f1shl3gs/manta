@@ -28,6 +28,7 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/bolt"
+	"github.com/f1shl3gs/manta/checks"
 	httpservice "github.com/f1shl3gs/manta/http"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
@@ -35,6 +36,11 @@ import (
 	"github.com/f1shl3gs/manta/pkg/cgroups"
 	"github.com/f1shl3gs/manta/pkg/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
+	"github.com/f1shl3gs/manta/task/backend"
+	"github.com/f1shl3gs/manta/task/backend/coordinator"
+	"github.com/f1shl3gs/manta/task/backend/executor"
+	"github.com/f1shl3gs/manta/task/backend/middleware"
+	"github.com/f1shl3gs/manta/task/backend/scheduler"
 )
 
 type Launcher struct {
@@ -203,6 +209,8 @@ func (l *Launcher) run() error {
 		tenantStorage = mtsdb
 	}
 
+	var targetRetrievers = &multitsdb.TargetRetrievers{}
+
 	{
 		// scrape service
 		var scrapeTargetService manta.ScraperTargetService = service
@@ -262,13 +270,13 @@ func (l *Launcher) run() error {
 						if err != nil {
 							logger.Warn("Apply scrape config failed", zap.Error(err))
 						} else {
-							logger.Debug("Apply scrape config success")
+							logger.Debug("Apply scrape config success", zap.Int("jobs", len(scf.ScrapeConfigs)))
 						}
 
 						select {
 						case <-ctx.Done():
 							return
-						case <-ticker.C:
+						case ch <- tset:
 						}
 					}
 
@@ -302,6 +310,7 @@ func (l *Launcher) run() error {
 			orgID := org.ID
 			group.Go(func() error {
 				mgr := scrape.NewManager(nil, kl, app)
+				targetRetrievers.Add(orgID, mgr)
 				errCh := make(chan error)
 				go func() {
 					errCh <- mgr.Run(syncTargetCh(orgID, mgr))
@@ -318,6 +327,50 @@ func (l *Launcher) run() error {
 		}
 	}
 
+	var checkService manta.CheckService
+	{
+		// checks
+		var (
+			taskService        manta.TaskService          = service
+			taskControlService backend.TaskControlService = service
+			checker                                       = checks.NewChecker(
+				logger.With(zap.String("service", "check")),
+				service, tenantStorage,
+			)
+			sch scheduler.Scheduler = &scheduler.NoopScheduler{}
+		)
+
+		ex := executor.NewExecutor(logger, taskService, taskControlService, checker.Process)
+		if !l.noopSchedule {
+			tsch, sm, err := scheduler.NewScheduler(
+				ex,
+				backend.NewSchedulableTaskService(service),
+				scheduler.WithMaxConcurrentWorkers(l.WorkerLimit),
+				scheduler.WithOnErrorFn(func(ctx context.Context, taskID scheduler.ID, scheduledFor time.Time, err error) {
+					logger.Warn("Schedule task failed",
+						zap.String("task", manta.ID(taskID).String()),
+						zap.Time("scheduledFor", scheduledFor),
+						zap.Error(err))
+				}))
+
+			if err != nil {
+				return errors.Wrap(err, "init scheduler failed")
+			}
+
+			defer tsch.Stop()
+
+			sch = tsch
+			prometheus.MustRegister(sm.PrometheusCollectors()...)
+		}
+
+		coord := coordinator.NewCoordinator(logger, sch, nil)
+		checkService = middleware.NewCheckService(service, service, coord)
+
+		if err = backend.NotifyCoordinatorOfExisting(ctx, logger, service, coord); err != nil {
+			return err
+		}
+	}
+
 	{
 		// http service
 		listener, err := net.Listen("tcp", l.Listen)
@@ -329,6 +382,7 @@ func (l *Launcher) run() error {
 		handler := httpservice.New(hl, &httpservice.Backend{
 			OnBoardingService:    service,
 			BackupService:        kvStore,
+			CheckService:         checkService,
 			OrganizationService:  service,
 			UserService:          service,
 			PasswordService:      service,
@@ -337,8 +391,10 @@ func (l *Launcher) run() error {
 			SessionService:       service,
 			Flusher:              kvStore,
 			ConfigurationService: service,
-			TenantStorage:        tenantStorage,
-            ScraperTargetService: service,
+			ScraperTargetService: service,
+
+			TenantStorage:         tenantStorage,
+			TenantTargetRetriever: targetRetrievers,
 		})
 
 		group.Go(func() error {

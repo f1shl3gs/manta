@@ -9,8 +9,11 @@ import (
 )
 
 var (
-	dashboardBucket         = []byte("dashboards")
-	dashboardOrgIndexBucket = []byte("dashboardorgindex")
+	DashboardsBucket        = []byte("dashboards")
+	DashboardOrgIndexBucket = []byte("dashboardorgindex")
+
+	CellsBucket              = []byte("cells")
+	CellDashboardIndexBucket = []byte("celldashboardindex")
 )
 
 func (s *Service) FindDashboardByID(ctx context.Context, id manta.ID) (*manta.Dashboard, error) {
@@ -37,7 +40,7 @@ func (s *Service) findDashboardByID(ctx context.Context, tx Tx, id manta.ID) (*m
 		return nil, err
 	}
 
-	b, err := tx.Bucket(dashboardBucket)
+	b, err := tx.Bucket(DashboardsBucket)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +83,7 @@ func (s *Service) FindDashboards(ctx context.Context, filter manta.DashboardFilt
 
 // todo: for now
 func (s *Service) findAllDashboards(ctx context.Context, tx Tx) ([]*manta.Dashboard, error) {
-	b, err := tx.Bucket(dashboardBucket)
+	b, err := tx.Bucket(DashboardsBucket)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +117,7 @@ func (s *Service) findDashboardByOrg(ctx context.Context, tx Tx, orgID manta.ID)
 		return nil, err
 	}
 
-	b, err := tx.Bucket(dashboardOrgIndexBucket)
+	b, err := tx.Bucket(DashboardOrgIndexBucket)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +136,7 @@ func (s *Service) findDashboardByOrg(ctx context.Context, tx Tx, orgID manta.ID)
 		return nil, err
 	}
 
-	b, err = tx.Bucket(dashboardBucket)
+	b, err = tx.Bucket(DashboardsBucket)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +193,7 @@ func (s *Service) putDashboard(ctx context.Context, tx Tx, d *manta.Dashboard) e
 
 	// org index
 	indexKey := IndexKey(fk, pk)
-	b, err := tx.Bucket(dashboardOrgIndexBucket)
+	b, err := tx.Bucket(DashboardOrgIndexBucket)
 	if err != nil {
 		return err
 	}
@@ -200,7 +203,7 @@ func (s *Service) putDashboard(ctx context.Context, tx Tx, d *manta.Dashboard) e
 	}
 
 	// dashboard
-	b, err = tx.Bucket(dashboardBucket)
+	b, err = tx.Bucket(DashboardsBucket)
 	if err != nil {
 		return err
 	}
@@ -340,7 +343,7 @@ func (s *Service) deleteDashboard(ctx context.Context, tx Tx, id manta.ID) error
 		return err
 	}
 
-	b, err := tx.Bucket(dashboardOrgIndexBucket)
+	b, err := tx.Bucket(DashboardOrgIndexBucket)
 	if err != nil {
 		return err
 	}
@@ -351,7 +354,7 @@ func (s *Service) deleteDashboard(ctx context.Context, tx Tx, id manta.ID) error
 	}
 
 	// delete dashboard
-	b, err = tx.Bucket(dashboardBucket)
+	b, err = tx.Bucket(DashboardsBucket)
 	if err != nil {
 		return err
 	}

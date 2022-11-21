@@ -13,6 +13,8 @@ enum ResourceType {
   Dashboards = 'dashboards',
   Users = 'users',
   Configurations = 'configurations',
+
+  Scrapes = 'scrapes',
 }
 
 interface State<T> {

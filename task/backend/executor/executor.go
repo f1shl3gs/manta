@@ -1,0 +1,122 @@
+package executor
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
+	"github.com/f1shl3gs/manta/task/backend"
+	"github.com/f1shl3gs/manta/task/backend/scheduler"
+	"github.com/f1shl3gs/manta/task/mock"
+)
+
+type TaskHandler func(ctx context.Context, task *manta.Task, ts time.Time) error
+
+type Executor struct {
+	logger *zap.Logger
+	ts     manta.TaskService
+	tcs    backend.TaskControlService
+
+	checkFunc TaskHandler
+}
+
+func NewExecutor(logger *zap.Logger, ts manta.TaskService, tcs backend.TaskControlService, cf TaskHandler) *Executor {
+	return &Executor{
+		logger:    logger,
+		ts:        ts,
+		tcs:       tcs,
+		checkFunc: cf,
+	}
+}
+
+func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor time.Time, runAt time.Time) error {
+	span, ctx := tracing.StartSpanFromContextWithOperationName(ctx, "Execute")
+	defer span.Finish()
+
+	span.LogKV("task_id", manta.ID(id).String())
+
+	task, err := e.ts.FindTaskByID(ctx, manta.ID(id))
+	if err != nil {
+		return err
+	}
+
+	mtcs, ok := e.tcs.(*mock.TaskControlService)
+	if ok {
+		mtcs.SetTask(task)
+	}
+
+	run, err := e.tcs.CreateRun(ctx, task.ID, scheduledFor, runAt)
+	if err != nil {
+		return err
+	}
+
+	span.LogKV("run_id", run.ID.String())
+
+	defer func() {
+		if _, err = e.tcs.FinishRun(ctx, task.ID, run.ID); err != nil {
+			e.logger.Error("Finish run failed",
+				zap.String("task", task.ID.String()),
+				zap.Error(err))
+		}
+	}()
+
+	e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), fmt.Sprintf("Start running"))
+	err = e.tcs.UpdateRunState(ctx, task.ID, run.ID, time.Now(), manta.RunStarted)
+	if err != nil {
+		e.logger.Warn("Update started status failed",
+			zap.String("task", task.ID.String()),
+			zap.Error(err))
+		return err
+	}
+
+	perr := e.checkFunc(ctx, task, scheduledFor)
+
+	// success
+	if perr == nil {
+		now := time.Now()
+		e.tcs.AddRunLog(ctx, task.ID, run.ID, now, "Success")
+		_, err = e.ts.UpdateTask(ctx, task.ID, manta.TaskUpdate{
+			LatestCompleted: &now,
+			LatestSuccess:   &now,
+		})
+
+		return err
+	}
+
+	// ctx is canceled
+	if ctx.Err() != nil {
+		// todo: use proper context
+		e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), "Context canceled")
+		err = e.tcs.UpdateRunState(context.Background(), task.ID, run.ID, time.Now(), manta.RunCanceled)
+		if err != nil {
+			e.logger.Warn("Update cancel status failed",
+				zap.String("task", task.ID.String()),
+				zap.Error(err))
+		}
+
+		return err
+	}
+
+	// exec error
+	now := time.Now()
+	errMsg := perr.Error()
+
+	e.tcs.AddRunLog(ctx, task.ID, run.ID, now, fmt.Sprintf("Fail: %s", errMsg))
+	if err := e.tcs.UpdateRunState(ctx, task.ID, run.ID, now, manta.RunFail); err != nil {
+		e.logger.Warn("Update fail status failed",
+			zap.String("task", task.ID.String()),
+			zap.Error(err))
+	}
+
+	_, err = e.ts.UpdateTask(ctx, task.ID, manta.TaskUpdate{
+		LatestCompleted: &now,
+		LatestFailure:   &now,
+		LastRunError:    &errMsg,
+	})
+
+	return err
+}

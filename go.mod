@@ -3,8 +3,11 @@ module github.com/f1shl3gs/manta
 go 1.18
 
 require (
+	github.com/benbjohnson/clock v1.1.0
 	github.com/go-kit/log v0.2.1
+	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.9
+	github.com/influxdata/cron v0.0.0-20201006132531-4bb0a200dcbe
 	github.com/jsternberg/zap-logfmt v1.3.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-isatty v0.0.16
@@ -32,7 +35,6 @@ require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.44.128 // indirect
-	github.com/benbjohnson/clock v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

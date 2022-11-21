@@ -6,15 +6,8 @@ import (
 	"time"
 )
 
-var (
-	ErrScraperNotFound = &Error{
-		Code: ENotFound,
-		Msg:  "scraper not found",
-	}
-)
-
 type ScrapeTarget struct {
-	ID      ID                `json:"id"`
+	ID      ID                `json:"id,omitempty"`
 	Created time.Time         `json:"created"`
 	Updated time.Time         `json:"updated"`
 	OrgID   ID                `json:"orgID,omitempty"`

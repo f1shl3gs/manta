@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-    "go.uber.org/zap"
+	"go.uber.org/zap"
 
-    "github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta"
 )
 
 const setupPath = apiV1Prefix + "/setup"

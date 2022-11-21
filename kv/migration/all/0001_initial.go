@@ -12,10 +12,14 @@ func Migration0000Initial() Spec {
 			[]byte("authorizations"),
 			[]byte("authorizationtokenindex"),
 			[]byte("authorizationuserindex"),
+			kv.ChecksBucket,
+			kv.CheckOrgIndexBucket,
 			kv.ConfigurationBucket,
 			kv.ConfigurationOrgIndexBucket,
-			[]byte("dashboards"),
-			[]byte("dashboardorgindex"),
+			kv.DashboardsBucket,
+			kv.DashboardOrgIndexBucket,
+			kv.CellsBucket,
+			kv.CellDashboardIndexBucket,
 			[]byte("organizations"),
 			[]byte("organizationnameindex"),
 			[]byte("passwords"),
@@ -24,6 +28,9 @@ func Migration0000Initial() Spec {
 			[]byte("usernameindex"),
 			kv.ScraperBucket,
 			kv.ScrapeOrgIndexBucket,
+			kv.TasksBucket,
+			kv.TaskOrgIndexBucket,
+			kv.TaskOwnerIndexBucket,
 		}
 	)
 

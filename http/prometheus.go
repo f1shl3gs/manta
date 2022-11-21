@@ -20,7 +20,6 @@ import (
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/prometheus/prometheus/storage"
 	"github.com/prometheus/prometheus/util/stats"
-	promv1 "github.com/prometheus/prometheus/web/api/v1"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
@@ -52,10 +51,10 @@ type PromAPIHandler struct {
 	*Router
 	logger *zap.Logger
 
-	engine          *promql.Engine
-	now             func() time.Time
-	tenantStorage   multitsdb.TenantStorage
-	targetRetriever promv1.TargetRetriever
+	engine                *promql.Engine
+	now                   func() time.Time
+	tenantStorage         multitsdb.TenantStorage
+	tenantTargetRetriever multitsdb.TenantTargetRetriever
 }
 
 func NewPromAPIHandler(backend *Backend, logger *zap.Logger) {
@@ -75,9 +74,10 @@ func NewPromAPIHandler(backend *Backend, logger *zap.Logger) {
 		Router: backend.router,
 		logger: logger.With(zap.String("handler", "prometheus")),
 
-		tenantStorage: backend.TenantStorage,
-		engine:        engine,
-		now:           time.Now,
+		tenantStorage:         backend.TenantStorage,
+		tenantTargetRetriever: backend.TenantTargetRetriever,
+		engine:                engine,
+		now:                   time.Now,
 	}
 
 	h.HandlerFunc(http.MethodGet, instantQueryPath, h.handleInstantQuery)
@@ -400,6 +400,12 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		metrics = map[string]map[metadata]struct{}{}
 	)
 
+    orgID, err := OrgIdFromQuery(r)
+    if err != nil {
+        h.HandleHTTPError(ctx, err, w)
+        return
+    }
+
 	limit := -1
 	if s := r.FormValue("limit"); s != "" {
 		var err error
@@ -410,7 +416,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 	}
 
 	metric := r.FormValue("metric")
-	for _, tt := range h.targetRetriever.TargetsActive() {
+    for _, tt := range h.tenantTargetRetriever.TargetsActive(orgID) {
 		for _, t := range tt {
 
 			if metric == "" {
@@ -454,7 +460,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		res[name] = s
 	}
 
-	err := encodeResponse(ctx, w, http.StatusOK, &apiFuncResult{
+	err = encodeResponse(ctx, w, http.StatusOK, &apiFuncResult{
 		Data: res,
 	})
 	if err != nil {
@@ -464,13 +470,10 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 
 func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request) {
 	var (
-		orgID manta.ID
-
-		ctx    = r.Context()
-		params = httprouter.ParamsFromContext(ctx)
+		ctx = r.Context()
 	)
 
-	err := orgID.DecodeFromString(params.ByName("orgID"))
+	orgID, err := OrgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
