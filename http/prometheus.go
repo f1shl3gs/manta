@@ -400,11 +400,11 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		metrics = map[string]map[metadata]struct{}{}
 	)
 
-    orgID, err := OrgIdFromQuery(r)
-    if err != nil {
-        h.HandleHTTPError(ctx, err, w)
-        return
-    }
+	orgID, err := OrgIdFromQuery(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
 
 	limit := -1
 	if s := r.FormValue("limit"); s != "" {
@@ -416,7 +416,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 	}
 
 	metric := r.FormValue("metric")
-    for _, tt := range h.tenantTargetRetriever.TargetsActive(orgID) {
+	for _, tt := range h.tenantTargetRetriever.TargetsActive(orgID) {
 		for _, t := range tt {
 
 			if metric == "" {

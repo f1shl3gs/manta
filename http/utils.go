@@ -13,21 +13,6 @@ func ExtractParamFromContext(ctx context.Context, name string) string {
 	return params.ByName(name)
 }
 
-func OrgIdFromURL(r *http.Request) (manta.ID, error) {
-	var (
-		params = httprouter.ParamsFromContext(r.Context())
-		id     manta.ID
-	)
-
-	value := params.ByName("orgId")
-
-	if err := id.DecodeFromString(value); err != nil {
-		return 0, err
-	}
-
-	return id, nil
-}
-
 func OrgIdFromQuery(r *http.Request) (manta.ID, error) {
 	var text = r.URL.Query().Get("orgId")
 	return parseId(text)

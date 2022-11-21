@@ -3,7 +3,10 @@ package manta
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"time"
+    
+	"github.com/influxdata/cron"
 )
 
 type Threshold struct {
@@ -18,6 +21,23 @@ type Condition struct {
 	Status    string        `json:"status"`
 	Pending   time.Duration `json:"pending"`
 	Threshold Threshold     `json:"threshold"`
+}
+
+func (m *Condition) Validate() error {
+	if m.Threshold.Type != "inside" && m.Threshold.Type != "outside" {
+		return nil
+	}
+
+	switch m.Threshold.Type {
+	case "inside", "outside":
+		if m.Threshold.Max <= m.Threshold.Min {
+			return invalidField("max", errors.New("condition.max must be larger than min"))
+		}
+
+	default:
+	}
+
+	return nil
 }
 
 type Label struct {
@@ -54,6 +74,44 @@ func (c *Check) Unmarshal(data []byte) error {
 
 func (c *Check) Marshal() ([]byte, error) {
 	return json.Marshal(c)
+}
+
+func (m *Check) Validate() error {
+	if m.Name == "" {
+		return invalidField("name", ErrFieldMustBeSet)
+	}
+
+	if m.Desc == "" {
+		return invalidField("desc", ErrFieldMustBeSet)
+	}
+
+	if m.Expr == "" {
+		return invalidField("expr", ErrFieldMustBeSet)
+	}
+
+	if m.Status == "" {
+		return invalidField("status", ErrFieldMustBeSet)
+	}
+
+	if err := validateStatus(m.Status); err != nil {
+		return invalidField("status", err)
+	}
+
+	if _, err := cron.ParseUTC(m.Cron); err != nil {
+		return invalidField("cron", err)
+	}
+
+	if len(m.Conditions) == 0 {
+		return invalidField("conditions", ErrFieldMustBeSet)
+	}
+
+	for i := 0; i < len(m.Conditions); i++ {
+		if err := m.Conditions[i].Validate(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 type CheckUpdate struct {
@@ -114,16 +172,4 @@ const (
 	LessThan  = "lt"
 	Inside    = "inside"
 	Outside   = "outside"
-)
-
-var (
-	thresholdTypes = []string{
-		NoDate,
-		GreatThan,
-		Equal,
-		NotEqual,
-		LessThan,
-		Inside,
-		Outside,
-	}
 )
