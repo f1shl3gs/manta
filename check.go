@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
-    
+
 	"github.com/influxdata/cron"
 )
 

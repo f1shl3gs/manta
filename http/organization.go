@@ -11,7 +11,7 @@ import (
 const (
 	organizationPrefix = apiV1Prefix + "/organizations"
 
-	organizationWithID = organizationPrefix + "/:orgId"
+	organizationWithID = organizationPrefix + "/:id"
 )
 
 type OrganizationHandler struct {
@@ -58,7 +58,8 @@ func (h *OrganizationHandler) getOrganization(w http.ResponseWriter, r *http.Req
 		id  manta.ID
 	)
 
-	if err := id.DecodeFromString(ExtractParamFromContext(ctx, "orgId")); err != nil {
+	id, err := idFromPath(r)
+	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}

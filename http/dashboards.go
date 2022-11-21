@@ -44,7 +44,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 func (h *DashboardsHandler) listDashboard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -77,7 +77,7 @@ func decodeDashboard(r *http.Request) (*manta.Dashboard, error) {
 func (h *DashboardsHandler) getDashboard(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -116,7 +116,7 @@ func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
 func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -135,7 +135,7 @@ func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 		upd manta.DashboardUpdate
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -172,7 +172,7 @@ func decodeCreateCell(r *http.Request) (*manta.Cell, error) {
 func (h *DashboardsHandler) createCell(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

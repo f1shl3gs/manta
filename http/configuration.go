@@ -38,7 +38,7 @@ func NewConfigurationService(backend *Backend, logger *zap.Logger) {
 func (h *ConfigurationHandler) listConfigurations(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	orgId, err := OrgIdFromQuery(r)
+	orgId, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -58,7 +58,7 @@ func (h *ConfigurationHandler) listConfigurations(w http.ResponseWriter, r *http
 func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -81,7 +81,7 @@ func (h *ConfigurationHandler) updateConfiguration(w http.ResponseWriter, r *htt
 		upd = manta.ConfigurationUpdate{}
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -100,7 +100,7 @@ func (h *ConfigurationHandler) updateConfiguration(w http.ResponseWriter, r *htt
 func (h *ConfigurationHandler) deleteConfiguration(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

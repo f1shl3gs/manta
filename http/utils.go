@@ -2,24 +2,26 @@ package http
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+
+	"github.com/f1shl3gs/manta"
 )
 
-func ExtractParamFromContext(ctx context.Context, name string) string {
+func extractParamFromContext(ctx context.Context, name string) string {
 	params := httprouter.ParamsFromContext(ctx)
 
 	return params.ByName(name)
 }
 
-func OrgIdFromQuery(r *http.Request) (manta.ID, error) {
+func orgIdFromQuery(r *http.Request) (manta.ID, error) {
 	var text = r.URL.Query().Get("orgId")
 	return parseId(text)
 }
 
-func IDFromPath(r *http.Request) (manta.ID, error) {
-	text := ExtractParamFromContext(r.Context(), "id")
+func idFromPath(r *http.Request) (manta.ID, error) {
+	text := extractParamFromContext(r.Context(), "id")
 
 	return parseId(text)
 }

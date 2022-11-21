@@ -41,7 +41,7 @@ func (h *ScrapeTargetHandler) handleGet(w http.ResponseWriter, r *http.Request) 
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -65,7 +65,7 @@ func (h *ScrapeTargetHandler) handleList(w http.ResponseWriter, r *http.Request)
 		ctx = r.Context()
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -110,7 +110,7 @@ func (h *ScrapeTargetHandler) handleDelete(w http.ResponseWriter, r *http.Reques
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -131,7 +131,7 @@ func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request
 		upd manta.ScraperTargetUpdate
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

@@ -56,7 +56,7 @@ func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		filter = manta.CheckFilter{}
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err == nil {
 		filter.OrgID = &orgID
 	}
@@ -143,7 +143,7 @@ func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -174,7 +174,7 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -200,7 +200,7 @@ func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -222,7 +222,7 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	id, err := IDFromPath(r)
+	id, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

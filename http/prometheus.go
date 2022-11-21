@@ -130,7 +130,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		ctx = r.Context()
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -220,7 +220,7 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 		defer cancel()
 	}
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -400,7 +400,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		metrics = map[string]map[metadata]struct{}{}
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -473,7 +473,7 @@ func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request
 		ctx = r.Context()
 	)
 
-	orgID, err := OrgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
