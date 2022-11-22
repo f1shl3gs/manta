@@ -3,7 +3,7 @@ module github.com/f1shl3gs/manta
 go 1.18
 
 require (
-	github.com/benbjohnson/clock v1.1.0
+	github.com/benbjohnson/clock v1.3.0
 	github.com/go-kit/log v0.2.1
 	github.com/google/btree v1.0.0
 	github.com/google/go-cmp v0.5.9
