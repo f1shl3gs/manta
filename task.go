@@ -109,8 +109,8 @@ type RunStatus string
 
 const (
 	RunStarted   RunStatus = "started"
-	RunSuccess             = "success"
-	RunFail                = "fail"
-	RunCanceled            = "canceled"
-	RunScheduled           = "scheduled"
+	RunSuccess   RunStatus = "success"
+	RunFail      RunStatus = "fail"
+	RunCanceled  RunStatus = "canceled"
+	RunScheduled RunStatus = "scheduled"
 )

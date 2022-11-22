@@ -16,18 +16,19 @@ func extractParamFromContext(ctx context.Context, name string) string {
 }
 
 func orgIdFromQuery(r *http.Request) (manta.ID, error) {
-	var text = r.URL.Query().Get("orgId")
-	return parseId(text)
+	var (
+		text = r.URL.Query().Get("orgId")
+		id   manta.ID
+	)
+
+	return id, id.DecodeFromString(text)
 }
 
 func idFromPath(r *http.Request) (manta.ID, error) {
-	text := extractParamFromContext(r.Context(), "id")
+	var (
+		text = extractParamFromContext(r.Context(), "id")
+		id   manta.ID
+	)
 
-	return parseId(text)
-}
-
-func parseId(s string) (id manta.ID, err error) {
-	err = id.DecodeFromString(s)
-
-	return id, err
+	return id, id.DecodeFromString(text)
 }

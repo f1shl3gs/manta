@@ -4,13 +4,10 @@ import (
 	"context"
 
 	"github.com/f1shl3gs/manta"
-	"go.uber.org/zap"
 )
 
 type Service struct {
-	logger       *zap.Logger
 	checkService manta.CheckService
-	taskService  manta.TaskService
 }
 
 func (s *Service) FindCheckByID(ctx context.Context, id manta.ID) (*manta.Check, error) {

@@ -21,8 +21,9 @@ const (
 	// AlertForStateMetricName is the metric name for 'for' state of alert.
 	alertForStateMetricName = "ALERTS_FOR_STATE"
 
+    // TODO
 	// AlertStateLabel is the label name indicating the state of an alert.
-	alertStateLabel = "alertstate"
+	// alertStateLabel = "alertstate"
 )
 
 // Checker should be implement as a Executor's handler
@@ -129,7 +130,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 		v := sample.V
 		for _, condition := range c.Conditions {
 			var (
-				match     = false
+				match     bool
 				threshold = condition.Threshold
 			)
 

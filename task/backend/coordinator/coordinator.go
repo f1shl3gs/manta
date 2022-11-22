@@ -61,7 +61,7 @@ func NewCoordinator(logger *zap.Logger, sch scheduler.Scheduler, executor Execut
 }
 
 func (c *Coordinator) TaskCreated(ctx context.Context, task *manta.Task) error {
-	span, ctx := tracing.StartSpanFromContext(ctx)
+	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
 	t, err := NewSchedulableTask(task)
@@ -73,7 +73,7 @@ func (c *Coordinator) TaskCreated(ctx context.Context, task *manta.Task) error {
 }
 
 func (c *Coordinator) TaskUpdated(ctx context.Context, from, to *manta.Task) error {
-	span, ctx := tracing.StartSpanFromContext(ctx)
+	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
 	sid := scheduler.ID(to.ID)
@@ -97,7 +97,7 @@ func (c *Coordinator) TaskUpdated(ctx context.Context, from, to *manta.Task) err
 }
 
 func (c *Coordinator) TaskDeleted(ctx context.Context, id manta.ID) error {
-	span, ctx := tracing.StartSpanFromContext(ctx)
+	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
 	tid := scheduler.ID(id)
