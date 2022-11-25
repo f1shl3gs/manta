@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useQueries'
+import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
 
 const QueryTabs: FunctionComponent = () => {
   const {queries, addQuery} = useQueries()

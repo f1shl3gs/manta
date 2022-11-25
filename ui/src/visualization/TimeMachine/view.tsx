@@ -17,7 +17,6 @@ import {ViewPropertiesProvider} from 'src/visualization/TimeMachine/useViewPrope
 
 // Types
 import {ViewProperties} from 'src/types/Dashboard'
-import {QueriesProvider} from 'src/visualization/TimeMachine/useQueries'
 import TimeMachineVis from 'src/visualization/TimeMachine/TimeMachineVis'
 
 const INITIAL_RESIZER_HANDLE = 0.5
@@ -53,9 +52,7 @@ const TimeMachine: FunctionComponent<Props> = ({viewProperties}) => {
           <DraggableResizerPanel>
             <div className={'time-machine--bottom'}>
               <div className={'time-machine--bottom-contents'}>
-                <QueriesProvider>
-                  <TimeMachineQueries />
-                </QueriesProvider>
+                <TimeMachineQueries />
               </div>
             </div>
           </DraggableResizerPanel>

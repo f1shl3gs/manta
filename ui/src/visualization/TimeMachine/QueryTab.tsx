@@ -10,7 +10,7 @@ import QueryTabName from 'src/visualization/TimeMachine/QueryTabName'
 import {DashboardQuery} from 'src/types/Dashboard'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useQueries'
+import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
 
 interface Props {
   index: number

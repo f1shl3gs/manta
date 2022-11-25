@@ -8,7 +8,7 @@ import QueryEditor from 'src/visualization/TimeMachine/QueryEditor'
 import SubmitQueryButton from 'src/visualization/TimeMachine/SubmitQueryButton'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useQueries'
+import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
 
 const TimeMachineQueries: FunctionComponent = () => {
   const {onSetText, activeQuery} = useQueries()
