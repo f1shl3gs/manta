@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
-import CreateScrapeButton from './CreateScrapeButton'
+import CreateScrapeButton from 'src/data/scrape/CreateScrapeButton'
 
 interface Props {
   searchTerm: string

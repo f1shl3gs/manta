@@ -4,9 +4,9 @@ import {
   DapperScrollbars,
   EmptyState,
 } from '@influxdata/clockface'
-import VariableItem from './VariableItem'
+import VariableItem from 'src/visualization/TimeMachine/VariableItem'
 import {Variable} from 'src/types/Variable'
-import PromqlToolbarSearch from './PromqlToolbarSearch'
+import PromqlToolbarSearch from 'src/visualization/TimeMachine/PromqlToolbarSearch'
 
 const VariableToolbar: React.FC = () => {
   // todo: implement it

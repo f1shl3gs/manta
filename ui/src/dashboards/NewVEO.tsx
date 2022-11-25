@@ -3,13 +3,13 @@ import React, {FunctionComponent} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import ViewEditorOverlayHeader from './ViewEditorOverlayHeader'
+import ViewEditorOverlayHeader from 'src/dashboards/ViewEditorOverlayHeader'
 import TimeMachine from 'src/visualization/TimeMachine'
 
 // Hooks
 import useEscape from 'src/shared/useEscape'
-import {CellProvider, useCell} from './useCell'
-import {ViewOptionProvider} from './components/useViewOption'
+import {CellProvider, useCell} from 'src/dashboards/useCell'
+import {ViewOptionProvider} from 'src/dashboards/components/useViewOption'
 
 const NewVEO: FunctionComponent = () => {
   const {cell} = useCell()

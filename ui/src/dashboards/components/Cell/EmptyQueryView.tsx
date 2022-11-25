@@ -3,8 +3,8 @@ import React, {FunctionComponent} from 'react'
 
 import {RemoteDataState} from '@influxdata/clockface'
 import {DashboardQuery} from 'src/types/Dashboard'
-import EmptyGraphMessage from './EmptyGraphMessage'
-import EmptyGraphError from './EmptyGraphError'
+import EmptyGraphMessage from 'src/dashboards/components/Cell/EmptyGraphMessage'
+import EmptyGraphError from 'src/dashboards/components/Cell/EmptyGraphError'
 
 interface Props {
   errorMessage?: string

@@ -2,7 +2,7 @@
 import React, {useState} from 'react'
 
 // Components
-import ToolbarTab from './PromqlToolbarTab'
+import ToolbarTab from 'src/visualization/TimeMachine/PromqlToolbarTab'
 import VariableToolbar from 'src/visualization/TimeMachine/VariableToolbar'
 import FunctionsToolbar from 'src/visualization/TimeMachine/FunctionsToolbar'
 

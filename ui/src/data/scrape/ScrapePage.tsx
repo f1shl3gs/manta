@@ -9,7 +9,7 @@ import {
 import {getSortedResources} from 'src/shared/utils/sort'
 import {Scrape} from 'src/types/Scrape'
 import {SortKey, SortTypes} from 'src/types/Sort'
-import ScrapeCard from './ScrapeCard'
+import ScrapeCard from 'src/data/scrape/ScrapeCard'
 import EmptyScrapes from 'src/data/scrape/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'

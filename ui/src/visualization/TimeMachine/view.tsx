@@ -17,8 +17,8 @@ import {ViewPropertiesProvider} from 'src/visualization/TimeMachine/useViewPrope
 
 // Types
 import {ViewProperties} from 'src/types/Dashboard'
-import {QueriesProvider} from './useQueries'
-import TimeMachineVis from './TimeMachineVis'
+import {QueriesProvider} from 'src/visualization/TimeMachine/useQueries'
+import TimeMachineVis from 'src/visualization/TimeMachine/TimeMachineVis'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 

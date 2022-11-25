@@ -17,8 +17,9 @@ import ToOrg from 'src/organizations/ToOrg'
 import DataPage from 'src/data/DataPage'
 import {AutoRefreshProvider} from 'src/shared/useAutoRefresh'
 import {TimeRangeProvider} from 'src/shared/useTimeRange'
-import DashboardPage from './dashboards/DashboardPage'
+import DashboardPage from 'src/dashboards/DashboardPage'
 
+// Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))

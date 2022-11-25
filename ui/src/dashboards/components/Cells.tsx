@@ -1,10 +1,14 @@
+// Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import {useDashboard} from 'src/dashboards/useDashboard'
-
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
+
+// Components
 import {Cell} from 'src/types/Dashboard'
-import GradientBorder from './Cell/GradientBorder'
-import CellComponent from './Cell/Cell'
+import GradientBorder from 'src/dashboards/components/Cell/GradientBorder'
+import CellComponent from 'src/dashboards/components/Cell/Cell'
+
+// Hooks
+import {useDashboard} from 'src/dashboards/useDashboard'
 
 const Grid = WidthProvider(ReactGridLayout)
 

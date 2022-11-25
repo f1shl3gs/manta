@@ -3,7 +3,7 @@ import React, {FunctionComponent} from 'react'
 
 // Components
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
-import CreateCellButton from './CreateCellButton'
+import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 
 const DashboardEmpty: FunctionComponent = () => {
   return (

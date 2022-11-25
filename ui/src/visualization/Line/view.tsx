@@ -6,7 +6,7 @@ import {Config, Plot} from '@influxdata/giraffe'
 
 // Hooks
 import {useVisXDomainSettings} from 'src/visualization/Line/useVisXDomainSettings'
-import useLineView from './useLineView'
+import useLineView from 'src/visualization/Line/useLineView'
 
 // Utils
 import {getFormatter} from 'src/shared/utils/vis'

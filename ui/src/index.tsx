@@ -18,7 +18,7 @@ import 'src/style/manta.scss'
 import 'react-virtualized/styles.css'
 
 import reportWebVitals from 'src/reportWebVitals'
-import NotFound from './NotFound'
+import NotFound from 'src/NotFound'
 
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
 

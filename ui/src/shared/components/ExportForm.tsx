@@ -1,12 +1,19 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
-import {Button, ComponentColor, Overlay, TextArea} from '@influxdata/clockface'
-import useKeyPress from 'src/shared/useKeyPress'
 import {useNavigate} from 'react-router-dom'
-import CopyToClipboard from './CopyToClipboard'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
+
+// Components
+import {Button, ComponentColor, Overlay, TextArea} from '@influxdata/clockface'
+
+// Hooks
+import useKeyPress from 'src/shared/useKeyPress'
 import {
   defaultSuccessNotification,
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
+
+// Utils
 import {downloadTextFile} from 'src/shared/download'
 
 interface Props {
