@@ -15,18 +15,18 @@ import CreateOrgOverlay from 'src/organizations/CreateOrgOverlay'
 import ToOrg from 'src/organizations/ToOrg'
 // DataPage is just a simple tabed page, it's small enough and it can reduce re-render
 import DataPage from 'src/data/DataPage'
-import {AutoRefreshProvider} from './shared/useAutoRefresh'
-import {TimeRangeProvider} from './shared/useTimeRange'
+import {AutoRefreshProvider} from 'src/shared/useAutoRefresh'
+import {TimeRangeProvider} from 'src/shared/useTimeRange'
 import DashboardPage from './dashboards/DashboardPage'
-import EditVEO from './dashboards/EditVEO'
-import NewVEO from './dashboards/NewVEO'
-import ExportOverlay from './dashboards/ExportOverlay'
-import DashboardImportOverlay from './dashboards/DashboardImportOverlay'
 
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
 const Explore = lazy(() => import('src/explore/Explore'))
+const DashboardImportOverlay = lazy(() => import('src/dashboards/DashboardImportOverlay'))
+const ExportOverlay = lazy(() => import('src/dashboards/ExportOverlay'))
+const EditVEO = lazy(() => import('src/dashboards/EditVEO'))
+const NewVEO = lazy(() => import('src/dashboards/NewVEO'))
 
 const App: FC = () => {
   const {inPresentationMode} = usePresentationMode()
