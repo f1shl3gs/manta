@@ -8,6 +8,7 @@ import {
   defaultErrorNotification,
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
+import {defaultViewProperties} from 'src/constants/dashboard'
 
 const defaultCell: Cell = {
   desc: '',
@@ -20,24 +21,7 @@ const defaultCell: Cell = {
   w: 4,
   x: 0,
   y: 0,
-  viewProperties: {
-    type: 'xy',
-    xColumn: 'time',
-    yColumn: 'value',
-    hoverDimension: 'auto',
-    geom: 'line',
-    position: 'overlaid',
-    axes: {
-      x: {},
-      y: {},
-    },
-    queries: [
-      {
-        text: '',
-        hidden: false,
-      },
-    ],
-  },
+  viewProperties: defaultViewProperties,
 }
 
 interface State {
@@ -47,11 +31,20 @@ interface State {
 const [CellProvider, useCell] = constate((state: State) => {
   const {orgId, cellID, dashboardId} = useParams()
   const navigate = useNavigate()
+  const notify = useNotify()
+
+  // TODO: reload
   const reload = () => {
     console.log('realod')
   }
-  const notify = useNotify()
-  const [cell, setCell] = useState<Cell>(state.cell ?? defaultCell)
+  const [cell, setCell] = useState<Cell>(() => {
+    const cell = state.cell ?? defaultCell
+    if (!cell.viewProperties) {
+      cell.viewProperties = defaultViewProperties
+    }
+
+    return cell
+  })
 
   const {run: patch} = useFetch(
     `/api/v1/dashboards/${dashboardId}/cells/${cellID}`,
@@ -69,7 +62,9 @@ const [CellProvider, useCell] = constate((state: State) => {
     }
   )
 
+  console.log('cell', cell)
   const updateCell = useCallback(() => {
+    console.log('update cell', cell)
     patch(cell)
   }, [cell, patch])
 

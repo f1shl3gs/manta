@@ -14,28 +14,10 @@ import TimeMachine from 'src/visualization/TimeMachine'
 import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
 
 // Types
-import {ViewProperties} from 'src/types/Dashboard'
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
-const defaultViewProperties: ViewProperties = {
-  type: 'xy',
-  xColumn: 'time',
-  yColumn: 'value',
-  hoverDimension: 'auto',
-  geom: 'line',
-  position: 'overlaid',
-  axes: {
-    x: {},
-    y: {},
-  },
-  queries: [
-    {
-      name: 'query 1',
-      text: '',
-      hidden: false,
-    },
-  ],
-}
+// Constants
+import {defaultViewProperties} from 'src/constants/dashboard'
 
 const Explore: FunctionComponent = () => {
   return (
