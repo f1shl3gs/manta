@@ -149,7 +149,8 @@ const useQueryResult = (queries: DashboardQuery[]) => {
           setLoading(RemoteDataState.Error)
         })
     })
-  }, [queries, start, end, step, orgId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, end, step, orgId])
 
   return {
     result,

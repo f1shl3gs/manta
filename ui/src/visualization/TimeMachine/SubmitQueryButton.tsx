@@ -1,16 +1,15 @@
 import React from 'react'
 import {Button, ComponentColor} from '@influxdata/clockface'
-import {useQueries} from './useQueries'
+import {useAutoRefresh} from 'src/shared/useAutoRefresh'
 
 const SubmitQueryButton: React.FC = () => {
-  const {activeIndex, activeQuery} = useQueries()
-  console.log(activeIndex, activeQuery)
+  const {refresh} = useAutoRefresh()
 
   return (
     <Button
       text={'Submit'}
       color={ComponentColor.Primary}
-      onClick={() => console.log('submit')}
+      onClick={refresh}
     />
   )
 }
