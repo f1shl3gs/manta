@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/benbjohnson/clock v1.1.0
 	github.com/go-kit/log v0.2.1
-	github.com/google/btree v1.0.0
+	github.com/google/btree v1.1.2
 	github.com/google/go-cmp v0.5.9
 	github.com/influxdata/cron v0.0.0-20201006132531-4bb0a200dcbe
 	github.com/jsternberg/zap-logfmt v1.3.0
