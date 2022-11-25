@@ -15,7 +15,7 @@ import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
 
 // Types
 import {ViewProperties} from 'src/types/Dashboard'
-import AutoRefreshButton from '../shared/components/AutoRefreshButton'
+import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
 const defaultViewProperties: ViewProperties = {
   type: 'xy',

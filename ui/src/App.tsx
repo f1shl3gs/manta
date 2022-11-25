@@ -22,11 +22,11 @@ import EditVEO from './dashboards/EditVEO'
 import NewVEO from './dashboards/NewVEO'
 import ExportOverlay from './dashboards/ExportOverlay'
 import DashboardImportOverlay from './dashboards/DashboardImportOverlay'
-import Explore from 'src/explore/Explore'
 
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
+const Explore = lazy(() => import('src/explore/Explore'))
 
 const App: FC = () => {
   const {inPresentationMode} = usePresentationMode()

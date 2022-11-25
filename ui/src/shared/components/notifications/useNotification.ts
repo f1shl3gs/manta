@@ -3,7 +3,7 @@ import {useCallback, useState} from 'react'
 
 import {Notification} from 'src/types/Notification'
 
-export * from './defaults'
+export * from 'src/shared/components/notifications/defaults'
 
 const [NotificationProvider, useNotification, useNotify] = constate(
   () => {

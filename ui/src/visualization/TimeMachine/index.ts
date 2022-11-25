@@ -1,3 +1,3 @@
-import TimeMachine from './view'
+import TimeMachine from 'src/visualization/TimeMachine/view'
 
 export default TimeMachine
