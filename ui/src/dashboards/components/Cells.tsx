@@ -38,11 +38,7 @@ const resizeEventHandler = () => {
 }
 
 const Cells: FunctionComponent = () => {
-  const {cells} = useDashboard()
-
-  const onLayoutChange = () => {
-    console.log('layout change')
-  }
+  const {cells, onLayoutChange} = useDashboard()
 
   useEffect(() => {
     window.addEventListener('resize', resizeEventHandler)

@@ -1,4 +1,6 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
+
 import {RemoteDataState} from '@influxdata/clockface'
 import {DashboardQuery} from 'src/types/Dashboard'
 import EmptyGraphMessage from './EmptyGraphMessage'
@@ -47,7 +49,7 @@ const EmptyQueryView: FunctionComponent<Props> = props => {
     )
   }
 
-  return <>props.children</>
+  return <>{props.children}</>
 }
 
 export default EmptyQueryView

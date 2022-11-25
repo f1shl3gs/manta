@@ -18,6 +18,7 @@ import 'src/style/manta.scss'
 import 'react-virtualized/styles.css'
 
 import reportWebVitals from 'src/reportWebVitals'
+import NotFound from './NotFound'
 
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
 
@@ -38,13 +39,14 @@ root.render(
           <Route path={'/signin'} element={<SignInPage />} />
 
           <Route
-            path="*"
+            path="/*"
             element={
               <PresentationModeProvider>
                 <App />
               </PresentationModeProvider>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </SetupWrapper>

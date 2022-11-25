@@ -8,9 +8,11 @@ import {useDashboard} from 'src/dashboards/useDashboard'
 import PresentationModeToggle from 'src/dashboards/components/PresentationModeToggle'
 import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
 import CreateCellButton from 'src/dashboards/components/CreateCellButton'
+import AutoRefreshDropdown from 'src/shared/components/AutoRefreshDropdown'
+import AutoRefreshButton from '../../shared/components/AutoRefreshButton'
 
 const DashboardHeader = () => {
-  const {name} = useDashboard()
+  const {name, onRename} = useDashboard()
 
   return (
     <Page.Header fullWidth={true}>
@@ -18,13 +20,18 @@ const DashboardHeader = () => {
         name={name}
         placeholder={'Name this dashboard'}
         maxLength={90}
-        onRename={n => console.log(n)}
+        onRename={onRename}
       />
 
-      <FlexBox margin={ComponentSize.ExtraSmall}>
+      <FlexBox margin={ComponentSize.Small}>
         <CreateCellButton />
         <PresentationModeToggle />
         <TimeRangeDropdown />
+      </FlexBox>
+
+      <FlexBox margin={ComponentSize.Small}>
+        <AutoRefreshDropdown />
+        <AutoRefreshButton />
       </FlexBox>
     </Page.Header>
   )

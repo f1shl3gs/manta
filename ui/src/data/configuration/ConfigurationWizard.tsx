@@ -16,7 +16,7 @@ import {
   Overlay,
   Panel,
 } from '@influxdata/clockface'
-import YamlMonacoEditor from 'src/shared/components/YamlMonacoEditor'
+import YamlMonacoEditor from 'src/shared/components/editor/YamlMonacoEditor'
 
 // Hooks
 import useKeyPress from 'src/shared/useKeyPress'
@@ -30,7 +30,7 @@ import {useOrganization} from 'src/organizations/useOrganizations'
 import {useResources} from 'src/shared/components/GetResources'
 
 // Utils
-import { downloadTextFile } from 'src/shared/download'
+import {downloadTextFile} from 'src/shared/download'
 
 const defaultConfig = `sources:
   # expose process metrics, e.g. cpu, memory and open files

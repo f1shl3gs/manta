@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useCallback} from 'react'
 import {Dashboard} from 'src/types/Dashboard'
 import {
   ButtonShape,
@@ -57,6 +57,23 @@ const DashboardCard: FunctionComponent<Props> = props => {
     method: 'PATCH',
     onSuccess: reload,
   })
+  const handleExport = useCallback(() => {
+    navigate(`${window.location.pathname}/${dashboard.id}/export`)
+  }, [dashboard, navigate])
+
+  const {run: create} = useFetch(`/api/v1/dashboards`, {
+    method: 'POST',
+    onSuccess: _ => {
+      reload()
+    },
+  })
+  const handleClone = useCallback(() => {
+    create({
+      ...dashboard,
+      name: `${dashboard.name} (Clone)`,
+      orgID: orgId,
+    })
+  }, [create, dashboard, orgId])
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -68,8 +85,14 @@ const DashboardCard: FunctionComponent<Props> = props => {
       >
         <Context.Item
           label="Export"
-          action={value => console.log('export', value)}
+          action={handleExport}
           testID="context_menu-export"
+        />
+
+        <Context.Item
+          label="Clone"
+          action={handleClone}
+          testID={'context_menu-clone'}
         />
       </Context.Menu>
 
@@ -99,9 +122,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
         buttonTestID={'dashboard-editable-name--button'}
         inputTestID={'dashboard-editable-name--input'}
         name={dashboard.name}
-        onUpdate={name => {
-          update({name})
-        }}
+        onUpdate={name => update({name})}
         onClick={() => {
           navigate(
             `/orgs/${orgId}/dashboards/${dashboard.id}?${new URLSearchParams({

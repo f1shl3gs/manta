@@ -82,10 +82,10 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	// success
 	if perr == nil {
 		now := time.Now()
-		err  = e.tcs.AddRunLog(ctx, task.ID, run.ID, now, "Success")
-        if err != nil {
-            return err
-        }
+		err = e.tcs.AddRunLog(ctx, task.ID, run.ID, now, "Success")
+		if err != nil {
+			return err
+		}
 
 		_, err = e.ts.UpdateTask(ctx, task.ID, manta.TaskUpdate{
 			LatestCompleted: &now,
@@ -99,9 +99,9 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	if ctx.Err() != nil {
 		// todo: use proper context
 		err = e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), "Context canceled")
-        if err != nil {
-            return err
-        }
+		if err != nil {
+			return err
+		}
 
 		err = e.tcs.UpdateRunState(context.Background(), task.ID, run.ID, time.Now(), manta.RunCanceled)
 		if err != nil {
@@ -118,9 +118,9 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	errMsg := perr.Error()
 
 	err = e.tcs.AddRunLog(ctx, task.ID, run.ID, now, fmt.Sprintf("Fail: %s", errMsg))
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	if err := e.tcs.UpdateRunState(ctx, task.ID, run.ID, now, manta.RunFail); err != nil {
 		e.logger.Warn("Update fail status failed",

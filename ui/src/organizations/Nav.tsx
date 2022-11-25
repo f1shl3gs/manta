@@ -100,6 +100,18 @@ const generateNavItems = (orgId: string): NavItem[] => {
       ],
     },
     {
+      id: 'explore',
+      testID: 'nav-item-explore',
+      label: 'Explore',
+      icon: IconFont.Search_New,
+      shortLabel: 'Explore',
+      activeKeywords: ['explore'],
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/explore`,
+      },
+    },
+    {
       id: 'dashboards',
       testID: 'nav-item-dashboard',
       label: 'Dashboards',

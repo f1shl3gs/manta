@@ -53,7 +53,7 @@ const TimeRangeDropdown: React.FC = () => {
       return 280
     }
 
-    return 106
+    return 110
   }
 
   return (

@@ -5,31 +5,35 @@ import {Notification} from 'src/types/Notification'
 
 export * from './defaults'
 
-const [NotificationProvider, useNotification] = constate(() => {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+const [NotificationProvider, useNotification, useNotify] = constate(
+  () => {
+    const [notifications, setNotifications] = useState<Notification[]>([])
 
-  const notify = useCallback((n: Notification) => {
-    const id = `${Date.now() + performance.now()}`
-    setNotifications(prev => [
-      ...prev,
-      {
-        ...n,
-        id,
-      },
-    ])
-  }, [])
+    const notify = useCallback((n: Notification) => {
+      const id = `${Date.now() + performance.now()}`
+      setNotifications(prev => [
+        ...prev,
+        {
+          ...n,
+          id,
+        },
+      ])
+    }, [])
 
-  const dismiss = useCallback((id?: string) => {
-    setNotifications(prev => {
-      return prev.filter(v => v.id !== id)
-    })
-  }, [])
+    const dismiss = useCallback((id?: string) => {
+      setNotifications(prev => {
+        return prev.filter(v => v.id !== id)
+      })
+    }, [])
 
-  return {
-    dismiss,
-    notifications,
-    notify,
-  }
-})
+    return {
+      dismiss,
+      notifications,
+      notify,
+    }
+  },
+  value => value,
+  value => value.notify
+)
 
-export {NotificationProvider, useNotification}
+export {NotificationProvider, useNotification, useNotify}

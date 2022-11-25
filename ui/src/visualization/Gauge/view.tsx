@@ -1,8 +1,8 @@
 import React, {FunctionComponent} from 'react'
 
 import {GaugeViewProperties} from 'src/types/Dashboard'
-import {Config, Plot, Table} from '@influxdata/giraffe'
-import {VisualizationProps} from './index'
+import {Config, Plot} from '@influxdata/giraffe'
+import {VisualizationProps} from 'src/visualization'
 
 export const GAUGE_ARC_LENGTH_DEFAULT = 1.5 * Math.PI
 export const GAUGE_VALUE_POSITION_X_OFFSET_DEFAULT = 0
@@ -14,9 +14,10 @@ interface Props extends VisualizationProps {
 
 const Gauge: FunctionComponent<Props> = props => {
   const {colors, prefix, suffix, decimalPlaces} = props.properties
+  const {table} = props.result
 
   const config: Config = {
-    table: props.table,
+    table,
     layers: [
       {
         type: 'gauge',

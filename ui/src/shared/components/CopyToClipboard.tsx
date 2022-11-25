@@ -26,25 +26,31 @@ export const copy = async (text: string): Promise<boolean> => {
 interface Props {
   text: string
   children: JSX.Element
+  onCopy?: (copiedText: string, copyWasSuccessful: boolean) => void
 }
 
 const CopyToClipboard: FunctionComponent<Props> = ({
   text,
   children,
+  onCopy,
   ...props
 }) => {
-  const elmt = React.Children.only(children)
+  const elem = React.Children.only(children)
 
-  const onClick = async (ev: ChangeEvent<HTMLInputElement>) => {
+  const onClick = async (event: ChangeEvent<HTMLInputElement>) => {
     const result = await copy(text)
 
+    if (onCopy) {
+      onCopy(text, result)
+    }
+
     // Bypass onClick if it was present
-    if (elmt && elmt.props && typeof elmt.props.onClick === 'function') {
-      elmt.props.onClick(ev)
+    if (elem && elem.props && typeof elem.props.onClick === 'function') {
+      elem.props.onClick(event)
     }
   }
 
-  return React.cloneElement(elmt, {...props, onClick})
+  return React.cloneElement(elem, {...props, onClick})
 }
 
 export default CopyToClipboard

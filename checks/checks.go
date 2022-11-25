@@ -21,7 +21,7 @@ const (
 	// AlertForStateMetricName is the metric name for 'for' state of alert.
 	alertForStateMetricName = "ALERTS_FOR_STATE"
 
-    // TODO
+	// TODO
 	// AlertStateLabel is the label name indicating the state of an alert.
 	// alertStateLabel = "alertstate"
 )

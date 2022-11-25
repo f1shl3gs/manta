@@ -1,4 +1,4 @@
-import {Icon, IconFont, Input, InputRef, Page} from '@influxdata/clockface'
+// Libraries
 import classnames from 'classnames'
 import React, {
   ChangeEvent,
@@ -8,6 +8,9 @@ import React, {
   useState,
   KeyboardEvent,
 } from 'react'
+
+// Components
+import {Icon, IconFont, Input, InputRef, Page} from '@influxdata/clockface'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 
 interface Props {
@@ -35,6 +38,10 @@ const RenamablePageTitle: FunctionComponent<Props> = ({
       setEditing(false)
     }
   }, [name])
+
+  const handleStartEditing = (): void => {
+    setEditing(true)
+  }
 
   const handleStopEditing = (ev: MouseEvent<any>) => {
     onRename(workingName)
@@ -99,7 +106,7 @@ const RenamablePageTitle: FunctionComponent<Props> = ({
   }
 
   return (
-    <div className={renamablePageTitleClass}>
+    <div className={renamablePageTitleClass} onClick={handleStartEditing}>
       <Page.Title title={workingName || placeholder} />
       <Icon glyph={IconFont.Pencil} className={'renamable-page-title--icon'} />
     </div>

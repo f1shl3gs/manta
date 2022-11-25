@@ -9,9 +9,20 @@
 @import 'src/dashboards/components/Cell/Cell';
 @import 'src/dashboards/components/Cell/GradientBorder';
 @import 'src/dashboards/DashboardCards';
+@import 'src/dashboards/ViewEditorOverlay';
 @import 'src/data/configuration/ConfigurationOverlay';
-@import 'src/shared/components/Editor';
 @import 'src/dashboards/components/Cell/EmptyGraphError';
+@import 'src/dashboards/components/ViewTypeDropdown';
+@import 'src/explore/Explore';
+@import 'src/visualization/TimeMachine/FunctionItem';
+@import 'src/visualization/TimeMachine/PromqlToolbar';
+@import 'src/visualization/TimeMachine/Queries';
+@import 'src/visualization/TimeMachine/QueryEditor';
+@import 'src/visualization/TimeMachine/QueryTab';
+@import 'src/visualization/TimeMachine/SingleStat';
+@import 'src/visualization/TimeMachine/TimeMachine';
+@import 'src/visualization/TimeMachine/TimeMachineQueries';
+@import 'src/visualization/TimeMachine/ViewOptions';
 
 // Shards
 @import 'src/shared/components/wizard/WizardProgressHeader';
@@ -22,6 +33,7 @@
 @import 'src/shared/components/TabsPage';
 @import 'src/shared/components/RenamablePageTitle';
 @import 'src/shared/components/DateRangePicker/DateRangePicker';
+@import 'src/shared/components/Editor';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

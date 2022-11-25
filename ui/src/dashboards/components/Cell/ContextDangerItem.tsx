@@ -48,6 +48,7 @@ const ContextDangerItem: FunctionComponent<Props> = ({
         <Button
           color={ComponentColor.Danger}
           text={confirmationText}
+          icon={IconFont.Trash_New}
           onClick={handleClick}
           size={ComponentSize.ExtraSmall}
           shape={ButtonShape.StretchToFit}

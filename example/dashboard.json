@@ -1,0 +1,37 @@
+{
+  "id": "0a54f8c90af7e000",
+  "created": "2022-11-23T17:50:53.995004855+08:00",
+  "updated": "2022-11-23T23:37:04.116447718+08:00",
+  "name": "abc",
+  "orgID": "0a5255af55928000",
+  "cells": [
+    {
+      "id": "0a54ff9692f7e000",
+      "x": 4,
+      "y": 0,
+      "w": 4,
+      "h": 4,
+      "viewProperties": {
+        "type": "xy",
+        "axes": {
+          "x": {
+            "base": ""
+          },
+          "y": {
+            "base": ""
+          }
+        },
+        "queries": [
+          {
+            "text": "rate(process_cpu_seconds_total[1m])"
+          }
+        ],
+        "xColumn": "time",
+        "yColumn": "value",
+        "hoverDimension": "auto",
+        "Position": "overlaid",
+        "geom": "line"
+      }
+    }
+  ]
+}

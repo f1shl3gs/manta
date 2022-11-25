@@ -1,7 +1,7 @@
 import {monaco} from 'react-monaco-editor'
 import {MonacoType} from 'src/types/monaco'
 
-const ThemeName = 'yaml'
+const ThemeName = 'promql'
 
 function addTheme(monaco: MonacoType) {
   monaco.editor.defineTheme(ThemeName, {
@@ -13,11 +13,11 @@ function addTheme(monaco: MonacoType) {
     rules: [
       {
         token: 'comment',
-        foreground: '#7CE490'
+        foreground: '#7CE490',
       },
       {
         token: 'string',
-        foreground: '#7CE490'
+        foreground: '#7CE490',
       },
 
       // numbers

@@ -12,14 +12,20 @@ import Notifications from 'src/shared/components/notifications/Notifications'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import Authentication from 'src/shared/components/Authentication'
 import CreateOrgOverlay from 'src/organizations/CreateOrgOverlay'
-import Todo from 'src/Todo'
 import ToOrg from 'src/organizations/ToOrg'
 // DataPage is just a simple tabed page, it's small enough and it can reduce re-render
 import DataPage from 'src/data/DataPage'
+import {AutoRefreshProvider} from './shared/useAutoRefresh'
+import {TimeRangeProvider} from './shared/useTimeRange'
+import DashboardPage from './dashboards/DashboardPage'
+import EditVEO from './dashboards/EditVEO'
+import NewVEO from './dashboards/NewVEO'
+import ExportOverlay from './dashboards/ExportOverlay'
+import DashboardImportOverlay from './dashboards/DashboardImportOverlay'
+import Explore from 'src/explore/Explore'
 
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
-const DashboardPage = lazy(() => import('src/dashboards/DashboardPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
 
 const App: FC = () => {
@@ -34,28 +40,52 @@ const App: FC = () => {
 
             <Organizations>
               <Suspense fallback={<PageSpinner />}>
-                <Routes>
-                  <Route index element={<ToOrg />} />
+                <TimeRangeProvider>
+                  <AutoRefreshProvider>
+                    <Routes>
+                      <Route index element={<ToOrg />} />
 
-                  <Route path="orgs">
-                    <Route path="new" element={<CreateOrgOverlay />} />
+                      <Route path="orgs">
+                        <Route path="new" element={<CreateOrgOverlay />} />
 
-                    <Route path=":orgId">
-                      <Route index={true} element={<Introduce />} />
+                        <Route path=":orgId">
+                          <Route index={true} element={<Introduce />} />
 
-                      <Route path="data/*" element={<DataPage />} />
+                          <Route path="data/*" element={<DataPage />} />
 
-                      <Route path="todo" element={<Todo />} />
-                      <Route path="dashboards" element={<DashboardsPage />} />
-                      <Route
-                        path="dashboards/:dashboardId"
-                        element={<DashboardPage />}
-                      />
+                          <Route path="explore" element={<Explore />} />
 
-                      <Route path="settings/*" element={<SettingsPage />} />
-                    </Route>
-                  </Route>
-                </Routes>
+                          <Route
+                            path="dashboards"
+                            element={<DashboardsPage />}
+                          />
+                          <Route
+                            path="dashboards/:dashboardId"
+                            element={<DashboardPage />}
+                          />
+                          <Route
+                            path="dashboards/import"
+                            element={<DashboardImportOverlay />}
+                          />
+                          <Route
+                            path="dashboards/:dashboardId/cells/new"
+                            element={<NewVEO />}
+                          />
+                          <Route
+                            path="dashboards/:dashboardId/cells/:cellID/edit"
+                            element={<EditVEO />}
+                          />
+                          <Route
+                            path={'dashboards/:dashboardId/export'}
+                            element={<ExportOverlay />}
+                          />
+
+                          <Route path="settings/*" element={<SettingsPage />} />
+                        </Route>
+                      </Route>
+                    </Routes>
+                  </AutoRefreshProvider>
+                </TimeRangeProvider>
               </Suspense>
             </Organizations>
           </Authentication>

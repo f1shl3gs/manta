@@ -4,7 +4,7 @@ import React, {FunctionComponent} from 'react'
 // Components
 import MonacoEditor from 'react-monaco-editor'
 import {EditorType} from 'src/types/monaco'
-import ThemeName from 'src/shared/components/YamlEditorTheme'
+import ThemeName from 'src/shared/components/editor/YamlEditorTheme'
 
 interface Props {
   content: string

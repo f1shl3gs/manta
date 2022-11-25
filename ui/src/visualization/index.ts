@@ -1,8 +1,8 @@
-import {Table} from '@influxdata/giraffe'
+import {FromFluxResult, Table} from '@influxdata/giraffe'
 import {TimeRange} from 'src/types/TimeRanges'
 
 export interface VisualizationProps {
-  table: Table
+  result: FromFluxResult
 
   cellID?: string
   timeRange?: TimeRange

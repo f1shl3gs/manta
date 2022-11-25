@@ -2,7 +2,6 @@
 import React, {FC, useState} from 'react'
 
 // Components
-import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {
   Page,
   PageContents,
@@ -29,7 +28,7 @@ export const DashboardsPage: FC = () => {
   })
 
   return (
-    <ErrorBoundary>
+    <>
       <Page titleTag="Dashboards">
         <PageHeader fullWidth={false}>
           <PageTitle title="Dashboards" />
@@ -67,7 +66,7 @@ export const DashboardsPage: FC = () => {
           </GetResources>
         </PageContents>
       </Page>
-    </ErrorBoundary>
+    </>
   )
 }
 

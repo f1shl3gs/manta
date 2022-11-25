@@ -2,7 +2,7 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
+import AddResourceDropdown from '../shared/components/AddResourceDropdown'
 
 // Hooks
 import {
@@ -34,13 +34,21 @@ const CreateDashboardButton: FunctionComponent = () => {
     },
   })
 
+  const onSelectNew = (): void => {
+    create({
+      name: '',
+    })
+  }
+
+  const onSelectImport = (): void => {
+    navigate(`${window.location.pathname}/import`)
+  }
+
   return (
-    <Button
-      testID={'button-create-dashboard'}
-      text="Create Dashboard"
-      icon={IconFont.Plus_New}
-      color={ComponentColor.Primary}
-      onClick={() => create()}
+    <AddResourceDropdown
+      resourceType={'dashboard'}
+      onSelectNew={onSelectNew}
+      onSelectImport={onSelectImport}
     />
   )
 }

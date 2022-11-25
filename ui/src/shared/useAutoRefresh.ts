@@ -63,7 +63,7 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(() => {
 
   const [state, setState] = useState(() => calculateRange(timeRange))
   const refresh = useCallback(() => {
-    setState(prev => calculateRange(timeRange))
+    setState(_prev => calculateRange(timeRange))
   }, [timeRange])
 
   useEffect(() => {
@@ -81,6 +81,10 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(() => {
 
       setState(_ => calculateRange(timeRange))
     }, autoRefresh.interval * 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
   }, [autoRefresh, timeRange])
 
   return {
@@ -91,4 +95,4 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(() => {
   }
 })
 
-export {AutoRefreshProvider, useAutoRefresh}
+export {AutoRefreshProvider, useAutoRefresh, calculateRange}

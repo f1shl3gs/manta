@@ -1,6 +1,6 @@
 import React, {FunctionComponent, RefObject, useRef, useState} from 'react'
 import {Cell} from 'src/types/Dashboard'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import ContextItem from './ContextItem'
 import {
   Appearance,
@@ -11,6 +11,12 @@ import {
 } from '@influxdata/clockface'
 import ContextDangerItem from './ContextDangerItem'
 import classnames from 'classnames'
+import useFetch from 'src/shared/useFetch'
+import {
+  defaultErrorNotification,
+  useNotify,
+} from 'src/shared/components/notifications/useNotification'
+import {useDashboard} from '../../useDashboard'
 
 interface Props {
   cell: Cell
@@ -18,6 +24,24 @@ interface Props {
 
 const Context: FunctionComponent<Props> = ({cell}) => {
   const navigate = useNavigate()
+  const notify = useNotify()
+  const {dashboardId} = useParams()
+  const {reload} = useDashboard()
+  const {run: deleteCell} = useFetch(
+    `/api/v1/dashboards/${dashboardId}/cells/${cell.id}`,
+    {
+      method: 'DELETE',
+      onError: err => {
+        notify({
+          ...defaultErrorNotification,
+          message: `Delete Cell ${cell.name} failed, ${err}`,
+        })
+      },
+      onSuccess: _ => {
+        reload()
+      },
+    }
+  )
 
   const handleEditCell = (): void => {
     navigate(`${window.location.pathname}/cells/${cell.id}/edit`)
@@ -28,7 +52,7 @@ const Context: FunctionComponent<Props> = ({cell}) => {
   }
 
   const handleDeleteCell = () => {
-    console.log('delete cell')
+    deleteCell()
   }
 
   const popoverContents = (onHide?: () => void): JSX.Element => {

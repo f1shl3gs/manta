@@ -170,29 +170,29 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 
 	start, err := parseTime(r.FormValue("start"))
 	if err != nil {
-		h.handleInvalidParam(ctx, w, r, err)
+		h.handleInvalidParam(ctx, w, err)
 		return
 	}
 
 	end, err := parseTime(r.FormValue("end"))
 	if err != nil {
-		h.handleInvalidParam(ctx, w, r, err)
+		h.handleInvalidParam(ctx, w, err)
 		return
 	}
 
 	if end.Before(start) {
-		h.handleInvalidParam(ctx, w, r, errors.New("end timestamp must not be before start time"))
+		h.handleInvalidParam(ctx, w, errors.New("end timestamp must not be before start time"))
 		return
 	}
 
 	step, err := parseDuration(r.FormValue("step"))
 	if err != nil {
-		h.handleInvalidParam(ctx, w, r, err)
+		h.handleInvalidParam(ctx, w, err)
 		return
 	}
 
 	if step <= 0 {
-		h.handleInvalidParam(ctx, w, r, errors.New("zero or negative query resolution step widths are not accepted. Try a positive integer"))
+		h.handleInvalidParam(ctx, w, errors.New("zero or negative query resolution step widths are not accepted. Try a positive integer"))
 		return
 	}
 
@@ -200,10 +200,7 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 	// This is sufficient for 60s resolution for a week or 1h resolution for a year
 	if end.Sub(start)/step > 11000 {
 		err = errors.New("exceeded maximum resolution of 11,000 points per timeseries. Try decreasing the query resolution (?step=XX)")
-		if err = encodeResponse(ctx, w, http.StatusOK, apiFuncResult{nil, &apiError{errorBadData, err}, nil}); err != nil {
-			logEncodingError(h.logger, r, err)
-		}
-
+		h.handleInvalidParam(ctx, w, err)
 		return
 	}
 
@@ -212,7 +209,7 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 
 		d, err := parseDuration(timeout)
 		if err != nil {
-			h.handleInvalidParam(ctx, w, r, errors.Wrap(err, "parse timeout failed"))
+			h.handleInvalidParam(ctx, w, errors.Wrap(err, "parse timeout failed"))
 			return
 		}
 
@@ -236,14 +233,14 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 
 	qry, err := h.engine.NewRangeQuery(queryable, &promql.QueryOpts{}, qs, start, end, step)
 	if err != nil {
-		h.handleInvalidParam(ctx, w, r, errors.Wrap(err, "invalid query"))
+		h.handleInvalidParam(ctx, w, errors.Wrap(err, "invalid query"))
 		return
 	}
 
 	h.encodeQueryResult(ctx, w, r, qry)
 }
 
-func (h *PromAPIHandler) handleInvalidParam(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+func (h *PromAPIHandler) handleInvalidParam(ctx context.Context, w http.ResponseWriter, err error) {
 	h.HandleHTTPError(ctx, &manta.Error{
 		Code: manta.EInvalid,
 		Msg:  "invalid param",
@@ -285,12 +282,12 @@ const (
 )
 
 type apiError struct {
-	typ errorType
-	err error
+	Type errorType `json:"type"`
+	Err  error     `json:"error"`
 }
 
 func (e *apiError) Error() string {
-	return fmt.Sprintf("%s: %s", e.typ, e.err)
+	return fmt.Sprintf("%s: %s", e.Type, e.Err)
 }
 
 type apiFuncResult struct {
