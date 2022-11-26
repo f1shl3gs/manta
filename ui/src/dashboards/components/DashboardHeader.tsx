@@ -9,7 +9,7 @@ import PresentationModeToggle from 'src/dashboards/components/PresentationModeTo
 import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
 import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 import AutoRefreshDropdown from 'src/shared/components/AutoRefreshDropdown'
-import AutoRefreshButton from '../../shared/components/AutoRefreshButton'
+import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
 const DashboardHeader = () => {
   const {name, onRename} = useDashboard()
@@ -19,7 +19,7 @@ const DashboardHeader = () => {
       <RenamablePageTitle
         name={name}
         placeholder={'Name this dashboard'}
-        maxLength={90}
+        maxLength={68}
         onRename={onRename}
       />
 

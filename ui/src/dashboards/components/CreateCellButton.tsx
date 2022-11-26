@@ -1,13 +1,15 @@
+// Libraries
 import React, {FunctionComponent, MouseEvent} from 'react'
+import {useNavigate} from 'react-router-dom'
 
+// Components
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useDashboard} from 'src/dashboards/useDashboard'
 
 const CreateCellButton: FunctionComponent = () => {
-  const {addCell} = useDashboard()
+  const navigate = useNavigate()
 
   const handleAddCell = (_ev?: MouseEvent<HTMLButtonElement>): void => {
-    addCell()
+    navigate(`${window.location.pathname}/cells/new`)
   }
 
   return (

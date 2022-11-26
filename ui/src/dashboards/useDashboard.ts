@@ -67,26 +67,12 @@ const [DashboardProvider, useDashboard] = constate((state: State) => {
     [patchDashboard]
   )
 
-  const {run: addCell} = useFetch(`/api/v1/dashboards/${dashboard.id}/cells`, {
-    method: 'POST',
-    body: {
-      w: 4,
-      h: 4,
-      x: 0,
-      y: 0,
-    },
-    onSuccess: _ => {
-      reload()
-    },
-  })
-
   return {
     ...dashboard,
     reload,
     loading,
     onLayoutChange,
     onRename,
-    addCell,
   }
 })
 
