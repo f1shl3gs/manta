@@ -62,7 +62,6 @@ const [CellProvider, useCell] = constate((state: State) => {
     }
   )
 
-  console.log('cell', cell)
   const updateCell = useCallback(() => {
     console.log('update cell', cell)
     patch(cell)
@@ -78,6 +77,9 @@ const [CellProvider, useCell] = constate((state: State) => {
 
   const {run: create} = useFetch(`/api/v1/dashboards/${dashboardId}/cells`, {
     method: 'POST',
+    onSuccess: _ => {
+      navigate(-1)
+    }
   })
   const createCell = useCallback(() => {
     create(cell)
