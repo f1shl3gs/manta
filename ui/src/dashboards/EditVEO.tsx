@@ -11,7 +11,7 @@ import TimeMachine from 'src/visualization/TimeMachine'
 import useFetch from 'src/shared/useFetch'
 import useEscape from 'src/shared/useEscape'
 import {CellProvider} from 'src/dashboards/useCell'
-import {ViewOptionProvider} from 'src/dashboards/components/useViewOption'
+import {ViewOptionProvider} from 'src/shared/useViewOption'
 
 const EditVEO: FunctionComponent = () => {
   const {cellID, dashboardId} = useParams()

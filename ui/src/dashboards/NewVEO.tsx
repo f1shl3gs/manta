@@ -9,7 +9,7 @@ import TimeMachine from 'src/visualization/TimeMachine'
 // Hooks
 import useEscape from 'src/shared/useEscape'
 import {CellProvider, useCell} from 'src/dashboards/useCell'
-import {ViewOptionProvider} from 'src/dashboards/components/useViewOption'
+import {ViewOptionProvider} from 'src/shared/useViewOption'
 
 const NewVEO: FunctionComponent = () => {
   const {cell} = useCell()
