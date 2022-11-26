@@ -11,15 +11,17 @@ import App from 'src/App'
 import {PresentationModeProvider} from 'src/shared/usePresentationMode'
 import SetupWrapper from 'src/setup/SetupWrapper'
 import PageSpinner from 'src/shared/components/PageSpinner'
+import NotFound from 'src/NotFound'
 
 // Styles
 import '@influxdata/clockface/dist/index.css'
 import 'src/style/manta.scss'
 import 'react-virtualized/styles.css'
 
+// Utils
 import reportWebVitals from 'src/reportWebVitals'
-import NotFound from 'src/NotFound'
 
+// Lazy Load
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
