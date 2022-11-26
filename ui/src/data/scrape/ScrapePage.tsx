@@ -6,7 +6,7 @@ import {
   useResources,
   withResources,
 } from 'src/shared/components/GetResources'
-import {getSortedResources} from 'src/shared/utils/sort'
+import {getSortedResources} from 'src/utils/sort'
 import {Scrape} from 'src/types/Scrape'
 import {SortKey, SortTypes} from 'src/types/Sort'
 import ScrapeCard from 'src/data/scrape/ScrapeCard'

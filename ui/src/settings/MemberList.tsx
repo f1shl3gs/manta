@@ -10,7 +10,7 @@ import {
   ResourceList,
   Sort,
 } from '@influxdata/clockface'
-import {fromNow} from 'src/shared/duration'
+import {fromNow} from 'src/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 
 const MemberList: FunctionComponent = () => {

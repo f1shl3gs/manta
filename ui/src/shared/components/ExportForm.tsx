@@ -14,7 +14,7 @@ import {
 } from 'src/shared/components/notifications/useNotification'
 
 // Utils
-import {downloadTextFile} from 'src/shared/download'
+import {downloadTextFile} from 'src/utils/download'
 
 interface Props {
   resourceName: string

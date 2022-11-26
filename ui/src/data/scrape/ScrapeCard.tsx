@@ -8,7 +8,7 @@ import {
 } from '@influxdata/clockface'
 import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
-import {fromNow} from 'src/shared/duration'
+import {fromNow} from 'src/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useResources} from 'src/shared/components/GetResources'
 import {

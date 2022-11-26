@@ -5,7 +5,7 @@ import {useSearchParams} from 'react-router-dom'
 
 import {PARAMS_INTERVAL, useTimeRange} from 'src/shared/useTimeRange'
 import {AutoRefresh, AutoRefreshStatus} from 'src/types/AutoRefresh'
-import {parseDuration} from 'src/shared/duration'
+import {parseDuration} from 'src/utils/duration'
 import {TimeRange} from 'src/types/TimeRanges'
 
 const MAX_POINT = 1024

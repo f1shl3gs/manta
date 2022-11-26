@@ -9,7 +9,7 @@ import {
 
 import {useNotification} from 'src/shared/components/notifications/useNotification'
 import {NotificationStyle} from 'src/types/Notification'
-import {get} from 'src/shared/utils/object'
+import {get} from 'src/utils/object'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {

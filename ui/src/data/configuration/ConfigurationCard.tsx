@@ -6,7 +6,7 @@ import {
   IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
-import {fromNow} from 'src/shared/duration'
+import {fromNow} from 'src/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
 import {useOrganization} from 'src/organizations/useOrganizations'

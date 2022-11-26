@@ -1,4 +1,4 @@
-import {TimeZone} from 'src/shared/utils/timeZone'
+import {TimeZone} from 'src/utils/timeZone'
 import {
   binaryPrefixFormatter,
   siPrefixFormatter,

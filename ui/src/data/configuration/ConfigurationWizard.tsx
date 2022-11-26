@@ -30,7 +30,7 @@ import {useOrganization} from 'src/organizations/useOrganizations'
 import {useResources} from 'src/shared/components/GetResources'
 
 // Utils
-import {downloadTextFile} from 'src/shared/download'
+import {downloadTextFile} from 'src/utils/download'
 
 const defaultConfig = `sources:
   # expose process metrics, e.g. cpu, memory and open files

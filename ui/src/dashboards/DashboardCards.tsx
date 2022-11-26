@@ -3,7 +3,7 @@ import {useResources} from 'src/shared/components/GetResources'
 import FilterList from 'src/shared/components/FilterList'
 import {Dashboard} from 'src/types/Dashboard'
 import EmptyDashboards from 'src/dashboards/EmptyDashboards'
-import {getSortedResources} from 'src/shared/utils/sort'
+import {getSortedResources} from 'src/utils/sort'
 import DashboardCard from 'src/dashboards/DashboardCard'
 import {SortOption} from 'src/types/Sort'
 

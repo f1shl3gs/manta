@@ -9,7 +9,7 @@ import {useVisXDomainSettings} from 'src/visualization/Line/useVisXDomainSetting
 import useLineView from 'src/visualization/Line/useLineView'
 
 // Utils
-import {getFormatter} from 'src/shared/utils/vis'
+import {getFormatter} from 'src/utils/vis'
 
 // Types
 import {XYViewProperties} from 'src/types/Dashboard'
