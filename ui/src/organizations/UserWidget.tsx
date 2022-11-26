@@ -18,10 +18,15 @@ const UserWidget: FunctionComponent = () => {
 
   return (
     <div>
-      <OrganizationsSwitcher
-        visible={switcherVisible}
-        dismiss={() => setSwitcherVisible(false)}
-      />
+      {/*
+        TODO: this is a dummy operation, but it did reduce re-render
+      */}
+      {switcherVisible && (
+        <OrganizationsSwitcher
+          visible={switcherVisible}
+          dismiss={() => setSwitcherVisible(false)}
+        />
+      )}
 
       <TreeNav.User
         username={user.name}
@@ -54,4 +59,4 @@ const UserWidget: FunctionComponent = () => {
   )
 }
 
-export default UserWidget
+export default React.memo(UserWidget)
