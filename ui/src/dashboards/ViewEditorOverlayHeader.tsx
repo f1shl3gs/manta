@@ -15,13 +15,15 @@ import VisOptionsButton from 'src/dashboards/components/VisOptionsButton'
 
 // Hooks
 import {useCell} from 'src/dashboards/useCell'
+import useEscape from 'src/shared/useEscape'
 
 interface Props {
-  onDismiss: () => void
+  onSubmit: () => void
 }
 
-const ViewEditorOverlayHeader: FunctionComponent<Props> = ({onDismiss}) => {
-  const {cell, onRename, updateCell, setViewProperties} = useCell()
+const ViewEditorOverlayHeader: FunctionComponent<Props> = ({onSubmit}) => {
+  const {cell, onRename, setViewProperties} = useCell()
+  const onDismiss = useEscape()
 
   return (
     <>
@@ -51,7 +53,7 @@ const ViewEditorOverlayHeader: FunctionComponent<Props> = ({onDismiss}) => {
             icon={IconFont.CheckMark_New}
             size={ComponentSize.Small}
             color={ComponentColor.Success}
-            onClick={updateCell}
+            onClick={onSubmit}
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

@@ -7,19 +7,16 @@ import ViewEditorOverlayHeader from 'src/dashboards/ViewEditorOverlayHeader'
 import TimeMachine from 'src/visualization/TimeMachine'
 
 // Hooks
-import useEscape from 'src/shared/useEscape'
 import {CellProvider, useCell} from 'src/dashboards/useCell'
 import {ViewOptionProvider} from 'src/shared/useViewOption'
 
 const NewVEO: FunctionComponent = () => {
-  const {cell} = useCell()
-
-  const onDismiss = useEscape()
+  const {cell, createCell} = useCell()
 
   return (
     <Overlay visible={true} className={'veo-overlay'}>
       <div className={'veo'}>
-        <ViewEditorOverlayHeader onDismiss={onDismiss} />
+        <ViewEditorOverlayHeader onSubmit={createCell} />
 
         <div className={'veo-contents'}>
           <TimeMachine viewProperties={cell.viewProperties} />
