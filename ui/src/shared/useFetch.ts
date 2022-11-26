@@ -65,7 +65,7 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
   }
 
   const [state, dispatch] = useReducer(fetchReducer, {
-    loading: RemoteDataState.NotStarted,
+    loading: method === 'GET' ? RemoteDataState.Loading : RemoteDataState.NotStarted,
     data: undefined,
     error: undefined,
     // @ts-ignore
@@ -76,7 +76,9 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
 
   const run = useCallback(
     (nb?: any) => {
-      dispatch({type: 'loading'})
+      if (method !== 'GET') {
+        dispatch({type: 'loading'})
+      }
 
       fetch(url, generateRequestInit(method, nb || body))
         .then(resp => {
