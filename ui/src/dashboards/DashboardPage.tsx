@@ -28,7 +28,7 @@ const DashboardPage: FunctionComponent = () => {
           <TimeRangeProvider>
             <DashboardHeader />
 
-            <Page.Contents>
+            <Page.Contents scrollable={true}>
               {dashboard?.cells && dashboard.cells.length !== 0 ? (
                 <Cells />
               ) : (
