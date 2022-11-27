@@ -1,11 +1,11 @@
 import constate from 'constate'
-import {useCallback, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 
 import {Notification} from 'src/types/Notification'
 
 export * from 'src/shared/components/notifications/defaults'
 
-const [NotificationProvider, useNotification, useNotify] = constate(
+const [NotificationProvider, useNotifications, useNotify] = constate(
   () => {
     const [notifications, setNotifications] = useState<Notification[]>([])
 
@@ -32,8 +32,15 @@ const [NotificationProvider, useNotification, useNotify] = constate(
       notify,
     }
   },
-  value => value,
-  value => value.notify
+  value =>
+    useMemo(
+      () => ({
+        dismiss: value.dismiss,
+        notifications: value.notifications,
+      }),
+      [value.dismiss, value.notifications]
+    ),
+  value => useMemo(() => value.notify, [value.notify])
 )
 
-export {NotificationProvider, useNotification, useNotify}
+export {NotificationProvider, useNotifications, useNotify}

@@ -2,7 +2,7 @@
 import constate from 'constate'
 import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
-import {useEffect} from 'react'
+import {useEffect, useMemo} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
 
 interface User {
@@ -34,8 +34,11 @@ const [AuthenticationProvider, useAuthentication, useUser] = constate(
       loading,
     }
   },
-  value => value,
-  value => value.user || {id: '', name: ''}
+  value => useMemo(() => value, [value]),
+  value =>
+    useMemo(() => {
+      return value.user || {id: '', name: ''}
+    }, [value.user])
 )
 
 export {AuthenticationProvider, useAuthentication, useUser}

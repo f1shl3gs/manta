@@ -49,7 +49,7 @@ const [ViewPropertiesProvider, useViewProperties, useQueries] = constate(
   value => value,
   // useQueries
   value => {
-    const {setQueries} = value
+    const setQueries = value.setQueries
     const {queries} = value.viewProperties
     const [activeIndex, setActiveIndex] = useState(0)
 

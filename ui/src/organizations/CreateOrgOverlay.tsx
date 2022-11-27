@@ -14,7 +14,7 @@ import useKeyPress from 'src/shared/useKeyPress'
 import {Organization} from 'src/types/Organization'
 import {
   defaultErrorNotification,
-  useNotification,
+  useNotify,
 } from 'src/shared/components/notifications/useNotification'
 import {useOrganizations} from 'src/organizations/useOrganizations'
 
@@ -22,7 +22,7 @@ const CreateOrgOverlay: FunctionComponent = () => {
   const [name, setName] = useState('')
   const {refetch} = useOrganizations()
   const navigate = useNavigate()
-  const {notify} = useNotification()
+  const notify = useNotify()
   const onDismiss = useCallback(() => {
     navigate(-1)
   }, [navigate])

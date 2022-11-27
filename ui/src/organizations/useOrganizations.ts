@@ -1,6 +1,6 @@
 // Libraries
 import constate from 'constate'
-import {useLayoutEffect} from 'react'
+import {useLayoutEffect, useMemo} from 'react'
 
 // Types
 import {Organization} from 'src/types/Organization'
@@ -36,8 +36,8 @@ const [OrganizationsProvider, useOrganizations, useOrganization] = constate(
       refetch,
     }
   },
-  value => value,
-  value => value.current
+  value => useMemo(() => value, [value]),
+  value => useMemo(() => value.current, [value.current])
 )
 
 export {OrganizationsProvider, useOrganizations, useOrganization}

@@ -14,7 +14,7 @@ import {useResources} from 'src/shared/components/GetResources'
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
-  useNotification,
+  useNotify,
 } from 'src/shared/components/notifications/useNotification'
 
 interface Props {
@@ -25,7 +25,7 @@ const ScrapeCard: FunctionComponent<Props> = props => {
   const {id, name, desc, updated} = props.scrape
   const navigate = useNavigate()
   const {reload} = useResources()
-  const {notify} = useNotification()
+  const notify = useNotify()
   const {run: patchScrape} = useFetch(`/api/v1/scrapes/${id}`, {method: 'POST'})
   const {run: deleteScrape} = useFetch(`/api/v1/scrapes/${id}`, {
     method: 'DELETE',

@@ -12,9 +12,9 @@ import {fromNow} from 'src/utils/duration'
 import {useOrganization} from 'src/organizations/useOrganizations'
 import useFetch from 'src/shared/useFetch'
 import {
-  useNotification,
   defaultErrorNotification,
   defaultSuccessNotification,
+  useNotify,
 } from 'src/shared/components/notifications/useNotification'
 import {
   PARAMS_INTERVAL,
@@ -32,7 +32,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
   const {dashboard, reload} = props
   const navigate = useNavigate()
   const {id: orgId} = useOrganization()
-  const {notify} = useNotification()
+  const notify = useNotify()
   const {run: deleteDashboard} = useFetch(
     `/api/v1/dashboards/${dashboard.id}`,
     {

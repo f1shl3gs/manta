@@ -7,7 +7,7 @@ import {
   Notification,
 } from '@influxdata/clockface'
 
-import {useNotification} from 'src/shared/components/notifications/useNotification'
+import {useNotifications} from 'src/shared/components/notifications/useNotification'
 import {NotificationStyle} from 'src/types/Notification'
 import {get} from 'src/utils/object'
 
@@ -25,7 +25,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 }
 
 const Notifications = () => {
-  const {notifications, dismiss} = useNotification()
+  const {notifications, dismiss} = useNotifications()
 
   return (
     <>

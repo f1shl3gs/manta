@@ -24,7 +24,7 @@ import useFetch from 'src/shared/useFetch'
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
-  useNotification,
+  useNotify,
 } from 'src/shared/components/notifications/useNotification'
 import {useOrganization} from 'src/organizations/useOrganizations'
 import {useResources} from 'src/shared/components/GetResources'
@@ -59,7 +59,7 @@ sinks:
 const ConfigurationWizard: FunctionComponent = () => {
   const [content, setContent] = useState(defaultConfig)
   const navigate = useNavigate()
-  const {notify} = useNotification()
+  const notify = useNotify()
   const {id: orgId} = useOrganization()
   const {reload} = useResources()
   const onDismiss = useCallback(() => {

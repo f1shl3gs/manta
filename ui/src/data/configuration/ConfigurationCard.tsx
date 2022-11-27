@@ -15,7 +15,7 @@ import {useResources} from 'src/shared/components/GetResources'
 import {
   defaultSuccessNotification,
   defaultErrorNotification,
-  useNotification,
+  useNotify,
 } from 'src/shared/components/notifications/useNotification'
 
 interface Props {
@@ -26,7 +26,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   const navigate = useNavigate()
   const {id: orgId} = useOrganization()
   const {reload} = useResources()
-  const {notify} = useNotification()
+  const notify = useNotify()
   const {run: deleteConfig} = useFetch(
     `/api/v1/configurations/${configuration.id}`,
     {
