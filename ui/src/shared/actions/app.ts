@@ -1,9 +1,7 @@
-import {NavBarState} from 'src/types/app'
-
 export enum ActionTypes {
   EnablePresentationMode = 'EnablePresentationMode',
   DisablePresentationMode = 'DisablePresentationMode',
-  ToggleNavBarState = 'ToggleNavBarState'
+  ToggleNavBarState = 'ToggleNavBarState',
 }
 
 export type Action =
@@ -21,6 +19,7 @@ export const disablePresentationMode = () =>
     type: ActionTypes.DisablePresentationMode,
   } as const)
 
-export const toggleNavBarState = () => ({
-  type: ActionTypes.ToggleNavBarState,
-} as const)
+export const toggleNavBarState = () =>
+  ({
+    type: ActionTypes.ToggleNavBarState,
+  } as const)

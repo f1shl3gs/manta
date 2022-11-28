@@ -3,10 +3,11 @@ import {useCallback, useEffect, useState} from 'react'
 import dayjs from 'dayjs'
 import {useSearchParams} from 'react-router-dom'
 
-import {PARAMS_INTERVAL, useTimeRange} from 'src/shared/useTimeRange'
+import {useTimeRange} from 'src/shared/useTimeRange'
 import {AutoRefresh, AutoRefreshStatus} from 'src/types/AutoRefresh'
 import {parseDuration} from 'src/utils/duration'
 import {TimeRange} from 'src/types/TimeRanges'
+import {PARAMS_INTERVAL} from 'src/constants/timeRange'
 
 const MAX_POINT = 1024
 const MIN_STEP = 14
