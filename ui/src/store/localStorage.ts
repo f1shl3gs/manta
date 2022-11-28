@@ -1,30 +1,41 @@
 import {LocalStorage} from 'src/types/localStorage'
+import { get } from 'src/utils/object'
 
 const StateKey = 'state'
 
+// @ts-ignore
 export const loadLocalStorage = (): LocalStorage => {
   try {
-    const data = localStorage.getItem(StateKey) ?? '{}'
+    const data = localStorage.getItem(StateKey) || '{}'
     const state = JSON.parse(data)
 
     return normalizeGetLocalStorage(state)
   } catch (err) {
     console.error(`Load local settings failed, ${err}`)
   }
-
-  return {
-    inPresentationMode: false
-  }
 }
 
 const normalizeGetLocalStorage = (state: LocalStorage): LocalStorage => {
   let newState = state
 
-  if (state.inPresentationMode) {
-    newState = {...newState, inPresentationMode: state.inPresentationMode}
+  const persisted = get(newState, 'app.persisted', false)
+  if (persisted) {
+    newState = {
+      ...newState,
+      app: normalizeApp(newState.app)
+    }
   }
 
   return newState
+}
+
+const normalizeApp = (app: LocalStorage['app']) => {
+  return {
+    ...app,
+    persisted: {
+      ...app.persisted
+    }
+  }
 }
 
 export const saveToLocalStorage = (state: LocalStorage): void => {

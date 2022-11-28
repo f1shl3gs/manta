@@ -1,5 +1,6 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -16,6 +17,12 @@ import UserWidget from 'src/organizations/UserWidget'
 
 // Hooks
 import {useOrganization} from 'src/organizations/useOrganizations'
+
+// Actions
+import { toggleNavBarState } from 'src/shared/actions/app'
+
+// Types
+import {AppState} from 'src/types/stores'
 
 const getNavItemActivation = (
   keywords: string[],
@@ -169,17 +176,16 @@ const generateNavItems = (orgId: string): NavItem[] => {
   ]
 }
 
-const Nav: FunctionComponent = () => {
-  const [collapse, setCollapse] = useState(false)
+type Props = ConnectedProps<typeof connector>
+
+const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
   const {id: orgId} = useOrganization()
   const navItems = generateNavItems(orgId)
 
   return (
     <TreeNav
-      expanded={collapse}
-      onToggleClick={() => {
-        setCollapse(prevState => !prevState)
-      }}
+      expanded={navbarState}
+      onToggleClick={toggleNavBarState}
       headerElement={
         <TreeNav.Header
           id="home"
@@ -254,4 +260,20 @@ const Nav: FunctionComponent = () => {
   )
 }
 
-export default Nav
+const mstp = ({
+  app: {
+    persisted: {navbarState}
+  }
+}: AppState) => {
+  return {
+    navbarState: navbarState === 'expanded'
+  }
+}
+
+const mdtp = {
+  toggleNavBarState
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(Nav)

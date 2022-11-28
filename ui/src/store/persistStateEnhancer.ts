@@ -2,7 +2,7 @@ import {throttle} from 'lodash'
 import {Store} from 'redux'
 
 import {LocalStorage} from 'src/types/localStorage'
-import { saveToLocalStorage } from './localStorage'
+import { saveToLocalStorage } from 'src/store/localStorage'
 
 export default function persistState() {
   return next => (reducer, initialState: LocalStorage, enhancer) => {

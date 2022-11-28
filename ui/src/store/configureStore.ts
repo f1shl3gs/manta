@@ -10,6 +10,7 @@ import {resizeLayout} from 'src/shared/middleware/resizeLayout'
 import {AppState} from 'src/types/stores'
 import {LocalStorage} from 'src/types/localStorage'
 import {loadLocalStorage} from 'src/store/localStorage'
+import persistStateEnhancer from 'src/store/persistStateEnhancer'
 
 // Reducers
 import app from 'src/shared/reducers/app'
@@ -31,6 +32,7 @@ function configureStore(
   initialState: LocalStorage = loadLocalStorage()
 ): Store<AppState> {
   const create = composeEnhancers(
+    persistStateEnhancer(),
     applyMiddleware(thunkMiddleware, resizeLayout)
   )(createStore)
 

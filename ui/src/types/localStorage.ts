@@ -1,3 +1,5 @@
+import {AppState} from 'src/shared/reducers/app'
+
 export interface LocalStorage {
-  inPresentationMode: boolean
+  app: AppState
 }
