@@ -12,7 +12,7 @@ import {
   TreeNavSubItem,
   TreeNavSubMenu,
 } from '@influxdata/clockface'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import UserWidget from 'src/organizations/UserWidget'
 
 // Hooks
@@ -180,6 +180,7 @@ type Props = ConnectedProps<typeof connector>
 
 const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
   const {id: orgId} = useOrganization()
+  const navigate = useNavigate()
   const navItems = generateNavItems(orgId)
 
   return (
@@ -192,7 +193,7 @@ const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
           label={<InfluxDBCloudLogo cloud={true} />}
           onClick={
             /* eslint-disable */
-            () => {}
+            () => navigate(`/orgs/${orgId}`)
             /* eslint-enable */
           }
           icon={<Icon glyph={IconFont.CuboSolid} />}
