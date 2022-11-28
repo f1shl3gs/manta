@@ -35,8 +35,6 @@ const NewVEO = lazy(() => import('src/dashboards/NewVEO'))
 const App: FC = () => {
   const inPresentationMode = useSelector(getPresentationMode)
 
-  console.log('ipm', inPresentationMode)
-
   return (
     <AppWrapper presentationMode={inPresentationMode}>
       <AuthenticationProvider>
