@@ -15,7 +15,7 @@ import persistStateEnhancer from 'src/store/persistStateEnhancer'
 // Reducers
 import app from 'src/shared/reducers/app'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
-import {timeRangeReducer} from '../shared/reducers/timeRange'
+import {timeRangeReducer} from 'src/shared/reducers/timeRange'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose

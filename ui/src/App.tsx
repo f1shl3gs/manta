@@ -17,8 +17,10 @@ import DataPage from 'src/data/DataPage'
 import {AutoRefreshProvider} from 'src/shared/useAutoRefresh'
 import {TimeRangeProvider} from 'src/shared/useTimeRange'
 import DashboardPage from 'src/dashboards/DashboardPage'
-import {useSelector} from 'react-redux';
-import {getPresentationMode} from './shared/selectors/app';
+import {getPresentationMode} from 'src/shared/selectors/app'
+
+// Hooks
+import {useSelector} from 'react-redux'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
