@@ -191,11 +191,7 @@ const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
         <TreeNav.Header
           id="home"
           label={<InfluxDBCloudLogo cloud={true} />}
-          onClick={
-            /* eslint-disable */
-            () => navigate(`/orgs/${orgId}`)
-            /* eslint-enable */
-          }
+          onClick={() => navigate(`/orgs/${orgId}`)}
           icon={<Icon glyph={IconFont.CuboSolid} />}
         />
       }
