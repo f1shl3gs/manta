@@ -1,14 +1,23 @@
-import React from 'react'
+// Libraries
+import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
-import {usePresentationMode} from 'src/shared/usePresentationMode'
+// Components
 import {IconFont, SquareButton} from '@influxdata/clockface'
 
-const PresentationModeToggle = () => {
-  const {togglePresentationMode} = usePresentationMode()
+// Actions
+import {enablePresentationMode} from 'src/shared/actions/app'
 
-  return (
-    <SquareButton icon={IconFont.ExpandB} onClick={togglePresentationMode} />
+type Props = ConnectedProps<typeof connector>
+
+const PresentationModeToggle: FunctionComponent<Props> = ({enablePresentationMode}) => (
+  <SquareButton icon={IconFont.ExpandB} onClick={enablePresentationMode} />
   )
+
+const mdtp = {
+  enablePresentationMode: enablePresentationMode
 }
 
-export default PresentationModeToggle
+const connector = connect(null, mdtp)
+
+export default connector(PresentationModeToggle)

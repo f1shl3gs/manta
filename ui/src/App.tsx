@@ -3,7 +3,6 @@ import React, {FC, lazy, Suspense} from 'react'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
-import {usePresentationMode} from 'src/shared/usePresentationMode'
 import {AuthenticationProvider} from 'src/shared/components/useAuthentication'
 import {Route, Routes} from 'react-router-dom'
 import Organizations from 'src/organizations/Organizations'
@@ -18,6 +17,8 @@ import DataPage from 'src/data/DataPage'
 import {AutoRefreshProvider} from 'src/shared/useAutoRefresh'
 import {TimeRangeProvider} from 'src/shared/useTimeRange'
 import DashboardPage from 'src/dashboards/DashboardPage'
+import {useSelector} from 'react-redux';
+import {getPresentationMode} from './shared/selectors/app';
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
@@ -32,7 +33,9 @@ const EditVEO = lazy(() => import('src/dashboards/EditVEO'))
 const NewVEO = lazy(() => import('src/dashboards/NewVEO'))
 
 const App: FC = () => {
-  const {inPresentationMode} = usePresentationMode()
+  const inPresentationMode = useSelector(getPresentationMode)
+
+  console.log('ipm', inPresentationMode)
 
   return (
     <AppWrapper presentationMode={inPresentationMode}>
