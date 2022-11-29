@@ -1,5 +1,5 @@
 // Why did you render
-// import './wdyr'
+import './wdyr'
 
 // Libraries
 import React, {lazy, Suspense} from 'react'
@@ -8,7 +8,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 // Components
 import App from 'src/App'
-import {Provider} from 'react-redux'
+import {PresentationModeProvider} from 'src/shared/usePresentationMode'
 import SetupWrapper from 'src/setup/SetupWrapper'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import NotFound from 'src/NotFound'
@@ -20,7 +20,6 @@ import 'react-virtualized/styles.css'
 
 // Utils
 import reportWebVitals from 'src/reportWebVitals'
-import { getStore } from 'src/store/configureStore'
 
 // Lazy Load
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
@@ -35,25 +34,25 @@ root.render(
     <RouterProvider router={router} />
   </React.StrictMode>
 */
-  <Provider store={getStore()}>
-    <BrowserRouter>
-      <SetupWrapper>
-        <Suspense fallback={<PageSpinner />}>
-          <Routes>
-            <Route path={'/signin'} element={<SignInPage />} />
+  <BrowserRouter>
+    <SetupWrapper>
+      <Suspense fallback={<PageSpinner />}>
+        <Routes>
+          <Route path={'/signin'} element={<SignInPage />} />
 
-            <Route
-              path="/*"
-              element={
+          <Route
+            path="/*"
+            element={
+              <PresentationModeProvider>
                 <App />
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </SetupWrapper>
-    </BrowserRouter>
-  </Provider>
+              </PresentationModeProvider>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </SetupWrapper>
+  </BrowserRouter>
 )
 
 // If you want to start measuring performance in your app, pass a function

@@ -26,10 +26,10 @@ const DashboardHeader = () => {
       <FlexBox margin={ComponentSize.Small}>
         <CreateCellButton />
         <PresentationModeToggle />
+        <TimeRangeDropdown />
       </FlexBox>
 
       <FlexBox margin={ComponentSize.Small}>
-        <TimeRangeDropdown />
         <AutoRefreshDropdown />
         <AutoRefreshButton />
       </FlexBox>

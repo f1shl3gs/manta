@@ -21,7 +21,7 @@ import {
   PARAMS_TIME_RANGE_LOW,
   PARAMS_TIME_RANGE_TYPE,
   PARAMS_SHOW_VARIABLES_CONTROLS,
-} from 'src/constants/timeRange'
+} from 'src/shared/useTimeRange'
 
 interface Props {
   dashboard: Dashboard
