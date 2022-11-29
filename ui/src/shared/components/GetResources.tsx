@@ -9,8 +9,13 @@ import PageSpinner from 'src/shared/components/PageSpinner'
 // Hooks
 import useFetch from 'src/shared/useFetch'
 
-// Types
-import {ResourceType} from 'src/types/resources'
+enum ResourceType {
+  Dashboards = 'dashboards',
+  Users = 'users',
+  Configurations = 'configurations',
+
+  Scrapes = 'scrapes',
+}
 
 interface State<T> {
   resources: T[]
@@ -20,15 +25,15 @@ interface State<T> {
 const [ResourcesProvider, useResources] = constate((state: State<any>) => state)
 
 interface Props {
+  children: ReactNode
+
   type: ResourceType
   url?: string
-
-  children: ReactNode
 }
 
-const GetResources: FunctionComponent<Props> = ({type, url, children}) => {
-  const {orgID} = useParams()
-  const u = url ? url : `/api/v1/${type}?orgID=${orgID}`
+const GetResources: FunctionComponent<Props> = ({children, type, url}) => {
+  const {orgId} = useParams()
+  const u = url ? url : `/api/v1/${type}?orgId=${orgId}`
   const {run, data, loading} = useFetch(u)
 
   return (

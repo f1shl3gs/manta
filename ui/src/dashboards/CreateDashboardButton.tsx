@@ -10,17 +10,17 @@ import {
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
 import {useNavigate} from 'react-router-dom'
+import {useOrganization} from 'src/organizations/useOrganizations'
 import useFetch from 'src/shared/useFetch'
-import {useOrg} from 'src/organizations/selectors'
 
 const CreateDashboardButton: FunctionComponent = () => {
-  const {id: orgID} = useOrg()
+  const {id: orgId} = useOrganization()
   const notify = useNotify()
   const navigate = useNavigate()
   const {run: create} = useFetch(`/api/v1/dashboards`, {
     method: 'POST',
     body: {
-      orgID: orgID,
+      orgId,
       cells: [],
     },
     onError: err => {

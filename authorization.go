@@ -20,7 +20,7 @@ var (
 type Resource struct {
 	Type  ResourceType `json:"type,omitempty"`
 	ID    ID           `json:"id,omitempty"`
-	OrgID ID           `json:"orgID,omitempty"`
+	OrgID ID           `json:"orgId,omitempty"`
 }
 
 type Permission struct {

@@ -13,12 +13,9 @@ import {loadLocalStorage} from 'src/store/localStorage'
 import persistStateEnhancer from 'src/store/persistStateEnhancer'
 
 // Reducers
-import appReducer from 'src/shared/reducers/app'
+import app from 'src/shared/reducers/app'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
 import {timeRangeReducer} from 'src/shared/reducers/timeRange'
-import {dashboardsReducer} from 'src/dashboards/reducers/dashboards'
-import {ResourceType} from 'src/types/resources'
-import {organizationsReducer} from 'src/organizations/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -29,13 +26,9 @@ const rootReducer = (_history: History) => (state, action) => {
   }
 
   return combineReducers<AppState>({
-    app: appReducer,
+    app,
     autoRefresh: autoRefreshReducer,
-    timeRange: timeRangeReducer,
-    resources: combineReducers({
-      [ResourceType.Dashboards]: dashboardsReducer,
-      [ResourceType.Organizations]: organizationsReducer,
-    }),
+    timeRange: timeRangeReducer
   })(state, action)
 }
 

@@ -1,5 +1,5 @@
 import React, {FunctionComponent, lazy} from 'react'
-import TabsPage from 'src/layout/TabsPage'
+import TabsPage from 'src/shared/components/TabsPage'
 
 const Members = lazy(() => import('src/settings/Members'))
 const Secrets = lazy(() => import('src/settings/Secrets'))

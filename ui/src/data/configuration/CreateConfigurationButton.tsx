@@ -1,14 +1,14 @@
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 import React, {FunctionComponent, useCallback} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useOrg} from 'src/organizations/selectors'
+import {useOrganization} from 'src/organizations/useOrganizations'
 
 const CreateConfigurationButton: FunctionComponent = () => {
   const navigate = useNavigate()
-  const {id: orgID} = useOrg()
+  const {id: orgId} = useOrganization()
   const create = useCallback(() => {
-    navigate(`/orgs/${orgID}/data/config/new`)
-  }, [navigate, orgID])
+    navigate(`/orgs/${orgId}/data/config/new`)
+  }, [navigate, orgId])
 
   return (
     <Button

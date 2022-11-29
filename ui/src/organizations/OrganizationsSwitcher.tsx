@@ -1,6 +1,6 @@
 // Libraries
-import React, {FunctionComponent, useCallback} from 'react'
-import {get} from 'lodash'
+import React, {FunctionComponent} from 'react'
+import {useNavigate} from 'react-router-dom'
 
 // Components
 import {
@@ -12,19 +12,7 @@ import {
   OverlayContainer,
   OverlayHeader,
 } from '@influxdata/clockface'
-
-// Hooks
-import {useNavigate} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
-import {getAll} from 'src/resources/selectors'
-
-// Types
-import {ResourceType} from 'src/types/resources'
-import {AppState} from 'src/types/stores'
-import {Organization} from 'src/types/Organization'
-
-// Actions
-import {SET_ORG} from 'src/organizations/actions'
+import {useOrganizations} from 'src/organizations/useOrganizations'
 
 interface Props {
   visible: boolean
@@ -35,26 +23,8 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
   visible,
   dismiss,
 }) => {
-  const dispatch = useDispatch()
+  const {organizations, current, setCurrent} = useOrganizations()
   const navigate = useNavigate()
-  const {orgs, current} = useSelector((state: AppState) => {
-    const orgs = getAll<Organization>(state, ResourceType.Organizations)
-    const current = get(state, 'resources.orgs.org', null)
-
-    return {
-      orgs,
-      current,
-    }
-  })
-  const setCurrent = useCallback(
-    org => {
-      dispatch({
-        type: SET_ORG,
-        org,
-      })
-    },
-    [dispatch]
-  )
 
   return (
     <Overlay visible={visible}>
@@ -65,7 +35,7 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
           <p className="org-switcher--prompt">Choose an organization</p>
 
           <List>
-            {orgs.map(org => {
+            {organizations.map(org => {
               const selected = org === current
 
               return (

@@ -17,7 +17,7 @@ func extractParamFromContext(ctx context.Context, name string) string {
 
 func orgIdFromQuery(r *http.Request) (manta.ID, error) {
 	var (
-		text = r.URL.Query().Get("orgID")
+		text = r.URL.Query().Get("orgId")
 		id   manta.ID
 	)
 

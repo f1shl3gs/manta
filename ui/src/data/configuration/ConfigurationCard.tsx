@@ -9,6 +9,7 @@ import {
 import {fromNow} from 'src/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
+import {useOrganization} from 'src/organizations/useOrganizations'
 import useFetch from 'src/shared/useFetch'
 import {useResources} from 'src/shared/components/GetResources'
 import {
@@ -16,7 +17,6 @@ import {
   defaultErrorNotification,
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
-import {useOrg} from 'src/organizations/selectors'
 
 interface Props {
   configuration: Configuration
@@ -24,7 +24,7 @@ interface Props {
 
 const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   const navigate = useNavigate()
-  const {id: orgID} = useOrg()
+  const {id: orgId} = useOrganization()
   const {reload} = useResources()
   const notify = useNotify()
   const {run: deleteConfig} = useFetch(
@@ -81,7 +81,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
         name={configuration.name}
         onUpdate={name => update({name})}
         onClick={() => {
-          navigate(`/orgs/${orgID}/data/config/${configuration.id}`)
+          navigate(`/orgs/${orgId}/data/config/${configuration.id}`)
         }}
       />
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import {get} from 'lodash'
 
 import {
   ComponentSize,
@@ -10,6 +9,7 @@ import {
 
 import {useNotifications} from 'src/shared/components/notifications/useNotification'
 import {NotificationStyle} from 'src/types/Notification'
+import {get} from 'src/utils/object'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {

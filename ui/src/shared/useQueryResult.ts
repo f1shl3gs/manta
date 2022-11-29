@@ -89,7 +89,7 @@ export const transformPromResp = (
 const useQueryResult = (queries: DashboardQuery[]) => {
   const [error, setError] = useState('')
   const {start, end, step} = useAutoRefresh()
-  const {orgID} = useParams()
+  const {orgId} = useParams()
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [result, setResult] = useState<FromFluxResult>({
     table: fromRows([]),
@@ -116,7 +116,7 @@ const useQueryResult = (queries: DashboardQuery[]) => {
       fetch(
         `/api/v1/query_range?query=${encodeURIComponent(
           q.text
-        )}&start=${start}&end=${end}&step=${step}&orgID=${orgID}`
+        )}&start=${start}&end=${end}&step=${step}&orgId=${orgId}`
       )
         .then(resp => {
           if (resp.status !== 200) {
@@ -150,7 +150,7 @@ const useQueryResult = (queries: DashboardQuery[]) => {
         })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [start, end, step, orgID])
+  }, [start, end, step, orgId])
 
   return {
     result,

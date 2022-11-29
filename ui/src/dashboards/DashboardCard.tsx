@@ -9,6 +9,7 @@ import {
 import Context from 'src/shared/components/context_menu/Context'
 import {useNavigate} from 'react-router-dom'
 import {fromNow} from 'src/utils/duration'
+import {useOrganization} from 'src/organizations/useOrganizations'
 import useFetch from 'src/shared/useFetch'
 import {
   defaultErrorNotification,
@@ -21,7 +22,6 @@ import {
   PARAMS_TIME_RANGE_TYPE,
   PARAMS_SHOW_VARIABLES_CONTROLS,
 } from 'src/constants/timeRange'
-import {useOrg} from 'src/organizations/selectors'
 
 interface Props {
   dashboard: Dashboard
@@ -31,7 +31,7 @@ interface Props {
 const DashboardCard: FunctionComponent<Props> = props => {
   const {dashboard, reload} = props
   const navigate = useNavigate()
-  const {id: orgID} = useOrg()
+  const {id: orgId} = useOrganization()
   const notify = useNotify()
   const {run: deleteDashboard} = useFetch(
     `/api/v1/dashboards/${dashboard.id}`,
@@ -71,9 +71,9 @@ const DashboardCard: FunctionComponent<Props> = props => {
     create({
       ...dashboard,
       name: `${dashboard.name} (Clone)`,
-      orgID: orgID,
+      orgID: orgId,
     })
-  }, [create, dashboard, orgID])
+  }, [create, dashboard, orgId])
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -125,7 +125,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
         onUpdate={name => update({name})}
         onClick={() => {
           navigate(
-            `/orgs/${orgID}/dashboards/${dashboard.id}?${new URLSearchParams({
+            `/orgs/${orgId}/dashboards/${dashboard.id}?${new URLSearchParams({
               [PARAMS_INTERVAL]: '15s',
               [PARAMS_TIME_RANGE_LOW]: 'now() - 1h',
               [PARAMS_TIME_RANGE_TYPE]: 'selectable-duration',

@@ -1,6 +1,4 @@
-import {Sort} from '@influxdata/clockface'
 import {ViewProperties} from 'src/types/Dashboard'
-import {DashboardSortKey, SortTypes} from 'src/types/Sort'
 
 export const MIN_DECIMAL_PLACES = 0
 export const MAX_DECIMAL_PLACES = 10
@@ -23,10 +21,4 @@ export const defaultViewProperties: ViewProperties = {
       hidden: false,
     },
   ],
-}
-
-export const DEFAULT_DASHBOARD_SORT_OPTIONS = {
-  sortDirection: Sort.Ascending,
-  sortType: SortTypes.String,
-  sortKey: 'name' as DashboardSortKey,
 }

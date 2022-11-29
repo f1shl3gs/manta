@@ -16,10 +16,10 @@ import {Link, useNavigate} from 'react-router-dom'
 import UserWidget from 'src/organizations/UserWidget'
 
 // Hooks
-import {useOrg} from 'src/organizations/selectors'
+import {useOrganization} from 'src/organizations/useOrganizations'
 
 // Actions
-import {toggleNavBarState} from 'src/shared/actions/app'
+import { toggleNavBarState } from 'src/shared/actions/app'
 
 // Types
 import {AppState} from 'src/types/stores'
@@ -61,8 +61,8 @@ interface NavSubItem {
   link: NavItemLink
 }
 
-const generateNavItems = (orgID: string): NavItem[] => {
-  const orgPrefix = `/orgs/${orgID}`
+const generateNavItems = (orgId: string): NavItem[] => {
+  const orgPrefix = `/orgs/${orgId}`
 
   return [
     {
@@ -179,11 +179,9 @@ const generateNavItems = (orgID: string): NavItem[] => {
 type Props = ConnectedProps<typeof connector>
 
 const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
-  const {id: orgID} = useOrg()
-  console.log('orgID', useOrg())
-
+  const {id: orgId} = useOrganization()
   const navigate = useNavigate()
-  const navItems = generateNavItems(orgID)
+  const navItems = generateNavItems(orgId)
 
   return (
     <TreeNav
@@ -193,7 +191,7 @@ const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
         <TreeNav.Header
           id="home"
           label={<InfluxDBCloudLogo cloud={true} />}
-          onClick={() => navigate(`/orgs/${orgID}`)}
+          onClick={() => navigate(`/orgs/${orgId}`)}
           icon={<Icon glyph={IconFont.CuboSolid} />}
         />
       }
@@ -261,16 +259,16 @@ const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
 
 const mstp = ({
   app: {
-    persisted: {navbarState},
-  },
+    persisted: {navbarState}
+  }
 }: AppState) => {
   return {
-    navbarState: navbarState === 'expanded',
+    navbarState: navbarState === 'expanded'
   }
 }
 
 const mdtp = {
-  toggleNavBarState,
+  toggleNavBarState
 }
 
 const connector = connect(mstp, mdtp)

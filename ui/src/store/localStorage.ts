@@ -1,8 +1,9 @@
 import {LocalStorage} from 'src/types/localStorage'
-import {get} from 'lodash'
+import { get } from 'src/utils/object'
 
 const StateKey = 'state'
 
+// @ts-ignore
 export const loadLocalStorage = (): LocalStorage => {
   try {
     const data = localStorage.getItem(StateKey) || '{}'
@@ -21,7 +22,7 @@ const normalizeGetLocalStorage = (state: LocalStorage): LocalStorage => {
   if (persisted) {
     newState = {
       ...newState,
-      app: normalizeApp(newState.app),
+      app: normalizeApp(newState.app)
     }
   }
 
@@ -32,14 +33,17 @@ const normalizeApp = (app: LocalStorage['app']) => {
   return {
     ...app,
     persisted: {
-      ...app.persisted,
-    },
+      ...app.persisted
+    }
   }
 }
 
 export const saveToLocalStorage = (state: LocalStorage): void => {
   try {
-    window.localStorage.setItem(StateKey, JSON.stringify(state))
+    window.localStorage.setItem(
+      StateKey,
+      JSON.stringify(state)
+    )
   } catch (err) {
     console.error(`Unable to save state to local storage: ${err}`)
   }

@@ -216,7 +216,7 @@ paths:
       description: Get all dashboards of this organization
       parameters:
         - $ref: '#/components/parameters/TraceSpan'
-        - name: orgID
+        - name: orgId
           in: query
           required: true
           schema:
@@ -299,7 +299,7 @@ paths:
       description: Get all users
       parameters:
         - $ref: '#/components/parameters/TraceSpan'
-        - name: orgID
+        - name: orgId
           in: query
           required: true
           schema:
@@ -323,7 +323,7 @@ paths:
       description: Get all configurations of the specified org
       parameters:
         - $ref: '#/components/parameters/TraceSpan'
-        - name: orgID
+        - name: orgId
           in: query
           required: true
           schema:
@@ -546,7 +546,7 @@ components:
           type: string
         desc:
           type: string
-        orgID:
+        orgId:
           required: true
           type: string
         cells:
