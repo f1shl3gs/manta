@@ -2,7 +2,7 @@
 import React, {FunctionComponent, lazy} from 'react'
 
 // Components
-import TabsPage from 'src/shared/components/TabsPage'
+import TabsPage from 'src/layout/TabsPage'
 
 const Todo = lazy(() => import('src/Todo'))
 const ConfigurationPage = lazy(

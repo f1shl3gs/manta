@@ -1,4 +1,6 @@
+import {RemoteDataState, Sort} from '@influxdata/clockface'
 import {DashboardColor} from 'src/types/Colors'
+import {DashboardSortKey, SortTypes} from 'src/types/Sort'
 
 export interface Axis {
   bounds?: string[]
@@ -191,13 +193,16 @@ export interface Cell {
 export type Cells = Cell[]
 
 export interface Dashboard {
-  id: string
-  created: string
-  updated: string
+  readonly id: string
+  readonly created: string
+  readonly updated: string
   name: string
   desc: string
   orgID: string
   cells: Cells
+
+  // TODO: remove this
+  status: RemoteDataState
 }
 
 export interface DashboardQuery {
@@ -211,3 +216,9 @@ export type Dashboards = Dashboard[]
 export type Base = Axis['base']
 
 export type AxisScale = 'log' | 'linear'
+
+export interface DashboardSortParams {
+  sortDirection: Sort
+  sortType: SortTypes
+  sortKey: DashboardSortKey
+}

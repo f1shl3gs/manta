@@ -20,12 +20,12 @@ import 'react-virtualized/styles.css'
 
 // Utils
 import reportWebVitals from 'src/reportWebVitals'
-import { getStore } from 'src/store/configureStore'
+import {getStore} from 'src/store/configureStore'
 
 // Lazy Load
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   /*
   react-custom-scrollbars not works well with react v18.
@@ -42,12 +42,7 @@ root.render(
           <Routes>
             <Route path={'/signin'} element={<SignInPage />} />
 
-            <Route
-              path="/*"
-              element={
-                <App />
-              }
-            />
+            <Route path="/*" element={<App />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

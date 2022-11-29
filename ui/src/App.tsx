@@ -24,7 +24,7 @@ import {useSelector} from 'react-redux'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
-const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
+const DashboardsPage = lazy(() => import('src/dashboards/DashboardsIndex'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
 const Explore = lazy(() => import('src/explore/Explore'))
 const DashboardImportOverlay = lazy(
@@ -54,7 +54,7 @@ const App: FC = () => {
                       <Route path="orgs">
                         <Route path="new" element={<CreateOrgOverlay />} />
 
-                        <Route path=":orgId">
+                        <Route path=":orgID">
                           <Route index={true} element={<Introduce />} />
 
                           <Route path="data/*" element={<DataPage />} />

@@ -19,7 +19,7 @@ import {SortKey, SortTypes} from 'src/types/Sort'
 import CreateDashboardButton from 'src/dashboards/CreateDashboardButton'
 import DashboardCards from 'src/dashboards/DashboardCards'
 
-export const DashboardsPage: FC = () => {
+export const DashboardsIndex: FC = () => {
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
@@ -70,4 +70,4 @@ export const DashboardsPage: FC = () => {
   )
 }
 
-export default DashboardsPage
+export default DashboardsIndex

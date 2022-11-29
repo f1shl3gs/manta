@@ -1,12 +1,13 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useOrganization} from 'src/organizations/useOrganizations'
+import {useOrg} from './selectors'
 
 const ToOrg: FunctionComponent = () => {
   const navigate = useNavigate()
-  const {id} = useOrganization()
+  const {id} = useOrg()
 
   useEffect(() => {
+    console.log('toorg')
     navigate(`/orgs/${id}`)
   }, [id, navigate])
 

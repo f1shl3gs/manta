@@ -26,11 +26,11 @@ import {
   defaultSuccessNotification,
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
-import {useOrganization} from 'src/organizations/useOrganizations'
 import {useResources} from 'src/shared/components/GetResources'
 
 // Utils
 import {downloadTextFile} from 'src/utils/download'
+import {useOrg} from 'src/organizations/selectors'
 
 const defaultConfig = `sources:
   # expose process metrics, e.g. cpu, memory and open files
@@ -60,7 +60,7 @@ const ConfigurationWizard: FunctionComponent = () => {
   const [content, setContent] = useState(defaultConfig)
   const navigate = useNavigate()
   const notify = useNotify()
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrg()
   const {reload} = useResources()
   const onDismiss = useCallback(() => {
     if (window.history.state.idx > 0) {
@@ -137,10 +137,8 @@ const ConfigurationWizard: FunctionComponent = () => {
             testID={'create-configuration--button'}
             onClick={() => {
               create({
-                orgId,
+                orgID,
                 data: content,
-                name: '',
-                desc: '',
               })
             }}
           />
