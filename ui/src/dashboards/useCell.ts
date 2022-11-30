@@ -29,7 +29,7 @@ interface State {
 }
 
 const [CellProvider, useCell] = constate((state: State) => {
-  const {orgId, cellID, dashboardId} = useParams()
+  const {orgID, cellID, dashboardId} = useParams()
   const navigate = useNavigate()
   const notify = useNotify()
 
@@ -57,7 +57,7 @@ const [CellProvider, useCell] = constate((state: State) => {
         })
       },
       onSuccess: _ => {
-        navigate(`/orgs/${orgId}/dashboards/${dashboardId}`)
+        navigate(`/orgs/${orgID}/dashboards/${dashboardId}`)
       },
     }
   )
@@ -79,7 +79,7 @@ const [CellProvider, useCell] = constate((state: State) => {
     method: 'POST',
     onSuccess: _ => {
       navigate(-1)
-    }
+    },
   })
   const createCell = useCallback(() => {
     create(cell)

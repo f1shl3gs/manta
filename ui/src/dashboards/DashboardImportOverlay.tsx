@@ -1,19 +1,19 @@
 import React, {FunctionComponent} from 'react'
-import {useOrganization} from 'src/organizations/useOrganizations'
 import ImportOverlay from 'src/shared/components/ImportOverlay'
 import {defaultErrorNotification} from 'src/shared/components/notifications/defaults'
 import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
-import {useNotify} from '../shared/components/notifications/useNotification'
+import {useNotify} from 'src/shared/components/notifications/useNotification'
+import {useOrg} from 'src/organizations/selectors'
 
 const DashboardImportOverlay: FunctionComponent = () => {
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrg()
   const navigate = useNavigate()
   const notify = useNotify()
   const {run: create} = useFetch(`/api/v1/dashboards`, {
     method: 'POST',
     body: {
-      orgId,
+      orgID: orgID,
       cells: [],
     },
     onError: err => {
@@ -23,7 +23,7 @@ const DashboardImportOverlay: FunctionComponent = () => {
       })
     },
     onSuccess: dashboard => {
-      navigate(`/orgs/${orgId}/dashboards/${dashboard.id}`)
+      navigate(`/orgs/${orgID}/dashboards/${dashboard.id}`)
     },
   })
 

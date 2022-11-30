@@ -1,6 +1,10 @@
 import {Sort} from '@influxdata/clockface'
 
-export type SortKey = 'created' | 'updated' | 'name'
+import {Dashboard} from 'src/types/Dashboard'
+
+export type DashboardSortKey = keyof Dashboard
+
+export type SortKey = DashboardSortKey
 
 export enum SortTypes {
   String = 'string',

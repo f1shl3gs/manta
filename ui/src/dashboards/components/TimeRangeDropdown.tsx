@@ -13,12 +13,14 @@ import {
 import DateRangePicker from 'src/shared/components/DateRangePicker/DateRangePicker'
 
 // Hooks
+import {useTimeRange} from 'src/shared/useTimeRange'
+
+// Constants
 import {
   CUSTOM_TIME_RANGE_LABEL,
   SELECTABLE_TIME_RANGES,
   TIME_RANGE_FORMAT,
-  useTimeRange,
-} from 'src/shared/useTimeRange'
+} from 'src/constants/timeRange'
 
 // Types
 import {TimeRange} from 'src/types/TimeRanges'

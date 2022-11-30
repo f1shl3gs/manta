@@ -3,7 +3,6 @@ import React, {FC, lazy, Suspense} from 'react'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
-import {usePresentationMode} from 'src/shared/usePresentationMode'
 import {AuthenticationProvider} from 'src/shared/components/useAuthentication'
 import {Route, Routes} from 'react-router-dom'
 import Organizations from 'src/organizations/Organizations'
@@ -18,10 +17,14 @@ import DataPage from 'src/data/DataPage'
 import {AutoRefreshProvider} from 'src/shared/useAutoRefresh'
 import {TimeRangeProvider} from 'src/shared/useTimeRange'
 import DashboardPage from 'src/dashboards/DashboardPage'
+import {getPresentationMode} from 'src/shared/selectors/app'
+
+// Hooks
+import {useSelector} from 'react-redux'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
-const DashboardsPage = lazy(() => import('src/dashboards/DashboardsPage'))
+const DashboardsPage = lazy(() => import('src/dashboards/DashboardsIndex'))
 const SettingsPage = lazy(() => import('src/settings/SettingsPage'))
 const Explore = lazy(() => import('src/explore/Explore'))
 const DashboardImportOverlay = lazy(
@@ -32,7 +35,7 @@ const EditVEO = lazy(() => import('src/dashboards/EditVEO'))
 const NewVEO = lazy(() => import('src/dashboards/NewVEO'))
 
 const App: FC = () => {
-  const {inPresentationMode} = usePresentationMode()
+  const inPresentationMode = useSelector(getPresentationMode)
 
   return (
     <AppWrapper presentationMode={inPresentationMode}>
@@ -51,7 +54,7 @@ const App: FC = () => {
                       <Route path="orgs">
                         <Route path="new" element={<CreateOrgOverlay />} />
 
-                        <Route path=":orgId">
+                        <Route path=":orgID">
                           <Route index={true} element={<Introduce />} />
 
                           <Route path="data/*" element={<DataPage />} />

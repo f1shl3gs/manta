@@ -1,5 +1,5 @@
-// Utils
-import {get} from 'src/utils/object'
+// Libraries
+import {get} from 'lodash'
 
 interface Props<T> {
   list: T[]

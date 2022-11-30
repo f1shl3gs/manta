@@ -23,6 +23,7 @@
 @import 'src/visualization/TimeMachine/TimeMachine';
 @import 'src/visualization/TimeMachine/TimeMachineQueries';
 @import 'src/visualization/TimeMachine/ViewOptions';
+@import 'src/layout/TabsPage';
 
 // Shards
 @import 'src/shared/components/wizard/WizardProgressHeader';
@@ -30,7 +31,6 @@
 @import 'src/shared/components/VersionInfo';
 @import 'src/shared/components/SearchWidget';
 @import 'src/shared/components/context_menu/ContextMenu';
-@import 'src/shared/components/TabsPage';
 @import 'src/shared/components/RenamablePageTitle';
 @import 'src/shared/components/DateRangePicker/DateRangePicker';
 @import 'src/shared/components/Editor';

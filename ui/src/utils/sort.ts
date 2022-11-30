@@ -1,7 +1,7 @@
 import {Sort} from '@influxdata/clockface'
 
 import {SortTypes} from 'src/types/Sort'
-import {get} from 'src/utils/object'
+import {get} from 'lodash'
 
 function sortBy<T>(
   resourceList: T[],
@@ -53,7 +53,7 @@ export function getSortedResources<T extends Sortable>(
   if (sortKey && sortDirection) {
     return sortBy<T>(
       resourceList,
-      r => orderByType(get(r, sortKey, ''), sortType),
+      r => orderByType(get(r, sortKey), sortType),
       sortDirection
     )
   }
