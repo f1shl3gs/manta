@@ -188,6 +188,10 @@ export interface Cell {
   maxW?: number
 
   viewProperties: ViewProperties
+
+  // extra information
+  dashboardID: string
+  status: RemoteDataState
 }
 
 export type Cells = Cell[]

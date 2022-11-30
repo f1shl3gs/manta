@@ -180,8 +180,6 @@ type Props = ConnectedProps<typeof connector>
 
 const Nav: FunctionComponent<Props> = ({navbarState, toggleNavBarState}) => {
   const {id: orgID} = useOrg()
-  console.log('orgID', useOrg())
-
   const navigate = useNavigate()
   const navItems = generateNavItems(orgID)
 

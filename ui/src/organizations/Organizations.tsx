@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {getOrgs} from 'src/organizations/actions/thunks'
 import {getOrgs as selectOrgs} from 'src/organizations/selectors'
 import {RemoteDataState} from '@influxdata/clockface'
+import {setOrg} from 'src/organizations/actions'
 
 interface Props {
   children: ReactNode
@@ -24,11 +25,13 @@ const Organizations: FunctionComponent<Props> = ({children}) => {
   const orgs = useSelector(selectOrgs)
 
   useEffect(() => {
-    if (!orgs) {
+    if (orgs.length === 0) {
       dispatch(getOrgs())
+      return
     }
 
     setLoading(RemoteDataState.Done)
+    dispatch(setOrg(orgs[0]))
   }, [orgs, dispatch])
 
   return (

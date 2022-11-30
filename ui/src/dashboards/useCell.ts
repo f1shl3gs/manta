@@ -4,11 +4,9 @@ import {useCallback, useState} from 'react'
 
 import {Cell, ViewProperties} from 'src/types/Dashboard'
 import useFetch from 'src/shared/useFetch'
-import {
-  defaultErrorNotification,
-  useNotify,
-} from 'src/shared/components/notifications/useNotification'
+import {defaultErrorNotification, useNotify,} from 'src/shared/components/notifications/useNotification'
 import {defaultViewProperties} from 'src/constants/dashboard'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const defaultCell: Cell = {
   desc: '',
@@ -22,6 +20,9 @@ const defaultCell: Cell = {
   x: 0,
   y: 0,
   viewProperties: defaultViewProperties,
+
+  dashboardID: '',
+  status: RemoteDataState.NotStarted
 }
 
 interface State {

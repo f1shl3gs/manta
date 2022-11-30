@@ -9,7 +9,7 @@ import {getAll} from 'src/resources/selectors'
 import {useSelector} from 'react-redux'
 
 export const getOrg = (state: AppState): Organization => {
-  return get(state, 'resources.orgs.org', null)
+  return get(state, 'resources.organizations.org', null)
 }
 
 export const getOrgs = (state: AppState): Organization[] => {

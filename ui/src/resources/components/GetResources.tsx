@@ -1,24 +1,53 @@
+// Libraries
+import React, {FunctionComponent, useEffect} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
+
 import {ResourceType} from 'src/types/resources'
-import {FunctionComponent, ReactNode} from 'react'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import {AppState} from 'src/types/stores'
-import {getResourcesStatus} from '../selectors';
+import {getResourcesStatus} from 'src/resources/selectors'
+import { getDashboards } from 'src/dashboards/actions/thunks'
+import {RemoteDataState} from '@influxdata/clockface'
 
-interface Props {
+type ReduxProps = ConnectedProps<typeof connector>
+interface OwnProps {
+  loading: RemoteDataState
   resources: Array<ResourceType>
-  childrent: ReactNode
+  childrent: JSX.Element | JSX.Element[]
 }
 
-const GetResources: FunctionComponent<Props> = ({resources, children}) => {
+type Props = ReduxProps & OwnProps
+
+const getResourceDetails = (resource: ResourceType, props: ReduxProps) => {
+  switch (resource) {
+    case ResourceType.Dashboards:
+      return props.getDashboards()
+    default:
+      throw new Error('incorrent resource type provided')
+  }
+}
+
+const GetResources: FunctionComponent<Props> = (props) => {
+  const {resources, loading, childrent} = props
+
+  useEffect(() => {
+    const promises = []
+
+    resources.forEach(resource => {
+      promises.push(getResourceDetails(resource, props))
+    })
+
+    Promise.all(promises)
+  }, [resources, props])
 
   return (
     <PageSpinner loading={loading}>
-      {children}
+      {childrent}
     </PageSpinner>
   )
 }
 
-const mstp = (state: AppState, {resources}: Props) => {
+const mstp = (state: AppState, {resources}: OwnProps) => {
   const loading = getResourcesStatus(state, resources)
 
   return {
@@ -32,4 +61,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default GetResources
+export default connector(GetResources)

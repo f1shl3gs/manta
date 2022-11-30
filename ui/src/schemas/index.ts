@@ -1,10 +1,11 @@
 // Libraries
-import { schema } from "normalizr"
+import {schema} from "normalizr"
+import {omit} from 'lodash'
 
 // Types
-import { ResourceType } from "src/types/resources"
+import {ResourceType} from "src/types/resources"
 import {Cell, Dashboard} from 'src/types/Dashboard'
-import {RemoteDataState} from '@influxdata/clockface';
+import {RemoteDataState} from '@influxdata/clockface'
 
 // Defines the schema for the 'organizations' resource
 export const orgSchema = new schema.Entity(ResourceType.Organizations)
@@ -40,3 +41,13 @@ export const dashboardSchema =new schema.Entity(
   }
 )
 export const arrayOfDashboards = [dashboardSchema]
+
+export const addDashboardDefaults = (dashboard: Dashboard): Dashboard => {
+  return {
+    ...dashboard,
+    id: dashboard.id || '',
+    name: dashboard.name || '',
+    orgID: dashboard.orgID || '',
+    status: RemoteDataState.Done
+  }
+}
