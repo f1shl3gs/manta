@@ -3,7 +3,7 @@ import constate from 'constate'
 import {useLayoutEffect, useMemo} from 'react'
 
 // Types
-import {Organization} from 'src/types/organization'
+import {Organization} from 'src/types/Organization'
 import useLocalStorage from 'src/shared/useLocalStorage'
 
 interface State {

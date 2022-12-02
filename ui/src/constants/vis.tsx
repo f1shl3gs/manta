@@ -1,5 +1,5 @@
 import React from 'react'
-import {ViewType} from 'src/types/cells'
+import {ViewType} from 'src/types/Dashboard'
 
 interface VisType {
   type: ViewType

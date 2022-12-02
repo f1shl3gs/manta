@@ -11,15 +11,18 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import useFetch from 'src/shared/useFetch'
 import useKeyPress from 'src/shared/useKeyPress'
-import {Organization} from 'src/types/organization'
+import {Organization} from 'src/types/Organization'
+import {
+  defaultErrorNotification,
+  useNotify,
+} from 'src/shared/components/notifications/useNotification'
+import {useOrganizations} from 'src/organizations/useOrganizations'
 
 const CreateOrgOverlay: FunctionComponent = () => {
   const [name, setName] = useState('')
+  const {refetch} = useOrganizations()
   const navigate = useNavigate()
   const notify = useNotify()
-  const refetch = () => {
-    console.log('todo')
-  }
   const onDismiss = useCallback(() => {
     navigate(-1)
   }, [navigate])

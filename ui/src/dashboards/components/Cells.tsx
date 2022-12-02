@@ -3,14 +3,12 @@ import React, {FunctionComponent, useEffect} from 'react'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Components
-import {Cell} from 'src/types/cells'
-import GradientBorder from 'src/cells/components/GradientBorder'
-import CellComponent from 'src/cells/components/Cell'
-import {useDispatch, useSelector} from 'react-redux'
-import {AppState} from 'src/types/stores'
-import {ResourceType} from 'src/types/resources'
-import {getAll} from 'src/resources/selectors'
-import {updateLayout} from '../actions/thunks'
+import {Cell} from 'src/types/Dashboard'
+import GradientBorder from 'src/dashboards/components/Cell/GradientBorder'
+import CellComponent from 'src/dashboards/components/Cell/Cell'
+
+// Hooks
+import {useDashboard} from 'src/dashboards/useDashboard'
 
 const Grid = WidthProvider(ReactGridLayout)
 
@@ -44,14 +42,7 @@ const resizeEventHandler = () => {
 }
 
 const Cells: FunctionComponent = () => {
-  const dispatch = useDispatch()
-
-  const onLayoutChange = (layouts: Layout[]) => {
-    dispatch(updateLayout(layouts))
-  }
-  const cells = useSelector((state: AppState) =>
-    getAll<Cell>(state, ResourceType.Cells)
-  )
+  const {cells, onLayoutChange} = useDashboard()
 
   useEffect(() => {
     window.addEventListener('resize', resizeEventHandler)

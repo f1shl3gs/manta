@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "type": "go",
+      "name": "Manta",
+      "goExecPath": "go",
+      "buildParams": [
+        "$PROJECT_DIR$/cmd/mantad/main.go",
+      ],
+    },
+    {
+      "type": "command",
+      "name": "UI",
+      "program": "yarn",
+      "workingDir": "ui/",
+      "args": ["start"],
+    }
+  ]
+}

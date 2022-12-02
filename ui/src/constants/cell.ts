@@ -1,4 +1,4 @@
-import {AxisScale, Base} from 'src/types/cells'
+import {AxisScale, Base} from 'src/types/Dashboard'
 
 export const AXES_SCALE_OPTIONS = {
   LINEAR: 'linear' as AxisScale,

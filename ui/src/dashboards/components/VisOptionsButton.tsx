@@ -1,20 +1,12 @@
-import React, {useCallback} from 'react'
+import React from 'react'
 
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useDispatch, useSelector} from 'react-redux'
-import {AppState} from 'src/types/stores'
-import {setViewingVisOptions} from 'src/timeMachine/actions'
+import {useViewOption} from 'src/shared/useViewOption'
 
 const VisOptionsButton: React.FC = () => {
-  const dispatch = useDispatch()
-  const viewingVisOptions = useSelector((state: AppState) => {
-    return state.timeMachine.viewingVisOptions
-  })
-  const handleClick = useCallback(() => {
-    dispatch(setViewingVisOptions(!viewingVisOptions))
-  }, [dispatch, viewingVisOptions])
+  const {isViewingVisOptions, onToggleVisOptions} = useViewOption()
 
-  const color = viewingVisOptions
+  const color = isViewingVisOptions
     ? ComponentColor.Primary
     : ComponentColor.Default
 
@@ -22,7 +14,7 @@ const VisOptionsButton: React.FC = () => {
     <Button
       color={color}
       icon={IconFont.CogSolid_New}
-      onClick={handleClick}
+      onClick={onToggleVisOptions}
       text={'Customize'}
     />
   )

@@ -31,7 +31,7 @@ function useDeepCompareMemoize(value: DependencyList) {
     ref.current = value
   }
 
-  return ref.current
+  return ref.current as DependencyList
 }
 
 interface RequestOptions<T> {
@@ -65,8 +65,7 @@ function useFetch<T = any>(url: string, options?: RequestOptions<T>): State<T> {
   }
 
   const [state, dispatch] = useReducer(fetchReducer, {
-    loading:
-      method === 'GET' ? RemoteDataState.Loading : RemoteDataState.NotStarted,
+    loading: method === 'GET' ? RemoteDataState.Loading : RemoteDataState.NotStarted,
     data: undefined,
     error: undefined,
     // @ts-ignore

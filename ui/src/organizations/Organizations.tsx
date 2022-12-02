@@ -1,46 +1,28 @@
-// Libraries
-import React, {FunctionComponent, ReactNode, useEffect, useState} from 'react'
-
-// Components
-import Nav from 'src/layout/Nav'
+import React, {FunctionComponent, ReactNode} from 'react'
+import useFetch from 'src/shared/useFetch'
+import {Organization} from 'src/types/Organization'
+import {OrganizationsProvider} from 'src/organizations/useOrganizations'
+import Nav from 'src/organizations/Nav'
 import PageSpinner from 'src/shared/components/PageSpinner'
-
-// Hooks
-import {useDispatch, useSelector} from 'react-redux'
-
-// Actions
-import {getOrgs} from 'src/organizations/actions/thunks'
-import {getOrg, getOrgs as selectOrgs} from 'src/organizations/selectors'
-import {RemoteDataState} from '@influxdata/clockface'
-import {setOrg} from 'src/organizations/actions'
 
 interface Props {
   children: ReactNode
 }
 
-// just get all organizations
 const Organizations: FunctionComponent<Props> = ({children}) => {
-  const dispatch = useDispatch()
-  const [loading, setLoading] = useState(RemoteDataState.Loading)
-  const orgs = useSelector(selectOrgs)
-  const org = useSelector(getOrg)
-
-  useEffect(() => {
-    if (orgs.length === 0) {
-      dispatch(getOrgs())
-      return
-    }
-
-    setLoading(RemoteDataState.Done)
-    if (!org) {
-      dispatch(setOrg(orgs[0]))
-    }
-  }, [org, orgs, dispatch])
+  const {
+    data = [],
+    loading,
+    run: refetch,
+  } = useFetch<[Organization]>('/api/v1/organizations')
 
   return (
     <PageSpinner loading={loading}>
-      <Nav />
-      <>{children}</>
+      <OrganizationsProvider organizations={data} refetch={refetch}>
+        <Nav />
+
+        {children}
+      </OrganizationsProvider>
     </PageSpinner>
   )
 }

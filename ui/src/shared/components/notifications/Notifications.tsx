@@ -1,8 +1,5 @@
-// Libraries
 import React from 'react'
-import {get} from 'lodash'
 
-// Components
 import {
   ComponentSize,
   Gradients,
@@ -10,10 +7,9 @@ import {
   Notification,
 } from '@influxdata/clockface'
 
-// Types
-import {NotificationStyle} from 'src/types/notification'
-import {AppState} from 'src/types/stores'
-import {useSelector} from 'react-redux'
+import {useNotifications} from 'src/shared/components/notifications/useNotification'
+import {NotificationStyle} from 'src/types/Notification'
+import {get} from 'src/utils/object'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -29,7 +25,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
 }
 
 const Notifications = () => {
-  const notifications = useSelector((state: AppState) => state.notifications)
+  const {notifications, dismiss} = useNotifications()
 
   return (
     <>

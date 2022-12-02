@@ -6,7 +6,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Types
 import {FromFluxResult} from '@influxdata/giraffe'
-import {ViewProperties} from 'src/types/cells'
+import {ViewProperties} from 'src/types/Dashboard'
 import Line from 'src/visualization/Line'
 
 interface Props {

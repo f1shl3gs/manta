@@ -152,14 +152,8 @@ func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dashboard, err := h.dashboardService.UpdateDashboard(ctx, id, upd)
-	if err != nil {
+	if _, err = h.dashboardService.UpdateDashboard(ctx, id, upd); err != nil {
 		h.HandleHTTPError(ctx, err, w)
-		return
-	}
-
-	if err = encodeResponse(ctx, w, http.StatusOK, dashboard); err != nil {
-		logEncodingError(h.logger, r, err)
 	}
 }
 
@@ -201,9 +195,7 @@ func (h *DashboardsHandler) addCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, cell); err != nil {
-		logEncodingError(h.logger, r, err)
-	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
@@ -230,7 +222,7 @@ func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
-		logEncodingError(h.logger, r, err)
+		h.HandleHTTPError(ctx, err, w)
 	}
 }
 

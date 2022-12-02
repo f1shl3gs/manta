@@ -6,7 +6,7 @@ import DatePicker from 'src/shared/components/DateRangePicker/DatePicker'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 
 // Types
-import {TimeRange} from 'src/types/timeRanges'
+import {TimeRange} from 'src/types/TimeRanges'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 
 interface Props {

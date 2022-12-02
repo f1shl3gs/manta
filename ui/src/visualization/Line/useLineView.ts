@@ -1,8 +1,10 @@
 import {useCallback} from 'react'
 import {DEFAULT_TIME_FORMAT} from 'src/constants/timeFormat'
-import {XYViewProperties} from 'src/types/dashboards'
+import {useViewProperties} from 'src/visualization/TimeMachine/useViewProperties'
+import {XYViewProperties} from 'src/types/Dashboard'
 
-const useLineView = (viewProperties, setViewProperties) => {
+const useLineView = () => {
+  const {viewProperties, setViewProperties} = useViewProperties()
   const properties = viewProperties as XYViewProperties
 
   const onSetXColumn = useCallback(

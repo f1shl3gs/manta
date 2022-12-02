@@ -18,5 +18,6 @@ export const downloadTextFile = (
 
   document.body.appendChild(a)
   a.click()
-  a.parentNode.removeChild(a)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  a.parentNode!.removeChild(a)
 }
