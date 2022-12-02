@@ -27,7 +27,11 @@ const EditVEO: FunctionComponent = () => {
         >
           <CellProvider cell={data}>
             <ViewOptionProvider>
-              <ViewEditorOverlayHeader onSubmit={() => {/* void */}} />
+              <ViewEditorOverlayHeader
+                onSubmit={() => {
+                  /* void */
+                }}
+              />
 
               <div className={'veo-contents'}>
                 <TimeMachine viewProperties={data?.viewProperties} />

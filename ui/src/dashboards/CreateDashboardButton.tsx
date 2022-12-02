@@ -17,16 +17,13 @@ const CreateDashboardButton: FunctionComponent = () => {
   const {id: orgID} = useOrganization()
   const notify = useNotify()
   const navigate = useNavigate()
+
   const {run: create} = useFetch(`/api/v1/dashboards`, {
     method: 'POST',
-    body: {
-      orgID,
-      cells: [],
-    },
     onError: err => {
       notify({
         ...defaultErrorNotification,
-        message: `Create new dashboard failed\n${err}`,
+        message: `Create new dashboard failed, ${err}`,
       })
     },
     onSuccess: dashboard => {
@@ -36,7 +33,9 @@ const CreateDashboardButton: FunctionComponent = () => {
 
   const onSelectNew = (): void => {
     create({
+      orgID,
       name: '',
+      cells: [],
     })
   }
 

@@ -6,11 +6,7 @@ const SubmitQueryButton: React.FC = () => {
   const {refresh} = useAutoRefresh()
 
   return (
-    <Button
-      text={'Submit'}
-      color={ComponentColor.Primary}
-      onClick={refresh}
-    />
+    <Button text={'Submit'} color={ComponentColor.Primary} onClick={refresh} />
   )
 }
 

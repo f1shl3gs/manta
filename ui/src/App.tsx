@@ -3,7 +3,10 @@ import React, {FC, lazy, Suspense} from 'react'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
-import {usePresentationMode} from 'src/shared/usePresentationMode'
+import {
+  PresentationModeProvider,
+  usePresentationMode,
+} from 'src/shared/usePresentationMode'
 import {AuthenticationProvider} from 'src/shared/components/useAuthentication'
 import {Route, Routes} from 'react-router-dom'
 import Organizations from 'src/organizations/Organizations'
@@ -32,70 +35,71 @@ const EditVEO = lazy(() => import('src/dashboards/EditVEO'))
 const NewVEO = lazy(() => import('src/dashboards/NewVEO'))
 
 const App: FC = () => {
-  const {inPresentationMode} = usePresentationMode()
+  const {presentationMode} = usePresentationMode()
 
   return (
-    <AppWrapper presentationMode={inPresentationMode}>
-      <AuthenticationProvider>
-        <NotificationProvider>
-          <Authentication>
-            <Notifications />
+    <AppWrapper presentationMode={presentationMode}>
+      <Authentication>
+        <Notifications />
 
-            <Organizations>
-              <Suspense fallback={<PageSpinner />}>
-                <TimeRangeProvider>
-                  <AutoRefreshProvider>
-                    <Routes>
-                      <Route index element={<ToOrg />} />
+        <Organizations>
+          <Suspense fallback={<PageSpinner />}>
+            <Routes>
+              <Route index element={<ToOrg />} />
 
-                      <Route path="orgs">
-                        <Route path="new" element={<CreateOrgOverlay />} />
+              <Route path="orgs">
+                <Route path="new" element={<CreateOrgOverlay />} />
 
-                        <Route path=":orgID">
-                          <Route index={true} element={<Introduce />} />
+                <Route path=":orgID">
+                  <Route index={true} element={<Introduce />} />
 
-                          <Route path="data/*" element={<DataPage />} />
+                  <Route path="data/*" element={<DataPage />} />
 
-                          <Route path="explore" element={<Explore />} />
+                  <Route path="explore" element={<Explore />} />
 
-                          <Route
-                            path="dashboards"
-                            element={<DashboardsPage />}
-                          />
-                          <Route
-                            path="dashboards/:dashboardID"
-                            element={<DashboardPage />}
-                          />
-                          <Route
-                            path="dashboards/import"
-                            element={<DashboardImportOverlay />}
-                          />
-                          <Route
-                            path="dashboards/:dashboardID/cells/new"
-                            element={<NewVEO />}
-                          />
-                          <Route
-                            path="dashboards/:dashboardID/cells/:cellID/edit"
-                            element={<EditVEO />}
-                          />
-                          <Route
-                            path={'dashboards/:dashboardID/export'}
-                            element={<ExportOverlay />}
-                          />
+                  <Route path="dashboards" element={<DashboardsPage />} />
+                  <Route
+                    path="dashboards/:dashboardID"
+                    element={<DashboardPage />}
+                  />
+                  <Route
+                    path="dashboards/import"
+                    element={<DashboardImportOverlay />}
+                  />
+                  <Route
+                    path="dashboards/:dashboardID/cells/new"
+                    element={<NewVEO />}
+                  />
+                  <Route
+                    path="dashboards/:dashboardID/cells/:cellID/edit"
+                    element={<EditVEO />}
+                  />
+                  <Route
+                    path={'dashboards/:dashboardID/export'}
+                    element={<ExportOverlay />}
+                  />
 
-                          <Route path="settings/*" element={<SettingsPage />} />
-                        </Route>
-                      </Route>
-                    </Routes>
-                  </AutoRefreshProvider>
-                </TimeRangeProvider>
-              </Suspense>
-            </Organizations>
-          </Authentication>
-        </NotificationProvider>
-      </AuthenticationProvider>
+                  <Route path="settings/*" element={<SettingsPage />} />
+                </Route>
+              </Route>
+            </Routes>
+          </Suspense>
+        </Organizations>
+      </Authentication>
     </AppWrapper>
   )
 }
 
-export default App
+export default () => (
+  <PresentationModeProvider>
+    <AuthenticationProvider>
+      <NotificationProvider>
+        <TimeRangeProvider>
+          <AutoRefreshProvider>
+            <App />
+          </AutoRefreshProvider>
+        </TimeRangeProvider>
+      </NotificationProvider>
+    </AuthenticationProvider>
+  </PresentationModeProvider>
+)

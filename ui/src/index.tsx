@@ -8,7 +8,6 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 // Components
 import App from 'src/App'
-import {PresentationModeProvider} from 'src/shared/usePresentationMode'
 import SetupWrapper from 'src/setup/SetupWrapper'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import NotFound from 'src/NotFound'
@@ -40,14 +39,7 @@ root.render(
         <Routes>
           <Route path={'/signin'} element={<SignInPage />} />
 
-          <Route
-            path="/*"
-            element={
-              <PresentationModeProvider>
-                <App />
-              </PresentationModeProvider>
-            }
-          />
+          <Route path="/*" element={<App />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

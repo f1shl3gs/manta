@@ -36,7 +36,16 @@ const [OrganizationsProvider, useOrganizations, useOrganization] = constate(
       refetch,
     }
   },
-  value => useMemo(() => value, [value]),
+  value =>
+    useMemo(
+      () => ({
+        organizations: value.organizations,
+        refetch: value.refetch,
+        current: value.current,
+        setCurrent: value.setCurrent,
+      }),
+      [value.organizations, value.refetch, value.current, value.setCurrent]
+    ),
   value => useMemo(() => value.current, [value.current])
 )
 

@@ -20,7 +20,7 @@ const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
     onChange(value)
   }
 
-  const editorWillMount = (monaco) => {
+  const editorWillMount = monaco => {
     const languageId = promLanguageDefinition.id
 
     /*

@@ -2,8 +2,7 @@ import {Organization} from '../../src/types/Organization'
 
 describe('Configuration', () => {
   beforeEach(() => {
-    cy.setup()
-      .then(() => cy.visit('/'))
+    cy.setup().then(() => cy.visit('/'))
 
     cy.getByTestID('nav-item-data').should('be.visible')
     cy.getByTestID('nav-item-data--config').click({force: true})
@@ -31,8 +30,8 @@ describe('Configuration', () => {
           body: {
             name: 'foo',
             desc: 'bar',
-            orgID: org.id
-          }
+            orgID: org.id,
+          },
         })
 
         cy.visit(`/orgs/${org.id}/data/config`)

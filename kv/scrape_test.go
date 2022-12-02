@@ -3,20 +3,16 @@ package kv
 import (
 	"bytes"
 	"fmt"
-	"github.com/f1shl3gs/manta"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httputil"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCraeteOne(t *testing.T) {
-	var orgID manta.ID
-	err := orgID.DecodeFromString("0a5255af55928000")
-	assert.NoError(t, err)
-
 	var body = bytes.NewBufferString(`{
-"orgID": "0a5255af55928000",
+"orgID": "0a609b764eeae000",
 "name": "demo",
 "targets": [
 "localhost:8088"
@@ -29,7 +25,7 @@ func TestCraeteOne(t *testing.T) {
 	req, err := http.NewRequest(http.MethodPost, "http://localhost:8088/api/v1/scrapes", body)
 	assert.NoError(t, err)
 
-	req.Header.Set("Cookie", "manta_session=0a5255af59928000")
+	req.Header.Set("Cookie", "manta_session=0a609b7653aae000")
 
 	resp, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)

@@ -79,7 +79,7 @@ const [CellProvider, useCell] = constate((state: State) => {
     method: 'POST',
     onSuccess: _ => {
       navigate(-1)
-    }
+    },
   })
   const createCell = useCallback(() => {
     create(cell)

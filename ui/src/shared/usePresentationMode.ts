@@ -16,7 +16,7 @@ const dispatchResizeEvent = () => {
 
 const [PresentationModeProvider, usePresentationMode] = constate(() => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [inPresentationMode, setInPresentationMode] = useState(() => {
+  const [presentationMode, setpresentationMode] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     const defaultValue = params.get(PRESENTATION_KEY)
 
@@ -28,26 +28,26 @@ const [PresentationModeProvider, usePresentationMode] = constate(() => {
       // History will recorde all urls pushed before, even if the are all the same,
       // in which case when user click `go back`, they will see nothing changed,
       // cause the url is the same
-      if (inPresentationMode === b) {
+      if (presentationMode === b) {
         return
       }
 
       searchParams.set(PRESENTATION_KEY, b ? 'true' : 'false')
       setSearchParams(searchParams)
 
-      setInPresentationMode(b)
+      setpresentationMode(b)
       dispatchResizeEvent()
     },
-    [inPresentationMode, searchParams, setSearchParams]
+    [presentationMode, searchParams, setSearchParams]
   )
 
   const toggle = useCallback(() => {
-    setPresentation(!inPresentationMode)
-  }, [inPresentationMode, setPresentation])
+    setPresentation(!presentationMode)
+  }, [presentationMode, setPresentation])
 
   const escapePresentationMode = useCallback(
     (event: KeyboardEvent) => {
-      if (!inPresentationMode) {
+      if (!presentationMode) {
         return
       }
 
@@ -55,7 +55,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(() => {
         setPresentation(false)
       }
     },
-    [setPresentation, inPresentationMode]
+    [setPresentation, presentationMode]
   )
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(() => {
 
     // TODO
     // const unListen = history.listen(() => {
-    //   setInPresentationMode(false)
+    //   setpresentationMode(false)
     //   dispatchResizeEvent()
     // })
 
@@ -74,7 +74,7 @@ const [PresentationModeProvider, usePresentationMode] = constate(() => {
   })
 
   return {
-    inPresentationMode,
+    presentationMode,
     togglePresentationMode: toggle,
   }
 })
