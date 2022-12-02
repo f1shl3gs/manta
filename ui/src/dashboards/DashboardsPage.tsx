@@ -15,7 +15,7 @@ import {
 import {GetResources, ResourceType} from 'src/shared/components/GetResources'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
-import {SortKey, SortTypes} from 'src/types/Sort'
+import {SortKey, SortTypes} from 'src/types/sort'
 import CreateDashboardButton from 'src/dashboards/CreateDashboardButton'
 import DashboardCards from 'src/dashboards/DashboardCards'
 

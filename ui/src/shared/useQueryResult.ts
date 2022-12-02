@@ -1,4 +1,4 @@
-import {DashboardQuery} from 'src/types/Dashboard'
+import {DashboardQuery} from 'src/types/dashboard'
 import {useEffect, useState} from 'react'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
 import {useAutoRefresh} from 'src/shared/useAutoRefresh'

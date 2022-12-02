@@ -1,5 +1,5 @@
 import React from 'react'
-import {ViewProperties} from 'src/types/Dashboard'
+import {ViewProperties} from 'src/types/dashboard'
 import {LineOptions} from 'src/visualization/Line'
 
 interface Props {

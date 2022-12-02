@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useCallback} from 'react'
-import {Dashboard} from 'src/types/Dashboard'
+import {Dashboard} from 'src/types/dashboard'
 import {
   ButtonShape,
   ComponentColor,

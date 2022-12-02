@@ -1,5 +1,5 @@
 import React, {useRef} from 'react'
-import {Variable} from 'src/types/Variable'
+import {Variable} from 'src/types/variable'
 import {
   Appearance,
   Button,

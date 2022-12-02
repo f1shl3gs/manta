@@ -15,7 +15,7 @@ import TimeMachineQueries from 'src/visualization/TimeMachine/TimeMachineQueries
 import {ViewPropertiesProvider} from 'src/visualization/TimeMachine/useViewProperties'
 
 // Types
-import {ViewProperties} from 'src/types/Dashboard'
+import {ViewProperties} from 'src/types/dashboard'
 import TimeMachineVis from 'src/visualization/TimeMachine/TimeMachineVis'
 import {useViewOption} from 'src/shared/useViewOption'
 

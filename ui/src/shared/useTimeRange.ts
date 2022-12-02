@@ -3,8 +3,8 @@ import {useEffect, useState} from 'react'
 import constate from 'constate'
 
 // Types
-import {TimeRange} from 'src/types/TimeRanges'
-import {SelectableDurationTimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
+import {SelectableDurationTimeRange} from 'src/types/timeRanges'
 import {useSearchParams} from 'react-router-dom'
 
 // Constants

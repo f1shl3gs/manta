@@ -3,7 +3,7 @@ import React, {FunctionComponent, useEffect} from 'react'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Components
-import {Cell} from 'src/types/Dashboard'
+import {Cell} from 'src/types/dashboard'
 import GradientBorder from 'src/dashboards/components/Cell/GradientBorder'
 import CellComponent from 'src/dashboards/components/Cell/Cell'
 

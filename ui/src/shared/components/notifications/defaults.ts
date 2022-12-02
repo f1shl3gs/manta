@@ -1,6 +1,6 @@
-import {NotificationStyle} from 'src/types/Notification'
+import {NotificationStyle} from 'src/types/notification'
 import {IconFont} from '@influxdata/clockface'
-import {Notification} from 'src/types/Notification'
+import {Notification} from 'src/types/notification'
 
 export const FIVE_SECONDS = 5000
 export const TEN_SECONDS = 10000

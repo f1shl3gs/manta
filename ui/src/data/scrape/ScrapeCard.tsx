@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import {Scrape} from 'src/types/Scrape'
+import {Scrape} from 'src/types/scrape'
 import {
   ButtonShape,
   ComponentColor,

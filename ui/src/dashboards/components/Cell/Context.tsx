@@ -1,5 +1,5 @@
 import React, {FunctionComponent, RefObject, useRef, useState} from 'react'
-import {Cell} from 'src/types/Dashboard'
+import {Cell} from 'src/types/dashboard'
 import {useNavigate, useParams} from 'react-router-dom'
 import ContextItem from 'src/dashboards/components/Cell/ContextItem'
 import {

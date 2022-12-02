@@ -9,7 +9,7 @@ import DashboardEmpty from 'src/dashboards/components/DashboardEmpty'
 // Hooks
 import useFetch from 'src/shared/useFetch'
 import {useParams} from 'react-router-dom'
-import {Dashboard} from 'src/types/Dashboard'
+import {Dashboard} from 'src/types/dashboard'
 import {DashboardProvider} from 'src/dashboards/useDashboard'
 import DashboardHeader from 'src/dashboards/components/DashboardHeader'
 import {TimeRangeProvider} from 'src/shared/useTimeRange'

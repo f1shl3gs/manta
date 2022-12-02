@@ -7,8 +7,8 @@ import {
   withResources,
 } from 'src/shared/components/GetResources'
 import {getSortedResources} from 'src/utils/sort'
-import {Scrape} from 'src/types/Scrape'
-import {SortKey, SortTypes} from 'src/types/Sort'
+import {Scrape} from 'src/types/scrape'
+import {SortKey, SortTypes} from 'src/types/sort'
 import ScrapeCard from 'src/data/scrape/ScrapeCard'
 import EmptyScrapes from 'src/data/scrape/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'

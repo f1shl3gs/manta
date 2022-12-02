@@ -12,7 +12,7 @@ import useLineView from 'src/visualization/Line/useLineView'
 import {getFormatter} from 'src/utils/vis'
 
 // Types
-import {XYViewProperties} from 'src/types/Dashboard'
+import {XYViewProperties} from 'src/types/dashboard'
 import {VisualizationProps} from 'src/visualization'
 
 interface Props extends VisualizationProps {

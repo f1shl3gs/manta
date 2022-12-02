@@ -2,7 +2,7 @@ import constate from 'constate'
 import {useNavigate, useParams} from 'react-router-dom'
 import {useCallback, useState} from 'react'
 
-import {Cell, ViewProperties} from 'src/types/Dashboard'
+import {Cell, ViewProperties} from 'src/types/dashboard'
 import useFetch from 'src/shared/useFetch'
 import {
   defaultErrorNotification,

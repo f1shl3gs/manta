@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react'
 import ExportForm from 'src/shared/components/ExportForm'
 import {useParams} from 'react-router-dom'
 import useFetch from 'src/shared/useFetch'
-import {Dashboard} from 'src/types/Dashboard'
+import {Dashboard} from 'src/types/dashboard'
 import PageSpinner from 'src/shared/components/PageSpinner'
 
 const ExportOverlay: FunctionComponent = () => {

@@ -7,7 +7,7 @@ import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
 import QueryTabName from 'src/visualization/TimeMachine/QueryTabName'
 
 // Types
-import {DashboardQuery} from 'src/types/Dashboard'
+import {DashboardQuery} from 'src/types/dashboard'
 
 // Hooks
 import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'

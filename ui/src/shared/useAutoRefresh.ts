@@ -4,9 +4,9 @@ import dayjs from 'dayjs'
 import {useSearchParams} from 'react-router-dom'
 
 import {PARAMS_INTERVAL, useTimeRange} from 'src/shared/useTimeRange'
-import {AutoRefresh, AutoRefreshStatus} from 'src/types/AutoRefresh'
+import {AutoRefresh, AutoRefreshStatus} from 'src/types/autoRefresh'
 import {parseDuration} from 'src/utils/duration'
-import {TimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
 
 const MAX_POINT = 1024
 const MIN_STEP = 14

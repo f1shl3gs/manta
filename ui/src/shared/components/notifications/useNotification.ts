@@ -1,7 +1,7 @@
 import constate from 'constate'
 import {useCallback, useMemo, useState} from 'react'
 
-import {Notification} from 'src/types/Notification'
+import {Notification} from 'src/types/notification'
 
 export * from 'src/shared/components/notifications/defaults'
 

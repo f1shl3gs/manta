@@ -1,5 +1,5 @@
 import constate from 'constate'
-import {Dashboard} from 'src/types/Dashboard'
+import {Dashboard} from 'src/types/dashboard'
 import {useCallback, useState} from 'react'
 import useFetch from 'src/shared/useFetch'
 import {useParams} from 'react-router-dom'

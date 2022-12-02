@@ -1,6 +1,6 @@
 import {Sort} from '@influxdata/clockface'
 
-import {SortTypes} from 'src/types/Sort'
+import {SortTypes} from 'src/types/sort'
 import {get} from 'src/utils/object'
 
 function sortBy<T>(

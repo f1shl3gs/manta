@@ -8,7 +8,7 @@ import {
   SingleStatViewProperties,
   ViewProperties,
   ViewType,
-} from 'src/types/Dashboard'
+} from 'src/types/dashboard'
 import {VIS_GRAPHICS} from 'src/constants/vis'
 
 const defaultGaugeViewProperties = {

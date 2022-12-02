@@ -20,8 +20,8 @@ import {getSortedResources} from 'src/utils/sort'
 import ConfigurationExplainer from 'src/data/configuration/ConfigurationExplainer'
 
 // Types
-import {SortKey, SortTypes} from 'src/types/Sort'
-import {Configuration} from 'src/types/Configuration'
+import {SortKey, SortTypes} from 'src/types/sort'
+import {Configuration} from 'src/types/configuration'
 
 const ConfigurationWizard = lazy(
   () => import('src/data/configuration/ConfigurationWizard')

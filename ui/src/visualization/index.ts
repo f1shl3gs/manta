@@ -1,5 +1,5 @@
 import {FromFluxResult} from '@influxdata/giraffe'
-import {TimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
 
 export interface VisualizationProps {
   result: FromFluxResult

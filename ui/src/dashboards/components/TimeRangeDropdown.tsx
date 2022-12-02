@@ -21,7 +21,7 @@ import {
 } from 'src/shared/useTimeRange'
 
 // Types
-import {TimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
 
 const getTimeRangeLabel = (timeRange: TimeRange): string => {
   if (timeRange.type === 'selectable-duration') {

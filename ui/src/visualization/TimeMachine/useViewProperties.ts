@@ -1,7 +1,7 @@
 import {useCallback, useState} from 'react'
 import constate from 'constate'
 
-import {DashboardQuery, ViewProperties} from 'src/types/Dashboard'
+import {DashboardQuery, ViewProperties} from 'src/types/dashboard'
 
 interface State {
   viewProperties: ViewProperties

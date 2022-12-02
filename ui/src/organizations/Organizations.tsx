@@ -1,6 +1,6 @@
 import React, {FunctionComponent, ReactNode} from 'react'
 import useFetch from 'src/shared/useFetch'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 import {OrganizationsProvider} from 'src/organizations/useOrganizations'
 import Nav from 'src/organizations/Nav'
 import PageSpinner from 'src/shared/components/PageSpinner'

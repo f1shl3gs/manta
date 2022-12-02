@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 
-import {Cell} from 'src/types/Dashboard'
+import {Cell} from 'src/types/dashboard'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import Header from 'src/dashboards/components/Cell/Header'
 import Context from 'src/dashboards/components/Cell/Context'

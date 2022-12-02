@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import {ViewProperties} from 'src/types/Dashboard'
+import {ViewProperties} from 'src/types/dashboard'
 import TimeSeries from '../../../shared/components/TimeSeries'
 
 interface Props {

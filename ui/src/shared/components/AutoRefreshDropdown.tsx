@@ -22,7 +22,7 @@ import {
   AutoRefreshOption,
   AutoRefreshOptionType,
   AutoRefreshStatus,
-} from 'src/types/AutoRefresh'
+} from 'src/types/autoRefresh'
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {

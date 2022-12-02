@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import {Configuration} from 'src/types/Configuration'
+import {Configuration} from 'src/types/configuration'
 import {
   ButtonShape,
   ComponentColor,

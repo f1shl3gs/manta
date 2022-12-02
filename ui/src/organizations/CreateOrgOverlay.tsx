@@ -11,7 +11,7 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import useFetch from 'src/shared/useFetch'
 import useKeyPress from 'src/shared/useKeyPress'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 import {
   defaultErrorNotification,
   useNotify,
