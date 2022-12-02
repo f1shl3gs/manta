@@ -60,7 +60,7 @@ const ConfigurationWizard: FunctionComponent = () => {
   const [content, setContent] = useState(defaultConfig)
   const navigate = useNavigate()
   const notify = useNotify()
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrganization()
   const {reload} = useResources()
   const onDismiss = useCallback(() => {
     if (window.history.state.idx > 0) {
@@ -137,7 +137,7 @@ const ConfigurationWizard: FunctionComponent = () => {
             testID={'create-configuration--button'}
             onClick={() => {
               create({
-                orgId,
+                orgID,
                 data: content,
                 name: '',
                 desc: '',

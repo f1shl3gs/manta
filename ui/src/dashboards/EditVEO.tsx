@@ -13,9 +13,9 @@ import {CellProvider} from 'src/dashboards/useCell'
 import {ViewOptionProvider} from 'src/shared/useViewOption'
 
 const EditVEO: FunctionComponent = () => {
-  const {cellID, dashboardId} = useParams()
+  const {cellID, dashboardID} = useParams()
   const {data, loading} = useFetch(
-    `/api/v1/dashboards/${dashboardId}/cells/${cellID}`
+    `/api/v1/dashboards/${dashboardID}/cells/${cellID}`
   )
 
   return (

@@ -232,7 +232,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	dashboardId, err := idFromPath(r)
+	dashboardID, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -250,7 +250,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardId, cellId, upd)
+	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellId, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

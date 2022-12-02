@@ -31,7 +31,7 @@ interface Props {
 const DashboardCard: FunctionComponent<Props> = props => {
   const {dashboard, reload} = props
   const navigate = useNavigate()
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrganization()
   const notify = useNotify()
   const {run: deleteDashboard} = useFetch(
     `/api/v1/dashboards/${dashboard.id}`,
@@ -71,9 +71,9 @@ const DashboardCard: FunctionComponent<Props> = props => {
     create({
       ...dashboard,
       name: `${dashboard.name} (Clone)`,
-      orgID: orgId,
+      orgID: orgID,
     })
-  }, [create, dashboard, orgId])
+  }, [create, dashboard, orgID])
 
   const contextMenu = (): JSX.Element => (
     <Context>
@@ -125,7 +125,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
         onUpdate={name => update({name})}
         onClick={() => {
           navigate(
-            `/orgs/${orgId}/dashboards/${dashboard.id}?${new URLSearchParams({
+            `/orgs/${orgID}/dashboards/${dashboard.id}?${new URLSearchParams({
               [PARAMS_INTERVAL]: '15s',
               [PARAMS_TIME_RANGE_LOW]: 'now() - 1h',
               [PARAMS_TIME_RANGE_TYPE]: 'selectable-duration',

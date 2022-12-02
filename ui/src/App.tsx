@@ -51,7 +51,7 @@ const App: FC = () => {
                       <Route path="orgs">
                         <Route path="new" element={<CreateOrgOverlay />} />
 
-                        <Route path=":orgId">
+                        <Route path=":orgID">
                           <Route index={true} element={<Introduce />} />
 
                           <Route path="data/*" element={<DataPage />} />
@@ -63,7 +63,7 @@ const App: FC = () => {
                             element={<DashboardsPage />}
                           />
                           <Route
-                            path="dashboards/:dashboardId"
+                            path="dashboards/:dashboardID"
                             element={<DashboardPage />}
                           />
                           <Route
@@ -71,15 +71,15 @@ const App: FC = () => {
                             element={<DashboardImportOverlay />}
                           />
                           <Route
-                            path="dashboards/:dashboardId/cells/new"
+                            path="dashboards/:dashboardID/cells/new"
                             element={<NewVEO />}
                           />
                           <Route
-                            path="dashboards/:dashboardId/cells/:cellID/edit"
+                            path="dashboards/:dashboardID/cells/:cellID/edit"
                             element={<EditVEO />}
                           />
                           <Route
-                            path={'dashboards/:dashboardId/export'}
+                            path={'dashboards/:dashboardID/export'}
                             element={<ExportOverlay />}
                           />
 

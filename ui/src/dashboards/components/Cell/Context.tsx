@@ -25,10 +25,10 @@ interface Props {
 const Context: FunctionComponent<Props> = ({cell}) => {
   const navigate = useNavigate()
   const notify = useNotify()
-  const {dashboardId} = useParams()
+  const {dashboardID} = useParams()
   const {reload} = useDashboard()
   const {run: deleteCell} = useFetch(
-    `/api/v1/dashboards/${dashboardId}/cells/${cell.id}`,
+    `/api/v1/dashboards/${dashboardID}/cells/${cell.id}`,
     {
       method: 'DELETE',
       onError: err => {

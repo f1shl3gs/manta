@@ -54,8 +54,8 @@ interface NavSubItem {
   link: NavItemLink
 }
 
-const generateNavItems = (orgId: string): NavItem[] => {
-  const orgPrefix = `/orgs/${orgId}`
+const generateNavItems = (orgID: string): NavItem[] => {
+  const orgPrefix = `/orgs/${orgID}`
 
   return [
     {
@@ -171,8 +171,8 @@ const generateNavItems = (orgId: string): NavItem[] => {
 
 const Nav: FunctionComponent = () => {
   const [collapse, setCollapse] = useState(false)
-  const {id: orgId} = useOrganization()
-  const navItems = generateNavItems(orgId)
+  const {id: orgID} = useOrganization()
+  const navItems = generateNavItems(orgID)
 
   return (
     <TreeNav

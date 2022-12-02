@@ -1,5 +1,5 @@
 // Why did you render
-import './wdyr'
+// import './wdyr'
 
 // Libraries
 import React, {lazy, Suspense} from 'react'

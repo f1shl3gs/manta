@@ -32,8 +32,8 @@ interface Props {
 }
 
 const GetResources: FunctionComponent<Props> = ({children, type, url}) => {
-  const {orgId} = useParams()
-  const u = url ? url : `/api/v1/${type}?orgId=${orgId}`
+  const {orgID} = useParams()
+  const u = url ? url : `/api/v1/${type}?orgID=${orgID}`
   const {run, data, loading} = useFetch(u)
 
   return (

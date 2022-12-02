@@ -14,13 +14,13 @@ import {useOrganization} from 'src/organizations/useOrganizations'
 import useFetch from 'src/shared/useFetch'
 
 const CreateDashboardButton: FunctionComponent = () => {
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrganization()
   const notify = useNotify()
   const navigate = useNavigate()
   const {run: create} = useFetch(`/api/v1/dashboards`, {
     method: 'POST',
     body: {
-      orgId,
+      orgID,
       cells: [],
     },
     onError: err => {

@@ -31,7 +31,7 @@ describe('Configuration', () => {
           body: {
             name: 'foo',
             desc: 'bar',
-            orgId: org.id
+            orgID: org.id
           }
         })
 

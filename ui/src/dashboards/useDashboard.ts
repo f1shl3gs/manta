@@ -14,17 +14,17 @@ interface State {
 }
 
 const [DashboardProvider, useDashboard] = constate((state: State) => {
-  const {dashboardId} = useParams()
+  const {dashboardID} = useParams()
   const notify = useNotify()
   const [dashboard, setDashboard] = useState(state.dashboard)
-  const {loading, run: reload} = useFetch(`/api/v1/dashboards/${dashboardId}`, {
+  const {loading, run: reload} = useFetch(`/api/v1/dashboards/${dashboardID}`, {
     onSuccess: data => {
       setDashboard(data)
     },
   })
 
   const {run: replaceCells} = useFetch(
-    `/api/v1/dashboards/${dashboardId}/cells`,
+    `/api/v1/dashboards/${dashboardID}/cells`,
     {
       method: 'PUT',
       onError: err => {
@@ -56,7 +56,7 @@ const [DashboardProvider, useDashboard] = constate((state: State) => {
     [dashboard, replaceCells]
   )
 
-  const {run: patchDashboard} = useFetch(`/api/v1/dashboards/${dashboardId}`, {
+  const {run: patchDashboard} = useFetch(`/api/v1/dashboards/${dashboardID}`, {
     method: 'PATCH',
   })
 

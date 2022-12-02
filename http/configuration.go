@@ -38,13 +38,13 @@ func NewConfigurationService(backend *Backend, logger *zap.Logger) {
 func (h *ConfigurationHandler) listConfigurations(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
-	orgId, err := orgIdFromQuery(r)
+	orgID, err := orgIdFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cs, err := h.configurationService.FindConfigurations(ctx, manta.ConfigurationFilter{OrgID: orgId})
+	cs, err := h.configurationService.FindConfigurations(ctx, manta.ConfigurationFilter{OrgID: orgID})
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

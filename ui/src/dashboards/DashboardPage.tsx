@@ -16,9 +16,9 @@ import {TimeRangeProvider} from 'src/shared/useTimeRange'
 import Cells from 'src/dashboards/components/Cells'
 
 const DashboardPage: FunctionComponent = () => {
-  const {dashboardId} = useParams()
+  const {dashboardID} = useParams()
   const {data: dashboard, loading} = useFetch<Dashboard>(
-    `/api/v1/dashboards/${dashboardId}`
+    `/api/v1/dashboards/${dashboardID}`
   )
 
   return (

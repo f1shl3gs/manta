@@ -24,7 +24,7 @@ interface Props {
 
 const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   const navigate = useNavigate()
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrganization()
   const {reload} = useResources()
   const notify = useNotify()
   const {run: deleteConfig} = useFetch(
@@ -81,7 +81,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
         name={configuration.name}
         onUpdate={name => update({name})}
         onClick={() => {
-          navigate(`/orgs/${orgId}/data/config/${configuration.id}`)
+          navigate(`/orgs/${orgID}/data/config/${configuration.id}`)
         }}
       />
 

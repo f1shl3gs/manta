@@ -29,7 +29,7 @@ interface State {
 }
 
 const [CellProvider, useCell] = constate((state: State) => {
-  const {orgId, cellID, dashboardId} = useParams()
+  const {orgID, cellID, dashboardID} = useParams()
   const navigate = useNavigate()
   const notify = useNotify()
 
@@ -47,7 +47,7 @@ const [CellProvider, useCell] = constate((state: State) => {
   })
 
   const {run: patch} = useFetch(
-    `/api/v1/dashboards/${dashboardId}/cells/${cellID}`,
+    `/api/v1/dashboards/${dashboardID}/cells/${cellID}`,
     {
       method: 'PATCH',
       onError: err => {
@@ -57,7 +57,7 @@ const [CellProvider, useCell] = constate((state: State) => {
         })
       },
       onSuccess: _ => {
-        navigate(`/orgs/${orgId}/dashboards/${dashboardId}`)
+        navigate(`/orgs/${orgID}/dashboards/${dashboardID}`)
       },
     }
   )
@@ -68,14 +68,14 @@ const [CellProvider, useCell] = constate((state: State) => {
   }, [cell, patch])
 
   const {run: del} = useFetch(
-    `/api/v1/dashboards/${dashboardId}/cells/${cellID}`,
+    `/api/v1/dashboards/${dashboardID}/cells/${cellID}`,
     {method: 'DELETE'}
   )
   const deleteCell = () => {
     del()
   }
 
-  const {run: create} = useFetch(`/api/v1/dashboards/${dashboardId}/cells`, {
+  const {run: create} = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {
     method: 'POST',
     onSuccess: _ => {
       navigate(-1)

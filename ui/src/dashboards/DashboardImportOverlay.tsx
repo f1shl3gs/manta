@@ -7,13 +7,13 @@ import {useNavigate} from 'react-router-dom'
 import {useNotify} from '../shared/components/notifications/useNotification'
 
 const DashboardImportOverlay: FunctionComponent = () => {
-  const {id: orgId} = useOrganization()
+  const {id: orgID} = useOrganization()
   const navigate = useNavigate()
   const notify = useNotify()
   const {run: create} = useFetch(`/api/v1/dashboards`, {
     method: 'POST',
     body: {
-      orgId,
+      orgID,
       cells: [],
     },
     onError: err => {
@@ -23,7 +23,7 @@ const DashboardImportOverlay: FunctionComponent = () => {
       })
     },
     onSuccess: dashboard => {
-      navigate(`/orgs/${orgId}/dashboards/${dashboard.id}`)
+      navigate(`/orgs/${orgID}/dashboards/${dashboard.id}`)
     },
   })
 
