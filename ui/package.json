@@ -6,6 +6,7 @@
     "@influxdata/clockface": "^6.3.9",
     "@influxdata/giraffe": "^2.38.1",
     "@influxdata/react-custom-scrollbars": "4.3.8",
+    "@lagunovsky/redux-react-router": "^4.3.0",
     "chroma-js": "^2.4.2",
     "classnames": "^2.3.2",
     "constate": "^3.3.2",

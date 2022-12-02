@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
 import {getOrgs} from 'src/organizations/actions/thunks'
-import {getOrgs as selectOrgs} from 'src/organizations/selectors'
+import {getOrg, getOrgs as selectOrgs} from 'src/organizations/selectors'
 import {RemoteDataState} from '@influxdata/clockface'
 import {setOrg} from 'src/organizations/actions'
 
@@ -23,6 +23,7 @@ const Organizations: FunctionComponent<Props> = ({children}) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(RemoteDataState.Loading)
   const orgs = useSelector(selectOrgs)
+  const org = useSelector(getOrg)
 
   useEffect(() => {
     if (orgs.length === 0) {
@@ -31,8 +32,10 @@ const Organizations: FunctionComponent<Props> = ({children}) => {
     }
 
     setLoading(RemoteDataState.Done)
-    dispatch(setOrg(orgs[0]))
-  }, [orgs, dispatch])
+    if (!org) {
+      dispatch(setOrg(orgs[0]))
+    }
+  }, [org, orgs, dispatch])
 
   return (
     <PageSpinner loading={loading}>

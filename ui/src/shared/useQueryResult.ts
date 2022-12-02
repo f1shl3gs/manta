@@ -1,7 +1,6 @@
-import {DashboardQuery} from 'src/types/Dashboard'
+import {DashboardQuery} from 'src/types/dashboards'
 import {useEffect, useState} from 'react'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
-import {useAutoRefresh} from 'src/shared/useAutoRefresh'
 import {useParams} from 'react-router-dom'
 import {RemoteDataState} from '@influxdata/clockface'
 

@@ -1,13 +1,15 @@
-import React from 'react'
+import React, {FunctionComponent} from 'react'
 
 import {Grid, Form, Dropdown} from '@influxdata/clockface'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
 
-import TimeFormatSetting from 'src/visualization/TimeMachine/TimeFormatSetting'
-import YAxisTitle from 'src/visualization/TimeMachine/YAxisTitle'
-import YAxisBase from 'src/visualization/TimeMachine/YAxisBase'
-import AxisAffixes from 'src/visualization/TimeMachine/AxisAffixes'
+import TimeFormatSetting from 'src/timeMachine/TimeFormatSetting'
+import YAxisTitle from 'src/timeMachine/YAxisTitle'
+import YAxisBase from 'src/timeMachine/YAxisBase'
+import AxisAffixes from 'src/timeMachine/AxisAffixes'
 import useLineView from 'src/visualization/Line/useLineView'
+import {XYViewProperties} from 'src/types/dashboards'
+import {VisualizationOptionProps} from 'src/visualization'
 
 const dimensions = [
   {
@@ -28,7 +30,11 @@ const dimensions = [
   },
 ]
 
-const LineOptions: React.FC = () => {
+interface Props extends VisualizationOptionProps {
+  viewProperties: XYViewProperties
+}
+
+const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
   const {
     xColumn,
     onSetXColumn,
@@ -46,7 +52,7 @@ const LineOptions: React.FC = () => {
     onSetYAxisBase,
     onSetYAxisPrefix,
     onSetYAxisSuffix,
-  } = useLineView()
+  } = useLineView(viewProperties, update)
 
   return (
     <>

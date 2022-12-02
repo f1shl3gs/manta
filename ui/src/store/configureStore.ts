@@ -5,12 +5,21 @@ import {
   combineReducers,
   Store,
 } from 'redux'
+import {History} from 'history'
 import thunkMiddleware from 'redux-thunk'
 import {resizeLayout} from 'src/shared/middleware/resizeLayout'
+import {
+  createRouterMiddleware,
+  createRouterReducer,
+} from '@lagunovsky/redux-react-router'
+
 import {AppState} from 'src/types/stores'
 import {LocalStorage} from 'src/types/localStorage'
 import {loadLocalStorage} from 'src/store/localStorage'
-import persistStateEnhancer from 'src/store/persistStateEnhancer'
+// import persistStateEnhancer from 'src/store/persistStateEnhancer'
+
+// Global history
+import {history} from 'src/store/history'
 
 // Reducers
 import appReducer from 'src/shared/reducers/app'
@@ -19,32 +28,44 @@ import {timeRangeReducer} from 'src/shared/reducers/timeRange'
 import {dashboardsReducer} from 'src/dashboards/reducers/dashboards'
 import {ResourceType} from 'src/types/resources'
 import {organizationsReducer} from 'src/organizations/reducers'
+import {notificationsReducer} from 'src/shared/reducers/notifications'
+import {cellsReducer} from 'src/cells/reducers'
+import {timeMachineReducer} from 'src/timeMachine/reducers'
+import {configurationsReducer} from 'src/configurations/reducers'
+import {usersReducer} from 'src/members/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const rootReducer = (_history: History) => (state, action) => {
+const rootReducer = (history: History) => (state, action) => {
   if (action.type === 'UserLoggedOut') {
     state = undefined
   }
 
   return combineReducers<AppState>({
+    router: createRouterReducer(history),
     app: appReducer,
     autoRefresh: autoRefreshReducer,
-    timeRange: timeRangeReducer,
+    notifications: notificationsReducer,
     resources: combineReducers({
+      [ResourceType.Cells]: cellsReducer,
+      [ResourceType.Configurations]: configurationsReducer,
       [ResourceType.Dashboards]: dashboardsReducer,
+      [ResourceType.Users]: usersReducer,
       [ResourceType.Organizations]: organizationsReducer,
     }),
+    timeRange: timeRangeReducer,
+    timeMachine: timeMachineReducer,
   })(state, action)
 }
 
 function configureStore(
   initialState: LocalStorage = loadLocalStorage()
 ): Store<AppState> {
+  const routerMiddleware = createRouterMiddleware(history)
   const create = composeEnhancers(
-    persistStateEnhancer(),
-    applyMiddleware(thunkMiddleware, resizeLayout)
+    // persistStateEnhancer(),
+    applyMiddleware(thunkMiddleware, routerMiddleware, resizeLayout)
   )(createStore)
 
   return create(rootReducer(history), initialState)

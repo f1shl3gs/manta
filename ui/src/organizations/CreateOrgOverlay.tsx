@@ -11,11 +11,7 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import useFetch from 'src/shared/useFetch'
 import useKeyPress from 'src/shared/useKeyPress'
-import {Organization} from 'src/types/Organization'
-import {
-  defaultErrorNotification,
-  useNotify,
-} from 'src/shared/components/notifications/useNotification'
+import {Organization} from 'src/types/organization'
 
 const CreateOrgOverlay: FunctionComponent = () => {
   const [name, setName] = useState('')

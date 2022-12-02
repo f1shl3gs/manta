@@ -1,13 +1,13 @@
 import {Dispatch} from 'react'
+import {normalize} from 'normalizr'
 
 import {Action, addOrg, setOrgs} from 'src/organizations/actions'
 import request from 'src/utils/request'
 import {RemoteDataState} from '@influxdata/clockface'
-import {Organization} from 'src/types/Organization'
-import { normalize } from 'normalizr'
+import {Organization} from 'src/types/organization'
 
 import {OrgEntities} from 'src/types/schemas'
-import { arrayOfOrgs } from 'src/schemas'
+import {arrayOfOrgs} from 'src/schemas'
 
 export const getOrgs =
   () =>
@@ -20,10 +20,12 @@ export const getOrgs =
 
       const orgs = resp.data
 
-      dispatch(setOrgs(RemoteDataState.Done, normalize<Organization, OrgEntities, string[]>(
-        orgs,
-        arrayOfOrgs
-      )))
+      dispatch(
+        setOrgs(
+          RemoteDataState.Done,
+          normalize<Organization, OrgEntities, string[]>(orgs, arrayOfOrgs)
+        )
+      )
 
       return orgs
     } catch (err) {

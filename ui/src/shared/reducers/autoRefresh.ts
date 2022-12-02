@@ -5,7 +5,7 @@ import {produce} from 'immer'
 import {Action} from 'src/shared/actions/autoRefresh'
 
 // Types
-import {AutoRefresh, AutoRefreshStatus} from 'src/types/AutoRefresh'
+import {AutoRefresh, AutoRefreshStatus} from 'src/types/autoRefresh'
 
 export interface AutoRefreshState {
   autoRefresh: AutoRefresh

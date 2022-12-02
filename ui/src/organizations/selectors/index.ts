@@ -3,7 +3,7 @@ import {get} from 'lodash'
 
 // Types
 import {AppState} from 'src/types/stores'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 import {ResourceType} from 'src/types/resources'
 import {getAll} from 'src/resources/selectors'
 import {useSelector} from 'react-redux'

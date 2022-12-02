@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 
-import {GaugeViewProperties} from 'src/types/Dashboard'
+import {GaugeViewProperties} from 'src/types/dashboards'
 import {Config, Plot} from '@influxdata/giraffe'
 import {VisualizationProps} from 'src/visualization'
 

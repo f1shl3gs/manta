@@ -1,5 +1,5 @@
 import {RemoteDataState} from '@influxdata/clockface'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 import {NormalizedSchema} from 'normalizr'
 import {OrgEntities} from '../../types/schemas'
 

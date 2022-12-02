@@ -30,8 +30,6 @@ export const setResource = <R>(
   if (get(schema, ['entities', resource])) {
     draftState.byID = schema.entities[resource]
     draftState.allIDs = schema.result
-  } else {
-    console.log('not')
   }
 }
 
@@ -59,4 +57,14 @@ export const removeResource = <R>(
 
   delete draftState.byID[id]
   draftState.allIDs = draftState.allIDs.filter(uuid => uuid !== id)
+}
+
+export const editResource = <R>(
+  draftState: NormalizedState<R>,
+  action,
+  resource: ResourceType
+) => {
+  const {entities, result} = action.schema
+
+  draftState.byID[result] = entities[resource][result]
 }

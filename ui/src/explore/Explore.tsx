@@ -10,14 +10,11 @@ import {
   PageHeader,
   PageTitle,
 } from '@influxdata/clockface'
-import TimeMachine from 'src/visualization/TimeMachine'
-import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
+import TimeMachine from 'src/timeMachine'
+import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 
 // Types
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
-
-// Constants
-import {defaultViewProperties} from 'src/constants/dashboard'
 
 const Explore: FunctionComponent = () => {
   return (
@@ -33,7 +30,7 @@ const Explore: FunctionComponent = () => {
 
       <PageContents>
         <div className={'explore-contents'}>
-          <TimeMachine viewProperties={defaultViewProperties} />
+          <TimeMachine />
         </div>
       </PageContents>
     </Page>

@@ -1,6 +1,6 @@
-import {TimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
 import {pastHourTimeRange} from 'src/constants/timeRange'
-import {Action} from 'src/shared/actions/timeRange'
+import {Action, SET_TIMERANGE} from 'src/shared/actions/timeRange'
 
 export type TimeRangeState = TimeRange
 
@@ -11,8 +11,8 @@ export const timeRangeReducer = (
   action: Action
 ): TimeRangeState => {
   switch (action.type) {
-    case 'SetTimeRange':
-      return action.payload
+    case SET_TIMERANGE:
+      return action.timeRange
     default:
       return state
   }

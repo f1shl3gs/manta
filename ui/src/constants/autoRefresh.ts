@@ -1,4 +1,4 @@
-import {AutoRefreshOption, AutoRefreshOptionType} from 'src/types/AutoRefresh'
+import {AutoRefreshOption, AutoRefreshOptionType} from 'src/types/autoRefresh'
 
 export const DROPDOWN_WIDTH_COLLAPSED = 50
 export const DROPDOWN_WIDTH_FULL = 100

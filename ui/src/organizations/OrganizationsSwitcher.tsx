@@ -21,7 +21,7 @@ import {getAll} from 'src/resources/selectors'
 // Types
 import {ResourceType} from 'src/types/resources'
 import {AppState} from 'src/types/stores'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 
 // Actions
 import {SET_ORG} from 'src/organizations/actions'

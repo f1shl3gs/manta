@@ -1602,6 +1602,11 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@lagunovsky/redux-react-router@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.npmmirror.com/@lagunovsky/redux-react-router/-/redux-react-router-4.3.0.tgz#2969158850b6f304f6af59de966a8e5589e2d2e7"
+  integrity sha512-zjjIu0xiX4cAE6O0ttLwo/Fk2zF3oeDfP3nC9YPUFSMnK7QumxS4xQIaH8x+amIIrg3klvPAk64L1bZLvDHl5w==
+
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
   resolved "https://registry.npmmirror.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"

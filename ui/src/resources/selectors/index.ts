@@ -1,7 +1,24 @@
+// Libraries
+import {get} from 'lodash'
+
 // Types
 import {AppState} from 'src/types/stores'
 import {ResourceType} from 'src/types/resources'
-import {RemoteDataState} from '@influxdata/clockface';
+import {RemoteDataState} from '@influxdata/clockface'
+
+export const getByID = <R>(
+  {resources}: AppState,
+  type: ResourceType,
+  id: string
+): R => {
+  const byID = get(resources, `${type}.byID`)
+
+  if (!byID) {
+    throw new Error(`"${type}" resource has yet not been set`)
+  }
+
+  return get(byID, `${id}`, null)
+}
 
 export const getAll = <R>(
   {resources}: AppState,

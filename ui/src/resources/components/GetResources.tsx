@@ -6,16 +6,16 @@ import {ResourceType} from 'src/types/resources'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import {AppState} from 'src/types/stores'
 import {getResourcesStatus} from 'src/resources/selectors'
-import { getDashboards } from 'src/dashboards/actions/thunks'
-import {RemoteDataState} from '@influxdata/clockface'
 
-type ReduxProps = ConnectedProps<typeof connector>
+// Actions
+import {getDashboards} from 'src/dashboards/actions/thunks'
+
 interface OwnProps {
-  loading: RemoteDataState
   resources: Array<ResourceType>
-  childrent: JSX.Element | JSX.Element[]
+  children: JSX.Element | JSX.Element[]
 }
 
+type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps
 
 const getResourceDetails = (resource: ResourceType, props: ReduxProps) => {
@@ -27,8 +27,8 @@ const getResourceDetails = (resource: ResourceType, props: ReduxProps) => {
   }
 }
 
-const GetResources: FunctionComponent<Props> = (props) => {
-  const {resources, loading, childrent} = props
+const GetResources: FunctionComponent<Props> = props => {
+  const {resources, loading, children} = props
 
   useEffect(() => {
     const promises = []
@@ -38,25 +38,21 @@ const GetResources: FunctionComponent<Props> = (props) => {
     })
 
     Promise.all(promises)
-  }, [resources, props])
+  }, [resources])
 
-  return (
-    <PageSpinner loading={loading}>
-      {childrent}
-    </PageSpinner>
-  )
+  return <PageSpinner loading={loading}>{children}</PageSpinner>
 }
 
 const mstp = (state: AppState, {resources}: OwnProps) => {
   const loading = getResourcesStatus(state, resources)
 
   return {
-    loading
+    loading,
   }
 }
 
 const mdtp = {
-  getDashboards: getDashboards
+  getDashboards: getDashboards,
 }
 
 const connector = connect(mstp, mdtp)

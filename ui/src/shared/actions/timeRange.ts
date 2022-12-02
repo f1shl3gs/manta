@@ -1,8 +1,10 @@
-import {TimeRange} from 'src/types/TimeRanges'
+import {TimeRange} from 'src/types/timeRanges'
 
-export type Action = SetTimeRange
+export const SET_TIMERANGE = 'SET_TIMERANGE'
 
-interface SetTimeRange {
-  type: 'SetTimeRange'
-  payload: TimeRange
-}
+export type Action = ReturnType<typeof setTimeRange>
+
+export const setTimeRange = (timeRange: TimeRange) => ({
+  type: SET_TIMERANGE,
+  timeRange,
+})

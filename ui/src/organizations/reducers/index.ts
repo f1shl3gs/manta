@@ -4,7 +4,7 @@ import {produce} from 'immer'
 // Types
 import {OrgsState, ResourceType} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
-import {Organization} from 'src/types/Organization'
+import {Organization} from 'src/types/organization'
 
 // Actions
 import {Action, ADD_ORG, SET_ORG, SET_ORGS} from 'src/organizations/actions'

@@ -8,10 +8,6 @@ import {Button, ComponentColor, Overlay, TextArea} from '@influxdata/clockface'
 
 // Hooks
 import useKeyPress from 'src/shared/useKeyPress'
-import {
-  defaultSuccessNotification,
-  useNotify,
-} from 'src/shared/components/notifications/useNotification'
 
 // Utils
 import {downloadTextFile} from 'src/utils/download'

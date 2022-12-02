@@ -13,16 +13,13 @@ import {
   IconFont,
 } from '@influxdata/clockface'
 
-// Hooks
-import {useAutoRefresh} from 'src/shared/useAutoRefresh'
-
 // Types
 import {
   AutoRefresh,
   AutoRefreshOption,
   AutoRefreshOptionType,
   AutoRefreshStatus,
-} from 'src/types/AutoRefresh'
+} from 'src/types/autoRefresh'
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {

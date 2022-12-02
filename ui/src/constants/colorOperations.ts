@@ -7,7 +7,7 @@ import {
   THRESHOLD_TYPE_TEXT,
 } from 'src/constants/thresholds'
 
-import {Color} from 'src/types/Colors'
+import {Color} from 'src/types/colors'
 
 //@ts-ignore
 const getLegibleTextColor = bgColorHex => {

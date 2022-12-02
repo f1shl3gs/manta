@@ -4,7 +4,7 @@
 // Libraries
 import React, {lazy, Suspense} from 'react'
 import ReactDOM from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 
 // Components
 import App from 'src/App'
@@ -21,6 +21,9 @@ import 'react-virtualized/styles.css'
 // Utils
 import reportWebVitals from 'src/reportWebVitals'
 import {getStore} from 'src/store/configureStore'
+import {ReduxRouter} from '@lagunovsky/redux-react-router'
+
+import {history} from 'src/store/history'
 
 // Lazy Load
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
@@ -36,7 +39,7 @@ root.render(
   </React.StrictMode>
 */
   <Provider store={getStore()}>
-    <BrowserRouter>
+    <ReduxRouter history={history}>
       <SetupWrapper>
         <Suspense fallback={<PageSpinner />}>
           <Routes>
@@ -47,7 +50,7 @@ root.render(
           </Routes>
         </Suspense>
       </SetupWrapper>
-    </BrowserRouter>
+    </ReduxRouter>
   </Provider>
 )
 

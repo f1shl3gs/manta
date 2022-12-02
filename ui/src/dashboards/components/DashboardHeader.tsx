@@ -4,15 +4,28 @@ import React from 'react'
 // Components
 import {ComponentSize, FlexBox, Page} from '@influxdata/clockface'
 import RenamablePageTitle from 'src/shared/components/RenamablePageTitle'
-import {useDashboard} from 'src/dashboards/useDashboard'
-import PresentationModeToggle from 'src/dashboards/components/PresentationModeToggle'
-import TimeRangeDropdown from 'src/dashboards/components/TimeRangeDropdown'
+import PresentationModeToggle from 'src/shared/components/PresentationModeToggle'
+import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 import AutoRefreshDropdown from 'src/shared/components/AutoRefreshDropdown'
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
+// Hooks
+import {useDispatch, useSelector} from 'react-redux'
+
+// Actions
+import {updateDashboard} from 'src/dashboards/actions/thunks'
+
+// Selectors
+import {getDashboard} from 'src/dashboards/selectors'
+
 const DashboardHeader = () => {
-  const {name, onRename} = useDashboard()
+  const {id, name} = useSelector(getDashboard)
+  const dispatch = useDispatch()
+
+  const handleRename = (newName: string) => {
+    dispatch(updateDashboard(id, {name: newName}))
+  }
 
   return (
     <Page.Header fullWidth={true}>
@@ -20,7 +33,7 @@ const DashboardHeader = () => {
         name={name}
         placeholder={'Name this dashboard'}
         maxLength={68}
-        onRename={onRename}
+        onRename={handleRename}
       />
 
       <FlexBox margin={ComponentSize.Small}>
