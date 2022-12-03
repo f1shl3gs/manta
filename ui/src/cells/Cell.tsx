@@ -2,10 +2,9 @@ import React, {FunctionComponent} from 'react'
 
 import {Cell} from 'src/types/dashboard'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import Header from 'src/dashboards/components/Cell/Header'
-import Context from 'src/dashboards/components/Cell/Context'
-import EmptyGraphMessage from 'src/dashboards/components/Cell/EmptyGraphMessage'
-import {ViewPropertiesProvider} from 'src/visualization/TimeMachine/useViewProperties'
+import Header from 'src/cells/Header'
+import Context from 'src/cells/Context'
+import EmptyGraphMessage from 'src/cells/EmptyGraphMessage'
 import TimeSeries from 'src/shared/components/TimeSeries'
 
 interface Props {
@@ -25,11 +24,7 @@ const CellComponent: FunctionComponent<Props> = ({cell}) => {
       )
     }
 
-    return (
-      <ViewPropertiesProvider viewProperties={viewProperties}>
-        <TimeSeries viewProperties={viewProperties} />
-      </ViewPropertiesProvider>
-    )
+    return <TimeSeries viewProperties={viewProperties} />
   }
 
   return (

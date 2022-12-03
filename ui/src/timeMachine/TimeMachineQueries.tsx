@@ -2,13 +2,13 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import QueryTabs from 'src/visualization/TimeMachine/QueryTabs'
+import QueryTabs from 'src/timeMachine/QueryTabs'
 import {FlexBox} from '@influxdata/clockface'
-import QueryEditor from 'src/visualization/TimeMachine/QueryEditor'
-import SubmitQueryButton from 'src/visualization/TimeMachine/SubmitQueryButton'
+import QueryEditor from 'src/timeMachine/QueryEditor'
+import SubmitQueryButton from 'src/timeMachine/SubmitQueryButton'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
+import {useQueries} from 'src/timeMachine/useTimeMachine'
 
 const TimeMachineQueries: FunctionComponent = () => {
   const {onSetText, activeQuery} = useQueries()

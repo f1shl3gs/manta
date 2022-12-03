@@ -1,12 +1,9 @@
 import React from 'react'
 
 import {DapperScrollbars, Grid} from '@influxdata/clockface'
-
-import OptionsSwitcher from 'src/visualization/TimeMachine/OptionsSwitcher'
-import {useViewProperties} from 'src/visualization/TimeMachine/useViewProperties'
+import OptionsSwitcher from 'src/timeMachine/OptionsSwitcher'
 
 const ViewOptions: React.FC = () => {
-  const {viewProperties} = useViewProperties()
 
   return (
     <div className={'view-options'}>
@@ -17,7 +14,7 @@ const ViewOptions: React.FC = () => {
         <div className={'view-options--container'}>
           <Grid>
             <Grid.Row>
-              <OptionsSwitcher view={viewProperties} />
+              <OptionsSwitcher />
             </Grid.Row>
           </Grid>
         </div>

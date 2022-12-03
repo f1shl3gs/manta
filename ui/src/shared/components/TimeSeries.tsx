@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import EmptyQueryView from 'src/dashboards/components/Cell/EmptyQueryView'
+import EmptyQueryView from 'src/cells/EmptyQueryView'
 import {ViewProperties} from 'src/types/dashboard'
 import useQueryResult from 'src/shared/useQueryResult'
 import View from 'src/visualization/View'

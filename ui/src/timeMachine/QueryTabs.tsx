@@ -2,7 +2,7 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import QueryTab from 'src/visualization/TimeMachine/QueryTab'
+import QueryTab from 'src/timeMachine/QueryTab'
 import {
   ComponentColor,
   ComponentSize,
@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
+import {useQueries} from 'src/timeMachine/useTimeMachine'
 
 const QueryTabs: FunctionComponent = () => {
   const {queries, addQuery} = useQueries()

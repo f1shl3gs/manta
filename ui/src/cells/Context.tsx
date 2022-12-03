@@ -1,7 +1,7 @@
 import React, {FunctionComponent, RefObject, useRef, useState} from 'react'
 import {Cell} from 'src/types/dashboard'
 import {useNavigate, useParams} from 'react-router-dom'
-import ContextItem from 'src/dashboards/components/Cell/ContextItem'
+import ContextItem from 'src/cells/ContextItem'
 import {
   Appearance,
   Icon,
@@ -9,7 +9,7 @@ import {
   Popover,
   PopoverInteraction,
 } from '@influxdata/clockface'
-import ContextDangerItem from 'src/dashboards/components/Cell/ContextDangerItem'
+import ContextDangerItem from 'src/cells/ContextDangerItem'
 import classnames from 'classnames'
 import useFetch from 'src/shared/useFetch'
 import {

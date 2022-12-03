@@ -1,12 +1,44 @@
 {
-  "id": "0a54f8c90af7e000",
-  "created": "2022-11-23T17:50:53.995004855+08:00",
-  "updated": "2022-11-23T23:37:04.116447718+08:00",
-  "name": "abc",
-  "orgID": "0a5255af55928000",
+  "id": "0a60addf0cd10000",
+  "created": "2022-12-02T20:05:22.099374803+08:00",
+  "updated": "2022-12-03T15:05:36.245545593+08:00",
+  "name": "Manta",
+  "orgID": "0a609b764eeae000",
   "cells": [
     {
-      "id": "0a54ff9692f7e000",
+      "id": "0a60ade570d10000",
+      "name": "CPU",
+      "x": 0,
+      "y": 0,
+      "w": 4,
+      "h": 4,
+      "viewProperties": {
+        "type": "xy",
+        "axes": {
+          "x": {
+            "base": ""
+          },
+          "y": {
+            "suffix": "%",
+            "base": ""
+          }
+        },
+        "queries": [
+          {
+            "name": "query 1",
+            "text": "rate(process_cpu_seconds_total[1m]) * 100"
+          }
+        ],
+        "xColumn": "time",
+        "yColumn": "value",
+        "hoverDimension": "auto",
+        "Position": "overlaid",
+        "geom": "line"
+      }
+    },
+    {
+      "id": "0a60f22d42110000",
+      "name": "RSS",
       "x": 4,
       "y": 0,
       "w": 4,
@@ -18,12 +50,13 @@
             "base": ""
           },
           "y": {
-            "base": ""
+            "base": "2"
           }
         },
         "queries": [
           {
-            "text": "rate(process_cpu_seconds_total[1m])"
+            "name": "query 1",
+            "text": "process_resident_memory_bytes"
           }
         ],
         "xColumn": "time",

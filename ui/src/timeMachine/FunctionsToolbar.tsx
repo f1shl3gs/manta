@@ -7,8 +7,8 @@ import {
   DapperScrollbars,
   EmptyState,
 } from '@influxdata/clockface'
-import PromqlToolbarSearch from 'src/visualization/TimeMachine/PromqlToolbarSearch'
-import FunctionItem from 'src/visualization/TimeMachine/FunctionItem'
+import PromqlToolbarSearch from 'src/timeMachine/PromqlToolbarSearch'
+import FunctionItem from 'src/timeMachine/FunctionItem'
 
 // Constants
 import {PROMQL_FUNCTIONS} from 'src/constants/promqlFunctions'

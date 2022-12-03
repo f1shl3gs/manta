@@ -3,7 +3,7 @@ import {ViewProperties} from 'src/types/dashboard'
 export const MIN_DECIMAL_PLACES = 0
 export const MAX_DECIMAL_PLACES = 10
 
-export const defaultViewProperties: ViewProperties = {
+export const DEFAULT_VIEWPROPERTIES: ViewProperties = {
   type: 'xy',
   xColumn: 'time',
   yColumn: 'value',

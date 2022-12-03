@@ -1,12 +1,16 @@
 import React from 'react'
 
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useViewOption} from 'src/shared/useViewOption'
+import {useViewingVisOptions} from 'src/timeMachine/useTimeMachine'
 
 const VisOptionsButton: React.FC = () => {
-  const {isViewingVisOptions, onToggleVisOptions} = useViewOption()
+  const {viewingVisOptions, setViewingVisOptions} = useViewingVisOptions()
 
-  const color = isViewingVisOptions
+  const onToggleVisOptions = () => {
+    setViewingVisOptions(prev => !prev)
+  }
+
+  const color = viewingVisOptions
     ? ComponentColor.Primary
     : ComponentColor.Default
 

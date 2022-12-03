@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useState} from 'react'
 import constate from 'constate'
-import {useSearchParams} from 'react-router-dom'
 
 const escapeKeyCode = 27
 const PRESENTATION_KEY = 'presentation'
@@ -15,7 +14,6 @@ const dispatchResizeEvent = () => {
 }
 
 const [PresentationModeProvider, usePresentationMode] = constate(() => {
-  const [searchParams, setSearchParams] = useSearchParams()
   const [presentationMode, setpresentationMode] = useState(() => {
     const params = new URLSearchParams(window.location.search)
     const defaultValue = params.get(PRESENTATION_KEY)
@@ -32,13 +30,10 @@ const [PresentationModeProvider, usePresentationMode] = constate(() => {
         return
       }
 
-      searchParams.set(PRESENTATION_KEY, b ? 'true' : 'false')
-      setSearchParams(searchParams)
-
       setpresentationMode(b)
       dispatchResizeEvent()
     },
-    [presentationMode, searchParams, setSearchParams]
+    [presentationMode]
   )
 
   const toggle = useCallback(() => {

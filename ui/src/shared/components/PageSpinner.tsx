@@ -10,10 +10,10 @@ interface Props {
   loading?: RemoteDataState
 }
 
-const PageSpinner: FunctionComponent<Props> = ({children, loading}) => {
+const PageSpinner: FunctionComponent<Props> = ({children, loading = RemoteDataState.Loading}) => {
   return (
     <SpinnerContainer
-      loading={loading ?? RemoteDataState.Loading}
+      loading={loading}
       spinnerComponent={<TechnoSpinner />}
     >
       {children}

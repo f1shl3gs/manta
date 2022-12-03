@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 import {ViewProperties} from 'src/types/dashboard'
-import TimeSeries from '../../../shared/components/TimeSeries'
+import TimeSeries from 'src/shared/components/TimeSeries'
 
 interface Props {
   id: string

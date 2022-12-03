@@ -1,5 +1,5 @@
 // Libraries
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import constate from 'constate'
 
 // Types
@@ -139,24 +139,26 @@ const [TimeRangeProvider, useTimeRange] = constate(() => {
     }
   })
 
-  useEffect(() => {
-    if (!params.get(PARAMS_TIME_RANGE_TYPE)) {
-      return
-    }
+  const setTimeRangeWrapper = (tr: TimeRange) => {
+    setTimeRange(tr)
 
-    setParams((prev: URLSearchParams) => {
-      prev.set(PARAMS_TIME_RANGE_LOW, timeRange.lower)
-      if (timeRange.upper) {
-        prev.set('_upper', timeRange.upper)
+    setParams(params => {
+      if (!params.get(PARAMS_TIME_RANGE_TYPE)) {
+        return params
       }
 
-      return prev
-    })
-  }, [params, setParams, timeRange])
+      params.set(PARAMS_TIME_RANGE_LOW, tr.lower)
+      if (tr.upper) {
+        params.set('_upper', tr.upper)
+      }
+
+      return params
+    }, {replace: true})
+  }
 
   return {
     timeRange,
-    setTimeRange,
+    setTimeRange: setTimeRangeWrapper,
   }
 })
 

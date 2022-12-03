@@ -8,7 +8,7 @@ import {
   defaultErrorNotification,
   useNotify,
 } from 'src/shared/components/notifications/useNotification'
-import {defaultViewProperties} from 'src/constants/dashboard'
+import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
 
 const defaultCell: Cell = {
   desc: '',
@@ -21,7 +21,7 @@ const defaultCell: Cell = {
   w: 4,
   x: 0,
   y: 0,
-  viewProperties: defaultViewProperties,
+  viewProperties: DEFAULT_VIEWPROPERTIES,
 }
 
 interface State {
@@ -40,7 +40,7 @@ const [CellProvider, useCell] = constate((state: State) => {
   const [cell, setCell] = useState<Cell>(() => {
     const cell = state.cell ?? defaultCell
     if (!cell.viewProperties) {
-      cell.viewProperties = defaultViewProperties
+      cell.viewProperties = DEFAULT_VIEWPROPERTIES
     }
 
     return cell
@@ -75,15 +75,15 @@ const [CellProvider, useCell] = constate((state: State) => {
     del()
   }
 
-  const {run: create} = useFetch(`/api/v1/dashboards/${dashboardID}/cells`, {
-    method: 'POST',
-    onSuccess: _ => {
-      navigate(-1)
-    },
-  })
-  const createCell = useCallback(() => {
-    create(cell)
-  }, [cell, create])
+  const {run: createCell} = useFetch(
+    `/api/v1/dashboards/${dashboardID}/cells`,
+    {
+      method: 'POST',
+      onSuccess: _ => {
+        navigate(-1)
+      },
+    }
+  )
 
   const onRename = useCallback(
     name => {

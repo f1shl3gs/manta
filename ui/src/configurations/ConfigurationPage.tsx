@@ -13,18 +13,18 @@ import {
 } from 'src/shared/components/GetResources'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
-import CreateConfigurationButton from 'src/data/configuration/CreateConfigurationButton'
-import EmptyConfigurations from 'src/data/configuration/EmptyConfigurations'
-import ConfigurationCard from 'src/data/configuration/ConfigurationCard'
+import CreateConfigurationButton from 'src/configurations/CreateConfigurationButton'
+import EmptyConfigurations from 'src/configurations/EmptyConfigurations'
+import ConfigurationCard from 'src/configurations/ConfigurationCard'
 import {getSortedResources} from 'src/utils/sort'
-import ConfigurationExplainer from 'src/data/configuration/ConfigurationExplainer'
+import ConfigurationExplainer from 'src/configurations/ConfigurationExplainer'
 
 // Types
 import {SortKey, SortTypes} from 'src/types/sort'
 import {Configuration} from 'src/types/configuration'
 
 const ConfigurationWizard = lazy(
-  () => import('src/data/configuration/ConfigurationWizard')
+  () => import('src/configurations/ConfigurationWizard')
 )
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useState} from 'react'
 
 // Components
 import {Config, Plot} from '@influxdata/giraffe'
@@ -19,8 +19,9 @@ interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const Line: FunctionComponent<Props> = ({result}) => {
+const Line: FunctionComponent<Props> = ({result, properties}) => {
   const {table, fluxGroupKeyUnion} = result
+  const [viewProperties, setViewProperties] = useState(properties)
   const {xDomain, onSetXDomain, onResetXDomain} = useVisXDomainSettings()
   const {
     timeFormat,
@@ -36,7 +37,7 @@ const Line: FunctionComponent<Props> = ({result}) => {
         suffix: yAxisSuffix,
       },
     },
-  } = useLineView()
+  } = useLineView(viewProperties, setViewProperties)
 
   const xFormatter = getFormatter('time', {
     prefix: xTickPrefix,

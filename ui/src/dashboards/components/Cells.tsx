@@ -4,8 +4,8 @@ import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Components
 import {Cell} from 'src/types/dashboard'
-import GradientBorder from 'src/dashboards/components/Cell/GradientBorder'
-import CellComponent from 'src/dashboards/components/Cell/Cell'
+import GradientBorder from 'src/cells/GradientBorder'
+import CellComponent from 'src/cells/Cell'
 
 // Hooks
 import {useDashboard} from 'src/dashboards/useDashboard'

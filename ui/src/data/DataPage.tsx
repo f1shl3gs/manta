@@ -2,13 +2,13 @@
 import React, {FunctionComponent, lazy} from 'react'
 
 // Components
-import TabsPage from 'src/shared/components/TabsPage'
+import TabsPage from 'src/layout/TabsPage'
 
 const Todo = lazy(() => import('src/Todo'))
 const ConfigurationPage = lazy(
-  () => import('src/data/configuration/ConfigurationPage')
+  () => import('src/configurations/ConfigurationPage')
 )
-const ScrapePage = lazy(() => import('src/data/scrape/ScrapePage'))
+const ScrapePage = lazy(() => import('src/scrapes/ScrapePage'))
 
 const DataPage: FunctionComponent = () => {
   const tabs = [

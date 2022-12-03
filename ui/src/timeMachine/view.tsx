@@ -3,39 +3,32 @@ import React, {FunctionComponent, useState} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ViewOptions from 'src/visualization/TimeMachine/ViewOptions'
+import ViewOptions from 'src/timeMachine/ViewOptions'
 import {
   DraggableResizer,
   DraggableResizerPanel,
   Orientation,
 } from '@influxdata/clockface'
-import TimeMachineQueries from 'src/visualization/TimeMachine/TimeMachineQueries'
+import TimeMachineQueries from 'src/timeMachine/TimeMachineQueries'
 
 // Hooks
-import {ViewPropertiesProvider} from 'src/visualization/TimeMachine/useViewProperties'
+import {useTimeMachine} from 'src/timeMachine/useTimeMachine'
 
 // Types
-import {ViewProperties} from 'src/types/dashboard'
-import TimeMachineVis from 'src/visualization/TimeMachine/TimeMachineVis'
-import {useViewOption} from 'src/shared/useViewOption'
+import TimeMachineVis from 'src/timeMachine/TimeMachineVis'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 
-interface Props {
-  viewProperties: ViewProperties
-  onChange?: (ViewProperties) => void
-}
-
-const TimeMachine: FunctionComponent<Props> = ({viewProperties}) => {
+const TimeMachine: FunctionComponent = () => {
+  const {viewProperties, viewingVisOptions} = useTimeMachine()
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
-  const {isViewingVisOptions} = useViewOption()
   const containerClassName = classnames('time-machine', {
-    'time-machine--split': isViewingVisOptions,
+    'time-machine--split': viewingVisOptions,
   })
 
   return (
-    <ViewPropertiesProvider viewProperties={viewProperties}>
-      {isViewingVisOptions && <ViewOptions />}
+    <>
+      {viewingVisOptions && <ViewOptions />}
 
       <div className={containerClassName}>
         <DraggableResizer
@@ -45,7 +38,7 @@ const TimeMachine: FunctionComponent<Props> = ({viewProperties}) => {
         >
           <DraggableResizerPanel>
             <div className={'time-machine--top'}>
-              <TimeMachineVis />
+              <TimeMachineVis viewProperties={viewProperties} />
             </div>
           </DraggableResizerPanel>
 
@@ -58,7 +51,7 @@ const TimeMachine: FunctionComponent<Props> = ({viewProperties}) => {
           </DraggableResizerPanel>
         </DraggableResizer>
       </div>
-    </ViewPropertiesProvider>
+    </>
   )
 }
 

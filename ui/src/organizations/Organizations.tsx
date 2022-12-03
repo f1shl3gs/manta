@@ -1,9 +1,16 @@
+// Libraries
 import React, {FunctionComponent, ReactNode} from 'react'
-import useFetch from 'src/shared/useFetch'
-import {Organization} from 'src/types/organization'
+
+// Components
 import {OrganizationsProvider} from 'src/organizations/useOrganizations'
-import Nav from 'src/organizations/Nav'
+import Nav from 'src/layout/Nav'
 import PageSpinner from 'src/shared/components/PageSpinner'
+
+// Types
+import {Organization} from 'src/types/organization'
+
+// Hooks
+import useFetch from 'src/shared/useFetch'
 
 interface Props {
   children: ReactNode

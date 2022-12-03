@@ -4,13 +4,13 @@ import classnames from 'classnames'
 
 // Components
 import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
-import QueryTabName from 'src/visualization/TimeMachine/QueryTabName'
+import QueryTabName from 'src/timeMachine/QueryTabName'
 
 // Types
 import {DashboardQuery} from 'src/types/dashboard'
 
 // Hooks
-import {useQueries} from 'src/visualization/TimeMachine/useViewProperties'
+import {useQueries} from 'src/timeMachine/useTimeMachine'
 
 interface Props {
   index: number
@@ -18,8 +18,8 @@ interface Props {
 }
 
 const QueryTab: FunctionComponent<Props> = ({index, query}) => {
-  const {activeIndex, removeQuery, setActiveIndex, queries, activeQuery} =
-    useQueries()
+  const {activeIndex, removeQuery, setActiveIndex, queries} = useQueries()
+  const activeQuery = queries[activeIndex]
 
   const triggerRef = createRef<HTMLDivElement>()
   const queryTabClass = classnames('query-tab', {

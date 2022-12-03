@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useCallback, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {useSearchParams} from 'react-router-dom'
 
 // Componetns
@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Hooks
-import {useAutoRefresh} from 'src/shared/useAutoRefresh'
+import {calculateRange, useAutoRefresh} from 'src/shared/useAutoRefresh'
 
 // Types
 import {
@@ -23,6 +23,7 @@ import {
   AutoRefreshOptionType,
   AutoRefreshStatus,
 } from 'src/types/autoRefresh'
+import {useTimeRange} from '../useTimeRange';
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {
@@ -93,7 +94,8 @@ const dropdownStatus = (autoRefresh: AutoRefresh): ComponentStatus => {
 
 const AutoRefreshDropdown: FunctionComponent = () => {
   const [_, setParams] = useSearchParams()
-  const {autoRefresh, setAutoRefresh} = useAutoRefresh()
+  const {timeRange} = useTimeRange()
+  const {autoRefresh, setAutoRefresh, setRange} = useAutoRefresh()
   const [selected, setSelected] = useState(() => {
     const opt = autoRefreshOptions.find(
       opt => opt.seconds === autoRefresh.interval
@@ -115,6 +117,7 @@ const AutoRefreshDropdown: FunctionComponent = () => {
             : AutoRefreshStatus.Paused,
         interval: opt.seconds,
       })
+
       setParams(prev => {
         prev.set('interval', `${opt.seconds}s`)
         return prev
@@ -122,6 +125,27 @@ const AutoRefreshDropdown: FunctionComponent = () => {
     },
     [setAutoRefresh, setParams]
   )
+
+  useEffect(() => {
+    setRange(_ => calculateRange(timeRange))
+
+    if (autoRefresh.status !== AutoRefreshStatus.Active) {
+      return
+    }
+
+    const timer = setInterval(() => {
+      if (document.hidden) {
+        // tab is not focused, no need to refresh
+        return
+      }
+
+      setRange(_ => calculateRange(timeRange))
+    }, autoRefresh.interval * 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [autoRefresh, setRange, timeRange])
 
   return (
     <>

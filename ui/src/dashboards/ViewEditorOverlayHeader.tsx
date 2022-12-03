@@ -11,18 +11,24 @@ import {
 } from '@influxdata/clockface'
 import RenamablePageTitle from 'src/shared/components/RenamablePageTitle'
 import ViewTypeDropdown from 'src/dashboards/components/ViewTypeDropdown'
-import VisOptionsButton from 'src/dashboards/components/VisOptionsButton'
+import VisOptionsButton from 'src/timeMachine/VisOptionsButton'
 
 // Hooks
-import {useCell} from 'src/dashboards/useCell'
 import useEscape from 'src/shared/useEscape'
+import {useTimeMachine} from 'src/timeMachine/useTimeMachine'
 
 interface Props {
+  name: string
   onSubmit: () => void
+  onRename: (name: string) => void
 }
 
-const ViewEditorOverlayHeader: FunctionComponent<Props> = ({onSubmit}) => {
-  const {cell, onRename, setViewProperties} = useCell()
+const ViewEditorOverlayHeader: FunctionComponent<Props> = ({
+  name,
+  onRename,
+  onSubmit,
+}) => {
+  const {setViewProperties} = useTimeMachine()
   const onDismiss = useEscape()
 
   return (
@@ -30,7 +36,7 @@ const ViewEditorOverlayHeader: FunctionComponent<Props> = ({onSubmit}) => {
       <Page.Header fullWidth={true}>
         <RenamablePageTitle
           onRename={onRename}
-          name={cell.name}
+          name={name}
           placeholder={'Name this cell'}
           maxLength={68}
         />

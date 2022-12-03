@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent} from 'react'
 
 // Components
 import {
@@ -11,11 +11,12 @@ import {
   TreeNavSubItem,
   TreeNavSubMenu,
 } from '@influxdata/clockface'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import UserWidget from 'src/organizations/UserWidget'
 
 // Hooks
 import {useOrganization} from 'src/organizations/useOrganizations'
+import useLocalStorage from 'src/shared/useLocalStorage'
 
 const getNavItemActivation = (
   keywords: string[],
@@ -170,9 +171,10 @@ const generateNavItems = (orgID: string): NavItem[] => {
 }
 
 const Nav: FunctionComponent = () => {
-  const [collapse, setCollapse] = useState(false)
+  const [collapse, setCollapse] = useLocalStorage('navbarState', false)
   const {id: orgID} = useOrganization()
   const navItems = generateNavItems(orgID)
+  const navigate = useNavigate()
 
   return (
     <TreeNav
@@ -184,11 +186,7 @@ const Nav: FunctionComponent = () => {
         <TreeNav.Header
           id="home"
           label={<InfluxDBCloudLogo cloud={true} />}
-          onClick={
-            /* eslint-disable */
-            () => {}
-            /* eslint-enable */
-          }
+          onClick={() => navigate(`/orgs/${orgID}`)}
           icon={<Icon glyph={IconFont.CuboSolid} />}
         />
       }

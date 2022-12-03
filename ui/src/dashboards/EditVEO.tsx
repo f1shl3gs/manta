@@ -1,47 +1,65 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
-import {useParams} from 'react-router-dom'
+import React, {FunctionComponent, useCallback, useState} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
 
 // Components
-import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import ViewEditorOverlayHeader from 'src/dashboards/ViewEditorOverlayHeader'
-import TimeMachine from 'src/visualization/TimeMachine'
+import TimeMachine from 'src/timeMachine'
+import PageSpinner from 'src/shared/components/PageSpinner'
+import { RemoteDataState } from '@influxdata/clockface'
 
 // Hooks
 import useFetch from 'src/shared/useFetch'
-import {CellProvider} from 'src/dashboards/useCell'
-import {ViewOptionProvider} from 'src/shared/useViewOption'
+import {TimeMachineProvider, useTimeMachine} from 'src/timeMachine/useTimeMachine'
 
-const EditVEO: FunctionComponent = () => {
+interface Props {
+  name: string
+}
+
+const EditVEO: FunctionComponent<Props> = ({name: cellName}) => {
+  const {viewProperties} = useTimeMachine()
+  const [name, setName] = useState(cellName)
+  const {dashboardID, cellID} = useParams()
+  const navigate = useNavigate()
+  const {run: updateCell} = useFetch(`/api/v1/dashboards/${dashboardID}/cells/${cellID}`, {
+    method: 'PATCH',
+    onSuccess: _ => {
+      navigate(-1)
+    }
+  })
+  const handleSubmit = useCallback(() => {
+    updateCell({
+      name,
+      viewProperties
+    })
+  }, [updateCell, name, viewProperties])
+
+  return (
+    <div className={'veo'}>
+        <ViewEditorOverlayHeader name={name} onRename={setName} onSubmit={handleSubmit} />
+
+        <div className={'veo-contents'}>
+          <TimeMachine />
+        </div>
+    </div>
+  )
+}
+
+export default () => {
   const {cellID, dashboardID} = useParams()
   const {data, loading} = useFetch(
     `/api/v1/dashboards/${dashboardID}/cells/${cellID}`
   )
 
-  return (
-    <Overlay visible={true} className={'veo-overlay'}>
-      <div className={'veo'}>
-        <SpinnerContainer
-          loading={loading}
-          spinnerComponent={<TechnoSpinner />}
-        >
-          <CellProvider cell={data}>
-            <ViewOptionProvider>
-              <ViewEditorOverlayHeader
-                onSubmit={() => {
-                  /* void */
-                }}
-              />
+  if (loading === RemoteDataState.Loading) {
+    return <></>
+  }
 
-              <div className={'veo-contents'}>
-                <TimeMachine viewProperties={data?.viewProperties} />
-              </div>
-            </ViewOptionProvider>
-          </CellProvider>
-        </SpinnerContainer>
-      </div>
-    </Overlay>
+  return (
+    <PageSpinner loading={loading}>
+      <TimeMachineProvider viewProperties={data.viewProperties}>
+        <EditVEO name={data.name}  />
+      </TimeMachineProvider>
+    </PageSpinner>
   )
 }
-
-export default EditVEO

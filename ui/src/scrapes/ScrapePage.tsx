@@ -9,12 +9,12 @@ import {
 import {getSortedResources} from 'src/utils/sort'
 import {Scrape} from 'src/types/scrape'
 import {SortKey, SortTypes} from 'src/types/sort'
-import ScrapeCard from 'src/data/scrape/ScrapeCard'
-import EmptyScrapes from 'src/data/scrape/EmptyScrapes'
+import ScrapeCard from 'src/scrapes/ScrapeCard'
+import EmptyScrapes from 'src/scrapes/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
-import CreateScrapeButton from 'src/data/scrape/CreateScrapeButton'
-import ScrapeExplainer from 'src/data/scrape/ScrapeExplainer'
+import CreateScrapeButton from 'src/scrapes/CreateScrapeButton'
+import ScrapeExplainer from 'src/scrapes/ScrapeExplainer'
 
 const ScrapePage: FunctionComponent = () => {
   const {resources} = useResources()

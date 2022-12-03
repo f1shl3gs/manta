@@ -1,5 +1,5 @@
 import constate from 'constate'
-import {useCallback, useEffect, useState} from 'react'
+import {useCallback, useState} from 'react'
 import dayjs from 'dayjs'
 import {useSearchParams} from 'react-router-dom'
 
@@ -66,31 +66,11 @@ const [AutoRefreshProvider, useAutoRefresh] = constate(() => {
     setState(_prev => calculateRange(timeRange))
   }, [timeRange])
 
-  useEffect(() => {
-    setState(_ => calculateRange(timeRange))
-
-    if (autoRefresh.status !== AutoRefreshStatus.Active) {
-      return
-    }
-
-    const timer = setInterval(() => {
-      if (document.hidden) {
-        // tab is not focused, no need to refresh
-        return
-      }
-
-      setState(_ => calculateRange(timeRange))
-    }, autoRefresh.interval * 1000)
-
-    return () => {
-      clearInterval(timer)
-    }
-  }, [autoRefresh, timeRange])
-
   return {
     autoRefresh,
     setAutoRefresh,
     refresh,
+    setRange: setState,
     ...state,
   }
 })
