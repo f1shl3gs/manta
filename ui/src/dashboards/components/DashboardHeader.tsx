@@ -1,5 +1,6 @@
 // Libraries
 import React from 'react'
+import {useParams} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -11,22 +12,23 @@ import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 import AutoRefreshDropdown from 'src/shared/components/AutoRefreshDropdown'
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
+// Types
+import {AppState} from 'src/types/stores'
+import {Dashboard} from 'src/types/dashboards'
+import {ResourceType} from 'src/types/resources'
+
 // Actions
 import {updateDashboard} from 'src/dashboards/actions/thunks'
 
 // Selectors
-import {useParams} from 'react-router-dom'
-import {AppState} from 'src/types/stores'
 import {getByID} from 'src/resources/selectors'
-import {Dashboard} from 'src/types/dashboards'
-import {ResourceType} from 'src/types/resources'
 
 const DashboardHeader = () => {
+  const dispatch = useDispatch()
   const {dashboardID} = useParams()
   const {name} = useSelector((state: AppState) =>
     getByID<Dashboard>(state, ResourceType.Dashboards, dashboardID)
   )
-  const dispatch = useDispatch()
 
   const handleRename = (newName: string) => {
     dispatch(updateDashboard(dashboardID, {name: newName}))
@@ -53,7 +55,6 @@ const DashboardHeader = () => {
           <AutoRefreshButton />
         </FlexBox>
       </FlexBox>
-
 
     </Page.Header>
   )
