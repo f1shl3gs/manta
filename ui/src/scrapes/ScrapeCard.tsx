@@ -14,51 +14,41 @@ import Context from 'src/shared/components/context_menu/Context'
 import {Scrape} from 'src/types/scrape'
 
 // Hooks
-import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
 
 // Utils
 import {fromNow} from 'src/utils/duration'
 
 // Constants
-import {
-  defaultErrorNotification,
-  defaultSuccessNotification,
-} from 'src/constants/notification'
+import {deleteScrape, updateScrape} from 'src/scrapes/actions/thunk'
+import {connect, ConnectedProps} from 'react-redux'
 
-interface Props {
+interface OwnProps {
   scrape: Scrape
 }
 
-const ScrapeCard: FunctionComponent<Props> = props => {
-  const {id, name, desc, updated} = props.scrape
-  const navigate = useNavigate()
-  const {reload} = useResources()
-  const notify = useNotify()
-  const {run: patchScrape} = useFetch(`/api/v1/scrapes/${id}`, {method: 'POST'})
-  const {run: deleteScrape} = useFetch(`/api/v1/scrapes/${id}`, {
-    method: 'DELETE',
-    onError: err => {
-      notify({
-        ...defaultErrorNotification,
-        message: `Delete Scrape ${name} failed, ${err}`,
-      })
-    },
-    onSuccess: _ => {
-      reload()
+const mdtp = {
+  updateScrape,
+  deleteScrape,
+}
 
-      notify({
-        ...defaultSuccessNotification,
-        message: `Delete Scrape ${name} successful`,
-      })
-    },
-  })
+const connector = connect(null, mdtp)
+
+type Props = OwnProps & ConnectedProps<typeof connector>
+
+const ScrapeCard: FunctionComponent<Props> = ({
+  scrape,
+  deleteScrape,
+  updateScrape,
+}) => {
+  const {id, name, desc, updated} = scrape
+  const navigate = useNavigate()
 
   const handleNameUpdate = (name: string): void => {
-    patchScrape({name})
+    updateScrape(id, {name})
   }
   const handleDescUpdate = (desc: string): void => {
-    patchScrape({desc})
+    updateScrape(id, {desc})
   }
 
   const handleNameClick = (): void => {
@@ -66,7 +56,7 @@ const ScrapeCard: FunctionComponent<Props> = props => {
   }
 
   const handleDelete = (): void => {
-    deleteScrape()
+    deleteScrape(id)
   }
 
   const context_menu = (): JSX.Element => (
@@ -103,4 +93,4 @@ const ScrapeCard: FunctionComponent<Props> = props => {
   )
 }
 
-export default ScrapeCard
+export default connector(ScrapeCard)

@@ -8,7 +8,7 @@ const Todo = lazy(() => import('src/Todo'))
 const ConfigurationPage = lazy(
   () => import('src/configurations/ConfigurationIndex')
 )
-const ScrapePage = lazy(() => import('src/scrapes/ScrapePage'))
+const ScrapePage = lazy(() => import('src/scrapes/ScrapeIndex'))
 
 const DataPage: FunctionComponent = () => {
   const tabs = [

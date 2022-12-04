@@ -1,6 +1,6 @@
 import {useCallback} from 'react'
 import {DEFAULT_TIME_FORMAT} from 'src/constants/timeFormat'
-import {XYViewProperties} from 'src/types/dashboards'
+import {XYViewProperties} from 'src/types/cells'
 
 const useLineView = (viewProperties, setViewProperties) => {
   const properties = viewProperties as XYViewProperties

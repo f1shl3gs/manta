@@ -12,14 +12,14 @@ import useLineView from 'src/visualization/Line/useLineView'
 import {getFormatter} from 'src/utils/vis'
 
 // Types
-import {XYViewProperties} from 'src/types/dashboards'
+import {XYViewProperties} from 'src/types/cells'
 import {VisualizationProps} from 'src/visualization'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
 
-const Line: FunctionComponent<Props> = ({result}) => {
+const Line: FunctionComponent<Props> = ({properties, result}) => {
   const {table, fluxGroupKeyUnion} = result
   const {xDomain, onSetXDomain, onResetXDomain} = useVisXDomainSettings()
   const {
@@ -36,7 +36,9 @@ const Line: FunctionComponent<Props> = ({result}) => {
         suffix: yAxisSuffix,
       },
     },
-  } = useLineView()
+  } = useLineView(properties, (vp) => {
+    console.log('vp', vp)
+  })
 
   const xFormatter = getFormatter('time', {
     prefix: xTickPrefix,

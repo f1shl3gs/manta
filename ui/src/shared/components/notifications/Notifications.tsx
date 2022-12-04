@@ -1,6 +1,7 @@
 // Libraries
 import React from 'react'
 import {get} from 'lodash'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -13,7 +14,9 @@ import {
 // Types
 import {NotificationStyle} from 'src/types/notification'
 import {AppState} from 'src/types/stores'
-import {useSelector} from 'react-redux'
+
+// Actions
+import {dismissNotification} from 'src/shared/actions/notifications'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {
@@ -24,18 +27,21 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
     [NotificationStyle.Info]: Gradients.DefaultLight,
   }
 
-  // @ts-ignore
   return get(converter, style, Gradients.DefaultLight)
 }
 
 const Notifications = () => {
   const notifications = useSelector((state: AppState) => state.notifications)
+  const dispatch = useDispatch()
 
   return (
     <>
       {notifications.map(item => {
         const {id, message, style, duration} = item
         const gradient = matchGradientToColor(style)
+        const dismiss = () => {
+          dispatch(dismissNotification(id))
+        }
 
         return (
           <Notification

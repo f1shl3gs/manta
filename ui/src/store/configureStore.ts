@@ -33,6 +33,7 @@ import {cellsReducer} from 'src/cells/reducers'
 import {timeMachineReducer} from 'src/timeMachine/reducers'
 import {configurationsReducer} from 'src/configurations/reducers'
 import {usersReducer} from 'src/members/reducers'
+import {scrapesReducers} from 'src/scrapes/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -53,6 +54,7 @@ const rootReducer = (history: History) => (state, action) => {
       [ResourceType.Dashboards]: dashboardsReducer,
       [ResourceType.Users]: usersReducer,
       [ResourceType.Organizations]: organizationsReducer,
+      [ResourceType.Scrapes]: scrapesReducers,
     }),
     timeRange: timeRangeReducer,
     timeMachine: timeMachineReducer,

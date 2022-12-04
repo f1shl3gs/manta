@@ -1,6 +1,6 @@
 import {produce} from 'immer'
 
-import {DashboardQuery, ViewProperties} from 'src/types/dashboards'
+import {DashboardQuery} from 'src/types/dashboards'
 import {TimeRange} from 'src/types/timeRanges'
 
 import {pastHourTimeRange} from 'src/constants/timeRange'
@@ -13,6 +13,7 @@ import {
   SET_VIEWING_VIS_OPTIONS,
 } from 'src/timeMachine/actions'
 import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
+import {ViewProperties} from 'src/types/cells'
 
 export interface TimeMachineState {
   activeQueryIndex: number | null

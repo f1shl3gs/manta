@@ -8,16 +8,16 @@ import {IconFont, SquareButton} from '@influxdata/clockface'
 // Actions
 import {enablePresentationMode} from 'src/shared/actions/app'
 
+const mdtp = {
+  enablePresentationMode,
+}
+
+const connector = connect(null, mdtp)
+
 type Props = ConnectedProps<typeof connector>
 
 const PresentationModeToggle: FunctionComponent<Props> = ({
   enablePresentationMode,
 }) => <SquareButton icon={IconFont.ExpandB} onClick={enablePresentationMode} />
-
-const mdtp = {
-  enablePresentationMode: enablePresentationMode,
-}
-
-const connector = connect(null, mdtp)
 
 export default connector(PresentationModeToggle)

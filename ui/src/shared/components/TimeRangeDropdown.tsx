@@ -1,6 +1,7 @@
 // Libraries
-import React, {useRef, useState, FunctionComponent} from 'react'
+import React, {useRef, FunctionComponent} from 'react'
 import dayjs from 'dayjs'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -23,8 +24,10 @@ import {
 
 // Types
 import {TimeRange} from 'src/types/timeRanges'
-import {useDispatch, useSelector} from 'react-redux'
 import {getTimeRange} from 'src/shared/selectors/timeRange'
+
+// Actions
+import {setTimeRange} from 'src/shared/actions/timeRange'
 
 const getTimeRangeLabel = (timeRange: TimeRange): string => {
   if (timeRange.type === 'selectable-duration') {
@@ -47,13 +50,7 @@ const getTimeRangeLabel = (timeRange: TimeRange): string => {
 const TimeRangeDropdown: FunctionComponent = () => {
   const timeRange = useSelector(getTimeRange)
   const dispatch = useDispatch()
-  const setTimeRange = (next: TimeRange) => {
-    dispatch(setTimeRange(next))
-  }
-
   const dropdownRef = useRef<HTMLDivElement>(null)
-  // TODO: fix this
-  const [visible, _setVisible] = useState(false)
   const timeRangeLabel = getTimeRangeLabel(timeRange)
 
   const dropdownWidth = (): number => {
@@ -70,7 +67,7 @@ const TimeRangeDropdown: FunctionComponent = () => {
         appearance={Appearance.Outline}
         position={PopoverPosition.ToTheLeft}
         triggerRef={dropdownRef}
-        visible={visible}
+        visible={false}
         showEvent={PopoverInteraction.None}
         hideEvent={PopoverInteraction.None}
         distanceFromTrigger={8}
@@ -119,6 +116,9 @@ const TimeRangeDropdown: FunctionComponent = () => {
 
               {SELECTABLE_TIME_RANGES.map(item => {
                 const {label} = item
+                const handleClick = (): void => {
+                  dispatch(setTimeRange(item))
+                }
 
                 return (
                   <Dropdown.Item
@@ -126,9 +126,7 @@ const TimeRangeDropdown: FunctionComponent = () => {
                     value={label}
                     id={label}
                     selected={label === timeRangeLabel}
-                    onClick={() => {
-                      setTimeRange(item)
-                    }}
+                    onClick={handleClick}
                   >
                     {label}
                   </Dropdown.Item>

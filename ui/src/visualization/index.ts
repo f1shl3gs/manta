@@ -10,6 +10,6 @@ export interface VisualizationProps {
 }
 
 export interface VisualizationOptionProps {
-  properties: ViewProperties
+  viewProperties: ViewProperties
   update: (obj: any) => void
 }

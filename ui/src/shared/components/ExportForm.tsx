@@ -1,16 +1,22 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {useNavigate} from 'react-router-dom'
-import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 // Components
 import {Button, ComponentColor, Overlay, TextArea} from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 // Hooks
-import useKeyPress from 'src/shared/useKeyPress'
+import useEscape from '../useEscape'
+import {useDispatch} from 'react-redux'
 
 // Utils
 import {downloadTextFile} from 'src/utils/download'
+
+// Actions
+import {notify} from 'src/shared/actions/notifications'
+
+// Constants
+import {defaultSuccessNotification} from 'src/constants/notification'
 
 interface Props {
   resourceName: string
@@ -23,26 +29,29 @@ const ExportOverlay: FunctionComponent<Props> = ({
   name,
   content,
 }) => {
-  const navigate = useNavigate()
-  const notify = useNotify()
+  const dispatch = useDispatch()
 
-  const onDimiss = () => navigate(-1)
   const onCopy = (_copiedText: string, _copyWasSuccessful: boolean): void => {
-    notify({
-      ...defaultSuccessNotification,
-      message: `Copy to Clipboard successful`,
-    })
+    dispatch(
+      notify({
+        ...defaultSuccessNotification,
+        message: `Copy to Clipboard successful`,
+      })
+    )
   }
   const download = () => {
     downloadTextFile(content, name, '', 'application/json')
   }
 
-  useKeyPress('Escape', onDimiss)
+  const onDismiss = useEscape()
 
   return (
     <Overlay visible={true} testID={`${resourceName}-export--overlay`}>
       <Overlay.Container maxWidth={900}>
-        <Overlay.Header title={`Export ${resourceName}`} onDismiss={onDimiss} />
+        <Overlay.Header
+          title={`Export ${resourceName}`}
+          onDismiss={onDismiss}
+        />
 
         <Overlay.Body>
           <TextArea

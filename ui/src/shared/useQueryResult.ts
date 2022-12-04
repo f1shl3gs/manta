@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
 import {useParams} from 'react-router-dom'
 import {RemoteDataState} from '@influxdata/clockface'
+import {AppState} from 'src/types/stores'
+import {useSelector} from 'react-redux'
 
 export type Result = {
   metric: {
@@ -87,9 +89,17 @@ export const transformPromResp = (
 
 const useQueryResult = (queries: DashboardQuery[]) => {
   const [error, setError] = useState('')
-  const {start, end, step} = useAutoRefresh()
   const {orgID} = useParams()
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const {start, end, step} = useSelector((state: AppState) => {
+    const {start, end, step} = state.autoRefresh
+
+    return {
+      start,
+      end,
+      step,
+    }
+  })
   const [result, setResult] = useState<FromFluxResult>({
     table: fromRows([]),
     fluxGroupKeyUnion: [],

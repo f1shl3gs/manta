@@ -8,6 +8,11 @@ import {Organization} from 'src/types/organization'
 
 import {OrgEntities} from 'src/types/schemas'
 import {arrayOfOrgs} from 'src/schemas'
+import {defaultErrorNotification} from 'src/constants/notification'
+import {
+  notify,
+  PublishNotificationAction,
+} from 'src/shared/actions/notifications'
 
 export const getOrgs =
   () =>
@@ -37,7 +42,9 @@ export const getOrgs =
 
 export const createOrg =
   (org: Organization) =>
-  async (dispatch: Dispatch<Action>): Promise<void> => {
+  async (
+    dispatch: Dispatch<Action | PublishNotificationAction>
+  ): Promise<void> => {
     try {
       const resp = await request('/api/v1/orgs', {method: 'POST', body: org})
       if (resp.status !== 201) {
@@ -49,5 +56,12 @@ export const createOrg =
       dispatch(addOrg(created))
     } catch (err) {
       console.error(err)
+
+      dispatch(
+        notify({
+          ...defaultErrorNotification,
+          message: `Create Org failed, ${err}`,
+        })
+      )
     }
   }

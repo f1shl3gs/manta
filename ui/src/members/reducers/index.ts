@@ -1,10 +1,10 @@
 import {RemoteDataState} from '@influxdata/clockface'
 import produce from 'immer'
-import {MembersState, ResourceType} from 'src/types/resources'
+import {UsersState, ResourceType} from 'src/types/resources'
 import {Action, SET_MEMBERS} from 'src/members/actions'
 import {setResource} from 'src/resources/reducers/helpers'
 
-const initialState = (): MembersState => ({
+const initialState = (): UsersState => ({
   byID: {},
   allIDs: [],
   status: RemoteDataState.NotStarted,
@@ -12,7 +12,7 @@ const initialState = (): MembersState => ({
 })
 
 export const usersReducer = (
-  state: MembersState = initialState(),
+  state: UsersState = initialState(),
   action: Action
 ) =>
   produce(state, draftState => {

@@ -8,8 +8,8 @@ import YAxisTitle from 'src/timeMachine/YAxisTitle'
 import YAxisBase from 'src/timeMachine/YAxisBase'
 import AxisAffixes from 'src/timeMachine/AxisAffixes'
 import useLineView from 'src/visualization/Line/useLineView'
-import {XYViewProperties} from 'src/types/dashboards'
 import {VisualizationOptionProps} from 'src/visualization'
+import {XYViewProperties} from 'src/types/cells'
 
 const dimensions = [
   {

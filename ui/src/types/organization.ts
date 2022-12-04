@@ -1,7 +1,8 @@
 export interface Organization {
-  id: string
+  readonly id?: string
+  readonly created?: string
+  readonly modified?: string
+
   name: string
-  desc: string
-  created: string
-  modified: string
+  desc?: string
 }

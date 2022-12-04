@@ -96,8 +96,8 @@ const connector = connect(mstp, mdtp)
 
 const ToExport = connector(DashboardsIndex)
 
-export default connector(() => (
+export default () => (
   <GetResources resources={[ResourceType.Dashboards]}>
     <ToExport />
   </GetResources>
-))
+)

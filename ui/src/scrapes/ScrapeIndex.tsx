@@ -1,9 +1,10 @@
-import {Columns, Grid, Sort} from '@influxdata/clockface'
+// Libraries
 import React, {FunctionComponent, useState} from 'react'
+
+// Components
+import {Columns, Grid, Sort} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import {getSortedResources} from 'src/utils/sort'
-import {Scrape} from 'src/types/scrape'
-import {SortKey, SortTypes} from 'src/types/sort'
 import ScrapeCard from 'src/scrapes/ScrapeCard'
 import EmptyScrapes from 'src/scrapes/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'
@@ -11,8 +12,23 @@ import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import CreateScrapeButton from 'src/scrapes/CreateScrapeButton'
 import ScrapeExplainer from 'src/scrapes/ScrapeExplainer'
 
-const ScrapePage: FunctionComponent = () => {
-  const {resources} = useResources()
+// Types
+import {ResourceType} from 'src/types/resources'
+import {Scrape} from 'src/types/scrape'
+import {SortKey, SortTypes} from 'src/types/sort'
+
+// Hooks
+import {useSelector} from 'react-redux'
+
+// Actions
+import GetResources from 'src/resources/components/GetResources'
+import {AppState} from 'src/types/stores'
+import {getAll} from 'src/resources/selectors'
+
+const ScrapeIndex: FunctionComponent = () => {
+  const scrapes = useSelector((state: AppState) =>
+    getAll<Scrape>(state, ResourceType.Scrapes)
+  )
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
     key: 'updated' as SortKey,
@@ -61,7 +77,7 @@ const ScrapePage: FunctionComponent = () => {
             widthLG={Columns.Ten}
           >
             <FilterList<Scrape>
-              list={resources}
+              list={scrapes}
               search={search}
               searchKeys={['name', 'desc']}
             >
@@ -100,4 +116,8 @@ const ScrapePage: FunctionComponent = () => {
   )
 }
 
-export default ScrapePage
+export default () => (
+  <GetResources resources={[ResourceType.Scrapes]}>
+    <ScrapeIndex />
+  </GetResources>
+)

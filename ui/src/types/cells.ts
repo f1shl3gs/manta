@@ -1,6 +1,6 @@
 import {RemoteDataState} from '@influxdata/clockface'
 import {DashboardColor} from 'src/types/colors'
-import {DashboardQuery} from 'src/types/dashboard'
+import {DashboardQuery} from 'src/types/dashboards'
 
 export interface Axis {
   bounds?: string[]

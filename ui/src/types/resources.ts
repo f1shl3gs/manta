@@ -4,6 +4,7 @@ import {Cell} from 'src/types/cells'
 import {Organization} from 'src/types/organization'
 import {Configuration} from 'src/types/configuration'
 import {User} from 'src/types/user'
+import {Scrape} from './scrape'
 
 export enum ResourceType {
   Cells = 'cells',
@@ -39,12 +40,14 @@ export interface OrgsState extends NormalizedState<Organization> {
   org: Organization
 }
 
-export interface MembersState extends NormalizedState<User> {
+export interface UsersState extends NormalizedState<User> {
   me: User
 }
 
+export type ScrapesState = NormalizedState<Scrape>
+
 // Cells 'allIDs' are Dashboard.cells
-type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
+export type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
 
 // ResourceState defines the types for normalized resources
 export interface ResourceState {
@@ -52,5 +55,6 @@ export interface ResourceState {
   [ResourceType.Configurations]: ConfigurationsState
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Organizations]: OrgsState
-  [ResourceType.Members]: MembersState
+  [ResourceType.Users]: UsersState
+  [ResourceType.Scrapes]: ScrapesState
 }

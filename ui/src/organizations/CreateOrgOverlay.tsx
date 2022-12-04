@@ -1,3 +1,8 @@
+// Libraries
+import React, {FunctionComponent, useState} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
+
+// Components
 import {
   Button,
   ButtonType,
@@ -7,22 +12,25 @@ import {
   Input,
   Overlay,
 } from '@influxdata/clockface'
-import React, {FunctionComponent, useCallback, useState} from 'react'
-import {useNavigate} from 'react-router-dom'
-import useFetch from 'src/shared/useFetch'
-import useKeyPress from 'src/shared/useKeyPress'
-import {Organization} from 'src/types/organization'
 
-const CreateOrgOverlay: FunctionComponent = () => {
+// Actions
+import {createOrg} from './actions/thunks'
+
+// Hooks
+import useEscape from 'src/shared/useEscape'
+
+const mdtp = {
+  createOrg,
+}
+
+const connector = connect(null, mdtp)
+
+type Props = ConnectedProps<typeof connector>
+
+const CreateOrgOverlay: FunctionComponent<Props> = ({createOrg}) => {
   const [name, setName] = useState('')
-  const navigate = useNavigate()
-  const notify = useNotify()
-  const refetch = () => {
-    console.log('todo')
-  }
-  const onDismiss = useCallback(() => {
-    navigate(-1)
-  }, [navigate])
+  const onDismiss = useEscape()
+
   const submitStatus = /^[a-zA-Z0-9]+$/.test(name)
     ? ComponentStatus.Valid
     : ComponentStatus.Disabled
@@ -30,22 +38,6 @@ const CreateOrgOverlay: FunctionComponent = () => {
     submitStatus === ComponentStatus.Disabled && name !== ''
       ? 'Invalid organization name'
       : ''
-
-  useKeyPress('Escape', onDismiss)
-
-  const {run: createOrg} = useFetch<Organization>(`/api/v1/organizations`, {
-    method: 'POST',
-    onSuccess: org => {
-      refetch()
-      navigate(`/orgs/${org?.id}`)
-    },
-    onError: err => {
-      notify({
-        ...defaultErrorNotification,
-        message: `Create new organization failed, ${err}`,
-      })
-    },
-  })
 
   return (
     <Overlay visible={true}>
@@ -58,9 +50,7 @@ const CreateOrgOverlay: FunctionComponent = () => {
 
         <Form
           onSubmit={() => {
-            createOrg({
-              name,
-            })
+            createOrg({name, desc: ''})
           }}
         >
           <Overlay.Body>
@@ -101,4 +91,4 @@ const CreateOrgOverlay: FunctionComponent = () => {
   )
 }
 
-export default CreateOrgOverlay
+export default connector(CreateOrgOverlay)

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useCallback, useState} from 'react'
 import {useSearchParams} from 'react-router-dom'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Componetns
 import {
@@ -20,6 +21,10 @@ import {
   AutoRefreshOptionType,
   AutoRefreshStatus,
 } from 'src/types/autoRefresh'
+import {AppState} from 'src/types/stores'
+
+// Actions
+import {setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {
@@ -88,9 +93,27 @@ const dropdownStatus = (autoRefresh: AutoRefresh): ComponentStatus => {
   return ComponentStatus.Default
 }
 
-const AutoRefreshDropdown: FunctionComponent = () => {
+const mstp = (state: AppState) => {
+  const {autoRefresh} = state.autoRefresh
+
+  return {
+    autoRefresh,
+  }
+}
+
+const mdtp = {
+  setAutoRefresh: setAutoRefreshInterval,
+}
+
+const connector = connect(mstp, mdtp)
+
+type Props = ConnectedProps<typeof connector>
+
+const AutoRefreshDropdown: FunctionComponent<Props> = ({
+  autoRefresh,
+  setAutoRefresh,
+}) => {
   const [_, setParams] = useSearchParams()
-  const {autoRefresh, setAutoRefresh} = useAutoRefresh()
   const [selected, setSelected] = useState(() => {
     const opt = autoRefreshOptions.find(
       opt => opt.seconds === autoRefresh.interval
@@ -105,17 +128,14 @@ const AutoRefreshDropdown: FunctionComponent = () => {
   const onSelectAutoRefreshOption = useCallback(
     (opt: AutoRefreshOption) => {
       setSelected(opt)
-      setAutoRefresh({
-        status:
-          opt.seconds !== 0
-            ? AutoRefreshStatus.Active
-            : AutoRefreshStatus.Paused,
-        interval: opt.seconds,
-      })
-      setParams(prev => {
-        prev.set('interval', `${opt.seconds}s`)
-        return prev
-      })
+      setAutoRefresh(opt.seconds)
+      setParams(
+        prev => {
+          prev.set('interval', `${opt.seconds}s`)
+          return prev
+        },
+        {replace: true}
+      )
     },
     [setAutoRefresh, setParams]
   )
@@ -164,4 +184,4 @@ const AutoRefreshDropdown: FunctionComponent = () => {
   )
 }
 
-export default AutoRefreshDropdown
+export default connector(AutoRefreshDropdown)

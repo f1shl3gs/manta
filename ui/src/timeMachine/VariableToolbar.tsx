@@ -5,7 +5,7 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 import VariableItem from 'src/timeMachine/VariableItem'
-import {Variable} from 'src/types/Variable'
+import {Variable} from 'src/types/variable'
 import PromqlToolbarSearch from 'src/timeMachine/PromqlToolbarSearch'
 
 const VariableToolbar: React.FC = () => {

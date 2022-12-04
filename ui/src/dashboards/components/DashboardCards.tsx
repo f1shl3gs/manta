@@ -23,8 +23,7 @@ interface Props {
   sortOption: DashboardSortParams
 }
 
-const DashboardCards: FunctionComponent<Props> = props => {
-  const {sortOption, search} = props
+const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
   const dashboards = useSelector((state: AppState) =>
     getAll<Dashboard>(state, ResourceType.Dashboards)
   )

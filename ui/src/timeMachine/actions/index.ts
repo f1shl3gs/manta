@@ -1,4 +1,4 @@
-import {ViewType} from 'src/types/cells'
+import {ViewProperties, ViewType} from 'src/types/cells'
 
 export const SET_ACTIVE_QUERY = 'SET_ACTIVE_QUERY'
 export const SET_ACTIVE_QUERY_TEXT = 'SET_ACTIVE_QUERY_TEXT'
@@ -6,14 +6,7 @@ export const ADD_QUERY = 'ADD_QUERY'
 export const REMOVE_QUERY = 'REMOVE_QUERY'
 export const SET_VIEWING_VIS_OPTIONS = 'SET_VIEWING_VIS_OPTIONS'
 export const SET_VIEWTYPE = 'SET_VIEWTYPE'
-
-export type Action =
-  | ReturnType<typeof setActiveQueryIndex>
-  | ReturnType<typeof setActiveQueryText>
-  | ReturnType<typeof addQuery>
-  | ReturnType<typeof removeQuery>
-  | ReturnType<typeof setViewingVisOptions>
-  | ReturnType<typeof setViewType>
+export const SET_VIEW_PROPERTIES = 'SET_VIEW_PROPERTIES'
 
 export const setActiveQueryIndex = (activeQueryIndex: number) =>
   ({
@@ -54,3 +47,18 @@ export const setViewType = (viewType: ViewType) =>
     type: SET_VIEWTYPE,
     viewType,
   } as const)
+
+export const setViewProperties = (viewProperties: ViewProperties) =>
+  ({
+    type: SET_VIEW_PROPERTIES,
+    viewProperties,
+  } as const)
+
+export type Action =
+  | ReturnType<typeof setActiveQueryIndex>
+  | ReturnType<typeof setActiveQueryText>
+  | ReturnType<typeof addQuery>
+  | ReturnType<typeof removeQuery>
+  | ReturnType<typeof setViewingVisOptions>
+  | ReturnType<typeof setViewType>
+  | ReturnType<typeof setViewProperties>
