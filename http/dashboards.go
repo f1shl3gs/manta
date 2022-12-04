@@ -2,10 +2,10 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -34,8 +34,8 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.listDashboard)
 	h.HandlerFunc(http.MethodGet, dashboardsWithID, h.getDashboard)
-	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.create)
-	h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.delete)
+	h.HandlerFunc(http.MethodPost, dashboardsPrefix, h.createDashboard)
+	h.HandlerFunc(http.MethodDelete, dashboardsWithID, h.deletedashboard)
 	h.HandlerFunc(http.MethodPatch, dashboardsWithID, h.updateMeta)
 
 	h.HandlerFunc(http.MethodGet, dashboardCellIDPath, h.getCell)
@@ -100,7 +100,7 @@ func (h *DashboardsHandler) getDashboard(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
+func (h *DashboardsHandler) createDashboard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	dashboard, err := decodeDashboard(r)
@@ -119,7 +119,7 @@ func (h *DashboardsHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request) {
+func (h *DashboardsHandler) deletedashboard(w http.ResponseWriter, r *http.Request) {
 	var ctx = r.Context()
 
 	id, err := idFromPath(r)
@@ -133,6 +133,8 @@ func (h *DashboardsHandler) delete(w http.ResponseWriter, r *http.Request) {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
@@ -240,7 +242,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	dashboardId, err := idFromPath(r)
+	dashboardID, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -258,7 +260,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardId, cellId, upd)
+	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellId, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -316,7 +318,15 @@ func (h *DashboardsHandler) replaceCells(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	dashboard, err := h.dashboardService.FindDashboardByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *DashboardsHandler) deleteCell(w http.ResponseWriter, r *http.Request) {

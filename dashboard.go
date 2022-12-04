@@ -64,8 +64,8 @@ type Cell struct {
 	Desc string `json:"desc,omitempty"`
 	X    int32  `json:"x"`
 	Y    int32  `json:"y"`
-	W    int32  `json:"w,omitempty"`
-	H    int32  `json:"h,omitempty"`
+	W    int32  `json:"w"`
+	H    int32  `json:"h"`
 	MinH int32  `json:"minH,omitempty"`
 	MinW int32  `json:"minW,omitempty"`
 	MaxW int32  `json:"maxW,omitempty"`

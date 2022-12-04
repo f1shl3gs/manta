@@ -83,7 +83,7 @@ func (h *ScrapeTargetHandler) handleList(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// handleCreate create a scrapeTarget
+// handleCreate createDashboard a scrapeTarget
 func (h *ScrapeTargetHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 	var (
 		s   = &manta.ScrapeTarget{}
@@ -99,12 +99,15 @@ func (h *ScrapeTargetHandler) handleCreate(w http.ResponseWriter, r *http.Reques
 	err = h.scrapeService.CreateScraperTarget(ctx, s)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
-	} else {
-		w.WriteHeader(http.StatusCreated)
+		return
+	}
+
+	if err = encodeResponse(ctx, w, http.StatusCreated, s); err != nil {
+		logEncodingError(h.logger, r, err)
 	}
 }
 
-// handleDelete delete a scrapte target by ID
+// handleDelete deletedashboard a scrapte target by ID
 func (h *ScrapeTargetHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()

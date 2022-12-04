@@ -4,8 +4,8 @@ import {produce} from 'immer'
 // Actions
 import {
   Action,
-  POLL,
   SET_AUTOREFRESH_INTERVAL,
+  SET_RANGE,
 } from 'src/shared/actions/autoRefresh'
 
 // Types
@@ -36,11 +36,13 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
         draftState.autoRefresh = action.payload
         return
 
-      case POLL:
-        draftState = {
-          ...draftState,
-          ...action.payload,
-        }
+      case SET_RANGE:
+        const {start, end, step} = action.payload
+
+        draftState.start = start
+        draftState.end = end
+        draftState.step = step
+
         return
 
       default:

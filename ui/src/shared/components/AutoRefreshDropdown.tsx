@@ -1,7 +1,7 @@
 // Libraries
-import React, {FunctionComponent, useCallback, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {useSearchParams} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 
 // Componetns
 import {
@@ -24,7 +24,7 @@ import {
 import {AppState} from 'src/types/stores'
 
 // Actions
-import {setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
+import {poll, setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {
@@ -113,6 +113,7 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
   autoRefresh,
   setAutoRefresh,
 }) => {
+  const dispatch = useDispatch()
   const [_, setParams] = useSearchParams()
   const [selected, setSelected] = useState(() => {
     const opt = autoRefreshOptions.find(
@@ -139,6 +140,27 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
     },
     [setAutoRefresh, setParams]
   )
+
+  useEffect(() => {
+    dispatch(poll())
+
+    if (autoRefresh.status !== AutoRefreshStatus.Active) {
+      return
+    }
+
+    const timer = setInterval(() => {
+      if (document.hidden) {
+        // tab is not focused, no need to refresh
+        return
+      }
+
+      dispatch(poll())
+    }, autoRefresh.interval * 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [autoRefresh, dispatch])
 
   return (
     <>

@@ -27,7 +27,7 @@ export interface Dashboard {
   name: string
   desc: string
   orgID: string
-  cells: Cells
+  cells: string[]
 
   // TODO: remove this
   status: RemoteDataState

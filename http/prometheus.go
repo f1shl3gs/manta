@@ -153,7 +153,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		h.HandleHTTPError(ctx, &manta.Error{
 			Code: manta.EInvalid,
 			Msg:  "bad_data: invalid parameter \"query\"",
-			Op:   "create instant query",
+			Op:   "createDashboard instant query",
 			Err:  err,
 		}, w)
 		return

@@ -6,6 +6,11 @@ import {Configuration} from 'src/types/configuration'
 import {User} from 'src/types/user'
 import {Scrape} from './scrape'
 
+export interface Resource {
+  type: ResourceType
+  id: string
+}
+
 export enum ResourceType {
   Cells = 'cells',
   Dashboards = 'dashboards',
@@ -32,6 +37,8 @@ export interface ConfigurationsState extends NormalizedState<Configuration> {
 }
 
 export interface DashboardsState extends NormalizedState<Dashboard> {
+  current: string
+
   searchTerm: string
   sortOptions: DashboardSortParams
 }

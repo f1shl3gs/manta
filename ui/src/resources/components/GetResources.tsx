@@ -9,6 +9,7 @@ import {getResourcesStatus} from 'src/resources/selectors'
 
 // Actions
 import {getDashboards} from 'src/dashboards/actions/thunks'
+import {getScrapes} from 'src/scrapes/actions/thunk'
 
 interface OwnProps {
   resources: Array<ResourceType>
@@ -22,6 +23,10 @@ const getResourceDetails = (resource: ResourceType, props: ReduxProps) => {
   switch (resource) {
     case ResourceType.Dashboards:
       return props.getDashboards()
+
+    case ResourceType.Scrapes:
+      return props.getScrapes()
+
     default:
       throw new Error('incorrent resource type provided')
   }
@@ -52,7 +57,8 @@ const mstp = (state: AppState, {resources}: OwnProps) => {
 }
 
 const mdtp = {
-  getDashboards: getDashboards,
+  getDashboards,
+  getScrapes,
 }
 
 const connector = connect(mstp, mdtp)

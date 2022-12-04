@@ -17,9 +17,8 @@ const connector = connect(null, mdtp)
 type Props = ConnectedProps<typeof connector>
 
 const DashboardImportOverlay: FunctionComponent<Props> = ({create}) => {
-  const onSubmit = (imported: string) => {
-    const dashboard = JSON.parse(imported)
-    create(dashboard)
+  const onSubmit = (text: string) => {
+    create(text)
   }
 
   return <ImportOverlay resourceName={'Dashboard'} onSubmit={onSubmit} />

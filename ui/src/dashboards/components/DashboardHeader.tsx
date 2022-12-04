@@ -1,5 +1,6 @@
 // Libraries
 import React from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {ComponentSize, FlexBox, Page} from '@influxdata/clockface'
@@ -10,21 +11,25 @@ import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 import AutoRefreshDropdown from 'src/shared/components/AutoRefreshDropdown'
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
 
-// Hooks
-import {useDispatch, useSelector} from 'react-redux'
-
 // Actions
 import {updateDashboard} from 'src/dashboards/actions/thunks'
 
 // Selectors
-import {getDashboard} from 'src/dashboards/selectors'
+import {useParams} from 'react-router-dom'
+import {AppState} from 'src/types/stores'
+import {getByID} from 'src/resources/selectors'
+import {Dashboard} from 'src/types/dashboards'
+import {ResourceType} from 'src/types/resources'
 
 const DashboardHeader = () => {
-  const {id, name} = useSelector(getDashboard)
+  const {dashboardID} = useParams()
+  const {name} = useSelector((state: AppState) =>
+    getByID<Dashboard>(state, ResourceType.Dashboards, dashboardID)
+  )
   const dispatch = useDispatch()
 
   const handleRename = (newName: string) => {
-    dispatch(updateDashboard(id, {name: newName}))
+    dispatch(updateDashboard(dashboardID, {name: newName}))
   }
 
   return (
@@ -36,16 +41,20 @@ const DashboardHeader = () => {
         onRename={handleRename}
       />
 
-      <FlexBox margin={ComponentSize.Small}>
-        <CreateCellButton />
-        <PresentationModeToggle />
+      <FlexBox margin={ComponentSize.Large}>
+        <FlexBox margin={ComponentSize.Small}>
+          <CreateCellButton />
+          <PresentationModeToggle />
+        </FlexBox>
+
+        <FlexBox margin={ComponentSize.Small}>
+          <TimeRangeDropdown />
+          <AutoRefreshDropdown />
+          <AutoRefreshButton />
+        </FlexBox>
       </FlexBox>
 
-      <FlexBox margin={ComponentSize.Small}>
-        <TimeRangeDropdown />
-        <AutoRefreshDropdown />
-        <AutoRefreshButton />
-      </FlexBox>
+
     </Page.Header>
   )
 }

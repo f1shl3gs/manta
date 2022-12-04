@@ -2,8 +2,17 @@ import {produce} from 'immer'
 
 import {ResourceType, ScrapesState} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
-import {Action, REMOVE_SCRAPE, SET_SCRAPES} from 'src/scrapes/actions/creators'
-import {removeResource, setResource} from 'src/resources/reducers/helpers'
+import {
+  Action,
+  ADD_SCRAPE,
+  REMOVE_SCRAPE,
+  SET_SCRAPES,
+} from 'src/scrapes/actions/creators'
+import {
+  addResource,
+  removeResource,
+  setResource,
+} from 'src/resources/reducers/helpers'
 
 const initialState = (): ScrapesState => ({
   byID: {},
@@ -20,9 +29,15 @@ export const scrapesReducers = (
       case SET_SCRAPES:
         setResource(draftState, action, ResourceType.Scrapes)
         return
+
+      case ADD_SCRAPE:
+        addResource(draftState, action, ResourceType.Scrapes)
+        return
+
       case REMOVE_SCRAPE:
         removeResource(draftState, action)
         return
+
       default:
         return
     }

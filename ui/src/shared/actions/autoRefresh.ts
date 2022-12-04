@@ -2,9 +2,10 @@ import dayjs from 'dayjs'
 
 import {AutoRefreshStatus} from 'src/types/autoRefresh'
 import {TimeRange} from 'src/types/timeRanges'
+import {GetState} from 'src/types/stores'
 
 export const SET_AUTOREFRESH_INTERVAL = 'SET_AUTOREFRESH_INTERVAL'
-export const POLL = 'POLL'
+export const SET_RANGE = 'SET_RANGE'
 
 const MAX_POINT = 1024
 const MIN_STEP = 14
@@ -47,15 +48,19 @@ export const setAutoRefreshInterval = (interval: number) =>
     },
   } as const)
 
-export const poll = (timeRange: TimeRange) => {
-  const range = calculateRange(timeRange)
-
-  return {
-    type: POLL,
+export const setRange = (range: {start: number; end: number; step: number}) =>
+  ({
+    type: SET_RANGE,
     payload: range,
-  } as const
-}
+  } as const)
 
 export type Action =
-  | ReturnType<typeof poll>
   | ReturnType<typeof setAutoRefreshInterval>
+  | ReturnType<typeof setRange>
+
+export const poll = () => (dispatch, getState: GetState) => {
+  const state = getState()
+  const range = calculateRange(state.timeRange)
+
+  dispatch(setRange(range))
+}

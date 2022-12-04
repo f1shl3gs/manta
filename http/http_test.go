@@ -39,7 +39,7 @@ func NewTestHTTPService(t *testing.T) (*Service, *Backend) {
 		SessionService:      service,
 	}
 
-	// This is very trick, this will delete the data file, and
+	// This is very trick, this will deletedashboard the data file, and
 	// you will not find it by something like `ls` or `find`.
 	// While the bolt will be still working, and the dta file
 	// will be deleted when this test process exit.

@@ -27,8 +27,9 @@ const initialState = (): DashboardsState => ({
   byID: {},
   allIDs: [],
   status: RemoteDataState.NotStarted,
-  searchTerm: '',
   sortOptions: DEFAULT_DASHBOARD_SORT_OPTIONS,
+  searchTerm: '',
+  current: '',
 })
 
 export const dashboardsReducer = (
@@ -50,6 +51,7 @@ export const dashboardsReducer = (
         return
 
       case SET_DASHBOARD:
+        draftState.current = action.id
         setResourceAtID<Dashboard>(draftState, action, ResourceType.Dashboards)
         return
 

@@ -10,6 +10,7 @@ import {
   ADD_QUERY,
   REMOVE_QUERY,
   SET_ACTIVE_QUERY,
+  SET_ACTIVE_QUERY_TEXT,
   SET_VIEWING_VIS_OPTIONS,
 } from 'src/timeMachine/actions'
 import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
@@ -25,8 +26,14 @@ export interface TimeMachineState {
 }
 
 const initialState = () => ({
-  activeQueryIndex: null,
-  queries: new Array<DashboardQuery>(),
+  activeQueryIndex: 0,
+  queries: [
+    {
+      name: 'query 1',
+      text: '',
+      hidden: false,
+    },
+  ],
   viewingVisOptions: false,
   contextID: '',
   timeRange: pastHourTimeRange,
@@ -42,15 +49,23 @@ export const timeMachineReducer = (
       case SET_ACTIVE_QUERY:
         draftState.activeQueryIndex = action.activeQueryIndex
         return
+
+      case SET_ACTIVE_QUERY_TEXT:
+        draftState.queries[draftState.activeQueryIndex].text = action.text
+        return
+
       case ADD_QUERY:
         draftState.queries.push(action.query)
         return
+
       case SET_VIEWING_VIS_OPTIONS:
         draftState.viewingVisOptions = action.viewingVisOptions
         return
+
       case REMOVE_QUERY:
         draftState.queries.filter((_q, index) => index === action.index)
         return
+
       default:
         return
     }

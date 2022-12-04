@@ -14,12 +14,12 @@ import {
   setDashboards,
 } from 'src/dashboards/actions/creators'
 import {RemoteDataState} from '@influxdata/clockface'
-import {getAll, getByID, getStatus} from 'src/resources/selectors'
+import {getByID, getStatus} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import {getOrg} from 'src/organizations/selectors'
 import {DashboardEntities} from 'src/types/schemas'
 import {Dashboard} from 'src/types/dashboards'
-import {Cell} from 'src/types/cells'
+import {Cell, CellEntities} from 'src/types/cells'
 import {arrayOfDashboards, dashboardSchema} from 'src/schemas'
 import {
   notify,
@@ -32,8 +32,43 @@ import {
 import {push} from '@lagunovsky/redux-react-router'
 import {setCells} from 'src/cells/actions/creators'
 import {arrayOfCells} from 'src/schemas/dashboards'
-import {CellEntities} from 'src/types/cells'
-import {getDashboard} from '../selectors'
+import {get} from 'lodash'
+import {getCells} from '../../cells/selectors'
+
+export const getDashboard =
+  (id: string) =>
+  async (dispatch): Promise<void> => {
+    dispatch(setDashboard(id, RemoteDataState.Loading))
+
+    try {
+      const resp = await request(`/api/v1/dashboards/${id}`)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const normDash = normalize<Dashboard, DashboardEntities, string>(
+        resp.data,
+        dashboardSchema
+      )
+
+      dispatch(setDashboard(id, RemoteDataState.Done, normDash))
+
+      const normCells = normalize<Cell, CellEntities, string[]>(
+        resp.data.cells,
+        arrayOfCells
+      )
+      dispatch(setCells(resp.data.id, RemoteDataState.Done, normCells))
+    } catch (err) {
+      console.error(err)
+
+      dispatch(
+        notify({
+          ...defaultErrorNotification,
+          message: `Get Dashboard failed, ${err}`,
+        })
+      )
+    }
+  }
 
 export const getDashboards =
   () =>
@@ -118,9 +153,11 @@ export const createDashboard =
   }
 
 export const createDashboardFromJSON =
-  (raw: Dashboard) =>
+  (text: string) =>
   async (dispatch, getState: GetState): Promise<void> => {
     try {
+      const raw: Dashboard = JSON.parse(text)
+
       const state = getState()
       const org = getOrg(state)
 
@@ -149,6 +186,7 @@ export const createDashboardFromJSON =
           message: `Import Dashboard success`,
         })
       )
+      dispatch(push(`/orgs/${org.id}/dashboards`))
     } catch (err) {
       console.error(err)
 
@@ -308,15 +346,19 @@ export const updateCells =
 export const updateLayout =
   (layouts: Layout[]) =>
   async (dispatch, getState: GetState): Promise<void> => {
+    if (layouts.length === 0) {
+      return
+    }
+
     const state = getState()
-    const dashboard = getDashboard(state)
-    const cells = getAll<Cell>(state, ResourceType.Cells)
-    const newCell = layouts.map(layout => {
-      const cell = cells.find(item => item.id == layout.id)
+    const dashboardID = get(state, 'resources.dashboards.current', '')
+    const cells = getCells(state, dashboardID)
+    const newCells = layouts.map(layout => {
+      const cell = cells.find(item => item.id == layout.i)
 
       return {
-        ...cell,
-        id: layout.id,
+        viewProperties: cell.viewProperties,
+        id: layout.i,
         x: layout.x,
         y: layout.y,
         w: layout.w,
@@ -325,19 +367,19 @@ export const updateLayout =
     })
 
     try {
-      const resp = await request(`/api/v1/dashboards/${dashboard.id}/cells`, {
-        method: 'POST',
-        body: newCell,
+      const resp = await request(`/api/v1/dashboards/${dashboardID}/cells`, {
+        method: 'PUT',
+        body: newCells,
       })
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
 
       const normalized = normalize<Cell, CellEntities, string[]>(
-        resp.data,
+        resp.data.cells,
         arrayOfCells
       )
-      dispatch(setCells(dashboard.id, RemoteDataState.Done, normalized))
+      dispatch(setCells(dashboardID, RemoteDataState.Done, normalized))
     } catch (err) {
       console.error(err)
 

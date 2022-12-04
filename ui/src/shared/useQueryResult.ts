@@ -100,6 +100,7 @@ const useQueryResult = (queries: DashboardQuery[]) => {
       step,
     }
   })
+
   const [result, setResult] = useState<FromFluxResult>({
     table: fromRows([]),
     fluxGroupKeyUnion: [],

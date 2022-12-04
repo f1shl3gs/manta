@@ -6,9 +6,9 @@ import {Dashboard} from 'src/types/dashboards'
 import PageSpinner from 'src/shared/components/PageSpinner'
 
 const ExportOverlay: FunctionComponent = () => {
-  const {dashboardId} = useParams()
+  const {dashboardID} = useParams()
   const {data, loading} = useFetch<Dashboard>(
-    `/api/v1/dashboards/${dashboardId}`
+    `/api/v1/dashboards/${dashboardID}`
   )
 
   return (

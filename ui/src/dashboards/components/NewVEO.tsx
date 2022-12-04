@@ -2,7 +2,6 @@
 import React, {FunctionComponent, useState} from 'react'
 
 // Components
-import {Overlay} from '@influxdata/clockface'
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
 import TimeMachine from 'src/timeMachine'
 import {useDispatch} from 'react-redux'
@@ -22,20 +21,18 @@ const NewVEO: FunctionComponent = () => {
   }
 
   return (
-    <Overlay visible={true} className={'veo-overlay'}>
-      <div className={'veo'}>
-        <ViewEditorOverlayHeader
-          name={name}
-          onSubmit={onSubmit}
-          onCancel={onCancel}
-          onRename={setName}
-        />
+    <div className={'veo'}>
+      <ViewEditorOverlayHeader
+        name={name}
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        onRename={setName}
+      />
 
-        <div className={'veo-contents'}>
-          <TimeMachine />
-        </div>
+      <div className={'veo-contents'}>
+        <TimeMachine />
       </div>
-    </Overlay>
+    </div>
   )
 }
 

@@ -31,8 +31,8 @@ export const organizationsReducer = (
           action,
           ResourceType.Organizations
         )
-
         return
+
       case ADD_ORG:
         addResource<Organization>(
           draftState,
@@ -40,9 +40,11 @@ export const organizationsReducer = (
           ResourceType.Organizations
         )
         return
+
       case SET_ORG:
         draftState.org = action.org
         return
+
       default:
         return
     }

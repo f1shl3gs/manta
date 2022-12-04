@@ -56,6 +56,7 @@ const ImportOverlay: FunctionComponent<Props> = ({resourceName, onSubmit}) => {
             <TextArea
               value={content}
               onChange={onChange}
+              autoFocus={true}
               testID={'import-overlay--textarea'}
             />
           </Overlay.Body>

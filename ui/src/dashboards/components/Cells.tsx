@@ -1,16 +1,16 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
+import ReactGridLayout, {Layout, WidthProvider} from 'react-grid-layout'
 
 // Components
 import {Cell} from 'src/types/cells'
 import GradientBorder from 'src/cells/components/GradientBorder'
 import CellComponent from 'src/cells/components/Cell'
-import {useDispatch, useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {AppState} from 'src/types/stores'
 import {ResourceType} from 'src/types/resources'
-import {getAll} from 'src/resources/selectors'
-import {updateLayout} from '../actions/thunks'
+import {updateLayout} from 'src/dashboards/actions/thunks'
+import {getCells} from 'src/cells/selectors'
 
 const Grid = WidthProvider(ReactGridLayout)
 
@@ -43,15 +43,25 @@ const resizeEventHandler = () => {
   /* void */
 }
 
-const Cells: FunctionComponent = () => {
+const mstp = (state: AppState) => {
+  const dashboardID = state.resources[ResourceType.Dashboards].current
+
+  return {
+    dashboardID,
+    cells: getCells(state, dashboardID),
+  }
+}
+
+const connector = connect(mstp, null)
+
+type Props = ConnectedProps<typeof connector>
+
+const Cells: FunctionComponent<Props> = ({cells}) => {
   const dispatch = useDispatch()
 
   const onLayoutChange = (layouts: Layout[]) => {
     dispatch(updateLayout(layouts))
   }
-  const cells = useSelector((state: AppState) =>
-    getAll<Cell>(state, ResourceType.Cells)
-  )
 
   useEffect(() => {
     window.addEventListener('resize', resizeEventHandler)
@@ -85,4 +95,4 @@ const Cells: FunctionComponent = () => {
   )
 }
 
-export default Cells
+export default connector(Cells)
