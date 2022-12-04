@@ -16,6 +16,7 @@ import {getByID} from 'src/resources/selectors'
 
 // Actions
 import {updateCell} from 'src/cells/actions/thunk'
+import GetResource from 'src/resources/components/GetResource'
 
 const EditVEO: FunctionComponent = () => {
   const dispatch = useDispatch()
@@ -57,4 +58,12 @@ const EditVEO: FunctionComponent = () => {
   )
 }
 
-export default EditVEO
+export default () => {
+  const {cellID} = useParams()
+
+  return (
+    <GetResource resources={[{type: ResourceType.Cells, id: cellID}]}>
+      <EditVEO />
+    </GetResource>
+  )
+}

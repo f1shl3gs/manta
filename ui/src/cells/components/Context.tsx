@@ -22,7 +22,7 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
 import {removeCell} from 'src/cells/actions/creators'
-import {getDashboard} from 'src/dashboards/selectors'
+import {getDashboardID} from 'src/dashboards/selectors'
 
 interface Props {
   cell: Cell
@@ -30,7 +30,7 @@ interface Props {
 
 const Context: FunctionComponent<Props> = ({cell}) => {
   const dispatch = useDispatch()
-  const dashboard = useSelector(getDashboard)
+  const dashboardID = useSelector(getDashboardID)
   const navigate = useNavigate()
 
   const handleEditCell = (): void => {
@@ -42,7 +42,7 @@ const Context: FunctionComponent<Props> = ({cell}) => {
   }
 
   const handleDeleteCell = () => {
-    dispatch(removeCell(dashboard.id, cell.id))
+    dispatch(removeCell(dashboardID, cell.id))
   }
 
   const popoverContents = (onHide?: () => void): JSX.Element => {

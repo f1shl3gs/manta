@@ -6,6 +6,7 @@ import {AppState} from 'src/types/stores'
 import {getResourceStatus} from 'src/resources/selectors'
 import {getDashboard} from 'src/dashboards/actions/thunks'
 import {Resource, ResourceType} from 'src/types/resources'
+import {getCell} from 'src/cells/actions/thunk'
 
 interface OwnProps {
   resources: Resource[]
@@ -36,6 +37,9 @@ const GetResource: FunctionComponent<Props> = props => {
       switch (type) {
         case ResourceType.Dashboards:
           return getDashboard(id)
+
+        case ResourceType.Cells:
+          return getCell(id)
 
         default:
           throw new Error(

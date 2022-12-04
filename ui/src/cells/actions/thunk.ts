@@ -1,3 +1,4 @@
+import {get} from 'lodash'
 import {notify} from 'src/shared/actions/notifications'
 import {
   defaultDeletionNotification,
@@ -7,6 +8,7 @@ import {Dashboard} from 'src/types/dashboards'
 import {GetState} from 'src/types/stores'
 import request from 'src/utils/request'
 import * as creators from 'src/cells/actions/creators'
+import {setCell} from 'src/cells/actions/creators'
 import {getByID} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import {normalize} from 'normalizr'
@@ -15,7 +17,35 @@ import {dashboardSchema} from 'src/schemas'
 import {cellSchema} from 'src/schemas/dashboards'
 import {Cell, CellEntities, ViewProperties} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
-import {setCell} from 'src/cells/actions/creators'
+
+export const getCell =
+  (cellID: string) =>
+  async (dispatch, getState: GetState): Promise<void> => {
+    const state = getState()
+    const dashboardID = get(state, 'resources.dashboards.current', '')
+
+    try {
+      const resp = await request(
+        `/api/v1/dashboards/${dashboardID}/cells/${cellID}`
+      )
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const norm = normalize<Cell, CellEntities, string>(resp.data, cellSchema)
+      dispatch(setCell(cellID, RemoteDataState.Done, norm))
+    } catch (err) {
+      console.error(err)
+
+      dispatch(setCell(cellID, RemoteDataState.Error))
+      dispatch(
+        notify({
+          ...defaultErrorNotification,
+          message: `Get Cell failed, ${err}`,
+        })
+      )
+    }
+  }
 
 export const createCell =
   (dashboardID: string, name: string, viewProperties: ViewProperties) =>

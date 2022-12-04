@@ -8,12 +8,6 @@ export const SET_CELLS = 'SET_CELLS'
 export const SET_CELL = 'SET_CELL'
 export const REMOVE_CELL = 'REMOVE_CELL'
 
-export type Action =
-  | ReturnType<typeof removeCell>
-  | ReturnType<typeof setCells>
-  | ReturnType<typeof setCell>
-  | ReturnType<typeof editCell>
-
 // R is the type of the value of the 'result' key in normalizr's normalization
 export type CellSchema<R extends string | string[]> = NormalizedSchema<
   CellEntities,
@@ -40,13 +34,13 @@ export const setCells = (
   } as const)
 
 export const setCell = (
-  cellID: string,
+  id: string,
   status: RemoteDataState,
   schema?: CellSchema<string>
 ) =>
   ({
     type: SET_CELL,
-    cellID,
+    id,
     status,
     schema,
   } as const)
@@ -56,3 +50,9 @@ export const editCell = (schema: CellSchema<string>) =>
     type: EDIT_CELL,
     schema,
   } as const)
+
+export type Action =
+  | ReturnType<typeof removeCell>
+  | ReturnType<typeof setCells>
+  | ReturnType<typeof setCell>
+  | ReturnType<typeof editCell>
