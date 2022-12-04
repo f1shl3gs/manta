@@ -22,6 +22,7 @@ const mstp = (state: AppState, props: OwnProps) => {
 }
 
 const mdtp = {
+  getCell,
   getDashboard,
 }
 
@@ -30,7 +31,7 @@ const connector = connect(mstp, mdtp)
 type Props = OwnProps & ConnectedProps<typeof connector>
 
 const GetResource: FunctionComponent<Props> = props => {
-  const {loading, children, resources, getDashboard} = props
+  const {loading, children, resources, getDashboard, getCell} = props
 
   useEffect(() => {
     const getResourceDetails = ({type, id}: Resource) => {
@@ -55,7 +56,7 @@ const GetResource: FunctionComponent<Props> = props => {
     })
 
     Promise.all(promises)
-  }, [getDashboard, resources])
+  }, [resources, getCell, getDashboard])
 
   return (
     <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>

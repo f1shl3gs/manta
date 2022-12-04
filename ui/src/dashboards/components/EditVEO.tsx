@@ -4,7 +4,6 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 // Components
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
 import TimeMachine from 'src/timeMachine'
-import PageSpinner from 'src/shared/components/PageSpinner'
 
 // Hooks
 import {useDispatch, useSelector} from 'react-redux'
@@ -43,7 +42,7 @@ const EditVEO: FunctionComponent = () => {
   }, [dispatch, dashboardID, cellID, name, viewProperties])
 
   return (
-    <PageSpinner>
+    <div className={'veo'}>
       <ViewEditorOverlayHeader
         name={name}
         onSubmit={onSubmit}
@@ -54,7 +53,7 @@ const EditVEO: FunctionComponent = () => {
       <div className={'veo-contents'}>
         <TimeMachine />
       </div>
-    </PageSpinner>
+    </div>
   )
 }
 
