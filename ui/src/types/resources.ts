@@ -13,11 +13,13 @@ export interface Resource {
 
 export enum ResourceType {
   Cells = 'cells',
-  Dashboards = 'dashboards',
   Configurations = 'configurations',
+
+  Dashboards = 'dashboards',
+
+  Members = 'members',
   Organizations = 'organizations',
   Scrapes = 'scrapes',
-  Users = 'users',
   Views = 'views',
 }
 
@@ -62,6 +64,6 @@ export interface ResourceState {
   [ResourceType.Configurations]: ConfigurationsState
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Organizations]: OrgsState
-  [ResourceType.Users]: UsersState
+  [ResourceType.Members]: UsersState
   [ResourceType.Scrapes]: ScrapesState
 }

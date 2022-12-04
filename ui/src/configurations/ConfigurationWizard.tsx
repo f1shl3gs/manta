@@ -26,6 +26,7 @@ import {downloadTextFile} from 'src/utils/download'
 
 // Actions
 import {createConfig} from 'src/configurations/actions/thunk'
+import {useNavigate} from 'react-router-dom'
 
 const defaultConfig = `sources:
   # expose process metrics, e.g. cpu, memory and open files
@@ -53,6 +54,7 @@ sinks:
 
 const ConfigurationWizard: FunctionComponent = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [content, setContent] = useState(defaultConfig)
 
   // handle esc key press
@@ -60,7 +62,8 @@ const ConfigurationWizard: FunctionComponent = () => {
 
   const handleSave = useCallback(() => {
     dispatch(createConfig('', '', content))
-  }, [dispatch, content])
+    navigate(-1)
+  }, [content, dispatch, navigate])
 
   return (
     <Overlay visible={true}>

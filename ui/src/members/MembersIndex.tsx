@@ -5,7 +5,7 @@ import {ResourceType} from 'src/types/resources'
 
 const MembersIndex: FunctionComponent = () => {
   return (
-    <GetResources resources={[ResourceType.Users]}>
+    <GetResources resources={[ResourceType.Members]}>
       <MemberList />
     </GetResources>
   )

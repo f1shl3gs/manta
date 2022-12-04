@@ -52,7 +52,7 @@ const rootReducer = (history: History) => (state, action) => {
       [ResourceType.Cells]: cellsReducer,
       [ResourceType.Configurations]: configurationsReducer,
       [ResourceType.Dashboards]: dashboardsReducer,
-      [ResourceType.Users]: usersReducer,
+      [ResourceType.Members]: usersReducer,
       [ResourceType.Organizations]: organizationsReducer,
       [ResourceType.Scrapes]: scrapesReducers,
     }),

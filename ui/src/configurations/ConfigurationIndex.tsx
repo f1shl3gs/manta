@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
 import {getAll} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
+import GetResources from '../resources/components/GetResources'
 
 const ConfigurationWizard = lazy(
   () => import('src/configurations/ConfigurationWizard')
@@ -143,4 +144,8 @@ const ConfigurationIndex: FunctionComponent = () => {
   )
 }
 
-export default ConfigurationIndex
+export default () => (
+  <GetResources resources={[ResourceType.Configurations]}>
+    <ConfigurationIndex />
+  </GetResources>
+)

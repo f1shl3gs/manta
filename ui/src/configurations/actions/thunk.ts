@@ -11,8 +11,38 @@ import {ResourceType} from 'src/types/resources'
 import {Configuration} from 'src/types/configuration'
 import {normalize} from 'normalizr'
 import {ConfigurationEntities} from 'src/types/schemas'
-import {configurationSchema} from 'src/schemas'
-import {editConfig} from './creators'
+import {arrayOfConfigurations, configurationSchema} from 'src/schemas'
+import {editConfig, setConfigs} from 'src/configurations/actions/creators'
+import {RemoteDataState} from '@influxdata/clockface'
+
+export const getConfigs =
+  () =>
+  async (dispatch, getState: GetState): Promise<void> => {
+    const state = getState()
+    const org = getOrg(state)
+
+    try {
+      const resp = await request(`/api/v1/configurations?orgID=${org.id}`)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const norm = normalize<Configuration, ConfigurationEntities, string[]>(
+        resp.data,
+        arrayOfConfigurations
+      )
+      dispatch(setConfigs(RemoteDataState.Done, norm))
+    } catch (err) {
+      console.error(err)
+
+      dispatch(
+        notify({
+          ...defaultErrorNotification,
+          message: `Get configs failed, ${err}`,
+        })
+      )
+    }
+  }
 
 export const createConfig =
   (name: string, desc: string, content: string) =>

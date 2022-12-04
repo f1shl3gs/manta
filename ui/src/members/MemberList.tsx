@@ -19,7 +19,7 @@ import {AppState} from 'src/types/stores'
 
 const MemberList: FunctionComponent = () => {
   const members = useSelector((state: AppState) =>
-    getAll<User>(state, ResourceType.Users)
+    getAll<User>(state, ResourceType.Members)
   )
 
   return (
