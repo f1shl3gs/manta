@@ -77,6 +77,7 @@ export const dashboardsReducer = (
         const dashboards = draftState.byID[cell.dashboardID]
 
         if (dashboards?.cells.includes(cellID)) {
+          // cell exists, no need to add
           return
         }
 
