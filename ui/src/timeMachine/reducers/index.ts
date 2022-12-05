@@ -1,6 +1,5 @@
 import {produce} from 'immer'
 
-import {DashboardQuery} from 'src/types/dashboards'
 import {TimeRange} from 'src/types/timeRanges'
 
 import {pastHourTimeRange} from 'src/constants/timeRange'
@@ -18,7 +17,6 @@ import {ViewProperties} from 'src/types/cells'
 
 export interface TimeMachineState {
   activeQueryIndex: number | null
-  queries: DashboardQuery[]
   viewProperties: ViewProperties
   viewingVisOptions: boolean
   contextID: string // dashboard, check or alert
@@ -51,11 +49,12 @@ export const timeMachineReducer = (
         return
 
       case SET_ACTIVE_QUERY_TEXT:
-        draftState.queries[draftState.activeQueryIndex].text = action.text
+        draftState.viewProperties.queries[draftState.activeQueryIndex].text =
+          action.text
         return
 
       case ADD_QUERY:
-        draftState.queries.push(action.query)
+        draftState.viewProperties.queries.push(action.query)
         return
 
       case SET_VIEWING_VIS_OPTIONS:
@@ -63,7 +62,9 @@ export const timeMachineReducer = (
         return
 
       case REMOVE_QUERY:
-        draftState.queries.filter((_q, index) => index === action.index)
+        draftState.viewProperties.queries.filter(
+          (_q, index) => index === action.index
+        )
         return
 
       default:

@@ -22,7 +22,7 @@ import {addQuery} from 'src/timeMachine/actions'
 const QueryTabs: FunctionComponent = () => {
   const dispatch = useDispatch()
   const queries = useSelector((state: AppState) => {
-    return state.timeMachine.queries
+    return state.timeMachine.viewProperties.queries
   })
 
   const handleClick = () => {

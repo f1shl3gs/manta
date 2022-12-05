@@ -24,7 +24,7 @@ const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
     const languageId = promLanguageDefinition.id
 
     /*
-      TODO: add hotkey for submit
+      TODO: add hotkey for submit, e.g. Ctrl + Enter
     */
 
     monaco.languages.register(promLanguageDefinition)

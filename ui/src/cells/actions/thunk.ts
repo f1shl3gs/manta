@@ -49,9 +49,10 @@ export const getCell =
   }
 
 export const createCell =
-  (dashboardID: string, name: string, viewProperties: ViewProperties) =>
+  (dashboardID: string, name: string) =>
   async (dispatch, getState: GetState): Promise<void> => {
     const state = getState()
+    const viewProperties = state.timeMachine.viewProperties
     let dashboard = getByID<Dashboard>(
       state,
       ResourceType.Dashboards,

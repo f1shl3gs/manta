@@ -20,7 +20,8 @@ interface Props {
 const QueryTab: FunctionComponent<Props> = ({index, query}) => {
   const dispatch = useDispatch()
   const {activeIndex, queries, activeQuery} = useSelector((state: AppState) => {
-    const {activeQueryIndex, queries} = state.timeMachine
+    const {activeQueryIndex, viewProperties} = state.timeMachine
+    const {queries} = viewProperties
 
     return {
       queries,

@@ -54,6 +54,7 @@ const ViewEditorOverlayHeader: FunctionComponent<Props> = ({
 
           <SquareButton
             icon={IconFont.CheckMark_New}
+            testID={'submit--button'}
             size={ComponentSize.Small}
             color={ComponentColor.Success}
             onClick={onSubmit}

@@ -15,6 +15,7 @@ const CreateCellButton: FunctionComponent = () => {
   return (
     <Button
       text={'Add Cell'}
+      testID={'create-cell--button'}
       color={ComponentColor.Primary}
       icon={IconFont.AddCell_New}
       onClick={handleAddCell}

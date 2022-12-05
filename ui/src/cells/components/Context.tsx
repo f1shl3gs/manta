@@ -21,7 +21,7 @@ import {useNavigate} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
-import {removeCell} from 'src/cells/actions/creators'
+import {removeCell} from 'src/cells/actions/thunk'
 import {getDashboardID} from 'src/dashboards/selectors'
 
 interface Props {

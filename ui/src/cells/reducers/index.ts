@@ -41,7 +41,7 @@ export const cellsReducer = (
 
       case SET_CELL:
         const {id, schema, status} = action
-        const cell: Cell = get(schema, 'entities.cells.id')
+        const cell: Cell = get(schema, ['entities', 'cells', id])
         const exists = !!draftState.byID[id]
 
         if (cell || !exists) {

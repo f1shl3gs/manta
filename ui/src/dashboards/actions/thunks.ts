@@ -54,7 +54,7 @@ export const getDashboard =
       dispatch(setDashboard(id, RemoteDataState.Done, normDash))
 
       const normCells = normalize<Cell, CellEntities, string[]>(
-        resp.data.cells,
+        resp.data.cells ?? [],
         arrayOfCells
       )
       dispatch(setCells(resp.data.id, RemoteDataState.Done, normCells))
@@ -249,7 +249,9 @@ export const cloneDashboard =
 
 export const deleteDashboard =
   (id: string, name: string) =>
-  async (dispatch: Dispatch<Action>): Promise<void> => {
+  async (
+    dispatch: Dispatch<Action | PublishNotificationAction>
+  ): Promise<void> => {
     dispatch(removeDashboard(id))
 
     try {
@@ -257,6 +259,13 @@ export const deleteDashboard =
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
+
+      dispatch(
+        notify({
+          ...defaultSuccessNotification,
+          message: `Delete Dashboard success`,
+        })
+      )
     } catch (err) {
       console.error(err)
 
@@ -307,37 +316,6 @@ export const updateDashboard =
         notify({
           ...defaultErrorNotification,
           message: `Update Dashboard ${current.name} failed, ${err}`,
-        })
-      )
-    }
-  }
-
-export const updateCells =
-  (dashboardID: string, cells: Cell[]) =>
-  async (dispatch): Promise<void> => {
-    try {
-      const resp = await request(`/api/v1/dashboards/${dashboardID}/cells`, {
-        method: 'PUT',
-        body: cells,
-      })
-      if (resp.status !== 201) {
-        throw new Error(resp.data.message)
-      }
-
-      const updatedCells = cells.map(c => ({...c, dashboardID}))
-      const normalized = normalize<Dashboard, DashboardEntities, string[]>(
-        updatedCells,
-        arrayOfCells
-      )
-
-      dispatch(setCells(dashboardID, RemoteDataState.Done, normalized))
-    } catch (err) {
-      console.error(err)
-
-      dispatch(
-        notify({
-          ...defaultErrorNotification,
-          message: `Failed to update cells, ${err}`,
         })
       )
     }

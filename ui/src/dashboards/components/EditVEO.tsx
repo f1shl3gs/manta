@@ -4,18 +4,23 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 // Components
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
 import TimeMachine from 'src/timeMachine'
+import {Page} from '@influxdata/clockface'
 
 // Hooks
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate, useParams} from 'react-router-dom'
+
+// Types
 import {AppState} from 'src/types/stores'
 import {Cell} from 'src/types/cells'
 import {ResourceType} from 'src/types/resources'
-import {getByID} from 'src/resources/selectors'
 
 // Actions
 import {updateCell} from 'src/cells/actions/thunk'
 import GetResource from 'src/resources/components/GetResource'
+
+// Selectors
+import {getByID} from 'src/resources/selectors'
 
 const EditVEO: FunctionComponent = () => {
   const dispatch = useDispatch()
@@ -42,18 +47,20 @@ const EditVEO: FunctionComponent = () => {
   }, [dispatch, dashboardID, cellID, name, viewProperties])
 
   return (
-    <div className={'veo'}>
-      <ViewEditorOverlayHeader
-        name={name}
-        onSubmit={onSubmit}
-        onCancel={onCancel}
-        onRename={setName}
-      />
+    <Page>
+      <div className={'veo'}>
+        <ViewEditorOverlayHeader
+          name={name}
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+          onRename={setName}
+        />
 
-      <div className={'veo-contents'}>
-        <TimeMachine />
+        <div className={'veo-contents'}>
+          <TimeMachine />
+        </div>
       </div>
-    </div>
+    </Page>
   )
 }
 

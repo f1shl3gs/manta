@@ -13,27 +13,19 @@ import CreateOrgOverlay from 'src/organizations/CreateOrgOverlay'
 import ToOrg from 'src/organizations/ToOrg'
 // DataPage is just a simple tabed page, it's small enough and it can reduce re-render
 import DataPage from 'src/data/DataPage'
-import DashboardPage from 'src/dashboards/components/DashboardPage'
 import {getPresentationMode} from 'src/shared/selectors/app'
 
 // Hooks
 import {useSelector} from 'react-redux'
+import DashboardPage from './dashboards/components/DashboardPage'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
-const DashboardsPage = lazy(
+const DashboardsIndex = lazy(
   () => import('src/dashboards/components/DashboardsIndex')
 )
 const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const Explore = lazy(() => import('src/explore/Explore'))
-const DashboardImportOverlay = lazy(
-  () => import('src/dashboards/components/DashboardImportOverlay')
-)
-const ExportOverlay = lazy(
-  () => import('src/dashboards/components/ExportOverlay')
-)
-const EditVEO = lazy(() => import('src/dashboards/components/EditVEO'))
-const NewVEO = lazy(() => import('src/dashboards/components/NewVEO'))
 
 const App: FC = () => {
   const presentationMode = useSelector(getPresentationMode)
@@ -59,27 +51,9 @@ const App: FC = () => {
 
                     <Route path="explore" element={<Explore />} />
 
-                    <Route path="dashboards" element={<DashboardsPage />} />
-                    <Route
-                      path="dashboards/:dashboardID"
-                      element={<DashboardPage />}
-                    />
-                    <Route
-                      path="dashboards/import"
-                      element={<DashboardImportOverlay />}
-                    />
-                    <Route
-                      path="dashboards/:dashboardID/cells/new"
-                      element={<NewVEO />}
-                    />
-                    <Route
-                      path="dashboards/:dashboardID/cells/:cellID/edit"
-                      element={<EditVEO />}
-                    />
-                    <Route
-                      path={'dashboards/:dashboardID/export'}
-                      element={<ExportOverlay />}
-                    />
+                    <Route path={'dashboards/*'} element={<DashboardsIndex />}/>
+
+                    <Route path="dashboards/:dashboardID/*" element={<DashboardPage />} />
 
                     <Route path="settings/*" element={<SettingsPage />} />
                   </Route>

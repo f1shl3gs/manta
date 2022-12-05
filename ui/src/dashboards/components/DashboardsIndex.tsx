@@ -13,7 +13,6 @@ import {
   PageTitle,
 } from '@influxdata/clockface'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceType} from 'src/types/resources'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import CreateDashboardButton from 'src/dashboards/components/CreateDashboardButton'
@@ -21,12 +20,15 @@ import DashboardCards from 'src/dashboards/components/DashboardCards'
 
 // Types
 import {AppState} from 'src/types/stores'
+import {ResourceType} from 'src/types/resources'
 
 // Actions
 import {
   setDashboardSearchTerm,
   setDashboardSort,
 } from 'src/dashboards/actions/creators'
+import DashboardImportOverlay from './DashboardImportOverlay'
+import {Route, Routes } from 'react-router-dom'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -96,8 +98,15 @@ const connector = connect(mstp, mdtp)
 
 const ToExport = connector(DashboardsIndex)
 
+// /orgs/:orgID/dashboards
 export default () => (
   <GetResources resources={[ResourceType.Dashboards]}>
-    <ToExport />
+    <Routes>
+      <Route index element={<ToExport />} />
+      <Route
+        path="import"
+        element={<DashboardImportOverlay />}
+      />
+    </Routes>
   </GetResources>
 )

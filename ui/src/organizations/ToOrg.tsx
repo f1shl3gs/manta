@@ -7,7 +7,6 @@ const ToOrg: FunctionComponent = () => {
   const {id} = useOrg()
 
   useEffect(() => {
-    console.log('toorg')
     navigate(`/orgs/${id}`)
   }, [id, navigate])
 

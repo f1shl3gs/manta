@@ -18,21 +18,26 @@ describe('Dashboard', () => {
       .should('include', 'orgs')
       .should('include', 'dashboards')
     cy.getByTestID('nav-item-dashboard').click()
+    cy.getByTestID('dashboard-editable-name').click()
   })
 
-  it('Delete', () => {
-    // delete dashboard from list
-    cy.getByTestID('dashboard-card-context--delete').click()
-    cy.getByTestID('context_menu-delete').click()
-    cy.getByTestID('notification-success').should('have.length', 1)
+  it('Add cell', () => {
+    const name = 'some name'
+    const query = 'queeeeeery'
 
-    // should be empty
-    cy.getByTestID('dashboard-card').should('have.length', 0)
-  })
+    cy.getByTestID('create-cell--button').first().click()
 
-  it('Rename', () => {
-    cy.getByTestID('dashboard-editable-name--button').click()
-    cy.getByTestID('dashboard-editable-name--input').type('foo{enter}')
-    cy.getByTestID('dashboard-editable-name').invoke('text').should('eq', 'foo')
+    // fill query
+    cy.get(`[data-mode-id="promql"]`).type(query)
+
+    // set name
+    cy.getByTestID('page-title').first().click()
+    .getByTestID('renamable-page-title--input').type(`${name}{enter}`)
+
+    // submit
+    cy.getByTestID('submit--button').click()
+
+    // find cell
+    cy.getByTestID(`cell--draggable ${name}`).should('have.length', 1)
   })
 })

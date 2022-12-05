@@ -110,7 +110,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       id: 'explore',
       testID: 'nav-item-explore',
       label: 'Explore',
-      icon: IconFont.Search_New,
+      icon: IconFont.GraphLine_New,
       shortLabel: 'Explore',
       activeKeywords: ['explore'],
       link: {
@@ -122,7 +122,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       id: 'dashboards',
       testID: 'nav-item-dashboard',
       label: 'Dashboards',
-      icon: IconFont.GraphLine_New,
+      icon: IconFont.DashH,
       shortLabel: 'Dashboards',
       activeKeywords: ['dashboards'],
       link: {
