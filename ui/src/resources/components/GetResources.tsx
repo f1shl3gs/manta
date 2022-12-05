@@ -2,16 +2,21 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
-import {ResourceType} from 'src/types/resources'
+// Components
 import PageSpinner from 'src/shared/components/PageSpinner'
+
+// Types
+import {ResourceType} from 'src/types/resources'
 import {AppState} from 'src/types/stores'
-import {getResourcesStatus} from 'src/resources/selectors'
 
 // Actions
 import {getDashboards} from 'src/dashboards/actions/thunks'
 import {getScrapes} from 'src/scrapes/actions/thunk'
 import {getMembers} from 'src/members/actions/thunk'
 import {getConfigs} from 'src/configurations/actions/thunk'
+
+// Selectors
+import {getResourcesStatus} from 'src/resources/selectors'
 
 const mstp = (state: AppState, {resources}: OwnProps) => {
   const loading = getResourcesStatus(state, resources)

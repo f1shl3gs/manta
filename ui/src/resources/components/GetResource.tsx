@@ -1,12 +1,19 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
+// Components
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+
+// Types
 import {AppState} from 'src/types/stores'
-import {getResourceStatus} from 'src/resources/selectors'
-import {getDashboard} from 'src/dashboards/actions/thunks'
 import {Resource, ResourceType} from 'src/types/resources'
+
+// Actions
+import {getDashboard} from 'src/dashboards/actions/thunks'
 import {getCell} from 'src/cells/actions/thunk'
+
+// Selectors
+import {getResourceStatus} from 'src/resources/selectors'
 
 interface OwnProps {
   resources: Resource[]
