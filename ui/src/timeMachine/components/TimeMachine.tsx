@@ -3,19 +3,19 @@ import React, {FunctionComponent, useState} from 'react'
 import classnames from 'classnames'
 
 // Components
-import ViewOptions from 'src/timeMachine/ViewOptions'
+import ViewOptions from 'src/timeMachine/components/ViewOptions'
 import {
   DraggableResizer,
   DraggableResizerPanel,
   Orientation,
 } from '@influxdata/clockface'
-import TimeMachineQueries from 'src/timeMachine/TimeMachineQueries'
+import TimeMachineQueries from 'src/timeMachine/components/TimeMachineQueries'
+import TimeMachineVis from 'src/timeMachine/components/TimeMachineVis'
 
 // Hooks
 import {useSelector} from 'react-redux'
 
 // Types
-import TimeMachineVis from 'src/timeMachine/TimeMachineVis'
 import {AppState} from 'src/types/stores'
 
 const INITIAL_RESIZER_HANDLE = 0.5

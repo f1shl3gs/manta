@@ -3,10 +3,10 @@ import React, {FunctionComponent, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
-import QueryTabs from 'src/timeMachine/QueryTabs'
+import QueryTabs from 'src/timeMachine/components/QueryTabs'
 import {FlexBox} from '@influxdata/clockface'
-import QueryEditor from 'src/timeMachine/QueryEditor'
-import SubmitQueryButton from 'src/timeMachine/SubmitQueryButton'
+import QueryEditor from 'src/timeMachine/components/QueryEditor'
+import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 import {AppState} from 'src/types/stores'
 import {setActiveQueryText} from 'src/timeMachine/actions'
 

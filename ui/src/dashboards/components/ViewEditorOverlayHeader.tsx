@@ -10,7 +10,7 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import RenamablePageTitle from 'src/shared/components/RenamablePageTitle'
-import ViewTypeDropdown from 'src/timeMachine/ViewTypeDropdown'
+import ViewTypeDropdown from 'src/timeMachine/components/ViewTypeDropdown'
 import VisOptionsButton from 'src/dashboards/components/VisOptionsButton'
 
 // Hooks

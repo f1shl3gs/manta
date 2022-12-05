@@ -3,7 +3,7 @@ import React, {FunctionComponent, useCallback, useState} from 'react'
 
 // Components
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
-import TimeMachine from 'src/timeMachine'
+import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import {Page} from '@influxdata/clockface'
 
 // Hooks

@@ -11,7 +11,9 @@ import useQueryResult from 'src/shared/useQueryResult'
 
 // Types
 import {AppState} from 'src/types/stores'
-import {getQueries} from './selectors'
+
+// Selectors
+import {getQueries} from 'src/timeMachine/selectors'
 
 const TimeMachineVis: FunctionComponent = () => {
   const {queries, viewProperties} = useSelector((state: AppState) => {

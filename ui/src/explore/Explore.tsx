@@ -10,7 +10,7 @@ import {
   PageHeader,
   PageTitle,
 } from '@influxdata/clockface'
-import TimeMachine from 'src/timeMachine'
+import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 
 // Types

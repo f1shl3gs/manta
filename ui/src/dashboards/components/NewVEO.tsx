@@ -5,7 +5,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 
 // Components
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
-import TimeMachine from 'src/timeMachine'
+import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import {createCell} from 'src/cells/actions/thunk'
 import {Page} from '@influxdata/clockface'
 

@@ -16,6 +16,7 @@ import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
 import {ViewProperties} from 'src/types/cells'
 
 export interface TimeMachineState {
+  name: string
   activeQueryIndex: number | null
   viewProperties: ViewProperties
   viewingVisOptions: boolean
@@ -24,6 +25,7 @@ export interface TimeMachineState {
 }
 
 const initialState = () => ({
+  name: '',
   activeQueryIndex: 0,
   queries: [
     {

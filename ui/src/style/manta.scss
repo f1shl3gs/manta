@@ -15,15 +15,15 @@
 @import 'src/organizations/OrganizationsSwitcher';
 @import 'src/setup/SetupWizard';
 @import 'src/signin/LoginPage';
-@import 'src/timeMachine/FunctionItem';
-@import 'src/timeMachine/PromqlToolbar';
-@import 'src/timeMachine/Queries';
-@import 'src/timeMachine/QueryEditor';
-@import 'src/timeMachine/QueryTab';
-@import 'src/timeMachine/SingleStat';
-@import 'src/timeMachine/TimeMachine';
-@import 'src/timeMachine/TimeMachineQueries';
-@import 'src/timeMachine/ViewOptions';
+@import 'src/timeMachine/components/FunctionItem';
+@import 'src/timeMachine/components/PromqlToolbar';
+@import 'src/timeMachine/components/Queries';
+@import 'src/timeMachine/components/QueryEditor';
+@import 'src/timeMachine/components/QueryTab';
+@import 'src/timeMachine/components/SingleStat';
+@import 'src/timeMachine/components/TimeMachine';
+@import 'src/timeMachine/components/TimeMachineQueries';
+@import 'src/timeMachine/components/ViewOptions';
 
 // Shards
 @import 'src/shared/components/wizard/WizardProgressHeader';

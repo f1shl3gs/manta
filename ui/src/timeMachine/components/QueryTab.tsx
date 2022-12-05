@@ -1,16 +1,18 @@
 // Libraries
 import React, {createRef, FunctionComponent} from 'react'
 import classnames from 'classnames'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
-import QueryTabName from 'src/timeMachine/QueryTabName'
+import QueryTabName from 'src/timeMachine/components/QueryTabName'
 
 // Types
 import {DashboardQuery} from 'src/types/dashboards'
-import {useDispatch, useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
-import {setActiveQueryIndex, removeQuery} from './actions'
+
+// Actions
+import {setActiveQueryIndex, removeQuery} from 'src/timeMachine/actions'
 
 interface Props {
   index: number

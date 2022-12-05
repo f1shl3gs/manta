@@ -4,7 +4,7 @@ import React, {FunctionComponent, useState} from 'react'
 // Componetns
 import {promLanguageDefinition} from 'monaco-promql'
 import MonacoEditor from 'react-monaco-editor'
-import PromqlToolbar from 'src/timeMachine/PromqlToolbar'
+import PromqlToolbar from 'src/timeMachine/components/PromqlToolbar'
 import ThemeName from 'src/shared/components/editor/PromQLEditorTheme'
 import {EditorType} from 'src/types/monaco'
 

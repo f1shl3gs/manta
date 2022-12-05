@@ -2,7 +2,7 @@ import React from 'react'
 
 import {DapperScrollbars, Grid} from '@influxdata/clockface'
 
-import OptionsSwitcher from 'src/timeMachine/OptionsSwitcher'
+import OptionsSwitcher from 'src/timeMachine/components/OptionsSwitcher'
 import {AppState} from 'src/types/stores'
 import {useDispatch, useSelector} from 'react-redux'
 import {setViewProperties} from 'src/timeMachine/actions'

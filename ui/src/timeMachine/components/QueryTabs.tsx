@@ -2,7 +2,7 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import QueryTab from 'src/timeMachine/QueryTab'
+import QueryTab from 'src/timeMachine/components/QueryTab'
 import {
   ComponentColor,
   ComponentSize,
