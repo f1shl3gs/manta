@@ -76,11 +76,12 @@ export const dashboardsReducer = (
         const cell = schema.entities.cells[cellID]
         const dashboards = draftState.byID[cell.dashboardID]
 
+        // cell exists, no need to add
         if (dashboards?.cells.includes(cellID)) {
-          // cell exists, no need to add
           return
         }
 
+        // add to dashboard
         if (draftState.byID[cell.dashboardID]) {
           draftState.byID[cell.dashboardID].cells.push(cellID)
         }
