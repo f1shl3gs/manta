@@ -28,19 +28,13 @@ import {poll, setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
 
 const autoRefreshOptions: AutoRefreshOption[] = [
   {
-    id: 'refresh',
-    type: AutoRefreshOptionType.Header,
-    label: 'Refresh',
-    seconds: 0,
-  },
-  {
     id: 'pause',
     type: AutoRefreshOptionType.Option,
     label: 'Pause',
     seconds: 0,
   },
   {
-    id: '10s',
+    id: '5s',
     type: AutoRefreshOptionType.Option,
     label: '5s',
     seconds: 5,
@@ -102,7 +96,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  setAutoRefresh: setAutoRefreshInterval,
+  setAutoRefreshInterval,
 }
 
 const connector = connect(mstp, mdtp)
@@ -111,7 +105,7 @@ type Props = ConnectedProps<typeof connector>
 
 const AutoRefreshDropdown: FunctionComponent<Props> = ({
   autoRefresh,
-  setAutoRefresh,
+  setAutoRefreshInterval,
 }) => {
   const dispatch = useDispatch()
   const [_, setParams] = useSearchParams()
@@ -129,7 +123,7 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
   const onSelectAutoRefreshOption = useCallback(
     (opt: AutoRefreshOption) => {
       setSelected(opt)
-      setAutoRefresh(opt.seconds)
+      setAutoRefreshInterval(opt.seconds)
       setParams(
         prev => {
           prev.set('interval', `${opt.seconds}s`)
@@ -138,13 +132,11 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
         {replace: true}
       )
     },
-    [setAutoRefresh, setParams]
+    [setAutoRefreshInterval, setParams]
   )
 
   useEffect(() => {
-    dispatch(poll())
-
-    if (autoRefresh.status !== AutoRefreshStatus.Active) {
+    if (autoRefresh.interval === 0) {
       return
     }
 

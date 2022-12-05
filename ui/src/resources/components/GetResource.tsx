@@ -40,30 +40,34 @@ type Props = OwnProps & ConnectedProps<typeof connector>
 const GetResource: FunctionComponent<Props> = props => {
   const {loading, children, resources, getDashboard, getCell} = props
 
-  useEffect(() => {
-    const getResourceDetails = ({type, id}: Resource) => {
-      switch (type) {
-        case ResourceType.Dashboards:
-          return getDashboard(id)
+  useEffect(
+    () => {
+      const getResourceDetails = ({type, id}: Resource) => {
+        switch (type) {
+          case ResourceType.Dashboards:
+            return getDashboard(id)
 
-        case ResourceType.Cells:
-          return getCell(id)
+          case ResourceType.Cells:
+            return getCell(id)
 
-        default:
-          throw new Error(
-            `incorrect resouce type: ${type} provided to GetResource`
-          )
+          default:
+            throw new Error(
+              `incorrect resouce type: ${type} provided to GetResource`
+            )
+        }
       }
-    }
 
-    const promises = []
+      const promises = []
 
-    resources.forEach(resource => {
-      promises.push(getResourceDetails(resource))
-    })
+      resources.forEach(resource => {
+        promises.push(getResourceDetails(resource))
+      })
 
-    Promise.all(promises)
-  }, [resources, getCell, getDashboard])
+      Promise.all(promises)
+    },
+    // avoid re-render
+    []
+  )
 
   return (
     <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>

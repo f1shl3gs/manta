@@ -166,21 +166,14 @@ func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 }
 
 func decodeCreateCell(r *http.Request) (*manta.Cell, error) {
-	var cc struct {
-		W, H, X, Y int32
-	}
+	var cell manta.Cell
 
-	err := json.NewDecoder(r.Body).Decode(&cc)
+	err := json.NewDecoder(r.Body).Decode(&cell)
 	if err != nil {
 		return nil, err
 	}
 
-	return &manta.Cell{
-		W: cc.W,
-		H: cc.H,
-		X: cc.X,
-		Y: cc.Y,
-	}, nil
+	return &cell, nil
 }
 
 func (h *DashboardsHandler) addCell(w http.ResponseWriter, r *http.Request) {

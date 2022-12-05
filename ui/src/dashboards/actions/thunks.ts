@@ -33,7 +33,7 @@ import {push} from '@lagunovsky/redux-react-router'
 import {setCells} from 'src/cells/actions/creators'
 import {arrayOfCells} from 'src/schemas/dashboards'
 import {get} from 'lodash'
-import {getCells} from '../../cells/selectors'
+import {getCells} from 'src/cells/selectors'
 
 export const getDashboard =
   (id: string) =>

@@ -1,12 +1,12 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
+import {useParams} from 'react-router-dom'
 
 // Components
 import {Page} from '@influxdata/clockface'
 import DashboardEmpty from 'src/dashboards/components/DashboardEmpty'
 
 // Hooks
-import {useParams} from 'react-router-dom'
 import DashboardHeader from 'src/dashboards/components/DashboardHeader'
 import Cells from 'src/dashboards/components/Cells'
 import GetResource from 'src/resources/components/GetResource'

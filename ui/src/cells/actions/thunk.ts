@@ -17,6 +17,7 @@ import {dashboardSchema} from 'src/schemas'
 import {cellSchema} from 'src/schemas/dashboards'
 import {Cell, CellEntities, ViewProperties} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
+import {back} from '@lagunovsky/redux-react-router'
 
 export const getCell =
   (cellID: string) =>
@@ -80,6 +81,8 @@ export const createCell =
         body: {
           name,
           viewProperties,
+          w: 4,
+          h: 4,
         },
       })
       if (resp.status !== 201) {
@@ -96,6 +99,7 @@ export const createCell =
       )
 
       dispatch(setCell(cellID, RemoteDataState.Done, normCell))
+      dispatch(back())
     } catch (err) {
       console.error(err)
 
