@@ -6,7 +6,7 @@ import {Button, ComponentColor, Overlay, TextArea} from '@influxdata/clockface'
 import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 // Hooks
-import useEscape from '../useEscape'
+import useEscape from 'src/shared/useEscape'
 import {useDispatch} from 'react-redux'
 
 // Utils

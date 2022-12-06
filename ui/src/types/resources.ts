@@ -4,7 +4,7 @@ import {Cell} from 'src/types/cells'
 import {Organization} from 'src/types/organization'
 import {Configuration} from 'src/types/configuration'
 import {User} from 'src/types/user'
-import {Scrape} from './scrape'
+import {Scrape} from 'src/types/scrape'
 
 export interface Resource {
   type: ResourceType

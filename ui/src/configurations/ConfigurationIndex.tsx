@@ -21,7 +21,7 @@ import {useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
 import {getAll} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
-import GetResources from '../resources/components/GetResources'
+import GetResources from 'src/resources/components/GetResources'
 
 const ConfigurationWizard = lazy(
   () => import('src/configurations/ConfigurationWizard')

@@ -22,7 +22,7 @@ import {updateCell} from 'src/cells/actions/thunk'
 
 // Selectors
 import {getTimeMachine} from 'src/timeMachine/selectors'
-import {loadView} from '../../timeMachine/actions/thunks';
+import {loadView} from 'src/timeMachine/actions/thunks'
 
 const EditVEO: FunctionComponent = () => {
   const dispatch = useDispatch()

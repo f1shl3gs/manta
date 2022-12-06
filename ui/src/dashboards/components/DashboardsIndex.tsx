@@ -1,5 +1,6 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, lazy} from 'react'
+import {Route, Routes } from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -27,8 +28,9 @@ import {
   setDashboardSearchTerm,
   setDashboardSort,
 } from 'src/dashboards/actions/creators'
-import DashboardImportOverlay from './DashboardImportOverlay'
-import {Route, Routes } from 'react-router-dom'
+
+// Lazy load
+const DashboardImportOverlay = lazy(() => import('src/dashboards/components/DashboardImportOverlay'))
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps

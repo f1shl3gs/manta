@@ -2,7 +2,7 @@ import {Dashboard} from 'src/types/dashboards'
 import {Organization} from 'src/types/organization'
 import {Cell} from 'src/types/cells'
 import {Configuration} from 'src/types/configuration'
-import {Scrape} from './scrape'
+import {Scrape} from 'src/types/scrape'
 
 // DashboardEntities defines the result of normalizr's normalization of the
 // "dashboards" resource

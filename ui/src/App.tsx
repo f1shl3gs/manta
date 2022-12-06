@@ -17,13 +17,13 @@ import {getPresentationMode} from 'src/shared/selectors/app'
 
 // Hooks
 import {useSelector} from 'react-redux'
-import DashboardPage from './dashboards/components/DashboardPage'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
 const DashboardsIndex = lazy(
   () => import('src/dashboards/components/DashboardsIndex')
 )
+const DashboardPage = lazy(() => import('src/dashboards/components/DashboardPage'))
 const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const Explore = lazy(() => import('src/explore/Explore'))
 

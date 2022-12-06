@@ -1,7 +1,7 @@
 import {RemoteDataState} from '@influxdata/clockface'
 import {Organization} from 'src/types/organization'
 import {NormalizedSchema} from 'normalizr'
-import {OrgEntities} from '../../types/schemas'
+import {OrgEntities} from 'src/types/schemas'
 
 // Action Types
 export const SET_ORGS = 'SET_ORGS'

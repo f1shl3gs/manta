@@ -9,9 +9,9 @@ import {
 import {fromNow} from 'src/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useDispatch} from 'react-redux'
-import {removeConfig} from './actions/creators'
+import {removeConfig} from 'src/configurations/actions/creators'
 import {useNavigate, useParams} from 'react-router-dom'
-import {ConfigUpdate, updateConfig} from './actions/thunk'
+import {ConfigUpdate, updateConfig} from 'src/configurations/actions/thunk'
 
 interface Props {
   configuration: Configuration

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useEffect} from 'react'
+import React, {FunctionComponent, lazy, useEffect} from 'react'
 import {Route, Routes, useParams} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -25,8 +25,10 @@ import {getCells} from 'src/cells/selectors'
 
 // Constants
 import {pastHourTimeRange} from 'src/constants/timeRange'
-import NewVEO from './NewVEO'
-import EditVEO from './EditVEO'
+
+// Lazy Loads
+const NewVEO = lazy(() => import('src/dashboards/components/NewVEO'))
+const EditVEO = lazy(() => import('src/dashboards/components/EditVEO'))
 
 interface Props {
   id: string

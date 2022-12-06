@@ -6,7 +6,7 @@ import {Row, transformToRows} from 'src/shared/useQueryResult'
 import {getOrg} from 'src/organizations/selectors'
 import {TimeRange} from 'src/types/timeRanges'
 import {fromRows} from '@influxdata/giraffe'
-import {setQueryResult} from './index'
+import {setQueryResult} from 'src/timeMachine/actions'
 import {RemoteDataState} from '@influxdata/clockface'
 
 const executeQuery = async (

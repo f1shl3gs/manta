@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {createOrg} from './actions/thunks'
+import {createOrg} from 'src/organizations/actions/thunks'
 
 // Hooks
 import useEscape from 'src/shared/useEscape'

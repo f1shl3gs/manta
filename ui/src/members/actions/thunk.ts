@@ -5,7 +5,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {normalize} from 'normalizr'
 import {User, UserEntities} from 'src/types/user'
 import {arrayOfMembers} from 'src/schemas/members'
-import {setMembers} from './creators'
+import {setMembers} from 'src/members/actions/creators'
 import {RemoteDataState} from '@influxdata/clockface'
 import {GetState} from 'src/types/stores'
 

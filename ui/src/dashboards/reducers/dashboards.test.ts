@@ -1,12 +1,12 @@
-import {DashboardsState} from '../../types/resources'
+import {DashboardsState} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
-import {DEFAULT_DASHBOARD_SORT_OPTIONS} from '../../constants/dashboard'
+import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/constants/dashboard'
 import {normalize} from 'normalizr'
-import {DashboardEntities} from '../../types/schemas'
-import {arrayOfDashboards} from '../../schemas'
+import {DashboardEntities} from 'src/types/schemas'
+import {arrayOfDashboards} from 'src/schemas'
 import {Dashboard} from 'src/types/dashboards'
-import {dashboardsReducer} from './index'
-import {setDashboards} from '../actions/creators'
+import {dashboardsReducer} from 'src/dashboards/reducers'
+import {setDashboards} from 'src/dashboards/actions/creators'
 
 const initialState = (): DashboardsState => ({
   status: RemoteDataState.Done,
