@@ -41,7 +41,7 @@ export const generateThresholdsListHexs = ({
   cellType: string
 }) => {
   const defaultColoring = {
-    bgColor: null,
+    backgroundColor: null,
     textColor: cellType === 'table' ? '#BEC2CC' : THRESHOLD_COLORS[11].hex,
   }
 
@@ -63,7 +63,7 @@ export const generateThresholdsListHexs = ({
   // If the single stat is above a line graph never have a background color
   if (cellType === 'line-plus-single-stat') {
     return baseColor
-      ? {bgColor: null, textColor: baseColor.hex}
+      ? {backgroundColor: null, textColor: baseColor.hex}
       : defaultColoring
   }
 
@@ -73,7 +73,7 @@ export const generateThresholdsListHexs = ({
   )
 
   if (shouldColorizeText && colors.length === 1 && baseColor) {
-    return {bgColor: null, textColor: baseColor.hex}
+    return {backgroundColor: null, textColor: baseColor.hex}
   }
 
   if (shouldColorizeText && colors.length === 1) {
@@ -87,13 +87,13 @@ export const generateThresholdsListHexs = ({
       lastValueNumber
     )
 
-    return {bgColor: null, textColor: nearestCrossedThreshold.hex}
+    return {backgroundColor: null, textColor: nearestCrossedThreshold.hex}
   }
 
   // When there is only a base color and it's applued to the background
   if (colors.length === 1) {
     return {
-      bgColor: baseColor.hex,
+      backgroundColor: baseColor.hex,
       textColor: getLegibleTextColor(baseColor.hex),
     }
   }
@@ -109,8 +109,8 @@ export const generateThresholdsListHexs = ({
       ? nearestCrossedThreshold.hex
       : baseColor.hex
 
-    return {bgColor, textColor: getLegibleTextColor(bgColor)}
+    return {backgroundColor: bgColor, textColor: getLegibleTextColor(bgColor)}
   }
 
-  return {bgColor: null, textColor: baseColor.hex}
+  return {backgroundColor: null, textColor: baseColor.hex}
 }

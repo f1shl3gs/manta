@@ -15,11 +15,13 @@ import {
   SET_VIEW_NAME,
   SET_VIEW_PROPERTIES,
   SET_VIEWING_VIS_OPTIONS,
+  SET_VIEWTYPE,
 } from 'src/timeMachine/actions'
 import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
 import {ViewProperties} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
+import {createView} from 'src/visualization/helper'
 
 export interface QueryResultsState {
   result: FromFluxResult
@@ -96,6 +98,14 @@ export const timeMachineReducer = (
       case SET_QUERY_RESULTS:
         draftState.queryResult = {
           ...action,
+        }
+        return
+
+      case SET_VIEWTYPE:
+        const newProperties = createView(action.viewType)
+        draftState.viewProperties = {
+          ...newProperties,
+          queries: draftState.viewProperties.queries,
         }
         return
 

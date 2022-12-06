@@ -45,7 +45,6 @@ export interface GaugeViewProperties {
   note?: string
   prefix: string
   suffix: string
-  legend: Legend
   decimalPlaces: DecimalPlaces
   queries: DashboardQuery[]
   colors: DashboardColor[]
@@ -61,7 +60,7 @@ export interface SingleStatViewProperties {
   tickPrefix: string
   suffix: string
   tickSuffix: string
-  legend: Legend
+  legend?: Legend
   decimalPlaces: DecimalPlaces
 }
 
@@ -127,6 +126,25 @@ export interface ScatterViewProperties {
 export interface LinePlusSingleStatViewProperties {
   type: 'line-plus-single-stat'
   queries: DashboardQuery[]
+
+  colors: DashboardColor[]
+  axes: Axes
+  xColumn?: string
+  generateXAxisTicks?: string[]
+  xTotalTicks?: number
+  xTickStart?: number
+  xTickStep?: number
+  yColumn?: string
+  generateYAxisTicks?: string[]
+  yTotalTicks?: number
+  yTickStart?: number
+  yTickStep?: number
+  shadeBelow?: boolean
+  hoverDimension?: 'auto' | 'x' | 'y' | 'xy'
+  position: 'overlaid' | 'stacked'
+  prefix: string
+  suffix: string
+  decimalPlaces: DecimalPlaces
 }
 
 export interface MosaicViewProperties {

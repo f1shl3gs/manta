@@ -41,8 +41,8 @@ export const transformToRows = (resp: PromResp): Row[] => {
       return values.map(val => {
         return {
           ...metric,
-          time: val[0] * 1000,
-          value: Number(val[1]),
+          _time: val[0] * 1000,
+          _value: Number(val[1]),
         }
       })
     })
@@ -76,7 +76,7 @@ export const transformPromResp = (
 
   const table = fromRows(rows)
   const groupKeys = table.columnKeys.filter(
-    key => key !== 'time' && key !== 'value'
+    key => key !== '_time' && key !== '_value'
   )
 
   return {
@@ -142,14 +142,14 @@ const useQueryResult = (queries: DashboardQuery[]) => {
           set[index] = transformToRows(resp)
           const table = fromRows(
             set.flat().sort((a, b) => {
-              return Number(a['time']) - Number(b['time'])
+              return Number(a['_time']) - Number(b['_time'])
             })
           )
 
           setResult({
             table,
             fluxGroupKeyUnion: table.columnKeys.filter(
-              key => key !== 'time' && key !== 'value'
+              key => key !== '_time' && key !== '_value'
             ),
             resultColumnNames: [],
           })

@@ -8,6 +8,8 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {FromFluxResult} from '@influxdata/giraffe'
 import {ViewProperties} from 'src/types/cells'
 import Line from 'src/visualization/Line'
+import Gauge from './Gauge'
+import SingleStat from './SingleStat'
 
 interface Props {
   result: FromFluxResult
@@ -19,6 +21,13 @@ const View: FunctionComponent<Props> = ({result, properties}) => {
     switch (properties.type) {
       case 'xy':
         return <Line properties={properties} result={result} />
+
+      case 'gauge':
+        return <Gauge properties={properties} result={result} />
+
+      case 'single-stat':
+        return <SingleStat properties={properties} result={result} />
+
       default:
         return <></>
     }

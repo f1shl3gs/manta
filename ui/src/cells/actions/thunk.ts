@@ -15,7 +15,7 @@ import {normalize} from 'normalizr'
 import {DashboardEntities} from 'src/types/schemas'
 import {dashboardSchema} from 'src/schemas'
 import {cellSchema} from 'src/schemas/dashboards'
-import {Cell, CellEntities, ViewProperties} from 'src/types/cells'
+import {Cell, CellEntities, ViewProperties, ViewType} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
 import {back} from '@lagunovsky/redux-react-router'
 
@@ -47,6 +47,20 @@ export const getCell =
       )
     }
   }
+
+const cellSize = (viewType: ViewType) => {
+  if (viewType === 'gauge' || viewType === 'single-stat') {
+    return {
+      w: 3,
+      h: 2,
+    }
+  } else {
+    return {
+      w: 4,
+      h: 4,
+    }
+  }
+}
 
 export const createCell =
   (dashboardID: string, name: string) =>
@@ -82,8 +96,7 @@ export const createCell =
         body: {
           name,
           viewProperties,
-          w: 4,
-          h: 4,
+          ...cellSize(viewProperties.type),
         },
       })
       if (resp.status !== 201) {

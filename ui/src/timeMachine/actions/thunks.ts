@@ -57,14 +57,14 @@ export const loadView =
 
     const rows = await Promise.all(promises)
     const table = fromRows(
-      rows.flat().sort((a, b) => Number(a['time']) - Number(b['time']))
+      rows.flat().sort((a, b) => Number(a['_time']) - Number(b['_time']))
     )
 
     dispatch(
       setQueryResult(RemoteDataState.Done, {
         table,
         fluxGroupKeyUnion: table.columnKeys.filter(
-          key => key !== 'time' && key !== 'value'
+          key => key !== '_time' && key !== '_value'
         ),
         resultColumnNames: [],
       })

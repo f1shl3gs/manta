@@ -2,6 +2,7 @@ import React from 'react'
 
 import {ViewProperties} from 'src/types/cells'
 import {LineOptions} from 'src/visualization/Line'
+import SingleStatOptions from '../../visualization/SingleStat/options'
 
 interface Props {
   viewProperties: ViewProperties
@@ -13,7 +14,10 @@ const OptionsSwitcher: React.FC<Props> = ({viewProperties, update}) => {
     case 'line-plus-single-stat':
       break
     case 'single-stat':
-      break
+      return (
+        <SingleStatOptions viewProperties={viewProperties} update={update} />
+      )
+
     case 'histogram':
       break
     case 'markdown':

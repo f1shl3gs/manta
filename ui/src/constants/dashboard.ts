@@ -7,8 +7,8 @@ export const MAX_DECIMAL_PLACES = 10
 
 export const DEFAULT_VIEWPROPERTIES: ViewProperties = {
   type: 'xy',
-  xColumn: 'time',
-  yColumn: 'value',
+  xColumn: '_time',
+  yColumn: '_value',
   hoverDimension: 'auto',
   geom: 'line',
   position: 'overlaid',

@@ -57,7 +57,7 @@ const DashboardIndex: FunctionComponent<Props> = ({id}) => {
       <Page titleTag={`Dashboard | ${name}`}>
         <DashboardHeader />
 
-        <Page.Contents scrollable={true}>
+        <Page.Contents scrollable={true} fullWidth={true}>
           {cells.length !== 0 ? <Cells /> : <DashboardEmpty />}
         </Page.Contents>
       </Page>

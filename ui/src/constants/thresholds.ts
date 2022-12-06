@@ -89,3 +89,13 @@ export const THRESHOLD_COLORS = [
     name: 'castle',
   },
 ]
+
+export const DEFAULT_THRESHOLDS_LIST_COLORS = [
+  {
+    type: THRESHOLD_TYPE_TEXT,
+    hex: THRESHOLD_COLORS[11].hex,
+    id: BASE_THRESHOLD_ID,
+    name: THRESHOLD_COLORS[11].name,
+    value: 0,
+  },
+]
