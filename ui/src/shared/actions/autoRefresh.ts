@@ -10,7 +10,7 @@ export const SET_RANGE = 'SET_RANGE'
 const MAX_POINT = 1024
 const MIN_STEP = 14
 
-const calculateRange = (timeRange: TimeRange) => {
+export const calculateRange = (timeRange: TimeRange) => {
   switch (timeRange.type) {
     case 'selectable-duration':
       const end = dayjs().unix()

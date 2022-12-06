@@ -8,12 +8,23 @@ import {
   Action,
   ADD_QUERY,
   REMOVE_QUERY,
+  RESET_TIMEMACHINE,
   SET_ACTIVE_QUERY,
   SET_ACTIVE_QUERY_TEXT,
+  SET_QUERY_RESULTS,
+  SET_VIEW_NAME,
+  SET_VIEW_PROPERTIES,
   SET_VIEWING_VIS_OPTIONS,
 } from 'src/timeMachine/actions'
 import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
 import {ViewProperties} from 'src/types/cells'
+import {RemoteDataState} from '@influxdata/clockface'
+import {FromFluxResult, fromRows} from '@influxdata/giraffe'
+
+export interface QueryResultsState {
+  result: FromFluxResult
+  state: RemoteDataState
+}
 
 export interface TimeMachineState {
   name: string
@@ -22,22 +33,24 @@ export interface TimeMachineState {
   viewingVisOptions: boolean
   contextID: string // dashboard, check or alert
   timeRange: TimeRange
+  queryResult: QueryResultsState
 }
 
-const initialState = () => ({
+const initialState = (): TimeMachineState => ({
   name: '',
   activeQueryIndex: 0,
-  queries: [
-    {
-      name: 'query 1',
-      text: '',
-      hidden: false,
-    },
-  ],
   viewingVisOptions: false,
   contextID: '',
   timeRange: pastHourTimeRange,
   viewProperties: DEFAULT_VIEWPROPERTIES,
+  queryResult: {
+    state: RemoteDataState.NotStarted,
+    result: {
+      table: fromRows([]),
+      fluxGroupKeyUnion: [],
+      resultColumnNames: [],
+    },
+  },
 })
 
 export const timeMachineReducer = (
@@ -67,6 +80,23 @@ export const timeMachineReducer = (
         draftState.viewProperties.queries.filter(
           (_q, index) => index === action.index
         )
+        return
+
+      case SET_VIEW_NAME:
+        draftState.name = action.name
+        return
+
+      case SET_VIEW_PROPERTIES:
+        draftState.viewProperties = action.viewProperties
+        return
+
+      case RESET_TIMEMACHINE:
+        return initialState()
+
+      case SET_QUERY_RESULTS:
+        draftState.queryResult = {
+          ...action,
+        }
         return
 
       default:

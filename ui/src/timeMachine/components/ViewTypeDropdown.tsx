@@ -8,6 +8,7 @@ import {ViewType} from 'src/types/cells'
 import {VIS_GRAPHICS} from 'src/constants/vis'
 import {useDispatch, useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
+import {setViewType} from 'src/timeMachine/actions'
 
 const ViewTypeDropdown: FunctionComponent = () => {
   const dispatch = useDispatch()
@@ -16,12 +17,11 @@ const ViewTypeDropdown: FunctionComponent = () => {
     return properties.type
   })
 
-  const setViewType = (viewType: ViewType) => {
+  const onSetViewType = (viewType: ViewType) => {
     dispatch(setViewType(viewType))
   }
 
   const getViewTypeGraphic = (viewType: ViewType) => {
-    // @ts-ignore
     const {graphic, name} = VIS_GRAPHICS.find(
       graphic => graphic.type === viewType
     )
@@ -46,7 +46,7 @@ const ViewTypeDropdown: FunctionComponent = () => {
         key={`view-type--${g.type}`}
         id={`${g.type}`}
         value={g.type}
-        onClick={setViewType}
+        onClick={onSetViewType}
         selected={`${g.type}` === viewType}
       >
         {getViewTypeGraphic(g.type)}

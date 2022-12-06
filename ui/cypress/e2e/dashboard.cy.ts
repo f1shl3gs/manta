@@ -20,7 +20,7 @@ describe('Dashboard', () => {
     cy.getByTestID('nav-item-dashboard').click()
   })
 
-  it('Delete', () => {
+  it('can delete', () => {
     // delete dashboard from list
     cy.getByTestID('dashboard-card-context--delete').click()
     cy.getByTestID('context_menu-delete').click()
@@ -30,9 +30,45 @@ describe('Dashboard', () => {
     cy.getByTestID('dashboard-card').should('have.length', 0)
   })
 
-  it('Rename', () => {
+  it('can rename', () => {
     cy.getByTestID('dashboard-editable-name--button').click()
     cy.getByTestID('dashboard-editable-name--input').type('foo{enter}')
     cy.getByTestID('dashboard-editable-name').invoke('text').should('eq', 'foo')
+  })
+
+  it('can rename in detail page', () => {
+    const name = 'foo'
+
+    cy.getByTestID('dashboard-editable-name').click()
+    cy.getByTestID('page-title')
+      .click()
+      .getByTestID('renamable-page-title--input')
+      .type(`${name}{enter}`)
+
+    cy.get('@org').then((org: Organization) => {
+      cy.request({
+        url: `/api/v1/dashboards?orgID=${org.id}`,
+      }).then(resp => {
+        expect(resp.status).eq(200)
+        expect(resp.body[0].name).eq(name)
+      })
+    })
+  })
+
+  it('can update desc', () => {
+    const desc = 'barrrrr'
+
+    cy.get(`[class="cf-resource-description--preview untitled"]`).click()
+    cy.getByTestID('input-field').type(`${desc}{enter}`)
+
+    cy.get('@org').then((org: Organization) => {
+      cy.request({
+        url: `/api/v1/dashboards?orgID=${org.id}`,
+      }).then(resp => {
+        expect(resp.status).eq(200)
+
+        expect(resp.body[0].desc).eq(desc)
+      })
+    })
   })
 })

@@ -1,12 +1,12 @@
 import React from 'react'
 import {Button, ComponentColor} from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
-import {poll} from 'src/shared/actions/autoRefresh'
+import {loadView} from 'src/timeMachine/actions/thunks'
 
 const SubmitQueryButton: React.FC = () => {
   const dispatch = useDispatch()
   const handleClick = () => {
-    dispatch(poll())
+    dispatch(loadView())
   }
 
   return (

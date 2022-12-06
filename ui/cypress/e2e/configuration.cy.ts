@@ -1,4 +1,4 @@
-import {Organization} from '../../src/types/Organization'
+import {Organization} from '../../src/types/organization'
 
 describe('Configuration', () => {
   beforeEach(() => {

@@ -17,6 +17,7 @@ const SearchWidget: React.FC<Props> = props => {
     <Input
       icon={IconFont.Search_New}
       placeholder={placeholder}
+      testID={'dashboards-search--input'}
       value={search}
       onChange={ev => onSearch(ev.target.value)}
       // @ts-ignore

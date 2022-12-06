@@ -253,13 +253,15 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellId, upd)
+	cell, err := h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellId, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func cellIdFromPath(r *http.Request) (manta.ID, error) {

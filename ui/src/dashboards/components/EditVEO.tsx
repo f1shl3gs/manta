@@ -1,37 +1,39 @@
 // Libraries
-import React, {FunctionComponent, useCallback, useState} from 'react'
+import React, {FunctionComponent, useCallback, useEffect} from 'react'
 
 // Components
 import ViewEditorOverlayHeader from 'src/dashboards/components/ViewEditorOverlayHeader'
 import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import {Page} from '@influxdata/clockface'
+import GetResource from 'src/resources/components/GetResource'
 
 // Hooks
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate, useParams} from 'react-router-dom'
 
 // Types
-import {AppState} from 'src/types/stores'
-import {Cell} from 'src/types/cells'
 import {ResourceType} from 'src/types/resources'
+import {resetTimeMachine, setViewName} from 'src/timeMachine/actions'
+import {AppState} from 'src/types/stores'
 
 // Actions
+import {setTimeMachineFromCell} from 'src/dashboards/actions/thunks'
 import {updateCell} from 'src/cells/actions/thunk'
-import GetResource from 'src/resources/components/GetResource'
 
 // Selectors
-import {getByID} from 'src/resources/selectors'
+import {getTimeMachine} from 'src/timeMachine/selectors'
+import {loadView} from '../../timeMachine/actions/thunks';
 
 const EditVEO: FunctionComponent = () => {
   const dispatch = useDispatch()
   const {dashboardID, cellID} = useParams()
   const navigate = useNavigate()
-  const cell = useSelector((state: AppState) => {
-    return getByID<Cell>(state, ResourceType.Cells, cellID)
-  })
-  const [name, setName] = useState(cell.name)
-  const viewProperties = useSelector((state: AppState) => {
-    return state.timeMachine.viewProperties
+  const {name, viewProperties} = useSelector((state: AppState) => {
+    const timeMachine = getTimeMachine(state)
+    return {
+      name: timeMachine.name,
+      viewProperties: timeMachine.viewProperties,
+    }
   })
 
   const onCancel = () => {
@@ -45,6 +47,19 @@ const EditVEO: FunctionComponent = () => {
       })
     )
   }, [dispatch, dashboardID, cellID, name, viewProperties])
+
+  const setName = (text: string) => {
+    dispatch(setViewName(text))
+  }
+
+  useEffect(() => {
+    dispatch(setTimeMachineFromCell(cellID))
+    dispatch(loadView())
+
+    return () => {
+      dispatch(resetTimeMachine())
+    }
+  }, [dispatch, cellID])
 
   return (
     <Page>

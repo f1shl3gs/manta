@@ -117,6 +117,7 @@ const useQueryResult = (queries: DashboardQuery[]) => {
       }
 
       if (q.text === '') {
+        set[index] = []
         setLoading(RemoteDataState.Done)
         return
       }

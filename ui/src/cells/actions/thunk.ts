@@ -168,9 +168,16 @@ export const updateCell =
           },
         }
       )
-      if (resp.status !== 201) {
+      if (resp.status !== 200) {
         throw new Error(resp.date.message)
       }
+
+      const normCell = normalize<Cell, CellEntities, string>(
+        resp.data,
+        cellSchema
+      )
+      await dispatch(setCell(cellID, RemoteDataState.Done, normCell))
+      dispatch(back())
     } catch (err) {
       console.error(err)
 

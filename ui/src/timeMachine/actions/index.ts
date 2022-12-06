@@ -1,4 +1,6 @@
 import {ViewProperties, ViewType} from 'src/types/cells'
+import {RemoteDataState} from '@influxdata/clockface'
+import {FromFluxResult} from '@influxdata/giraffe'
 
 export const SET_ACTIVE_QUERY = 'SET_ACTIVE_QUERY'
 export const SET_ACTIVE_QUERY_TEXT = 'SET_ACTIVE_QUERY_TEXT'
@@ -7,6 +9,9 @@ export const REMOVE_QUERY = 'REMOVE_QUERY'
 export const SET_VIEWING_VIS_OPTIONS = 'SET_VIEWING_VIS_OPTIONS'
 export const SET_VIEWTYPE = 'SET_VIEWTYPE'
 export const SET_VIEW_PROPERTIES = 'SET_VIEW_PROPERTIES'
+export const SET_VIEW_NAME = 'SET_VIEW_NAME'
+export const RESET_TIMEMACHINE = 'RESET_TIMEMACHINE'
+export const SET_QUERY_RESULTS = 'SET_QUERY_RESULTS'
 
 export const setActiveQueryIndex = (activeQueryIndex: number) =>
   ({
@@ -54,6 +59,27 @@ export const setViewProperties = (viewProperties: ViewProperties) =>
     viewProperties,
   } as const)
 
+export const setViewName = (name: string) =>
+  ({
+    type: SET_VIEW_NAME,
+    name,
+  } as const)
+
+export const resetTimeMachine = () =>
+  ({
+    type: RESET_TIMEMACHINE,
+  } as const)
+
+export const setQueryResult = (
+  state: RemoteDataState,
+  result?: FromFluxResult
+) =>
+  ({
+    type: SET_QUERY_RESULTS,
+    state,
+    result,
+  } as const)
+
 export type Action =
   | ReturnType<typeof setActiveQueryIndex>
   | ReturnType<typeof setActiveQueryText>
@@ -62,3 +88,6 @@ export type Action =
   | ReturnType<typeof setViewingVisOptions>
   | ReturnType<typeof setViewType>
   | ReturnType<typeof setViewProperties>
+  | ReturnType<typeof setViewName>
+  | ReturnType<typeof resetTimeMachine>
+  | ReturnType<typeof setQueryResult>

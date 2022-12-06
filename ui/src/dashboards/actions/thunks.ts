@@ -34,6 +34,7 @@ import {setCells} from 'src/cells/actions/creators'
 import {arrayOfCells} from 'src/schemas/dashboards'
 import {get} from 'lodash'
 import {getCells} from 'src/cells/selectors'
+import {setViewName, setViewProperties} from 'src/timeMachine/actions'
 
 export const getDashboard =
   (id: string) =>
@@ -335,7 +336,7 @@ export const updateLayout =
       const cell = cells.find(item => item.id == layout.i)
 
       return {
-        viewProperties: cell.viewProperties,
+        ...cell,
         id: layout.i,
         x: layout.x,
         y: layout.y,
@@ -368,4 +369,13 @@ export const updateLayout =
         })
       )
     }
+  }
+
+export const setTimeMachineFromCell =
+  (cellID: string) => (dispatch, getState: GetState) => {
+    const state = getState()
+    const cell = getByID<Cell>(state, ResourceType.Cells, cellID)
+
+    dispatch(setViewProperties(cell.viewProperties))
+    dispatch(setViewName(cell.name))
   }

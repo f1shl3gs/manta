@@ -1,25 +1,37 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Componetns
 import {promLanguageDefinition} from 'monaco-promql'
 import MonacoEditor from 'react-monaco-editor'
 import PromqlToolbar from 'src/timeMachine/components/PromqlToolbar'
 import ThemeName from 'src/shared/components/editor/PromQLEditorTheme'
-import {EditorType} from 'src/types/monaco'
 
-interface Props {
-  query: string
-  onChange: (string) => void
+// Types
+import {EditorType} from 'src/types/monaco'
+import {AppState} from 'src/types/stores'
+
+// Actions
+import {setActiveQueryText} from 'src/timeMachine/actions'
+
+const mstp = (state: AppState) => {
+  const {viewProperties, activeQueryIndex} = state.timeMachine
+
+  return {
+    query: viewProperties.queries[activeQueryIndex].text,
+  }
 }
 
-const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
-  const [content, setContent] = useState(query)
-  const handleOnChange = (value: string) => {
-    setContent(value)
-    onChange(value)
-  }
+const mdtp = {
+  onChange: setActiveQueryText,
+}
 
+const connector = connect(mstp, mdtp)
+
+type Props = ConnectedProps<typeof connector>
+
+const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
   const editorWillMount = monaco => {
     const languageId = promLanguageDefinition.id
 
@@ -53,8 +65,8 @@ const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
         <MonacoEditor
           language="promql"
           theme={ThemeName}
-          onChange={handleOnChange}
-          value={content}
+          onChange={onChange}
+          value={query}
           editorWillMount={editorWillMount}
           editorDidMount={editorDidMount}
         />
@@ -67,4 +79,4 @@ const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
   )
 }
 
-export default QueryEditor
+export default connector(QueryEditor)

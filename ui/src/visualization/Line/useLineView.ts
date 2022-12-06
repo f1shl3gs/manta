@@ -47,22 +47,18 @@ const useLineView = (viewProperties, setViewProperties) => {
 
   const updateYAxis = useCallback(
     (upd: {[key: string]: string}) => {
-      // @ts-ignore
-      setViewProperties((prev: XYViewProperties) => {
-        return {
-          ...prev,
-
-          axes: {
-            x: prev.axes.x,
-            y: {
-              ...prev.axes.y,
-              ...upd,
-            },
+      setViewProperties({
+        ...viewProperties,
+        axes: {
+          x: viewProperties.axes.x,
+          y: {
+            ...viewProperties.axes.y,
+            ...upd,
           },
-        } as XYViewProperties
+        },
       })
     },
-    [setViewProperties]
+    [setViewProperties, viewProperties]
   )
 
   const onSetYAxisLabel = useCallback(
