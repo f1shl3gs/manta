@@ -1,10 +1,16 @@
+// Libraries
 import React, {FunctionComponent, useState} from 'react'
-import {TreeNav} from '@influxdata/clockface'
+import {useNavigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
-import OrganizationsSwitcher from 'src/organizations/OrganizationsSwitcher'
+// Components
+import {TreeNav} from '@influxdata/clockface'
+import OrganizationsSwitcher from 'src/organizations/components/OrganizationsSwitcher'
+
+// Hooks
 import useFetch from 'src/shared/useFetch'
-import {useNavigate} from 'react-router-dom'
+
+// Selectors
 import {useOrg} from 'src/organizations/selectors'
 import {getMeName} from 'src/me/selectors'
 
