@@ -45,6 +45,8 @@ export interface GaugeViewProperties {
   note?: string
   prefix: string
   suffix: string
+  tickPrefix: string
+  tickSuffix: string
   decimalPlaces: DecimalPlaces
   queries: DashboardQuery[]
   colors: DashboardColor[]
@@ -145,6 +147,7 @@ export interface LinePlusSingleStatViewProperties {
   prefix: string
   suffix: string
   decimalPlaces: DecimalPlaces
+  timeFormat?: string
 }
 
 export interface MosaicViewProperties {

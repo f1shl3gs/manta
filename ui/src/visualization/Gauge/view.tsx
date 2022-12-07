@@ -13,7 +13,8 @@ interface Props extends VisualizationProps {
 }
 
 const Gauge: FunctionComponent<Props> = props => {
-  const {colors, prefix, suffix, decimalPlaces} = props.properties
+  const {colors, prefix, suffix, decimalPlaces, tickPrefix, tickSuffix} =
+    props.properties
   const {table} = props.result
 
   const config: Config = {
@@ -23,6 +24,8 @@ const Gauge: FunctionComponent<Props> = props => {
         type: 'gauge',
         prefix,
         suffix,
+        tickPrefix,
+        tickSuffix,
         decimalPlaces,
         gaugeColors: colors,
         gaugeSize: GAUGE_ARC_LENGTH_DEFAULT,

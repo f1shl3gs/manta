@@ -44,8 +44,8 @@ const defaultSingleStatViewProperties = () => ({
 
 const defaultLineViewProperties = () => ({
   geom: 'line',
-  xColumn: null,
-  yColumn: null,
+  xColumn: '_time',
+  yColumn: '_value',
   position: 'overlaid',
   axes: {
     x: {
