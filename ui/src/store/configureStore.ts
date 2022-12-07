@@ -34,6 +34,7 @@ import {timeMachineReducer} from 'src/timeMachine/reducers'
 import {configurationsReducer} from 'src/configurations/reducers'
 import {usersReducer} from 'src/members/reducers'
 import {scrapesReducers} from 'src/scrapes/reducers'
+import {meReducer} from 'src/me/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -47,6 +48,7 @@ const rootReducer = (history: History) => (state, action) => {
     router: createRouterReducer(history),
     app: appReducer,
     autoRefresh: autoRefreshReducer,
+    me: meReducer,
     notifications: notificationsReducer,
     resources: combineReducers({
       [ResourceType.Cells]: cellsReducer,

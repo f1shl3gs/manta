@@ -1,14 +1,16 @@
 import React, {FunctionComponent, useState} from 'react'
 import {TreeNav} from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
+
 import OrganizationsSwitcher from 'src/organizations/OrganizationsSwitcher'
-import {useUser} from 'src/shared/components/useAuthentication'
 import useFetch from 'src/shared/useFetch'
 import {useNavigate} from 'react-router-dom'
 import {useOrg} from 'src/organizations/selectors'
+import {getMeName} from 'src/me/selectors'
 
 const UserWidget: FunctionComponent = () => {
   const [switcherVisible, setSwitcherVisible] = useState(false)
-  const user = useUser()
+  const username = useSelector(getMeName)
   const org = useOrg()
   const navigate = useNavigate()
   const {run: logout} = useFetch(`/api/v1/signout`, {
@@ -29,7 +31,7 @@ const UserWidget: FunctionComponent = () => {
       )}
 
       <TreeNav.User
-        username={user.name}
+        username={username}
         team={org.name}
         testID={'tree-nav-user'}
       >

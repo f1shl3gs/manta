@@ -5,12 +5,16 @@ import {ResourceState} from 'src/types/resources'
 import {Notification} from 'src/types/notification'
 import {ReduxRouterState} from '@lagunovsky/redux-react-router'
 import {TimeMachineState} from 'src/timeMachine/reducers'
+import {MeState} from 'src/me/reducers'
 
 export interface AppState {
   router: ReduxRouterState
 
   app: State
+
   autoRefresh: AutoRefreshState
+
+  me: MeState
 
   notifications: Notification[]
 

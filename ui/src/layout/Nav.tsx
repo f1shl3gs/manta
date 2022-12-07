@@ -13,7 +13,7 @@ import {
   TreeNavSubMenu,
 } from '@influxdata/clockface'
 import {Link, useNavigate} from 'react-router-dom'
-import UserWidget from 'src/organizations/UserWidget'
+import UserWidget from 'src/layout/UserWidget'
 
 // Hooks
 import {useOrg} from 'src/organizations/selectors'

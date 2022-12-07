@@ -49,9 +49,7 @@ export interface OrgsState extends NormalizedState<Organization> {
   org: Organization
 }
 
-export interface UsersState extends NormalizedState<User> {
-  me: User
-}
+export type MembersState = NormalizedState<User>
 
 export type ScrapesState = NormalizedState<Scrape>
 
@@ -64,6 +62,6 @@ export interface ResourceState {
   [ResourceType.Configurations]: ConfigurationsState
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Organizations]: OrgsState
-  [ResourceType.Members]: UsersState
+  [ResourceType.Members]: MembersState
   [ResourceType.Scrapes]: ScrapesState
 }
