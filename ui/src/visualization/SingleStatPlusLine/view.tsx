@@ -10,6 +10,7 @@ import {
 import {getFormatter} from 'src/utils/vis'
 import {DEFAULT_LINE_COLORS} from 'src/constants/graphColorPalettes'
 import {generateThresholdsListHexs} from 'src/constants/colorOperations'
+import {DEFAULT_TIME_FORMAT} from 'src/constants/timeFormat'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatViewProperties
@@ -17,31 +18,29 @@ interface Props extends VisualizationProps {
 
 const SingleStatPlusLine: FunctionComponent<Props> = ({properties, result}) => {
   const {table} = result
+  const timeFormat = properties.timeFormat || DEFAULT_TIME_FORMAT
   const xColumn = properties.xColumn || '_time'
   const yColumn =
     (table.columnKeys.includes(properties.yColumn) && properties.yColumn) ||
     '_value'
 
-  const xFormatter = getFormatter(table.getColumnType(xColumn), {
+  const xFormatter = getFormatter('time', {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,
     base: properties.axes.x.base,
-    // timeZone,
-    timeFormat: properties.timeFormat,
+    timeZone: 'Local',
+    timeFormat,
   })
 
   const yFormatter = getFormatter(table.getColumnType(yColumn), {
     prefix: properties.axes.y.prefix,
     suffix: properties.axes.y.suffix,
     base: properties.axes.y.base,
-    // timeZone,
-    timeFormat: properties.timeFormat,
+    timeZone: 'Local',
+    timeFormat,
   })
 
-  const groupKey = useMemo(
-    () => [...result.fluxGroupKeyUnion, 'result'],
-    [result]
-  )
+  const groupKey = useMemo(() => [...result.fluxGroupKeyUnion], [result])
   const colorHexes = useMemo(() => {
     const _colors = properties.colors.filter(c => c.type === 'scale')
     if (_colors && _colors.length) {

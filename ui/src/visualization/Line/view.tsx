@@ -1,11 +1,10 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useMemo} from 'react'
 
 // Components
 import {Config, Plot} from '@influxdata/giraffe'
 
 // Hooks
-import {useVisXDomainSettings} from 'src/visualization/Line/useVisXDomainSettings'
 import useLineView from 'src/visualization/Line/useLineView'
 
 // Utils
@@ -14,6 +13,8 @@ import {getFormatter} from 'src/utils/vis'
 // Types
 import {XYViewProperties} from 'src/types/cells'
 import {VisualizationProps} from 'src/visualization'
+import { DEFAULT_LINE_COLORS } from 'src/constants/graphColorPalettes'
+import {LineHoverDimension} from '@influxdata/giraffe/dist/types';
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -21,14 +22,12 @@ interface Props extends VisualizationProps {
 
 const Line: FunctionComponent<Props> = ({properties, result}) => {
   const {table, fluxGroupKeyUnion} = result
-  const {xDomain, onSetXDomain, onResetXDomain} = useVisXDomainSettings()
   const {
     timeFormat,
     xColumn,
     yColumn,
-    hoverDimension,
     axes: {
-      x: {label: xAxisLabel, prefix: xTickPrefix, suffix: xTickSuffix},
+      x: {label: xAxisLabel},
       y: {
         label: yAxisLabel,
         base: yAxisBase,
@@ -36,19 +35,20 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
         suffix: yAxisSuffix,
       },
     },
-  } = useLineView(properties, (vp) => {
-    console.log('vp', vp)
+  } = useLineView(properties, () => {
+    /* void */
   })
 
+  // TODO: fix table.getColumnType(xColumn)
   const xFormatter = getFormatter('time', {
-    prefix: xTickPrefix,
-    suffix: xTickSuffix,
-    base: '10',
+    prefix: properties.axes.x.prefix,
+    suffix: properties.axes.x.suffix,
+    base: properties.axes.x.base,
     timeZone: 'Local',
-    timeFormat: timeFormat,
+    timeFormat,
   })
 
-  const yFormatter = getFormatter('number', {
+  const yFormatter = getFormatter(table.getColumnType(yColumn), {
     prefix: yAxisPrefix,
     suffix: yAxisSuffix,
     base: yAxisBase,
@@ -56,25 +56,33 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
     timeFormat: timeFormat,
   })
 
+  const colorHexes = useMemo(() => {
+    const _colors = properties.colors.filter(c => c.type === 'scale')
+    if (_colors && _colors.length) {
+      return _colors.map(color => color.hex)
+    }
+    return DEFAULT_LINE_COLORS.map(color => color.hex)
+  }, [properties.colors])
+
   const config: Config = {
     table,
-    xDomain,
-    onSetXDomain: onSetXDomain,
-    onResetXDomain: onResetXDomain,
     xAxisLabel,
     yAxisLabel,
-    // @ts-ignore
     valueFormatters: {
       [xColumn]: xFormatter,
       [yColumn]: yFormatter,
     },
     layers: [
       {
-        hoverDimension,
         type: 'line',
         x: xColumn,
         y: yColumn,
         fill: fluxGroupKeyUnion,
+        position: properties.position,
+        colors: colorHexes,
+        shadeBelow: !!properties.shadeBelow,
+        shadeBelowOpacity: 0.08,
+        hoverDimension: properties.hoverDimension as LineHoverDimension
       },
     ],
   }

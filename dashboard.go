@@ -80,9 +80,17 @@ type Cell struct {
 }
 
 type GaugeViewProperties struct {
-	Type    string  `json:"type,omitempty"`
-	Axes    Axes    `json:"axes"`
-	Queries []Query `json:"queries,omitempty"`
+	Type              string           `json:"type,omitempty"`
+	Axes              Axes             `json:"axes"`
+	Queries           []Query          `json:"queries,omitempty"`
+	Prefix            string           `json:"prefix,omitempty"`
+	Suffix            string           `json:"suffix,omitempty"`
+	TickPrefix        string           `json:"tickPrefix,omitempty"`
+	TickSuffix        string           `json:"tickSuffix,omitempty"`
+	Note              string           `json:"note,omitempty"`
+	ShowNoteWhenEmpty bool             `json:"showNoteWhenEmpty,omitempty"`
+	DecimalPlaces     DecimalPlaces    `json:"decimalPlaces,omitempty"`
+	Colors            []DashboardColor `json:"colors,omitempty"`
 }
 
 func (g *GaugeViewProperties) GetType() string {
@@ -115,6 +123,7 @@ type SingleStatViewProperties struct {
 	TickSuffix        string           `json:"tickSuffix,omitempty"`
 	ShowNoteWhenEmpty bool             `json:"showNoteWhenEmpty,omitempty"`
 	Colors            []DashboardColor `json:"colors"`
+	DecimalPlaces     DecimalPlaces    `json:"decimalPlaces,omitempty"`
 }
 
 func (s *SingleStatViewProperties) GetType() string {
@@ -127,15 +136,17 @@ type DecimalPlaces struct {
 }
 
 type LinePlusSingleStatViewProperties struct {
-	Type              string        `json:"type,omitempty"`
-	Note              string        `json:"note,omitempty"`
-	Queries           []Query       `json:"queries"`
-	Prefix            string        `json:"prefix,omitempty"`
-	Suffix            string        `json:"suffix,omitempty"`
-	TickPrefix        string        `json:"tickPrefix,omitempty"`
-	TickSuffix        string        `json:"tickSuffix,omitempty"`
-	ShowNoteWhenEmpty bool          `json:"showNoteWhenEmpty,omitempty"`
-	DecimalPlaces     DecimalPlaces `json:"decimalPlaces"`
+	Type              string           `json:"type,omitempty"`
+	Note              string           `json:"note,omitempty"`
+	Queries           []Query          `json:"queries"`
+	Prefix            string           `json:"prefix,omitempty"`
+	Suffix            string           `json:"suffix,omitempty"`
+	TickPrefix        string           `json:"tickPrefix,omitempty"`
+	TickSuffix        string           `json:"tickSuffix,omitempty"`
+	ShowNoteWhenEmpty bool             `json:"showNoteWhenEmpty,omitempty"`
+	DecimalPlaces     DecimalPlaces    `json:"decimalPlaces"`
+	Axes              Axes             `json:"axes"`
+	Colors            []DashboardColor `json:"colors"`
 }
 
 func (s *LinePlusSingleStatViewProperties) GetType() string {

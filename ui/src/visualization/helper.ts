@@ -12,11 +12,23 @@ import {
   ViewType,
   XYViewProperties,
 } from 'src/types/cells'
-import {DashboardQuery} from 'src/types/dashboards'
 import {Color} from 'src/types/colors'
 
 // Constants
-import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/constants/thresholds'
+import {DEFAULT_GAUGE_COLORS, DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/constants/thresholds'
+import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
+import {DEFAULT_LINE_COLORS} from 'src/constants/graphColorPalettes'
+
+const tickProps = {
+  generateXAxisTicks: [],
+  generateYAxisTicks: [],
+  xTotalTicks: null,
+  xTickStart: null,
+  xTickStep: null,
+  yTotalTicks: null,
+  yTickStart: null,
+  yTickStep: null,
+}
 
 export const defaultView = () => {
   return {
@@ -25,7 +37,11 @@ export const defaultView = () => {
     status: RemoteDataState.Done,
 
     colors: new Array<Color>(),
-    queries: new Array<DashboardQuery>(),
+    queries: [{
+      name: 'query 1',
+      text: '',
+      hidden: false
+    }],
   }
 }
 
@@ -46,7 +62,10 @@ const defaultLineViewProperties = () => ({
   geom: 'line',
   xColumn: '_time',
   yColumn: '_value',
-  position: 'overlaid',
+  colors: DEFAULT_LINE_COLORS as Color[],
+  showNoteWhenEmpty: false,
+  ...tickProps,
+  hoverDimension: 'auto' as LineHoverDimension,
   axes: {
     x: {
       bounds: ['', ''],
@@ -73,6 +92,7 @@ const defaultGaugeViewProperties = () => ({
   suffix: '',
   tickSuffix: '',
   showNoteWhenEmpty: false,
+  colors: DEFAULT_GAUGE_COLORS as Color[],
   decimalPlaces: {
     isEnforced: true,
     digits: 2,
@@ -85,8 +105,10 @@ const NEW_VIEW_CREATORS = {
     ...defaultLineViewProperties(),
 
     type: 'xy',
-    position: 'overlaid',
     geom: 'line',
+    position: 'overlaid',
+    xColumn: null,
+    yColumn: null,
   }),
 
   'line-plus-single-stat': (): LinePlusSingleStatViewProperties => ({

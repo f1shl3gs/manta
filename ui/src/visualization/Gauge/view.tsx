@@ -12,11 +12,10 @@ interface Props extends VisualizationProps {
   properties: GaugeViewProperties
 }
 
-const Gauge: FunctionComponent<Props> = props => {
-  const {colors, prefix, suffix, decimalPlaces, tickPrefix, tickSuffix} =
-    props.properties
-  const {table} = props.result
-
+const Gauge: FunctionComponent<Props> = ({result: {table}, properties}) => {
+  const {colors, prefix, tickPrefix, suffix, tickSuffix, decimalPlaces} =
+    properties
+  
   const config: Config = {
     table,
     layers: [

@@ -12,6 +12,14 @@ export const VIS_TYPES: VisType[] = [
     name: 'Band Plot',
   },
   {
+    type: 'single-stat',
+    name: 'Single Stat',
+  },
+  {
+    type: 'gauge',
+    name: 'Gauge',
+  },
+  {
     type: 'xy',
     name: 'Graph',
   },
@@ -30,14 +38,6 @@ export const VIS_TYPES: VisType[] = [
   {
     type: 'histogram',
     name: 'Histogram',
-  },
-  {
-    type: 'single-stat',
-    name: 'Single Stat',
-  },
-  {
-    type: 'gauge',
-    name: 'Gauge',
   },
   {
     type: 'table',

@@ -17,7 +17,6 @@ import {
   SET_VIEWING_VIS_OPTIONS,
   SET_VIEWTYPE,
 } from 'src/timeMachine/actions'
-import {DEFAULT_VIEWPROPERTIES} from 'src/constants/dashboard'
 import {ViewProperties} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
 import {FromFluxResult, fromRows} from '@influxdata/giraffe'
@@ -44,7 +43,7 @@ const initialState = (): TimeMachineState => ({
   viewingVisOptions: false,
   contextID: '',
   timeRange: pastHourTimeRange,
-  viewProperties: DEFAULT_VIEWPROPERTIES,
+  viewProperties: createView('xy'),
   queryResult: {
     state: RemoteDataState.NotStarted,
     result: {

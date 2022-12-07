@@ -28,6 +28,7 @@ export interface XYViewProperties {
   position: 'overlaid' | 'stacked'
   geom: XYGeom
   queries: DashboardQuery[]
+  colors: DashboardColor[]
 }
 
 export interface Legend {
