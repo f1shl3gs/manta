@@ -15,9 +15,10 @@ import {
 import {Color} from 'src/types/colors'
 
 // Constants
-import {DEFAULT_GAUGE_COLORS, DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/constants/thresholds'
+import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/constants/thresholds'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 import {DEFAULT_LINE_COLORS} from 'src/constants/graphColorPalettes'
+import {DEFAULT_GAUGE_COLORS} from '@influxdata/giraffe'
 
 const tickProps = {
   generateXAxisTicks: [],
@@ -37,11 +38,13 @@ export const defaultView = () => {
     status: RemoteDataState.Done,
 
     colors: new Array<Color>(),
-    queries: [{
-      name: 'query 1',
-      text: '',
-      hidden: false
-    }],
+    queries: [
+      {
+        name: 'query 1',
+        text: '',
+        hidden: false,
+      },
+    ],
   }
 }
 

@@ -67,8 +67,8 @@ export const transformPromResp = (
       return values.map(val => {
         return {
           ...metric,
-          time: val[0] * 1000,
-          value: Number(val[1]),
+          _time: val[0] * 1000,
+          _value: Number(val[1]),
         }
       })
     })
