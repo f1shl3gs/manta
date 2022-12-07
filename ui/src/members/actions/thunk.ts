@@ -1,13 +1,25 @@
-import request from 'src/utils/request'
-import {getOrg} from 'src/organizations/selectors'
-import {defaultErrorNotification} from 'src/constants/notification'
-import {notify} from 'src/shared/actions/notifications'
+// Libraries
 import {normalize} from 'normalizr'
+
+// Utils
+import request from 'src/shared/utils/request'
+
+// Selector
+import {getOrg} from 'src/organizations/selectors'
+
+// Types
 import {User, UserEntities} from 'src/types/user'
+import {GetState} from 'src/types/stores'
+import {RemoteDataState} from '@influxdata/clockface'
+
+// Constants
+import {defaultErrorNotification} from 'src/shared/constants/notification'
+
+// Actions
+import {notify} from 'src/shared/actions/notifications'
 import {arrayOfMembers} from 'src/schemas/members'
 import {setMembers} from 'src/members/actions/creators'
-import {RemoteDataState} from '@influxdata/clockface'
-import {GetState} from 'src/types/stores'
+
 
 export const getMembers =
   () =>

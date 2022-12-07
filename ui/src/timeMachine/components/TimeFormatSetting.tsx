@@ -1,6 +1,6 @@
 import React from 'react'
 import {SelectDropdown} from '@influxdata/clockface'
-import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/constants/timeFormat'
+import {FORMAT_OPTIONS, resolveTimeFormat} from 'src/shared/constants/timeFormat'
 
 interface Props {
   timeFormat: string

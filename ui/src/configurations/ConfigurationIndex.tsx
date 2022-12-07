@@ -11,7 +11,7 @@ import SearchWidget from 'src/shared/components/SearchWidget'
 import CreateConfigurationButton from 'src/configurations/CreateConfigurationButton'
 import EmptyConfigurations from 'src/configurations/EmptyConfigurations'
 import ConfigurationCard from 'src/configurations/ConfigurationCard'
-import {getSortedResources} from 'src/utils/sort'
+import {getSortedResources} from 'src/shared/utils/sort'
 import ConfigurationExplainer from 'src/configurations/ConfigurationExplainer'
 
 // Types

@@ -12,7 +12,7 @@ import Context from 'src/shared/components/context_menu/Context'
 
 // Hooks
 import {useNavigate} from 'react-router-dom'
-import {fromNow} from 'src/utils/duration'
+import {fromNow} from 'src/shared/utils/duration'
 import {useOrg} from 'src/organizations/selectors'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -27,7 +27,7 @@ import {
   PARAMS_SHOW_VARIABLES_CONTROLS,
   PARAMS_TIME_RANGE_LOW,
   PARAMS_TIME_RANGE_TYPE,
-} from 'src/constants/timeRange'
+} from 'src/shared/constants/timeRange'
 
 // Actions
 import {

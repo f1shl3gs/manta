@@ -2,7 +2,7 @@ import {produce} from 'immer'
 
 import {TimeRange} from 'src/types/timeRanges'
 
-import {pastHourTimeRange} from 'src/constants/timeRange'
+import {pastHourTimeRange} from 'src/shared/constants/timeRange'
 
 import {
   Action,

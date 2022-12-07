@@ -1,5 +1,5 @@
 import {TimeRange} from 'src/types/timeRanges'
-import {pastHourTimeRange} from 'src/constants/timeRange'
+import {pastHourTimeRange} from 'src/shared/constants/timeRange'
 import {Action, SET_TIMERANGE} from 'src/shared/actions/timeRange'
 
 export type TimeRangeState = TimeRange

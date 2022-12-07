@@ -17,7 +17,7 @@ import {Scrape} from 'src/types/scrape'
 import {useNavigate} from 'react-router-dom'
 
 // Utils
-import {fromNow} from 'src/utils/duration'
+import {fromNow} from 'src/shared/utils/duration'
 
 // Constants
 import {deleteScrape, updateScrape} from 'src/scrapes/actions/thunk'

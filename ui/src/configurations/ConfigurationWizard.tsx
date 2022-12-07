@@ -22,7 +22,7 @@ import useEscape from 'src/shared/useEscape'
 import {useDispatch} from 'react-redux'
 
 // Utils
-import {downloadTextFile} from 'src/utils/download'
+import {downloadTextFile} from 'src/shared/utils/download'
 
 // Actions
 import {createConfig} from 'src/configurations/actions/thunk'

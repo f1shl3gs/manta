@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {AXES_SCALE_OPTIONS} from 'src/constants/cell'
+import {AXES_SCALE_OPTIONS} from 'src/shared/constants/cell'
 
 interface Props {
   base: string

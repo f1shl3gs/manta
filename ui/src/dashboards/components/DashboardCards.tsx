@@ -16,7 +16,7 @@ import {getAll} from 'src/resources/selectors'
 import {AppState} from 'src/types/stores'
 
 // Utils
-import {getSortedResources} from 'src/utils/sort'
+import {getSortedResources} from 'src/shared/utils/sort'
 
 interface Props {
   search: string

@@ -6,7 +6,7 @@ import {
   IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
-import {fromNow} from 'src/utils/duration'
+import {fromNow} from 'src/shared/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useDispatch} from 'react-redux'
 import {removeConfig} from 'src/configurations/actions/creators'

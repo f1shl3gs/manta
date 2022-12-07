@@ -8,12 +8,12 @@ import {Config, Plot} from '@influxdata/giraffe'
 import useLineView from 'src/visualization/Line/useLineView'
 
 // Utils
-import {getFormatter} from 'src/utils/vis'
+import {getFormatter} from 'src/shared/utils/vis'
 
 // Types
 import {XYViewProperties} from 'src/types/cells'
 import {VisualizationProps} from 'src/visualization'
-import { DEFAULT_LINE_COLORS } from 'src/constants/graphColorPalettes'
+import { DEFAULT_LINE_COLORS } from 'src/shared/constants/graphColorPalettes'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types';
 
 interface Props extends VisualizationProps {

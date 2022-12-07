@@ -1,7 +1,7 @@
 import {GetState} from 'src/types/stores'
 import {DashboardQuery} from 'src/types/dashboards'
 import {calculateRange} from 'src/shared/actions/autoRefresh'
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {Row, transformToRows} from 'src/shared/useQueryResult'
 import {getOrg} from 'src/organizations/selectors'
 import {TimeRange} from 'src/types/timeRanges'

@@ -4,7 +4,7 @@ import React, {FunctionComponent, useState} from 'react'
 // Components
 import {Columns, Grid, Sort} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
-import {getSortedResources} from 'src/utils/sort'
+import {getSortedResources} from 'src/shared/utils/sort'
 import ScrapeCard from 'src/scrapes/ScrapeCard'
 import EmptyScrapes from 'src/scrapes/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'

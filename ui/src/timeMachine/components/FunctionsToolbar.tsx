@@ -11,7 +11,7 @@ import PromqlToolbarSearch from 'src/timeMachine/components/PromqlToolbarSearch'
 import FunctionItem from 'src/timeMachine/components/FunctionItem'
 
 // Constants
-import {PROMQL_FUNCTIONS} from 'src/constants/promqlFunctions'
+import {PROMQL_FUNCTIONS} from 'src/shared/constants/promqlFunctions'
 
 const FunctionsToolbar: React.FC = () => {
   const [search, setSearch] = useState('')

@@ -1,10 +1,10 @@
-import {TimeZone} from 'src/utils/timeZone'
+import {TimeZone} from 'src/shared/utils/timeZone'
 import {
   binaryPrefixFormatter,
   siPrefixFormatter,
   timeFormatter,
 } from '@influxdata/giraffe'
-import {DEFAULT_TIME_FORMAT, resolveTimeFormat} from 'src/constants/timeFormat'
+import {DEFAULT_TIME_FORMAT, resolveTimeFormat} from 'src/shared/constants/timeFormat'
 
 export type ColumnType = 'number' | 'string' | 'time' | 'boolean'
 

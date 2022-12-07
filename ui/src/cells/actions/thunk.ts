@@ -3,10 +3,10 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   defaultDeletionNotification,
   defaultErrorNotification,
-} from 'src/constants/notification'
+} from 'src/shared/constants/notification'
 import {Dashboard} from 'src/types/dashboards'
 import {GetState} from 'src/types/stores'
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import * as creators from 'src/cells/actions/creators'
 import {setCell} from 'src/cells/actions/creators'
 import {getByID} from 'src/resources/selectors'

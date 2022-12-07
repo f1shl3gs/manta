@@ -1,8 +1,8 @@
 import {push} from '@lagunovsky/redux-react-router'
-import {defaultErrorNotification} from 'src/constants/notification'
+import {defaultErrorNotification} from 'src/shared/constants/notification'
 import {notify} from 'src/shared/actions/notifications'
 import {GetState} from 'src/types/stores'
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 
 const SETUP_URL = '/api/v1/setup'
 

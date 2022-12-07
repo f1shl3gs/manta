@@ -1,11 +1,11 @@
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {
   editScrape,
   removeScrape,
   addScrape,
   setScrapes,
 } from 'src/scrapes/actions/creators'
-import {defaultErrorNotification} from 'src/constants/notification'
+import {defaultErrorNotification} from 'src/shared/constants/notification'
 import {notify} from 'src/shared/actions/notifications'
 import {normalize} from 'normalizr'
 import {ScrapeEntities} from 'src/types/schemas'

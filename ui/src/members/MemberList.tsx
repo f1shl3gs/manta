@@ -9,7 +9,7 @@ import {
   ResourceList,
   Sort,
 } from '@influxdata/clockface'
-import {fromNow} from 'src/utils/duration'
+import {fromNow} from 'src/shared/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useSelector} from 'react-redux'
 import {User} from 'src/types/user'

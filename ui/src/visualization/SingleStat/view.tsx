@@ -2,7 +2,7 @@ import React, {FunctionComponent} from 'react'
 import {VisualizationProps} from 'src/visualization'
 import {SingleStatViewProperties} from 'src/types/cells'
 import {Config, getLatestValues, Plot} from '@influxdata/giraffe'
-import {generateThresholdsListHexs} from 'src/constants/colorOperations'
+import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 
 interface Props extends VisualizationProps {
   properties: SingleStatViewProperties

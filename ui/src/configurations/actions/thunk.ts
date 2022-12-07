@@ -3,9 +3,9 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   defaultDeletionNotification,
   defaultErrorNotification,
-} from 'src/constants/notification'
+} from 'src/shared/constants/notification'
 import {GetState} from 'src/types/stores'
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {getByID} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import {Configuration} from 'src/types/configuration'

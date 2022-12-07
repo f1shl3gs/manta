@@ -4,7 +4,7 @@ import {Dispatch} from 'react'
 // Types
 import {Layout} from 'react-grid-layout'
 
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {GetState} from 'src/types/stores'
 import {
   Action,
@@ -28,7 +28,7 @@ import {
 import {
   defaultErrorNotification,
   defaultSuccessNotification,
-} from 'src/constants/notification'
+} from 'src/shared/constants/notification'
 import {push} from '@lagunovsky/redux-react-router'
 import {setCells} from 'src/cells/actions/creators'
 import {arrayOfCells} from 'src/schemas/dashboards'

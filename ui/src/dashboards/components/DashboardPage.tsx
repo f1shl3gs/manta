@@ -24,7 +24,7 @@ import {getByID} from 'src/resources/selectors'
 import {getCells} from 'src/cells/selectors'
 
 // Constants
-import {pastHourTimeRange} from 'src/constants/timeRange'
+import {pastHourTimeRange} from 'src/shared/constants/timeRange'
 
 // Lazy Loads
 const NewVEO = lazy(() => import('src/dashboards/components/NewVEO'))

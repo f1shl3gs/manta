@@ -6,10 +6,10 @@ import {
   InputType,
 } from '@influxdata/clockface'
 import React, {FunctionComponent, useState} from 'react'
-import {MAX_DECIMAL_PLACES, MIN_DECIMAL_PLACES} from '../../constants/dashboard'
+import {MAX_DECIMAL_PLACES, MIN_DECIMAL_PLACES} from 'src/shared/constants/dashboard'
 
 // Utils
-import {convertUserInputToNumOrNaN} from 'src/utils/convertUserInput'
+import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 interface Props {
   isEnforced: boolean

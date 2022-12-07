@@ -1,13 +1,22 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+
+// Components
 import {
   ComponentStatus,
   Dropdown,
   DropdownMenuTheme,
 } from '@influxdata/clockface'
+
+// Types
 import {ViewType} from 'src/types/cells'
-import {VIS_GRAPHICS} from 'src/constants/vis'
-import {useDispatch, useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
+
+// Constants
+import {VIS_GRAPHICS} from 'src/shared/constants/vis'
+
+// Actions
 import {setViewType} from 'src/timeMachine/actions'
 
 const ViewTypeDropdown: FunctionComponent = () => {

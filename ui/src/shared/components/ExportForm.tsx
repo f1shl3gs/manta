@@ -10,13 +10,13 @@ import useEscape from 'src/shared/useEscape'
 import {useDispatch} from 'react-redux'
 
 // Utils
-import {downloadTextFile} from 'src/utils/download'
+import {downloadTextFile} from 'src/shared/utils/download'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
 
 // Constants
-import {defaultSuccessNotification} from 'src/constants/notification'
+import {defaultSuccessNotification} from 'src/shared/constants/notification'
 
 interface Props {
   resourceName: string

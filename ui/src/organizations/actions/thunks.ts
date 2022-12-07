@@ -2,13 +2,13 @@ import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
 
 import {Action, addOrg, setOrgs} from 'src/organizations/actions'
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {RemoteDataState} from '@influxdata/clockface'
 import {Organization} from 'src/types/organization'
 
 import {OrgEntities} from 'src/types/schemas'
 import {arrayOfOrgs} from 'src/schemas'
-import {defaultErrorNotification} from 'src/constants/notification'
+import {defaultErrorNotification} from 'src/shared/constants/notification'
 import {
   notify,
   PublishNotificationAction,

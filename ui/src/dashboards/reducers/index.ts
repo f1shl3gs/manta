@@ -2,7 +2,7 @@ import {produce} from 'immer'
 
 import {ResourceState, ResourceType} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
-import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/constants/dashboard'
+import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/shared/constants/dashboard'
 
 import {
   Action as CellAction,

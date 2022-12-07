@@ -5,7 +5,7 @@ import {
   THRESHOLD_COLORS,
   BASE_THRESHOLD_ID,
   THRESHOLD_TYPE_TEXT,
-} from 'src/constants/thresholds'
+} from 'src/shared/constants/thresholds'
 
 import {Color} from 'src/types/colors'
 

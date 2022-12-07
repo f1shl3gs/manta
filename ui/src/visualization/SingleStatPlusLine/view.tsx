@@ -7,10 +7,10 @@ import {
   Plot,
   SINGLE_STAT_SVG_NO_USER_SELECT,
 } from '@influxdata/giraffe'
-import {getFormatter} from 'src/utils/vis'
-import {DEFAULT_LINE_COLORS} from 'src/constants/graphColorPalettes'
-import {generateThresholdsListHexs} from 'src/constants/colorOperations'
-import {DEFAULT_TIME_FORMAT} from 'src/constants/timeFormat'
+import {getFormatter} from 'src/shared/utils/vis'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
+import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants/timeFormat'
 
 interface Props extends VisualizationProps {
   properties: LinePlusSingleStatViewProperties

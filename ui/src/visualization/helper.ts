@@ -15,9 +15,9 @@ import {
 import {Color} from 'src/types/colors'
 
 // Constants
-import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/constants/thresholds'
+import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
-import {DEFAULT_LINE_COLORS} from 'src/constants/graphColorPalettes'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {DEFAULT_GAUGE_COLORS} from '@influxdata/giraffe'
 
 const tickProps = {

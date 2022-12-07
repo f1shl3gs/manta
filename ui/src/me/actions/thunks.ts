@@ -1,6 +1,6 @@
 import {push} from '@lagunovsky/redux-react-router'
 
-import request from 'src/utils/request'
+import request from 'src/shared/utils/request'
 import {setMe} from './creators'
 import {RemoteDataState} from '@influxdata/clockface'
 

@@ -1,8 +1,15 @@
+// Libraries
 import React, {FunctionComponent, useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import request from './utils/request'
+
+// Components
+import PageSpinner from 'src/shared/components/PageSpinner'
+
+// Types
 import {RemoteDataState} from '@influxdata/clockface'
-import PageSpinner from './shared/components/PageSpinner'
+
+// Utils
+import request from 'src/shared/utils/request'
 
 interface Props {
   children: JSX.Element | JSX.Element[]

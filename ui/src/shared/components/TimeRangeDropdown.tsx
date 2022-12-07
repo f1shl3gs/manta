@@ -20,7 +20,7 @@ import {
   CUSTOM_TIME_RANGE_LABEL,
   SELECTABLE_TIME_RANGES,
   TIME_RANGE_FORMAT,
-} from 'src/constants/timeRange'
+} from 'src/shared/constants/timeRange'
 
 // Types
 import {TimeRange} from 'src/types/timeRanges'

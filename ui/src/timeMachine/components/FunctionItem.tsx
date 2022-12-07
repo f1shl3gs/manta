@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Constants
-import {PromqlFunction} from 'src/constants/promqlFunctions'
+import {PromqlFunction} from 'src/shared/constants/promqlFunctions'
 
 interface Props {
   fn: PromqlFunction
