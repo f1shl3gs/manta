@@ -10,7 +10,7 @@ export const getMe =
     try {
       const resp = await request('/api/v1/viewer')
       switch (resp.status) {
-        case 403:
+        case 401:
           dispatch(
             push(
               `/signin?returnTo=${encodeURIComponent(window.location.pathname)}`
