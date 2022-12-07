@@ -31,3 +31,18 @@ export const getMe =
       console.error(err)
     }
   }
+
+export const signout = () => async (dispatch): Promise<void> => {
+  try {
+    const resp = await request(`/api/v1/signout`, {
+      method: 'DELETE'
+    })
+    if (resp.status !== 200) {
+      throw new Error(resp.date.message)
+    }
+
+    dispatch(push('/signin'))
+  } catch (err) {
+    console.error(err)
+  }
+}

@@ -1,14 +1,14 @@
 // Libraries
 import React, {FunctionComponent, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {TreeNav} from '@influxdata/clockface'
 import OrganizationsSwitcher from 'src/organizations/components/OrganizationsSwitcher'
 
-// Hooks
-import useFetch from 'src/shared/useFetch'
+// Actions
+import { signout } from 'src/me/actions/thunks'
 
 // Selectors
 import {useOrg} from 'src/organizations/selectors'
@@ -18,11 +18,12 @@ const UserWidget: FunctionComponent = () => {
   const [switcherVisible, setSwitcherVisible] = useState(false)
   const username = useSelector(getMeName)
   const org = useOrg()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {run: logout} = useFetch(`/api/v1/signout`, {
-    method: 'DELETE',
-    onSuccess: _ => navigate(`/signin`),
-  })
+
+  const handleSignout = () => {
+    dispatch(signout())
+  }
 
   return (
     <div>
@@ -60,7 +61,7 @@ const UserWidget: FunctionComponent = () => {
           id="logout"
           label="Logout"
           testID={'user-logout'}
-          onClick={() => logout()}
+          onClick={handleSignout}
         />
       </TreeNav.User>
     </div>
