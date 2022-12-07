@@ -35,6 +35,7 @@ import {configurationsReducer} from 'src/configurations/reducers'
 import {usersReducer} from 'src/members/reducers'
 import {scrapesReducers} from 'src/scrapes/reducers'
 import {meReducer} from 'src/me/reducers'
+import {setupReducer} from 'src/setup/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -58,6 +59,7 @@ const rootReducer = (history: History) => (state, action) => {
       [ResourceType.Organizations]: organizationsReducer,
       [ResourceType.Scrapes]: scrapesReducers,
     }),
+    setup: setupReducer,
     timeRange: timeRangeReducer,
     timeMachine: timeMachineReducer,
   })(state, action)

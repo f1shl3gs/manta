@@ -1,5 +1,6 @@
 // Library
-import React, {FC} from 'react'
+import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -13,23 +14,59 @@ import {
   InputType,
 } from '@influxdata/clockface'
 
-// Hooks
-import {useOnboard} from 'src/setup/useOnboard'
+// Types
+import {AppState} from 'src/types/stores'
 
-export const Admin: FC = () => {
-  const {
+// Actions
+import {initialUser} from 'src/setup/actions/thunks'
+import {setSetupParams} from 'src/setup/actions/creators'
+
+const mstp = (state: AppState) => {
+  const {username, password, organization} = state.setup
+
+  return {
     username,
     password,
-    setUsername,
-    setPassword,
     organization,
-    setOrganization,
-    onboard,
-  } = useOnboard()
+  }
+}
+
+const mdtp = {
+  submit: initialUser,
+  updateParams: setSetupParams,
+}
+
+const connector = connect(mstp, mdtp)
+
+type Props = ConnectedProps<typeof connector>
+
+const Admin: FunctionComponent<Props> = ({
+  username,
+  password,
+  organization,
+  submit,
+  updateParams,
+}) => {
   const submitStatus =
     username !== '' && password !== ''
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
+
+  const setUsername = ev => {
+    updateParams({
+      username: ev.target.value,
+    })
+  }
+
+  const setPassword = ev =>
+    updateParams({
+      password: ev.target.value,
+    })
+
+  const setOrganization = ev =>
+    updateParams({
+      organization: ev.target.value,
+    })
 
   return (
     <div className={'onboarding-step'}>
@@ -55,7 +92,7 @@ export const Admin: FC = () => {
                       testID={'input-username'}
                       autoFocus={true}
                       value={username}
-                      onChange={e => setUsername(e.target.value)}
+                      onChange={setUsername}
                     />
                   </Form.Element>
                 </Grid.Column>
@@ -70,7 +107,7 @@ export const Admin: FC = () => {
                       testID={'input-password'}
                       type={InputType.Password}
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      onChange={setPassword}
                     />
                   </Form.Element>
                 </Grid.Column>
@@ -84,7 +121,7 @@ export const Admin: FC = () => {
                     <Input
                       testID={'input-organization'}
                       value={organization}
-                      onChange={e => setOrganization(e.target.value)}
+                      onChange={setOrganization}
                     ></Input>
                   </Form.Element>
                 </Grid.Column>
@@ -99,7 +136,9 @@ export const Admin: FC = () => {
                     text="Next"
                     color={ComponentColor.Primary}
                     status={submitStatus}
-                    onClick={_ => onboard()}
+                    onClick={() => {
+                      submit()
+                    }}
                   />
                 </Grid.Column>
               </Grid.Row>
@@ -110,3 +149,5 @@ export const Admin: FC = () => {
     </div>
   )
 }
+
+export default connector(Admin)

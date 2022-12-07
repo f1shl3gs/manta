@@ -5,10 +5,20 @@ import React, {FC} from 'react'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 
 // Hooks
-import {useStep} from 'src/setup/useStep'
+import {useDispatch} from 'react-redux'
+
+// Actions
+import {setStep} from 'src/setup/actions/creators'
+
+// Types
+import {Step} from 'src/setup/reducers'
 
 export const Welcome: FC = () => {
-  const {next} = useStep()
+  const dispatch = useDispatch()
+
+  const handleNext = () => {
+    dispatch(setStep(Step.Admin))
+  }
 
   return (
     <div className={'wizard--bookend-step'}>
@@ -25,8 +35,10 @@ export const Welcome: FC = () => {
         text="Get Started"
         size={ComponentSize.Large}
         testID={'get-start'}
-        onClick={next}
+        onClick={handleNext}
       />
     </div>
   )
 }
+
+export default Welcome

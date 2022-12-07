@@ -2,26 +2,23 @@
 import React, {FC} from 'react'
 
 // Components
-import {Welcome} from 'src/setup/components/Welcome'
-import {Admin} from 'src/setup/components/Admin'
+import Admin from 'src/setup/components/Admin'
+import Welcome from 'src/setup/components/Welcome'
 
 // Hooks
-import {useStep} from 'src/setup/useStep'
-import {OnboardProvider} from 'src/setup/useOnboard'
+import {useSelector} from 'react-redux'
+
+// Types
+import {AppState} from 'src/types/stores'
+import {Step} from 'src/setup/reducers'
 
 export const StepSwitcher: FC = () => {
-  const {step} = useStep()
+  const step = useSelector((state: AppState) => state.setup.step)
 
   switch (step) {
-    case 0:
+    case Step.Welcome:
       return <Welcome />
-    case 1:
-      return (
-        <OnboardProvider>
-          <Admin />
-        </OnboardProvider>
-      )
-    default:
-      return <div />
+    case Step.Admin:
+      return <Admin />
   }
 }

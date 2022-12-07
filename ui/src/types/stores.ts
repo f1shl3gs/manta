@@ -6,6 +6,7 @@ import {Notification} from 'src/types/notification'
 import {ReduxRouterState} from '@lagunovsky/redux-react-router'
 import {TimeMachineState} from 'src/timeMachine/reducers'
 import {MeState} from 'src/me/reducers'
+import {SetupState} from 'src/setup/reducers'
 
 export interface AppState {
   router: ReduxRouterState
@@ -19,6 +20,8 @@ export interface AppState {
   notifications: Notification[]
 
   resources: ResourceState
+
+  setup: SetupState
 
   timeRange: TimeRangeState
 

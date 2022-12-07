@@ -9,7 +9,7 @@ import {Route, Routes} from 'react-router-dom'
 // Components
 import App from 'src/App'
 import {Provider} from 'react-redux'
-import SetupWrapper from 'src/setup/SetupWrapper'
+import Setup from 'src/Setup'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import NotFound from 'src/NotFound'
 
@@ -40,7 +40,7 @@ root.render(
 */
   <Provider store={getStore()}>
     <ReduxRouter history={history}>
-      <SetupWrapper>
+      <Setup>
         <Suspense fallback={<PageSpinner />}>
           <Routes>
             <Route path={'/signin'} element={<SignInPage />} />
@@ -49,7 +49,7 @@ root.render(
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
-      </SetupWrapper>
+      </Setup>
     </ReduxRouter>
   </Provider>
 )

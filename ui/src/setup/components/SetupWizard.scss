@@ -22,11 +22,11 @@
   flex: 0.5;
 
   &.primary {
-    background-image: url('../../assets/images/cubo_doodle.svg');
+    background-image: url('../../../assets/images/cubo_doodle.svg');
   }
 
   &.secondary {
-    background-image: url('../../assets/images/cubo_doodle_green.svg');
+    background-image: url('../../../assets/images/cubo_doodle_green.svg');
   }
   &.secondary + h3 {
     margin-top: $ix-marg-d;
