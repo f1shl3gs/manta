@@ -107,6 +107,7 @@ type XYViewProperties struct {
 	HoverDimension string  `json:"hoverDimension,omitempty"`
 	Position       string  `son:"position,omitempty"`
 	Geom           string  `json:"geom,omitempty"`
+    Colors            []DashboardColor `json:"colors,omitempty"`
 }
 
 func (x *XYViewProperties) GetType() string {
