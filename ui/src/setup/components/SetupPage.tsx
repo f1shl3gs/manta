@@ -6,7 +6,7 @@ import {StepSwitcher} from 'src/setup/components/StepSwitcher'
 import {AppWrapper} from '@influxdata/clockface'
 import {WizardFullScreen} from 'src/shared/components/wizard/WizardFullScreen'
 
-const Setup: FunctionComponent = () => {
+const SetupPage: FunctionComponent = () => {
   return (
     <AppWrapper>
       <WizardFullScreen>
@@ -20,4 +20,4 @@ const Setup: FunctionComponent = () => {
   )
 }
 
-export default Setup
+export default SetupPage

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, lazy, Suspense} from 'react'
+import React, {FunctionComponent, lazy, Suspense} from 'react'
 
 // Components
 import {AppWrapper} from '@influxdata/clockface'
@@ -29,8 +29,10 @@ const DashboardPage = lazy(
 const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const Explore = lazy(() => import('src/explore/Explore'))
 
-const App: FC = () => {
+const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)
+
+  console.log('app')
 
   return (
     <AppWrapper presentationMode={presentationMode}>

@@ -11,7 +11,7 @@ import App from 'src/App'
 import {Provider} from 'react-redux'
 import Setup from 'src/Setup'
 import PageSpinner from 'src/shared/components/PageSpinner'
-import NotFound from 'src/NotFound'
+import SetupPage from 'src/setup/components/SetupPage'
 
 // Styles
 import '@influxdata/clockface/dist/index.css'
@@ -44,9 +44,9 @@ root.render(
         <Suspense fallback={<PageSpinner />}>
           <Routes>
             <Route path={'/signin'} element={<SignInPage />} />
+            <Route path={'/setup'} element={<SetupPage />} />
 
-            <Route path="/*" element={<App />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path={'*'} element={<App />} />
           </Routes>
         </Suspense>
       </Setup>

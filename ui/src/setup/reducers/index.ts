@@ -1,5 +1,6 @@
 import {produce} from 'immer'
-import {Action, SET_STEP} from '../actions/creators'
+
+import {Action, SET_STEP, SET_SETUP_PARAMS} from 'src/setup/actions/creators'
 
 export enum Step {
   Welcome,
@@ -31,6 +32,23 @@ export const setupReducer = (
     switch (action.type) {
       case SET_STEP:
         draftState.step = action.step
+        return
+
+      case SET_SETUP_PARAMS:
+        const {username, password, organization} = action
+
+        if (username) {
+          draftState.username = username
+        }
+
+        if (password) {
+          draftState.password = password
+        }
+
+        if (organization) {
+          draftState.organization = organization
+        }
+
         return
 
       default:
