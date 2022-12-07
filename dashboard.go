@@ -98,16 +98,16 @@ func (g *GaugeViewProperties) GetType() string {
 }
 
 type XYViewProperties struct {
-	Type           string  `json:"type,omitempty"`
-	Axes           Axes    `json:"axes"`
-	Queries        []Query `json:"queries,omitempty"`
-	TimeFormat     string  `json:"timeFormat,omitempty"`
-	XColumn        string  `json:"xColumn,omitempty"`
-	YColumn        string  `json:"yColumn,omitempty"`
-	HoverDimension string  `json:"hoverDimension,omitempty"`
-	Position       string  `son:"position,omitempty"`
-	Geom           string  `json:"geom,omitempty"`
-    Colors            []DashboardColor `json:"colors,omitempty"`
+	Type           string           `json:"type,omitempty"`
+	Axes           Axes             `json:"axes"`
+	Queries        []Query          `json:"queries,omitempty"`
+	TimeFormat     string           `json:"timeFormat,omitempty"`
+	XColumn        string           `json:"xColumn,omitempty"`
+	YColumn        string           `json:"yColumn,omitempty"`
+	HoverDimension string           `json:"hoverDimension,omitempty"`
+	Position       string           `son:"position,omitempty"`
+	Geom           string           `json:"geom,omitempty"`
+	Colors         []DashboardColor `json:"colors,omitempty"`
 }
 
 func (x *XYViewProperties) GetType() string {
