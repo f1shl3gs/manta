@@ -32,8 +32,6 @@ const Explore = lazy(() => import('src/explore/Explore'))
 const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)
 
-  console.log('app')
-
   return (
     <AppWrapper presentationMode={presentationMode}>
       <Authenticate>
