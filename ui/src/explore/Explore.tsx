@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useEffect} from 'react'
 
 // Components
 import {
@@ -15,8 +15,20 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 
 // Types
 import AutoRefreshButton from 'src/shared/components/AutoRefreshButton'
+import {useDispatch} from 'react-redux';
+
+// Actions
+import {resetTimeMachine} from 'src/timeMachine/actions'
 
 const Explore: FunctionComponent = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetTimeMachine())
+    }
+  }, [dispatch])
+
   return (
     <Page titleTag={'Explore'}>
       <PageHeader fullWidth={true}>
