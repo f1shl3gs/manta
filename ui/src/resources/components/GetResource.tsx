@@ -65,7 +65,7 @@ const GetResource: FunctionComponent<Props> = props => {
 
       Promise.all(promises)
     },
-    // avoid re-render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
