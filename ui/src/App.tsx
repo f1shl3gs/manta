@@ -17,6 +17,7 @@ import Authenticate from 'src/me/components/Authenticate'
 
 // Hooks
 import {useSelector} from 'react-redux'
+import NotFound from './NotFound'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
@@ -67,6 +68,7 @@ const App: FunctionComponent = () => {
                   <Route path="settings/*" element={<SettingsPage />} />
                 </Route>
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </Organizations>
