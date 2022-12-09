@@ -6,7 +6,7 @@ import TabsPage from 'src/layout/TabsPage'
 
 const Todo = lazy(() => import('src/Todo'))
 const ConfigurationPage = lazy(
-  () => import('src/configurations/ConfigurationIndex')
+  () => import('src/configurations/components/ConfigurationIndex')
 )
 const ScrapePage = lazy(() => import('src/scrapes/ScrapeIndex'))
 

@@ -7,7 +7,6 @@ import {ConfigurationEntities} from 'src/types/schemas'
 // Action Types
 export const SET_CONFIGS = 'SET_CONFIGS'
 export const SET_CONFIG = 'SET_CONFIG'
-export const EDIT_CONFIG = 'EDIT_CONFIG'
 export const REMOVE_CONFIG = 'REMOVE_CONFIG'
 
 export type Action =
@@ -31,17 +30,14 @@ export const removeConfig = (id: string) =>
     id,
   } as const)
 
-export const setConfig = (status: RemoteDataState, content?: string) =>
-  ({
-    type: SET_CONFIG,
-    content,
-    status,
-  } as const)
-
-export const editConfig = (
-  schema: NormalizedSchema<ConfigurationEntities, string>
+export const setConfig = (
+  id: string,
+  status: RemoteDataState,
+  schema?: NormalizedSchema<ConfigurationEntities, string>
 ) =>
   ({
-    type: EDIT_CONFIG,
+    type: SET_CONFIG,
+    id,
     schema,
+    status,
   } as const)

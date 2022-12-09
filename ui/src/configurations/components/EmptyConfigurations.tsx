@@ -3,7 +3,7 @@ import React, {FunctionComponent} from 'react'
 
 // Components
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
-import CreateConfigurationButton from 'src/configurations/CreateConfigurationButton'
+import CreateConfigurationButton from 'src/configurations/components/CreateConfigurationButton'
 
 interface Props {
   searchTerm: string

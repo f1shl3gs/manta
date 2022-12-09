@@ -8,11 +8,11 @@ import FilterList from 'src/shared/components/FilterList'
 import {AutoSizer} from 'react-virtualized'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
-import CreateConfigurationButton from 'src/configurations/CreateConfigurationButton'
-import EmptyConfigurations from 'src/configurations/EmptyConfigurations'
-import ConfigurationCard from 'src/configurations/ConfigurationCard'
+import CreateConfigurationButton from 'src/configurations/components/CreateConfigurationButton'
+import EmptyConfigurations from 'src/configurations/components/EmptyConfigurations'
+import ConfigurationCard from 'src/configurations/components/ConfigurationCard'
 import {getSortedResources} from 'src/shared/utils/sort'
-import ConfigurationExplainer from 'src/configurations/ConfigurationExplainer'
+import ConfigurationExplainer from 'src/configurations/components/ConfigurationExplainer'
 
 // Types
 import {SortKey, SortTypes} from 'src/types/sort'
@@ -24,7 +24,7 @@ import {ResourceType} from 'src/types/resources'
 import GetResources from 'src/resources/components/GetResources'
 
 const ConfigurationWizard = lazy(
-  () => import('src/configurations/ConfigurationWizard')
+  () => import('src/configurations/components/ConfigurationWizard')
 )
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62

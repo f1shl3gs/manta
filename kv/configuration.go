@@ -52,9 +52,14 @@ func (s *Service) FindConfigurations(ctx context.Context, filter manta.Configura
 	return cs, err
 }
 
-func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd manta.ConfigurationUpdate) error {
-	return s.kv.Update(ctx, func(tx Tx) error {
-		cf, err := getOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket)
+func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd manta.ConfigurationUpdate) (*manta.Configuration, error) {
+	var (
+		cf  *manta.Configuration
+		err error
+	)
+
+	err = s.kv.Update(ctx, func(tx Tx) error {
+		cf, err = getOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket)
 		if err != nil {
 			return err
 		}
@@ -64,6 +69,11 @@ func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd mant
 
 		return putOrgIndexed(tx, cf, ConfigurationBucket, ConfigurationOrgIndexBucket)
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return cf, nil
 }
 
 func (s *Service) DeleteConfiguration(ctx context.Context, id manta.ID) error {

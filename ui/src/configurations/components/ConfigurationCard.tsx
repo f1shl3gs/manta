@@ -9,9 +9,12 @@ import {
 import {fromNow} from 'src/shared/utils/duration'
 import Context from 'src/shared/components/context_menu/Context'
 import {useDispatch} from 'react-redux'
-import {removeConfig} from 'src/configurations/actions/creators'
 import {useNavigate, useParams} from 'react-router-dom'
-import {ConfigUpdate, updateConfig} from 'src/configurations/actions/thunk'
+import {
+  ConfigUpdate,
+  deleteConfig,
+  updateConfig,
+} from 'src/configurations/actions/thunk'
 
 interface Props {
   configuration: Configuration
@@ -24,7 +27,9 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
   const {orgID} = useParams()
 
   const handleDelete = () => {
-    dispatch(removeConfig(id))
+    console.log('delete', id)
+
+    dispatch(deleteConfig(id))
   }
 
   const handleUpdate = (upd: ConfigUpdate) => {

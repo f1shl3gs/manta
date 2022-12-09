@@ -2,9 +2,9 @@ import produce from 'immer'
 import {ConfigurationsState, ResourceType} from 'src/types/resources'
 import {
   Action,
-  SET_CONFIGS,
-  SET_CONFIG,
   REMOVE_CONFIG,
+  SET_CONFIG,
+  SET_CONFIGS,
 } from 'src/configurations/actions/creators'
 import {RemoteDataState} from '@influxdata/clockface'
 import {Configuration} from 'src/types/configuration'

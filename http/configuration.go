@@ -3,10 +3,12 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"net/http/httputil"
 
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/vertex"
 )
 
 const (
@@ -18,14 +20,14 @@ type ConfigurationHandler struct {
 	*Router
 
 	logger               *zap.Logger
-	configurationService manta.ConfigurationService
+	configurationService *vertex.CoordinatingVertexService
 }
 
 func NewConfigurationService(backend *Backend, logger *zap.Logger) {
 	h := &ConfigurationHandler{
 		Router:               backend.router,
 		logger:               logger.With(zap.String("handle", "configuration")),
-		configurationService: backend.ConfigurationService,
+		configurationService: vertex.NewCoordinatingVertexService(backend.ConfigurationService, logger),
 	}
 
 	h.HandlerFunc(http.MethodGet, configurationPrefix, h.listConfigurations)
@@ -64,14 +66,85 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	c, err := h.configurationService.GetConfiguration(ctx, id)
+	if r.URL.Query().Get("watch") != "true" {
+		// Just get config, not watching
+		cf, err := h.configurationService.GetConfiguration(ctx, id)
+		if err != nil {
+			h.HandleHTTPError(ctx, err, w)
+			return
+		}
+
+		if err = encodeResponse(ctx, w, http.StatusOK, cf); err != nil {
+			logEncodingError(h.logger, r, err)
+		}
+
+		return
+	}
+
+	// watching first then return
+	queue := h.configurationService.Sub(id)
+	defer queue.Close()
+
+	first, err := h.configurationService.GetConfiguration(ctx, id)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, c); err != nil {
-		logEncodingError(h.logger, r, err)
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Transfer-Encoding", "chunked")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(http.StatusOK)
+	flusher.Flush()
+
+	var (
+		cf     *manta.Configuration
+		closed bool
+		writer = httputil.NewChunkedWriter(w)
+	)
+
+	defer writer.Close()
+
+	for {
+		if first != nil {
+			cf = first
+			first = nil
+		}
+
+		data, err := cf.Marshal()
+		if err != nil {
+			h.logger.Error("marshal config failed", zap.Error(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		_, err = writer.Write(data)
+		if err != nil {
+			h.logger.Warn("watch failed",
+				zap.String("client", r.RemoteAddr),
+				zap.Error(err))
+			return
+		}
+
+		flusher.Flush()
+
+		// wait for new channel
+		select {
+		case <-ctx.Done():
+			return
+
+		case cf, closed = <-queue.Ch():
+			if !closed {
+				// config deleted, so the channel is closed too
+				return
+			}
+		}
 	}
 }
 
@@ -92,8 +165,12 @@ func (h *ConfigurationHandler) updateConfiguration(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if err = h.configurationService.UpdateConfiguration(ctx, id, upd); err != nil {
+	if cf, err := h.configurationService.UpdateConfiguration(ctx, id, upd); err != nil {
 		h.HandleHTTPError(ctx, err, w)
+	} else {
+		if err = encodeResponse(ctx, w, http.StatusOK, cf); err != nil {
+			logEncodingError(h.logger, r, err)
+		}
 	}
 }
 

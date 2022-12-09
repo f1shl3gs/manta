@@ -64,7 +64,7 @@ type ConfigurationService interface {
 
 	FindConfigurations(ctx context.Context, filter ConfigurationFilter) ([]*Configuration, error)
 
-	UpdateConfiguration(ctx context.Context, id ID, upd ConfigurationUpdate) error
+	UpdateConfiguration(ctx context.Context, id ID, upd ConfigurationUpdate) (*Configuration, error)
 
 	DeleteConfiguration(ctx context.Context, id ID) error
 }

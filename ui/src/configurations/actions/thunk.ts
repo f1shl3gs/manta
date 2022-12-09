@@ -12,7 +12,11 @@ import {Configuration} from 'src/types/configuration'
 import {normalize} from 'normalizr'
 import {ConfigurationEntities} from 'src/types/schemas'
 import {arrayOfConfigurations, configurationSchema} from 'src/schemas'
-import {editConfig, setConfigs} from 'src/configurations/actions/creators'
+import {
+  removeConfig,
+  setConfig,
+  setConfigs,
+} from 'src/configurations/actions/creators'
 import {RemoteDataState} from '@influxdata/clockface'
 
 export const getConfigs =
@@ -56,7 +60,7 @@ export const createConfig =
         body: {
           name,
           desc,
-          content,
+          data: content,
           orgID: org.id,
         },
       })
@@ -75,7 +79,7 @@ export const createConfig =
     }
   }
 
-export const removeConfig =
+export const deleteConfig =
   (id: string) =>
   async (dispatch): Promise<void> => {
     try {
@@ -135,13 +139,12 @@ export const updateConfig =
         throw new Error(resp.data.message)
       }
 
-      const updatedConfig = normalize<
-        Configuration,
-        ConfigurationEntities,
-        string
-      >(resp.data, configurationSchema)
+      const norm = normalize<Configuration, ConfigurationEntities, string>(
+        resp.data,
+        configurationSchema
+      )
 
-      dispatch(editConfig(updatedConfig))
+      dispatch(setConfig(resp.data.id, RemoteDataState.Done, norm))
     } catch (err) {
       console.error(err)
 

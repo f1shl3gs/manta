@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/f1shl3gs/manta"
 	"io"
 	"os"
 	"path/filepath"
@@ -265,7 +266,7 @@ type Bucket struct {
 func (b *Bucket) Get(key []byte) ([]byte, error) {
 	val := b.bucket.Get(key)
 	if len(val) == 0 {
-		return nil, kv.ErrKeyNotFound
+		return nil, manta.NewError(manta.WithErrorCode(manta.ENotFound), manta.WithErrorErr(kv.ErrKeyNotFound))
 	}
 
 	return val, nil
