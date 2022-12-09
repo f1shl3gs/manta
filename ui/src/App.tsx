@@ -14,10 +14,10 @@ import DataPage from 'src/data/DataPage'
 import {getPresentationMode} from 'src/shared/selectors/app'
 import DashboardImportOverlay from './dashboards/components/DashboardImportOverlay'
 import Authenticate from 'src/me/components/Authenticate'
+import NotFound from 'src/NotFound'
 
 // Hooks
 import {useSelector} from 'react-redux'
-import NotFound from './NotFound'
 
 // Lazy load components
 const Introduce = lazy(() => import('src/Introduce'))
