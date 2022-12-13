@@ -67,6 +67,13 @@ export const createConfig =
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
+
+      const norm = normalize<Configuration, ConfigurationEntities, string>(
+        resp.data,
+        configurationSchema
+      )
+
+      dispatch(setConfig(norm.result, RemoteDataState.Done, norm))
     } catch (err) {
       console.error(err)
 
