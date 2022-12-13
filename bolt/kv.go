@@ -5,17 +5,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/f1shl3gs/manta"
 	"io"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/pkg/tracing"
 	"github.com/prometheus/client_golang/prometheus"
 	bolt "go.etcd.io/bbolt"
 	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 // check that *KVStore implement kv.SchemaStore interface.
@@ -266,7 +266,7 @@ type Bucket struct {
 func (b *Bucket) Get(key []byte) ([]byte, error) {
 	val := b.bucket.Get(key)
 	if len(val) == 0 {
-		return nil, manta.NewError(manta.WithErrorCode(manta.ENotFound), manta.WithErrorErr(kv.ErrKeyNotFound))
+		return nil, kv.ErrKeyNotFound
 	}
 
 	return val, nil
