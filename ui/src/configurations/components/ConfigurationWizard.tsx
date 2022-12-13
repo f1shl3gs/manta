@@ -38,7 +38,7 @@ const defaultConfig = `sources:
 transforms:
   metrics:
     type: add_tags
-    input:
+    inputs:
       - selfstat
       - node
     tags:
