@@ -2,20 +2,28 @@ package http
 
 import (
 	"encoding/json"
-    "io"
-    "net/http"
+	"io"
+	"net/http"
 	"net/http/httputil"
-    "strings"
-
-    "go.uber.org/zap"
+	"strings"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/vertex"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"go.uber.org/zap"
 )
 
 const (
 	configurationPrefix = apiV1Prefix + `/configurations`
 	configurationWithID = configurationPrefix + `/:id`
+)
+
+var (
+	watchStreams = prometheus.NewGauge(prometheus.GaugeOpts{
+		Namespace: "config",
+		Name:      "watching_streams_total",
+	})
 )
 
 type ConfigurationHandler struct {
@@ -31,6 +39,8 @@ func NewConfigurationService(backend *Backend, logger *zap.Logger) {
 		logger:               logger.With(zap.String("handle", "configuration")),
 		configurationService: vertex.NewCoordinatingVertexService(backend.ConfigurationService, logger),
 	}
+
+	prometheus.MustRegister(watchStreams)
 
 	h.HandlerFunc(http.MethodGet, configurationPrefix, h.listConfigurations)
 	h.HandlerFunc(http.MethodPost, configurationPrefix, h.createConfiguration)
@@ -68,24 +78,24 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 		return
 	}
 
-    var encodeResp = func(cf *manta.Configuration, writer io.Writer) error {
-        var (
-            data []byte
-            err error
-        )
+	var encodeResp = func(cf *manta.Configuration, writer io.Writer) error {
+		var (
+			data []byte
+			err  error
+		)
 
-        if strings.Contains(r.Header.Get("accept"), "json") {
-            data, err = cf.Marshal()
-            if err != nil {
-                return err
-            }
-        } else {
-            data = []byte(cf.Data)
-        }
+		if strings.Contains(r.Header.Get("accept"), "json") {
+			data, err = cf.Marshal()
+			if err != nil {
+				return err
+			}
+		} else {
+			data = []byte(cf.Data)
+		}
 
-        _, err = writer.Write(data)
-        return err
-    }
+		_, err = writer.Write(data)
+		return err
+	}
 
 	if r.URL.Query().Get("watch") != "true" {
 		// Just get config, not watching
@@ -95,12 +105,15 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 			return
 		}
 
-        if err = encodeResp(cf, w); err != nil {
+		if err = encodeResp(cf, w); err != nil {
 			logEncodingError(h.logger, r, err)
 		}
 
 		return
 	}
+
+	watchStreams.Inc()
+	defer watchStreams.Dec()
 
 	// watching first then get, so we won't miss any updates (no promise)
 	queue := h.configurationService.Sub(id)
@@ -138,9 +151,9 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 			first = nil
 		}
 
-        // what we watched for is configuratin, not the data field,
-        // so false notification might happenned.
-        err = encodeResp(cf, writer)
+		// what we watched for is configuratin, not the data field,
+		// so false notification might happenned.
+		err = encodeResp(cf, writer)
 		if err != nil {
 			h.logger.Warn("watch failed",
 				zap.String("client", r.RemoteAddr),
