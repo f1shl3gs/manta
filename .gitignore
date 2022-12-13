@@ -5,6 +5,7 @@
 *.bolt
 ui/cypress/videos
 ui/cypress/screenshots
+ui/cypress/downloads
 ui/node_modules
 ui/build
 data/**
