@@ -36,7 +36,7 @@ func (b *Broadcaster[T]) Sub() *Queue[T] {
 
 	q := &Queue[T]{
 		id:          b.n,
-		ch:          make(chan T, 8),
+		ch:          make(chan T, 4),
 		broadcaster: b,
 	}
 

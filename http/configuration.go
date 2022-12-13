@@ -2,10 +2,12 @@ package http
 
 import (
 	"encoding/json"
-	"net/http"
+    "io"
+    "net/http"
 	"net/http/httputil"
+    "strings"
 
-	"go.uber.org/zap"
+    "go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/vertex"
@@ -66,6 +68,25 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 		return
 	}
 
+    var encodeResp = func(cf *manta.Configuration, writer io.Writer) error {
+        var (
+            data []byte
+            err error
+        )
+
+        if strings.Contains(r.Header.Get("accept"), "json") {
+            data, err = cf.Marshal()
+            if err != nil {
+                return err
+            }
+        } else {
+            data = []byte(cf.Data)
+        }
+
+        _, err = writer.Write(data)
+        return err
+    }
+
 	if r.URL.Query().Get("watch") != "true" {
 		// Just get config, not watching
 		cf, err := h.configurationService.GetConfiguration(ctx, id)
@@ -74,14 +95,14 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 			return
 		}
 
-		if err = encodeResponse(ctx, w, http.StatusOK, cf); err != nil {
+        if err = encodeResp(cf, w); err != nil {
 			logEncodingError(h.logger, r, err)
 		}
 
 		return
 	}
 
-	// watching first then return
+	// watching first then get, so we won't miss any updates (no promise)
 	queue := h.configurationService.Sub(id)
 	defer queue.Close()
 
@@ -117,14 +138,9 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 			first = nil
 		}
 
-		data, err := cf.Marshal()
-		if err != nil {
-			h.logger.Error("marshal config failed", zap.Error(err))
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		_, err = writer.Write(data)
+        // what we watched for is configuratin, not the data field,
+        // so false notification might happenned.
+        err = encodeResp(cf, writer)
 		if err != nil {
 			h.logger.Warn("watch failed",
 				zap.String("client", r.RemoteAddr),
