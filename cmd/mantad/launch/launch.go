@@ -170,7 +170,7 @@ func (l *Launcher) run() error {
 	migrator := migration.New(logger, kvStore, migration.All...)
 	err = migrator.Up(ctx)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "migrate failed")
 	}
 
 	service := kv.NewService(logger, kvStore)
