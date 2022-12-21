@@ -26,6 +26,7 @@ func Migration0000Initial() Spec {
 			[]byte("sessions"),
 			[]byte("users"),
 			[]byte("usernameindex"),
+			kv.RegistryBucket,
 			kv.ScraperBucket,
 			kv.ScrapeOrgIndexBucket,
 			kv.TasksBucket,

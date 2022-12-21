@@ -40,6 +40,7 @@ type Backend struct {
 	CheckService         manta.CheckService
 	ConfigurationService manta.ConfigurationService
 	ScraperTargetService manta.ScraperTargetService
+	RegistryService      manta.RegistryService
 
 	TenantStorage         multitsdb.TenantStorage
 	TenantTargetRetriever multitsdb.TenantTargetRetriever
@@ -101,6 +102,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewConfigurationService(backend, logger)
 	NewPromAPIHandler(backend, logger)
 	NewScrapeHandler(backend, logger)
+	NewRegistryService(backend, logger)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),
@@ -120,6 +122,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/*wild")
 	// TODO: add auth in the future
 	ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
+	ah.RegisterNoAuthRoute(http.MethodPost, registryPrefix)
 
 	// set kinds of global middleware
 	handler := http.Handler(ah)

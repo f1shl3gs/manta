@@ -392,6 +392,7 @@ func (l *Launcher) run() error {
 			Flusher:              kvStore,
 			ConfigurationService: service,
 			ScraperTargetService: service,
+			RegistryService:      service,
 
 			TenantStorage:         tenantStorage,
 			TenantTargetRetriever: targetRetrievers,

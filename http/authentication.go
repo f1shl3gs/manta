@@ -3,9 +3,10 @@ package http
 import (
 	"context"
 	"errors"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
-	"net/http"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authz"
@@ -80,6 +81,10 @@ func probeAuthType(r *http.Request) string {
 		if c.Name == SessionCookieKey {
 			return "session"
 		}
+	}
+
+	if r.URL.Query().Has("token") {
+		return "token"
 	}
 
 	return ""
