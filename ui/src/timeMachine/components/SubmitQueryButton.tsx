@@ -1,6 +1,11 @@
+// Libraries
 import React from 'react'
-import {Button, ComponentColor} from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
+
+// Components
+import {Button, ComponentColor} from '@influxdata/clockface'
+
+// Actions
 import {loadView} from 'src/timeMachine/actions/thunks'
 
 const SubmitQueryButton: React.FC = () => {

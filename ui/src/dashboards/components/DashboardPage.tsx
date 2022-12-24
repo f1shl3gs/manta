@@ -5,10 +5,10 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {Page} from '@influxdata/clockface'
-import DashboardEmpty from 'src/dashboards/components/DashboardEmpty'
 import DashboardHeader from 'src/dashboards/components/DashboardHeader'
 import Cells from 'src/dashboards/components/Cells'
 import GetResource from 'src/resources/components/GetResource'
+import EmptyCells from 'src/dashboards/components/EmptyCells'
 
 // Types
 import {ResourceType} from 'src/types/resources'
@@ -58,7 +58,7 @@ const DashboardIndex: FunctionComponent<Props> = ({id}) => {
         <DashboardHeader />
 
         <Page.Contents scrollable={true} fullWidth={true}>
-          {cells.length !== 0 ? <Cells /> : <DashboardEmpty />}
+          {cells.length !== 0 ? <Cells /> : <EmptyCells />}
         </Page.Contents>
       </Page>
     </>

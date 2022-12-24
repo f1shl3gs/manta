@@ -5,6 +5,7 @@ import {Organization} from 'src/types/organization'
 import {Configuration} from 'src/types/configuration'
 import {User} from 'src/types/user'
 import {Scrape} from 'src/types/scrape'
+import {Check, CheckSortParams} from 'src/types/checks'
 
 export interface Resource {
   type: ResourceType
@@ -13,10 +14,9 @@ export interface Resource {
 
 export enum ResourceType {
   Cells = 'cells',
+  Checks = 'checks',
   Configurations = 'configurations',
-
   Dashboards = 'dashboards',
-
   Members = 'members',
   Organizations = 'organizations',
   Scrapes = 'scrapes',
@@ -56,9 +56,15 @@ export type ScrapesState = NormalizedState<Scrape>
 // Cells 'allIDs' are Dashboard.cells
 export type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
 
+export interface CheckState extends NormalizedState<Check> {
+  searchTerm: string
+  sortOptions: CheckSortParams
+}
+
 // ResourceState defines the types for normalized resources
 export interface ResourceState {
   [ResourceType.Cells]: CellsState
+  [ResourceType.Checks]: CheckState
   [ResourceType.Configurations]: ConfigurationsState
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Organizations]: OrgsState

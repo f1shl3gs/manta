@@ -64,7 +64,7 @@ func (cs *CoordinatingCheckService) PatchCheck(ctx context.Context, id manta.ID,
 }
 
 func (cs *CoordinatingCheckService) DeleteCheck(ctx context.Context, id manta.ID) error {
-	tasks, err := cs.taskService.FindTasks(ctx, manta.TaskFilter{OrgID: &id})
+	tasks, err := cs.taskService.FindTasks(ctx, manta.TaskFilter{OwnerID: &id})
 	if err != nil {
 		return err
 	}

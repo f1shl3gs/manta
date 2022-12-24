@@ -20,7 +20,7 @@ func (s *Service) FindCheckByID(ctx context.Context, id manta.ID) (*manta.Check,
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		ck, err = getOrgIndexed[manta.Check](tx, id, CheckOrgIndexBucket)
+		ck, err = findByID[manta.Check](tx, id, ChecksBucket)
 		return err
 	})
 
@@ -30,20 +30,54 @@ func (s *Service) FindCheckByID(ctx context.Context, id manta.ID) (*manta.Check,
 // FindChecks returns a list of checks that match the filter and total count of matching checks
 // Additional options provide pagination & sorting.
 func (s *Service) FindChecks(ctx context.Context, filter manta.CheckFilter, opt ...manta.FindOptions) ([]*manta.Check, int, error) {
-	// TODO
-	return nil, 0, ErrNotImplement
+	var (
+		list []*manta.Check
+		err  error
+	)
+
+	if filter.OrgID == nil {
+		return nil, 0, ErrOrgIDRequired
+	}
+
+	err = s.kv.View(ctx, func(tx Tx) error {
+		list, err = findOrgIndexed[manta.Check](ctx, tx, *filter.OrgID, ChecksBucket, CheckOrgIndexBucket)
+		return err
+	})
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return list, len(list), nil
 }
 
 // CreateCheck creates a new and set its id with new identifier
-func (s *Service) CreateCheck(ctx context.Context, c *manta.Check) error {
+func (s *Service) CreateCheck(ctx context.Context, check *manta.Check) error {
 	now := time.Now()
 
-	c.ID = s.idGen.ID()
-	c.Created = now
-	c.Updated = now
+	check.ID = s.idGen.ID()
+	check.Created = now
+	check.Updated = now
+
+	task := &manta.Task{
+		ID:      s.idGen.ID(),
+		Created: now,
+		Updated: now,
+		Type:    "check",
+		Status:  check.Status,
+		OwnerID: check.ID,
+		OrgID:   check.OrgID,
+		Cron:    check.Cron,
+	}
+
+	check.TaskID = task.ID
 
 	return s.kv.Update(ctx, func(tx Tx) error {
-		return putOrgIndexed(tx, c, ChecksBucket, ConfigurationOrgIndexBucket)
+		err := putOrgIndexed(tx, task, TasksBucket, TaskOrgIndexBucket)
+		if err != nil {
+			return err
+		}
+
+		return putOrgIndexed(tx, check, ChecksBucket, CheckOrgIndexBucket)
 	})
 }
 
@@ -76,7 +110,7 @@ func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpda
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		c, err = getOrgIndexed[manta.Check](tx, id, ChecksBucket)
+		c, err = findByID[manta.Check](tx, id, ChecksBucket)
 		if err != nil {
 			return err
 		}
@@ -93,6 +127,15 @@ func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpda
 // DeleteCheck delete a single check by ID
 func (s *Service) DeleteCheck(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
+		check, err := findByID[manta.Check](tx, id, ChecksBucket)
+		if err != nil {
+			return err
+		}
+
+		if err = deleteTask(tx, check.TaskID); err != nil {
+			return err
+		}
+
 		return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
 	})
 }

@@ -26,19 +26,7 @@ func (s *Service) CreateRun(ctx context.Context, taskID manta.ID, scheduledFor t
 	}
 
 	err := s.kv.Update(ctx, func(tx Tx) error {
-		// store run
-		b, err := tx.Bucket(RunsBucket)
-		if err != nil {
-			return err
-		}
-
-		data, err := json.Marshal(run)
-		if err != nil {
-			return err
-		}
-
-		pk, _ := run.ID.Encode()
-		return b.Put(pk, data)
+		return putRun(tx, run)
 	})
 
 	if err != nil {
@@ -65,8 +53,7 @@ func putRun(tx Tx, run *manta.Run) error {
 		return err
 	}
 
-	index := IndexKey(fk, pk)
-	if err = b.Put(index, pk); err != nil {
+	if err = b.Put(IndexKey(fk, pk), pk); err != nil {
 		return err
 	}
 
@@ -125,11 +112,7 @@ func (s *Service) FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta
 		task.LastRunStatus = string(run.Status)
 		task.LastRunError = func() string {
 			if run.Status == manta.RunFail {
-				if len(run.Logs) > 1 {
-					return run.Logs[len(run.Logs)-2].Message
-				} else if len(run.Logs) > 0 {
-					return run.Logs[len(run.Logs)-1].Message
-				}
+				return run.Logs[len(run.Logs)-1].Message
 			}
 
 			return ""

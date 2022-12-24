@@ -18,7 +18,7 @@ import {AppState} from 'src/types/stores'
 
 // Actions
 import {setTimeMachineFromCell} from 'src/dashboards/actions/thunks'
-import {updateCell} from 'src/cells/actions/thunk'
+import {updateCell} from 'src/cells/actions/thunks'
 
 // Selectors
 import {getTimeMachine} from 'src/timeMachine/selectors'

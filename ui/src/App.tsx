@@ -14,7 +14,7 @@ import DataPage from 'src/data/DataPage'
 import {getPresentationMode} from 'src/shared/selectors/app'
 import DashboardImportOverlay from './dashboards/components/DashboardImportOverlay'
 import Authenticate from 'src/me/components/Authenticate'
-import NotFound from 'src/NotFound'
+import NotFound from 'src/shared/components/NotFound'
 
 // Hooks
 import {useSelector} from 'react-redux'
@@ -27,6 +27,13 @@ const DashboardsIndex = lazy(
 const DashboardPage = lazy(
   () => import('src/dashboards/components/DashboardPage')
 )
+const NewCheckOverlay = lazy(
+  () => import('src/checks/components/NewCheckOverlay')
+)
+const EditCheckOverlay = lazy(
+  () => import('src/checks/components/EditCheckOverlay')
+)
+const ChecksIndex = lazy(() => import('src/checks/ChecksIndex'))
 const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const Explore = lazy(() => import('src/explore/Explore'))
 
@@ -48,6 +55,18 @@ const App: FunctionComponent = () => {
 
                 <Route path=":orgID">
                   <Route index={true} element={<Introduce />} />
+
+                  <Route path="checks" element={<ChecksIndex />} />
+
+                  <Route
+                    path={'checks/:id/new'}
+                    element={<NewCheckOverlay />}
+                  />
+
+                  <Route
+                    path={'checks/:id/edit'}
+                    element={<EditCheckOverlay />}
+                  />
 
                   <Route path="data/*" element={<DataPage />} />
 

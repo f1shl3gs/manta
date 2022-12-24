@@ -1,35 +1,19 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
 
 // Componetns
 import {promLanguageDefinition} from 'monaco-promql'
 import MonacoEditor from 'react-monaco-editor'
-import PromqlToolbar from 'src/timeMachine/components/PromqlToolbar'
+import PromqlToolbar from 'src/timeMachine/components/queryEditor/PromqlToolbar'
 import ThemeName from 'src/shared/components/editor/PromQLEditorTheme'
 
 // Types
 import {EditorType} from 'src/types/monaco'
-import {AppState} from 'src/types/stores'
 
-// Actions
-import {setActiveQueryText} from 'src/timeMachine/actions'
-
-const mstp = (state: AppState) => {
-  const {viewProperties, activeQueryIndex} = state.timeMachine
-
-  return {
-    query: viewProperties.queries[activeQueryIndex].text,
-  }
+interface Props {
+  query: string
+  onChange: (text: string) => void
 }
-
-const mdtp = {
-  onChange: setActiveQueryText,
-}
-
-const connector = connect(mstp, mdtp)
-
-type Props = ConnectedProps<typeof connector>
 
 const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
   const editorWillMount = monaco => {
@@ -79,4 +63,4 @@ const QueryEditor: FunctionComponent<Props> = ({query, onChange}) => {
   )
 }
 
-export default connector(QueryEditor)
+export default QueryEditor

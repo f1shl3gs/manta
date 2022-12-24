@@ -3,7 +3,6 @@ import React, {FunctionComponent} from 'react'
 
 // Component
 import FilterList from 'src/shared/components/FilterList'
-import EmptyDashboards from 'src/dashboards/components/EmptyDashboards'
 import DashboardCard from 'src/dashboards/components/DashboardCard'
 
 // Hooks
@@ -17,6 +16,8 @@ import {AppState} from 'src/types/stores'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import EmptyResources from '../../resources/components/EmptyResources'
+import CreateDashboardButton from './CreateDashboardButton'
 
 interface Props {
   search: string
@@ -36,7 +37,13 @@ const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
     >
       {filtered => {
         if (filtered && filtered.length === 0) {
-          return <EmptyDashboards searchTerm={search} />
+          return (
+            <EmptyResources
+              resource={ResourceType.Dashboards}
+              searchTerm={search}
+              createButton={<CreateDashboardButton />}
+            />
+          )
         }
 
         return (

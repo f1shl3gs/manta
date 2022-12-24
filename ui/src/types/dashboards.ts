@@ -1,6 +1,6 @@
 import {RemoteDataState, Sort} from '@influxdata/clockface'
 import {DashboardSortKey, SortTypes} from 'src/types/sort'
-import {Cells, ViewProperties} from 'src/types/cells'
+import {ViewProperties} from 'src/types/cells'
 
 export interface GenView {
   readonly id?: string

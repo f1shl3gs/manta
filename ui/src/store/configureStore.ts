@@ -36,6 +36,8 @@ import {usersReducer} from 'src/members/reducers'
 import {scrapesReducers} from 'src/scrapes/reducers'
 import {meReducer} from 'src/me/reducers'
 import {setupReducer} from 'src/setup/reducers'
+import {checksReducer} from 'src/checks/reducers'
+import {checkBuilderReducer} from 'src/checks/reducers/builder'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -49,10 +51,12 @@ const rootReducer = (history: History) => (state, action) => {
     router: createRouterReducer(history),
     app: appReducer,
     autoRefresh: autoRefreshReducer,
+    checkBuilder: checkBuilderReducer,
     me: meReducer,
     notifications: notificationsReducer,
     resources: combineReducers({
       [ResourceType.Cells]: cellsReducer,
+      [ResourceType.Checks]: checksReducer,
       [ResourceType.Configurations]: configurationsReducer,
       [ResourceType.Dashboards]: dashboardsReducer,
       [ResourceType.Members]: usersReducer,

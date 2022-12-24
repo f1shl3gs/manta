@@ -9,9 +9,22 @@ import (
 	"github.com/influxdata/cron"
 )
 
+// ThresholdType is the Condition's Threshold
+type ThresholdType string
+
+const (
+	NoDate    ThresholdType = "nodata"
+	GreatThan ThresholdType = "gt"
+	Equal     ThresholdType = "eq"
+	NotEqual  ThresholdType = "ne"
+	LessThan  ThresholdType = "lt"
+	Inside    ThresholdType = "inside"
+	Outside   ThresholdType = "outside"
+)
+
 type Threshold struct {
-	Type  string  `json:"type"`
-	Value float64 `json:"value,omitempty"`
+	Type  ThresholdType `json:"type"`
+	Value float64       `json:"value,omitempty"`
 	// for inside and outside only
 	Min float64 `json:"min,omitempty"`
 	Max float64 `json:"max,omitempty"`
@@ -23,14 +36,47 @@ type Condition struct {
 	Threshold Threshold     `json:"threshold"`
 }
 
-func (m *Condition) Validate() error {
-	if m.Threshold.Type != "inside" && m.Threshold.Type != "outside" {
+func (c *Condition) MarshalJSON() ([]byte, error) {
+	tmp := struct {
+		Status    string    `json:"status"`
+		Pending   Duration  `json:"pending"`
+		Threshold Threshold `json:"threshold"`
+	}{
+		Status:    c.Status,
+		Pending:   Duration(c.Pending),
+		Threshold: c.Threshold,
+	}
+
+	return json.Marshal(&tmp)
+}
+
+func (c *Condition) UnmarshalJSON(data []byte) error {
+	var a struct {
+		Status    string    `json:"status"`
+		Pending   Duration  `json:"pending"`
+		Threshold Threshold `json:"threshold"`
+	}
+
+	err := json.Unmarshal(data, &a)
+	if err != nil {
+		return err
+	}
+
+	c.Status = a.Status
+	c.Pending = time.Duration(a.Pending)
+	c.Threshold = a.Threshold
+
+	return nil
+}
+
+func (c *Condition) Validate() error {
+	if c.Threshold.Type != "inside" && c.Threshold.Type != "outside" {
 		return nil
 	}
 
-	switch m.Threshold.Type {
+	switch c.Threshold.Type {
 	case "inside", "outside":
-		if m.Threshold.Max <= m.Threshold.Min {
+		if c.Threshold.Max <= c.Threshold.Min {
 			return invalidField("max", errors.New("condition.max must be larger than min"))
 		}
 
@@ -52,7 +98,7 @@ type Check struct {
 	Name       string      `json:"name,omitempty"`
 	Desc       string      `json:"desc,omitempty"`
 	OrgID      ID          `json:"orgID,omitempty"`
-	Expr       string      `json:"expr,omitempty"`
+	Query      string      `json:"query,omitempty"`
 	Status     string      `json:"status,omitempty"`
 	Cron       string      `json:"cron,omitempty"`
 	Conditions []Condition `json:"conditions"`
@@ -85,8 +131,8 @@ func (m *Check) Validate() error {
 		return invalidField("desc", ErrFieldMustBeSet)
 	}
 
-	if m.Expr == "" {
-		return invalidField("expr", ErrFieldMustBeSet)
+	if m.Query == "" {
+		return invalidField("query", ErrFieldMustBeSet)
 	}
 
 	if m.Status == "" {
@@ -160,16 +206,3 @@ type CheckService interface {
 	// DeleteCheck delete a single check by ID
 	DeleteCheck(ctx context.Context, id ID) error
 }
-
-// ThresholdType is the Condition's Threshold
-type ThresholdType string
-
-const (
-	NoDate    = "nodata"
-	GreatThan = "gt"
-	Equal     = "eq"
-	NotEqual  = "ne"
-	LessThan  = "lt"
-	Inside    = "inside"
-	Outside   = "outside"
-)

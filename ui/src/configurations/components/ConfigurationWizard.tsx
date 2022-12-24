@@ -25,7 +25,7 @@ import {useDispatch} from 'react-redux'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 // Actions
-import {createConfig} from 'src/configurations/actions/thunk'
+import {createConfig} from 'src/configurations/actions/thunks'
 import {useNavigate} from 'react-router-dom'
 
 const defaultConfig = `sources:

@@ -10,7 +10,7 @@ import {Resource, ResourceType} from 'src/types/resources'
 
 // Actions
 import {getDashboard} from 'src/dashboards/actions/thunks'
-import {getCell} from 'src/cells/actions/thunk'
+import {getCell} from 'src/cells/actions/thunks'
 
 // Selectors
 import {getResourceStatus} from 'src/resources/selectors'

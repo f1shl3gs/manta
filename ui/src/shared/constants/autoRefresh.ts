@@ -5,19 +5,13 @@ export const DROPDOWN_WIDTH_FULL = 100
 
 export const AutoRefreshDropdownOptions: AutoRefreshOption[] = [
   {
-    id: 'refresh',
-    type: AutoRefreshOptionType.Header,
-    label: 'Refresh',
-    seconds: 0,
-  },
-  {
     id: 'pause',
     type: AutoRefreshOptionType.Option,
     label: 'Pause',
     seconds: 0,
   },
   {
-    id: '10s',
+    id: '5s',
     type: AutoRefreshOptionType.Option,
     label: '5s',
     seconds: 5,

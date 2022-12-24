@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from 'react'
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
-import {createScrape} from 'src/scrapes/actions/thunk'
+import {createScrape} from 'src/scrapes/actions/thunks'
 
 const CreateScrapeButton: FunctionComponent = () => {
   const dispatch = useDispatch()

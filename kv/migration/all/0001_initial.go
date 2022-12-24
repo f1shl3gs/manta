@@ -32,6 +32,8 @@ func Migration0000Initial() Spec {
 			kv.TasksBucket,
 			kv.TaskOrgIndexBucket,
 			kv.TaskOwnerIndexBucket,
+			kv.RunsBucket,
+			kv.RunTaskIndexBucket,
 		}
 	)
 

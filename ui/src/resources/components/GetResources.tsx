@@ -11,9 +11,10 @@ import {AppState} from 'src/types/stores'
 
 // Actions
 import {getDashboards} from 'src/dashboards/actions/thunks'
-import {getScrapes} from 'src/scrapes/actions/thunk'
-import {getMembers} from 'src/members/actions/thunk'
-import {getConfigs} from 'src/configurations/actions/thunk'
+import {getScrapes} from 'src/scrapes/actions/thunks'
+import {getMembers} from 'src/members/actions/thunks'
+import {getConfigs} from 'src/configurations/actions/thunks'
+import {getChecks} from 'src/checks/actions/thunks'
 
 // Selectors
 import {getResourcesStatus} from 'src/resources/selectors'
@@ -31,6 +32,7 @@ const mdtp = {
   getDashboards,
   getMembers,
   getScrapes,
+  getChecks,
 }
 
 const connector = connect(mstp, mdtp)
@@ -52,11 +54,15 @@ const GetResources: FunctionComponent<Props> = props => {
     getDashboards,
     getMembers,
     getScrapes,
+    getChecks,
   } = props
 
   useEffect(() => {
     const getResourceDetails = (resource: ResourceType) => {
       switch (resource) {
+        case ResourceType.Checks:
+          return getChecks()
+
         case ResourceType.Configurations:
           return getConfigs()
 
@@ -81,7 +87,7 @@ const GetResources: FunctionComponent<Props> = props => {
     })
 
     Promise.all(promises)
-  }, [resources, getConfigs, getDashboards, getMembers, getScrapes])
+  }, [resources, getChecks, getConfigs, getDashboards, getMembers, getScrapes])
 
   return <PageSpinner loading={loading}>{children}</PageSpinner>
 }

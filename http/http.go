@@ -38,6 +38,7 @@ type Backend struct {
 	SessionService       manta.SessionService
 	OnBoardingService    manta.OnBoardingService
 	CheckService         manta.CheckService
+	TaskService          manta.TaskService
 	ConfigurationService manta.ConfigurationService
 	ScraperTargetService manta.ScraperTargetService
 	RegistryService      manta.RegistryService
@@ -103,6 +104,8 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewPromAPIHandler(backend, logger)
 	NewScrapeHandler(backend, logger)
 	NewRegistryService(backend, logger)
+	NewChecksHandler(logger, backend.router, backend.CheckService, backend.TaskService)
+	NewTaskHandler(backend, logger)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),

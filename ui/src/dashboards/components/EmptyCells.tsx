@@ -5,7 +5,7 @@ import React, {FunctionComponent} from 'react'
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
 import CreateCellButton from 'src/dashboards/components/CreateCellButton'
 
-const DashboardEmpty: FunctionComponent = () => {
+const EmptyCells: FunctionComponent = () => {
   return (
     <div className={'dashboard-empty'}>
       <EmptyState size={ComponentSize.Large}>
@@ -19,4 +19,4 @@ const DashboardEmpty: FunctionComponent = () => {
   )
 }
 
-export default DashboardEmpty
+export default EmptyCells

@@ -9,7 +9,7 @@ import TimeMachine from 'src/timeMachine/components/TimeMachine'
 import {Page} from '@influxdata/clockface'
 
 // Actions
-import {createCell} from 'src/cells/actions/thunk'
+import {createCell} from 'src/cells/actions/thunks'
 import {resetTimeMachine} from 'src/timeMachine/actions'
 
 const NewVEO: FunctionComponent = () => {

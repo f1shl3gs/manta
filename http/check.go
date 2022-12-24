@@ -32,7 +32,7 @@ func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService,
 	}
 
 	h.HandlerFunc(http.MethodGet, ChecksPrefix, h.handleList)
-	h.HandlerFunc(http.MethodPut, ChecksPrefix, h.handleCreate)
+	h.HandlerFunc(http.MethodPost, ChecksPrefix, h.handleCreate)
 	h.HandlerFunc(http.MethodDelete, ChecksIDPath, h.handleDelete)
 	h.HandlerFunc(http.MethodPost, ChecksIDPath, h.handleUpdate)
 	h.HandlerFunc(http.MethodPatch, ChecksIDPath, h.handlePatch)
@@ -135,7 +135,9 @@ func (h *ChecksHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	if err = encodeResponse(ctx, w, http.StatusCreated, c); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
@@ -234,11 +236,12 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = h.checkService.PatchCheck(ctx, id, udp)
+	check, err := h.checkService.PatchCheck(ctx, id, udp)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
-
-	w.WriteHeader(http.StatusNoContent)
+	if err = encodeResponse(ctx, w, http.StatusOK, check); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }

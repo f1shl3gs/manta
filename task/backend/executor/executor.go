@@ -82,7 +82,15 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 	// success
 	if perr == nil {
 		now := time.Now()
+
+		// add to run log
 		err = e.tcs.AddRunLog(ctx, task.ID, run.ID, now, "Success")
+		if err != nil {
+			return err
+		}
+
+		// update run status
+		err = e.tcs.UpdateRunState(ctx, task.ID, run.ID, now, manta.RunSuccess)
 		if err != nil {
 			return err
 		}
@@ -90,6 +98,7 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 		_, err = e.ts.UpdateTask(ctx, task.ID, manta.TaskUpdate{
 			LatestCompleted: &now,
 			LatestSuccess:   &now,
+			LatestScheduled: &scheduledFor,
 		})
 
 		return err
@@ -97,13 +106,16 @@ func (e *Executor) Execute(ctx context.Context, id scheduler.ID, scheduledFor ti
 
 	// ctx is canceled
 	if ctx.Err() != nil {
-		// todo: use proper context
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
 		err = e.tcs.AddRunLog(ctx, task.ID, run.ID, time.Now(), "Context canceled")
 		if err != nil {
 			return err
 		}
 
-		err = e.tcs.UpdateRunState(context.Background(), task.ID, run.ID, time.Now(), manta.RunCanceled)
+		// update run status
+		err = e.tcs.UpdateRunState(ctx, task.ID, run.ID, time.Now(), manta.RunCanceled)
 		if err != nil {
 			e.logger.Warn("Update cancel status failed",
 				zap.String("task", task.ID.String()),

@@ -31,7 +31,7 @@ func (s *Service) GetConfiguration(ctx context.Context, id manta.ID) (*manta.Con
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		cf, err = getOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket)
+		cf, err = findByID[manta.Configuration](tx, id, ConfigurationBucket)
 		return err
 	})
 
@@ -59,7 +59,7 @@ func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd mant
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		cf, err = getOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket)
+		cf, err = findByID[manta.Configuration](tx, id, ConfigurationBucket)
 		if err != nil {
 			return err
 		}

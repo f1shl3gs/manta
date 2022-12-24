@@ -349,36 +349,6 @@ func putOrgIndexed[
 	return b.Put(pk, val)
 }
 
-func getOrgIndexed[
-	T any,
-	PT interface {
-		Unmarshal([]byte) error
-		*T
-	},
-](tx Tx, id manta.ID, dataBucket []byte) (PT, error) {
-	pk, err := id.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	b, err := tx.Bucket(dataBucket)
-	if err != nil {
-		return nil, err
-	}
-
-	val, err := b.Get(pk)
-	if err != nil {
-		return nil, err
-	}
-
-	obj := PT(new(T))
-	if err = obj.Unmarshal(val); err != nil {
-		return nil, err
-	}
-
-	return obj, nil
-}
-
 // obj must have a valid ID
 func deleteOrgIndexed[
 	T any,
@@ -389,7 +359,7 @@ func deleteOrgIndexed[
 		*T
 	},
 ](tx Tx, id manta.ID, dataBucket, indexBucket []byte) error {
-	o, err := getOrgIndexed[T, PT](tx, id, dataBucket)
+	o, err := findByID[T, PT](tx, id, dataBucket)
 	if err != nil {
 		return err
 	}

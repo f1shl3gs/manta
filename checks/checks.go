@@ -71,7 +71,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 		"orgID", c.OrgID.String())
 
 	// todo: interpolate
-	expr := c.Expr
+	expr := c.Query
 
 	qry, err := checker.tenantStorage.Queryable(ctx, c.OrgID)
 	if err != nil {
@@ -150,7 +150,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 			default:
 				checker.logger.Error("Unknown threshold type",
 					zap.String("check", c.ID.String()),
-					zap.String("type", threshold.Type))
+					zap.String("type", string(threshold.Type)))
 				continue
 			}
 

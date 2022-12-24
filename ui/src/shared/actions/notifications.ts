@@ -1,4 +1,5 @@
 import {Notification} from 'src/types/notification'
+import {defaultErrorNotification} from 'src/shared/constants/notification'
 
 export const PUBLISH_NOTIFICATION = 'PUBLISH_NOTIFICATION'
 export const DISMISS_NOTIFICATION = 'DISMISS_NOTIFICATION'
@@ -20,6 +21,14 @@ export const notify = (notification: Notification) =>
 
 export const dismissNotification = (id: string) =>
   ({
-    type: 'DISMISS_NOTIFICATION',
+    type: DISMISS_NOTIFICATION,
     id,
   } as const)
+
+export const notifyError = (message: string) => ({
+  type: PUBLISH_NOTIFICATION,
+  notification: {
+    ...defaultErrorNotification,
+    message,
+  },
+})

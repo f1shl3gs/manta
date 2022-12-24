@@ -20,7 +20,7 @@ import {useNavigate} from 'react-router-dom'
 import {fromNow} from 'src/shared/utils/duration'
 
 // Constants
-import {deleteScrape, updateScrape} from 'src/scrapes/actions/thunk'
+import {deleteScrape, updateScrape} from 'src/scrapes/actions/thunks'
 import {connect, ConnectedProps} from 'react-redux'
 
 interface OwnProps {

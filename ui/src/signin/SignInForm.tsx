@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useCallback, useState} from 'react'
+import {useNavigate, useSearchParams} from 'react-router-dom'
 
 // Components
 import {
@@ -17,27 +18,23 @@ import {
   Input,
   InputType,
 } from '@influxdata/clockface'
-import {useNavigate, useSearchParams} from 'react-router-dom'
-import useFetch from 'src/shared/useFetch'
 
-export const SignInForm: FC = () => {
+const SignInForm: FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const returnTo = params.get('returnTo') || '/'
 
-  const {run: submit} = useFetch(`/api/v1/signin`, {
-    method: 'POST',
-    body: {
-      username,
-      password,
-    },
-    onSuccess: () => navigate(returnTo),
-    onError: err => {
-      console.log('signin error', err)
-    },
-  })
+  const submit = useCallback(() => {
+    fetch(`/api/v1/signin`, {
+      method: 'POST',
+      body: JSON.stringify({username, password}),
+    })
+      .then(resp => resp.json())
+      .then(_ => navigate(returnTo))
+      .catch(err => console.error(err))
+  }, [username, password, returnTo, navigate])
 
   return (
     <Form onSubmit={() => submit()}>
@@ -86,3 +83,5 @@ export const SignInForm: FC = () => {
     </Form>
   )
 }
+
+export default SignInForm

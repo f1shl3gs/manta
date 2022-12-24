@@ -1,7 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useCallback, useEffect, useState} from 'react'
 import {useSearchParams} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Componetns
 import {
@@ -26,50 +26,8 @@ import {AppState} from 'src/types/stores'
 // Actions
 import {poll, setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
 
-const autoRefreshOptions: AutoRefreshOption[] = [
-  {
-    id: 'pause',
-    type: AutoRefreshOptionType.Option,
-    label: 'Pause',
-    seconds: 0,
-  },
-  {
-    id: '5s',
-    type: AutoRefreshOptionType.Option,
-    label: '5s',
-    seconds: 5,
-  },
-  {
-    id: '15s',
-    type: AutoRefreshOptionType.Option,
-    label: '15s',
-    seconds: 15,
-  },
-  {
-    id: '30s',
-    type: AutoRefreshOptionType.Option,
-    label: '30s',
-    seconds: 30,
-  },
-  {
-    id: '60s',
-    type: AutoRefreshOptionType.Option,
-    label: '60s',
-    seconds: 60,
-  },
-  {
-    id: '5m',
-    type: AutoRefreshOptionType.Option,
-    label: '5m',
-    seconds: 5 * 60,
-  },
-  {
-    id: '15m',
-    type: AutoRefreshOptionType.Option,
-    label: '15m',
-    seconds: 15 * 60,
-  },
-]
+// Constants
+import {AutoRefreshDropdownOptions} from 'src/shared/constants/autoRefresh'
 
 const dropdownIcon = (autoRefresh: AutoRefresh): IconFont => {
   if (autoRefresh.status === AutoRefreshStatus.Paused) {
@@ -97,6 +55,7 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   setAutoRefreshInterval,
+  updateAutoRefresh: poll,
 }
 
 const connector = connect(mstp, mdtp)
@@ -106,15 +65,15 @@ type Props = ConnectedProps<typeof connector>
 const AutoRefreshDropdown: FunctionComponent<Props> = ({
   autoRefresh,
   setAutoRefreshInterval,
+  updateAutoRefresh,
 }) => {
-  const dispatch = useDispatch()
   const [_, setParams] = useSearchParams()
   const [selected, setSelected] = useState(() => {
-    const opt = autoRefreshOptions.find(
+    const opt = AutoRefreshDropdownOptions.find(
       opt => opt.seconds === autoRefresh.interval
     )
     if (opt === undefined) {
-      return autoRefreshOptions[3]
+      return AutoRefreshDropdownOptions[3]
     }
 
     return opt
@@ -146,13 +105,13 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
         return
       }
 
-      dispatch(poll())
+      updateAutoRefresh()
     }, autoRefresh.interval * 1000)
 
     return () => {
       clearInterval(timer)
     }
-  }, [autoRefresh, dispatch])
+  }, [autoRefresh, updateAutoRefresh])
 
   return (
     <>
@@ -169,7 +128,7 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
         )}
         menu={onCollapse => (
           <DropdownMenu onCollapse={onCollapse}>
-            {autoRefreshOptions.map(option => {
+            {AutoRefreshDropdownOptions.map(option => {
               if (option.type === AutoRefreshOptionType.Header) {
                 return (
                   <DropdownDivider

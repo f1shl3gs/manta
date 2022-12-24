@@ -1,11 +1,15 @@
+import {back} from '@lagunovsky/redux-react-router'
 import {useCallback, useEffect} from 'react'
-import {useNavigate} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 function useEscape() {
-  const navigate = useNavigate()
+  // useNavigate will cause re-render
+  //
+  // https://github.com/remix-run/react-router/issues/7634
+  const dispatch = useDispatch()
   const goBack = useCallback(() => {
-    navigate(-1)
-  }, [navigate])
+    dispatch(back())
+  }, [dispatch])
 
   useEffect(() => {
     const handler = event => {

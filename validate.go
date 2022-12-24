@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrFieldMustBeSet = errors.New("failed must be set")
+	ErrFieldMustBeSet = errors.New("field must be set")
 )
 
 func invalidField(field string, errs ...error) error {

@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
-	"github.com/pkg/errors"
 )
 
 type UpdateTaskService interface {

@@ -47,8 +47,6 @@ export class ContextMenuItem extends Component<Props> {
     if (description) {
       return <div className="contex-menu--item-description">{description}</div>
     }
-
-    return <></>
   }
 
   private handleClick = (): void => {

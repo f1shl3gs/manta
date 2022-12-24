@@ -2,9 +2,9 @@
 import React, {useState} from 'react'
 
 // Components
-import ToolbarTab from 'src/timeMachine/components/PromqlToolbarTab'
+import ToolbarTab from 'src/timeMachine/components/queryEditor/PromqlToolbarTab'
 import VariableToolbar from 'src/timeMachine/components/VariableToolbar'
-import FunctionsToolbar from 'src/timeMachine/components/FunctionsToolbar'
+import FunctionsToolbar from 'src/timeMachine/components/queryEditor/FunctionsToolbar'
 
 type PromqlToolbarTabs = 'functions' | 'variables' | 'none'
 

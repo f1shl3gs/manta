@@ -1,17 +1,22 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
-import EmptyQueryView from 'src/cells/components/EmptyQueryView'
-import {ViewProperties} from 'src/types/cells'
-import useQueryResult from 'src/shared/useQueryResult'
-import View from 'src/visualization/View'
 import {RemoteDataState} from '@influxdata/clockface'
 
+// Components
+import EmptyQueryView from 'src/cells/components/EmptyQueryView'
+import View from 'src/visualization/View'
+
+// Types
+import {ViewProperties} from 'src/types/cells'
+
+// Hooks
+import useQueryResult from 'src/shared/useQueryResult'
+
 interface Props {
-  cellID?: string
   viewProperties: ViewProperties
 }
 
-const TimeSeries: FunctionComponent<Props> = props => {
-  const {viewProperties} = props
+const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
   const {result, loading, error} = useQueryResult(viewProperties.queries)
 
   return (

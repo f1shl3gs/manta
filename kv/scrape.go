@@ -19,7 +19,7 @@ func (s *Service) FindScraperTargetByID(ctx context.Context, id manta.ID) (*mant
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		st, err = getOrgIndexed[manta.ScrapeTarget](tx, id, ScraperBucket)
+		st, err = findByID[manta.ScrapeTarget](tx, id, ScraperBucket)
 		return err
 	})
 
@@ -58,7 +58,7 @@ func (s *Service) UpdateScraperTarget(ctx context.Context, id manta.ID, u manta.
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		st, err = getOrgIndexed[manta.ScrapeTarget](tx, id, ScraperBucket)
+		st, err = findByID[manta.ScrapeTarget](tx, id, ScraperBucket)
 
 		u.Apply(st)
 		st.Updated = time.Now()

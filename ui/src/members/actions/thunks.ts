@@ -20,7 +20,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {arrayOfMembers} from 'src/schemas/members'
 import {setMembers} from 'src/members/actions/creators'
 
-
 export const getMembers =
   () =>
   async (dispatch, getState: GetState): Promise<void> => {

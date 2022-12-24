@@ -7,6 +7,7 @@ import {ReduxRouterState} from '@lagunovsky/redux-react-router'
 import {TimeMachineState} from 'src/timeMachine/reducers'
 import {MeState} from 'src/me/reducers'
 import {SetupState} from 'src/setup/reducers'
+import {CheckBuilderState} from 'src/checks/reducers/builder'
 
 export interface AppState {
   router: ReduxRouterState
@@ -14,6 +15,8 @@ export interface AppState {
   app: State
 
   autoRefresh: AutoRefreshState
+
+  checkBuilder: CheckBuilderState
 
   me: MeState
 

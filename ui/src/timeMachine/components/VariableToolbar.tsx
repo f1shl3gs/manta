@@ -6,7 +6,7 @@ import {
 } from '@influxdata/clockface'
 import VariableItem from 'src/timeMachine/components/VariableItem'
 import {Variable} from 'src/types/variable'
-import PromqlToolbarSearch from 'src/timeMachine/components/PromqlToolbarSearch'
+import PromqlToolbarSearch from 'src/timeMachine/components/queryEditor/PromqlToolbarSearch'
 
 const VariableToolbar: React.FC = () => {
   // todo: implement it

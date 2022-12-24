@@ -1,24 +1,30 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
-import ExportForm from 'src/shared/components/ExportForm'
 import {useParams} from 'react-router-dom'
-import useFetch from 'src/shared/useFetch'
-import {Dashboard} from 'src/types/dashboards'
-import PageSpinner from 'src/shared/components/PageSpinner'
+import {useSelector} from 'react-redux'
+
+// Componetns
+import ExportForm from 'src/shared/components/ExportForm'
+import GetResource from 'src/resources/components/GetResource'
+
+// Types
+import {ResourceType} from 'src/types/resources'
+
+// Selectors
+import {getDashboard} from 'src/dashboards/selectors'
 
 const ExportOverlay: FunctionComponent = () => {
   const {dashboardID} = useParams()
-  const {data, loading} = useFetch<Dashboard>(
-    `/api/v1/dashboards/${dashboardID}`
-  )
+  const dashboard = useSelector(getDashboard(dashboardID))
 
   return (
-    <PageSpinner loading={loading}>
+    <GetResource resources={[{id: dashboardID, type: ResourceType.Dashboards}]}>
       <ExportForm
         resourceName={'dashboard'}
-        name={data?.name ?? 'dashboard'}
-        content={JSON.stringify(data, null, 2)}
+        name={dashboard.name ?? 'dashboard'}
+        content={JSON.stringify(dashboard, null, 2)}
       />
-    </PageSpinner>
+    </GetResource>
   )
 }
 

@@ -6,11 +6,11 @@ import {Columns, Grid, Sort} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import {getSortedResources} from 'src/shared/utils/sort'
 import ScrapeCard from 'src/scrapes/ScrapeCard'
-import EmptyScrapes from 'src/scrapes/EmptyScrapes'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import CreateScrapeButton from 'src/scrapes/CreateScrapeButton'
 import ScrapeExplainer from 'src/scrapes/ScrapeExplainer'
+import EmptyResources from 'src/resources/components/EmptyResources'
 
 // Types
 import {ResourceType} from 'src/types/resources'
@@ -83,7 +83,13 @@ const ScrapeIndex: FunctionComponent = () => {
             >
               {filtered => {
                 if (filtered && filtered.length === 0) {
-                  return <EmptyScrapes searchTerm={search} />
+                  return (
+                    <EmptyResources
+                      searchTerm={search}
+                      resource={ResourceType.Scrapes}
+                      createButton={<CreateScrapeButton />}
+                    />
+                  )
                 }
 
                 return (

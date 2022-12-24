@@ -17,8 +17,9 @@ var (
 	// ErrSeekMissingPrefix is returned when seek bytes is missing the prefix defined via
 	// WithCursorPrefix
 	ErrSeekMissingPrefix = errors.New("seek missing prefix bytes")
-
-	ErrNotImplement = errors.New("not implement")
+	// ErrOrgIDRequired is returned when filter has no org id.
+	ErrOrgIDRequired = errors.New("org id is required")
+	ErrNotImplement  = errors.New("not implement")
 
 	// ErrKeyConflict is returned when id or index key conflict with existing keys
 	ErrKeyConflict = errors.New("key conflict")

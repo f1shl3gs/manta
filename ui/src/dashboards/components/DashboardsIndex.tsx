@@ -1,6 +1,5 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {Outlet} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -97,11 +96,8 @@ const connector = connect(mstp, mdtp)
 
 const ToExport = connector(DashboardsIndex)
 
-// /orgs/:orgID/dashboards
 export default () => (
   <GetResources resources={[ResourceType.Dashboards]}>
     <ToExport />
-
-    <Outlet />
   </GetResources>
 )

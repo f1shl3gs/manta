@@ -14,7 +14,7 @@ import {
   ConfigUpdate,
   deleteConfig,
   updateConfig,
-} from 'src/configurations/actions/thunk'
+} from 'src/configurations/actions/thunks'
 
 interface Props {
   configuration: Configuration

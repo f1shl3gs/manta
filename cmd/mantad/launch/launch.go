@@ -328,10 +328,10 @@ func (l *Launcher) run() error {
 	}
 
 	var checkService manta.CheckService
+	var taskService manta.TaskService = service
 	{
 		// checks
 		var (
-			taskService        manta.TaskService          = service
 			taskControlService backend.TaskControlService = service
 			checker                                       = checks.NewChecker(
 				logger.With(zap.String("service", "check")),
@@ -364,7 +364,7 @@ func (l *Launcher) run() error {
 		}
 
 		coord := coordinator.NewCoordinator(logger, sch, nil)
-		checkService = middleware.NewCheckService(service, service, coord)
+		checkService = middleware.NewCheckService(service, taskService, coord)
 
 		if err = backend.NotifyCoordinatorOfExisting(ctx, logger, service, coord); err != nil {
 			return err
@@ -383,6 +383,7 @@ func (l *Launcher) run() error {
 			OnBoardingService:    service,
 			BackupService:        kvStore,
 			CheckService:         checkService,
+			TaskService:          taskService,
 			OrganizationService:  service,
 			UserService:          service,
 			PasswordService:      service,

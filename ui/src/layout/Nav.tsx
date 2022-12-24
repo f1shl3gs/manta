@@ -143,6 +143,18 @@ const generateNavItems = (orgID: string): NavItem[] => {
       },
     },
     {
+      id: 'checks',
+      testID: 'checks',
+      label: 'Checks',
+      icon: IconFont.AlertTriangle,
+      shortLabel: 'Checks',
+      activeKeywords: ['checks'],
+      link: {
+        type: 'link',
+        location: `${orgPrefix}/checks`,
+      },
+    },
+    {
       id: 'settings',
       testID: 'nav-item-settings',
       label: 'Settings',

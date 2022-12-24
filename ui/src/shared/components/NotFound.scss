@@ -1,0 +1,15 @@
+.page-not-found {
+  > .page-not-found-funnel {
+    display: flex;
+    flex-direction: column;
+
+    .page-not-found-content {
+      padding: 10px;
+      color: #fff;
+
+      > .page-not-found-content-highlight {
+        margin: 20px;
+      }
+    }
+  }
+}

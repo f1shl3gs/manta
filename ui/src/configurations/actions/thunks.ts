@@ -151,7 +151,7 @@ export const updateConfig =
         configurationSchema
       )
 
-      dispatch(setConfig(resp.data.id, RemoteDataState.Done, norm))
+      dispatch(setConfig(norm.result, RemoteDataState.Done, norm))
     } catch (err) {
       console.error(err)
 

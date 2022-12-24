@@ -6,6 +6,9 @@
 @import 'src/cells/components/Cell';
 @import 'src/cells/components/EmptyGraphError';
 @import 'src/cells/components/GradientBorder';
+@import 'src/checks/components/LastRunStatus';
+@import 'src/checks/components/builderCard/BuilderCard';
+@import 'src/checks/components/builderCard/AlertBuilder';
 @import 'src/configurations/components/ConfigurationOverlay';
 @import 'src/dashboards/components/DashboardCards';
 @import 'src/dashboards/components/ViewEditorOverlay';
@@ -15,25 +18,27 @@
 @import 'src/organizations/components/OrganizationsSwitcher';
 @import 'src/setup/components/SetupPage';
 @import 'src/signin/LoginPage';
-@import 'src/timeMachine/components/FunctionItem';
-@import 'src/timeMachine/components/PromqlToolbar';
-@import 'src/timeMachine/components/Queries';
-@import 'src/timeMachine/components/QueryEditor';
-@import 'src/timeMachine/components/QueryTab';
+@import 'src/timeMachine/components/queryEditor/FunctionItem';
+@import 'src/timeMachine/components/queryEditor/PromqlToolbar';
+@import 'src/timeMachine/components/queryEditor/Queries';
+@import 'src/timeMachine/components/queryEditor/QueryEditor';
+@import 'src/timeMachine/components/queryEditor/QueryTab';
 @import 'src/timeMachine/components/SingleStat';
 @import 'src/timeMachine/components/TimeMachine';
 @import 'src/timeMachine/components/TimeMachineQueries';
 @import 'src/timeMachine/components/ViewOptions';
 
 // Shards
+@import 'src/shared/components/context_menu/ContextMenu';
+@import 'src/shared/components/dashed_button/DashedButton';
+@import 'src/shared/components/DateRangePicker/DateRangePicker';
+@import 'src/shared/components/Editor';
+@import 'src/shared/components/NotFound';
+@import 'src/shared/components/RenamablePageTitle';
+@import 'src/shared/components/SearchWidget';
 @import 'src/shared/components/wizard/WizardProgressHeader';
 @import 'src/shared/components/wizard/WizardFullScreen';
 @import 'src/shared/components/VersionInfo';
-@import 'src/shared/components/SearchWidget';
-@import 'src/shared/components/context_menu/ContextMenu';
-@import 'src/shared/components/RenamablePageTitle';
-@import 'src/shared/components/DateRangePicker/DateRangePicker';
-@import 'src/shared/components/Editor';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

@@ -9,7 +9,6 @@ import {AutoSizer} from 'react-virtualized'
 import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import CreateConfigurationButton from 'src/configurations/components/CreateConfigurationButton'
-import EmptyConfigurations from 'src/configurations/components/EmptyConfigurations'
 import ConfigurationCard from 'src/configurations/components/ConfigurationCard'
 import {getSortedResources} from 'src/shared/utils/sort'
 import ConfigurationExplainer from 'src/configurations/components/ConfigurationExplainer'
@@ -22,6 +21,7 @@ import {AppState} from 'src/types/stores'
 import {getAll} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import GetResources from 'src/resources/components/GetResources'
+import EmptyResources from '../../resources/components/EmptyResources'
 
 const ConfigurationWizard = lazy(
   () => import('src/configurations/components/ConfigurationWizard')
@@ -104,7 +104,13 @@ const ConfigurationIndex: FunctionComponent = () => {
                     >
                       {filtered => {
                         if (filtered && filtered.length === 0) {
-                          return <EmptyConfigurations searchTerm={search} />
+                          return (
+                            <EmptyResources
+                              searchTerm={search}
+                              resource={ResourceType.Configurations}
+                              createButton={<CreateConfigurationButton />}
+                            />
+                          )
                         }
 
                         return (

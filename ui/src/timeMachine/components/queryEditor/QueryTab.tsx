@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {ComponentColor, Icon, IconFont, RightClick} from '@influxdata/clockface'
-import QueryTabName from 'src/timeMachine/components/QueryTabName'
+import QueryTabName from 'src/timeMachine/components/queryEditor/QueryTabName'
 
 // Types
 import {DashboardQuery} from 'src/types/dashboards'

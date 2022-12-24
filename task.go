@@ -15,6 +15,11 @@ const (
 var (
 	ErrTaskNotClaimed = errors.New("task not claimed")
 
+	ErrOutOfBoundsLimit = &Error{
+		Code: EUnprocessableEntity,
+		Msg:  "run limit is out of bounds, must be between",
+	}
+
 	ErrRunNotFound = &Error{
 		Code: ENotFound,
 		Msg:  "run not found",
@@ -33,6 +38,7 @@ type Task struct {
 	// OwnerID store the creater's id
 	OwnerID ID     `json:"ownerID,omitempty"`
 	Cron    string `json:"cron,omitempty"`
+
 	// status
 	LatestCompleted time.Time `json:"latestCompleted"`
 	LatestScheduled time.Time `json:"latestScheduled"`
@@ -40,6 +46,14 @@ type Task struct {
 	LatestFailure   time.Time `json:"latestFailure"`
 	LastRunStatus   string    `json:"lastRunStatus,omitempty"`
 	LastRunError    string    `json:"lastRunError,omitempty"`
+}
+
+func (t *Task) GetID() ID {
+	return t.ID
+}
+
+func (t *Task) GetOrgID() ID {
+	return t.OrgID
 }
 
 func (t *Task) Marshal() ([]byte, error) {
@@ -69,6 +83,36 @@ func (udp TaskUpdate) Apply(task *Task) {
 	if udp.Status != nil {
 		task.Status = *udp.Status
 	}
+
+	if udp.LatestCompleted != nil {
+		task.LatestCompleted = *udp.LatestCompleted
+	}
+
+	if udp.LatestScheduled != nil {
+		task.LatestScheduled = *udp.LatestScheduled
+	}
+
+	if udp.LatestSuccess != nil {
+		task.LatestSuccess = *udp.LatestSuccess
+	}
+
+	if udp.LatestFailure != nil {
+		task.LatestFailure = *udp.LatestFailure
+	}
+
+	if udp.LastRunError != nil {
+		task.LastRunError = *udp.LastRunError
+	}
+}
+
+// RunFilter represents a set of filters that restrict the returned results
+type RunFilter struct {
+	// Task ID is required for listing runs
+	Task ID `json:"task"`
+
+	Limit  int `json:"limit"`
+	After  *time.Time
+	Before *time.Time
 }
 
 type TaskService interface {
@@ -77,6 +121,9 @@ type TaskService interface {
 
 	// FindTasks returns all tasks which match the filter
 	FindTasks(ctx context.Context, filter TaskFilter) ([]*Task, error)
+
+	// FindRuns returns a list of runs that match a filter and the total count of returned runs.
+	FindRuns(ctx context.Context, filter RunFilter) ([]*Run, int, error)
 
 	// CreateTask creates a task
 	CreateTask(ctx context.Context, task *Task) error
