@@ -252,7 +252,6 @@ func findByID[T any, PT interface{ *T }](tx Tx, id manta.ID, bucket []byte) (PT,
 func findOrgIndexed[
 	T any,
 	PT interface {
-		Unmarshal([]byte) error
 		*T
 	},
 ](ctx context.Context, tx Tx, orgID manta.ID, dataBucket, indexBucket []byte) ([]PT, error) {
@@ -297,7 +296,7 @@ func findOrgIndexed[
 		}
 
 		t := PT(new(T))
-		if err = t.Unmarshal(val); err != nil {
+        if err = json.Unmarshal(val, t); err != nil {
 			return nil, err
 		}
 
@@ -311,7 +310,6 @@ func putOrgIndexed[
 	T interface {
 		GetID() manta.ID
 		GetOrgID() manta.ID
-		Marshal() ([]byte, error)
 	},
 ](tx Tx, obj T, dataBucket, indexBucket []byte) error {
 	pk, err := obj.GetID().Encode()
@@ -341,7 +339,7 @@ func putOrgIndexed[
 		return err
 	}
 
-	val, err := obj.Marshal()
+	val, err := json.Marshal(obj)
 	if err != nil {
 		return err
 	}
@@ -355,7 +353,6 @@ func deleteOrgIndexed[
 	PT interface {
 		GetID() manta.ID
 		GetOrgID() manta.ID
-		Unmarshal([]byte) error
 		*T
 	},
 ](tx Tx, id manta.ID, dataBucket, indexBucket []byte) error {

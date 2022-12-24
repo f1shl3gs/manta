@@ -2,7 +2,6 @@ package manta
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 )
 
@@ -23,14 +22,6 @@ func (s *ScrapeTarget) GetID() ID {
 
 func (s *ScrapeTarget) GetOrgID() ID {
 	return s.OrgID
-}
-
-func (s *ScrapeTarget) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, s)
-}
-
-func (s *ScrapeTarget) Marshal() ([]byte, error) {
-	return json.Marshal(s)
 }
 
 type ScraperTargetFilter struct {

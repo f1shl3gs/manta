@@ -2,7 +2,6 @@ package manta
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -37,14 +36,6 @@ type Authorization struct {
 	Status  string    `json:"status,omitempty"`
 	// add more about permissions
 	Permissions []Permission `json:"permissions"`
-}
-
-func (a *Authorization) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, a)
-}
-
-func (a *Authorization) Marshal() ([]byte, error) {
-	return json.Marshal(a)
 }
 
 type UpdateAuthorization struct {

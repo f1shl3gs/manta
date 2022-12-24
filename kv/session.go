@@ -2,7 +2,8 @@ package kv
 
 import (
 	"context"
-	"time"
+    "encoding/json"
+    "time"
 
 	"github.com/f1shl3gs/manta"
 )
@@ -56,7 +57,7 @@ func (s *Service) createSession(ctx context.Context, tx Tx, uid manta.ID) (*mant
 }
 
 func (s *Service) putSession(ctx context.Context, tx Tx, session *manta.Session) error {
-	data, err := session.Marshal()
+	data, err := json.Marshal(session)
 	if err != nil {
 		return err
 	}
@@ -118,7 +119,7 @@ func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.S
 	}
 
 	session := &manta.Session{}
-	err = session.Unmarshal(val)
+	err = json.Unmarshal(val, session)
 	if err != nil {
 		return nil, err
 	}

@@ -18,14 +18,6 @@ type Dashboard struct {
 	Cells   []Cell    `json:"cells,omitempty"`
 }
 
-func (d *Dashboard) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, d)
-}
-
-func (d *Dashboard) Marshal() ([]byte, error) {
-	return json.Marshal(d)
-}
-
 type ViewProperties interface {
 	GetType() string
 }

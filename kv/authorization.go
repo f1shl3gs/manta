@@ -2,7 +2,8 @@ package kv
 
 import (
 	"context"
-	"errors"
+    "encoding/json"
+    "errors"
 	"time"
 
 	"github.com/f1shl3gs/manta"
@@ -58,7 +59,7 @@ func (s *Service) findAuthorizationByID(ctx context.Context, tx Tx, id manta.ID)
 	}
 
 	auth := &manta.Authorization{}
-	if err = auth.Unmarshal(data); err != nil {
+    if err = json.Unmarshal(data, auth); err != nil {
 		return nil, err
 	}
 
@@ -109,12 +110,12 @@ func (s *Service) findAuthorizationByToken(ctx context.Context, tx Tx, token str
 		return nil, err
 	}
 
-	a := &manta.Authorization{}
-	if err = a.Unmarshal(data); err != nil {
+	auth := &manta.Authorization{}
+	if err = json.Unmarshal(data, auth); err != nil {
 		return nil, err
 	}
 
-	return a, nil
+	return auth, nil
 }
 
 func (s *Service) FindAuthorizations(ctx context.Context, filter manta.AuthorizationFilter) ([]*manta.Authorization, error) {
@@ -185,13 +186,13 @@ func (s *Service) findAuthorizationsByUser(ctx context.Context, tx Tx, uid manta
 			continue
 		}
 
-		a := &manta.Authorization{}
-		err = a.Unmarshal(v)
+		auth := &manta.Authorization{}
+		err = json.Unmarshal(v, auth)
 		if err != nil {
 			return nil, err
 		}
 
-		list = append(list, a)
+		list = append(list, auth)
 	}
 
 	return list, nil
@@ -218,14 +219,14 @@ func (s *Service) createAuthorization(ctx context.Context, tx Tx, a *manta.Autho
 	return s.putAuthorization(ctx, tx, a)
 }
 
-func (s *Service) putAuthorization(ctx context.Context, tx Tx, a *manta.Authorization) error {
-	pk, err := a.ID.Encode()
+func (s *Service) putAuthorization(ctx context.Context, tx Tx, auth *manta.Authorization) error {
+	pk, err := auth.ID.Encode()
 	if err != nil {
 		return err
 	}
 
 	// token index
-	idx := []byte(a.Token)
+	idx := []byte(auth.Token)
 	b, err := tx.Bucket(authorizationTokenIndexBucket)
 	if err != nil {
 		return err
@@ -236,7 +237,7 @@ func (s *Service) putAuthorization(ctx context.Context, tx Tx, a *manta.Authoriz
 	}
 
 	// user index
-	fk, err := a.UID.Encode()
+	fk, err := auth.UID.Encode()
 	if err != nil {
 		return err
 	}
@@ -256,7 +257,7 @@ func (s *Service) putAuthorization(ctx context.Context, tx Tx, a *manta.Authoriz
 		return err
 	}
 
-	data, err := a.Marshal()
+	data, err := json.Marshal(auth)
 	if err != nil {
 		return err
 	}

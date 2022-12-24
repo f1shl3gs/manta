@@ -38,23 +38,9 @@ func (s *Service) FindTaskByID(ctx context.Context, id manta.ID) (*manta.Task, e
 		err  error
 	)
 
-	key, err := id.Encode()
-	if err != nil {
-		return nil, err
-	}
-
 	err = s.kv.View(ctx, func(tx Tx) error {
-		b, err := tx.Bucket(TasksBucket)
-		if err != nil {
-			return err
-		}
-
-		val, err := b.Get(key)
-		if err != nil {
-			return err
-		}
-
-		return task.Unmarshal(val)
+        task, err = findByID[manta.Task](tx, id, TasksBucket)
+		return err
 	})
 
 	if err != nil {
@@ -142,7 +128,7 @@ func (s *Service) FindTasks(ctx context.Context, filter manta.TaskFilter) ([]*ma
 
 		for k, v := cursor.First(); k != nil; k, v = cursor.Next() {
 			task := new(manta.Task)
-			err = task.Unmarshal(v)
+			err = json.Unmarshal(v, task)
 			if err != nil {
 				return err
 			}
@@ -277,7 +263,7 @@ func putTask(tx Tx, task *manta.Task) error {
 		return err
 	}
 
-	data, err := task.Marshal()
+	data, err := json.Marshal(task)
 	if err != nil {
 		return err
 	}
@@ -332,7 +318,7 @@ func deleteTask(tx Tx, id manta.ID) error {
 	}
 
 	var task manta.Task
-	if err = task.Unmarshal(val); err != nil {
+	if err = json.Unmarshal(val, &task); err != nil {
 		return err
 	}
 

@@ -35,7 +35,7 @@ func (s SchedulableTask) Schedule() scheduler.Schedule {
 }
 
 func (s SchedulableTask) Offset() time.Duration {
-	// todo
+	// TODO: figure out a way to set offset properly
 	return 0
 }
 
@@ -83,7 +83,7 @@ func (c *Coordinator) TaskUpdated(ctx context.Context, from, to *manta.Task) err
 	}
 
 	// if disabling the task, release it before schedule update
-	if to.Status != from.Status && to.Status == string(manta.TaskInactive) {
+	if to.Status != from.Status && to.Status == manta.TaskInactive {
 		if err := c.scheduler.Release(sid); err != nil && err != manta.ErrTaskNotClaimed {
 			return err
 		}

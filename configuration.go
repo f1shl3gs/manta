@@ -2,7 +2,6 @@ package manta
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 )
 
@@ -23,14 +22,6 @@ func (c *Configuration) GetID() ID {
 
 func (c *Configuration) GetOrgID() ID {
 	return c.OrgID
-}
-
-func (c *Configuration) Marshal() ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *Configuration) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, c)
 }
 
 type ConfigurationUpdate struct {

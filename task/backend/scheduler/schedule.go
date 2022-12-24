@@ -88,9 +88,6 @@ func NewSchedule(unparsed string, lastScheduledAt time.Time) (Schedule, time.Tim
 // Schedule is an object a valid schedule of runs
 type Schedule struct {
 	cron cron.Parsed
-
-	// todo: add offset
-	// offset time.Duration
 }
 
 // Next returns the next time after from that a schedule should trigger on.

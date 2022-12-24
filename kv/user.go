@@ -2,7 +2,8 @@ package kv
 
 import (
 	"context"
-	"time"
+    "encoding/json"
+    "time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -35,31 +36,7 @@ func (s *Service) findUserByID(ctx context.Context, tx Tx, id manta.ID) (*manta.
 	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	key, err := id.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	b, err := tx.Bucket(userBucket)
-	if err != nil {
-		return nil, err
-	}
-
-	data, err := b.Get(key)
-	if err != nil {
-		if err == ErrKeyNotFound {
-			return nil, manta.ErrUserNotFound
-		}
-
-		return nil, err
-	}
-
-	u := &manta.User{}
-	if err := u.Unmarshal(data); err != nil {
-		return nil, err
-	}
-
-	return u, nil
+    return findByID[manta.User](tx, id, userBucket)
 }
 
 func (s *Service) FindUser(ctx context.Context, filter manta.UserFilter) (*manta.User, error) {
@@ -116,7 +93,7 @@ func (s *Service) findUserByName(ctx context.Context, tx Tx, name string) (*mant
 	}
 
 	u := &manta.User{}
-	if err = u.Unmarshal(val); err != nil {
+	if err = json.Unmarshal(val, u); err != nil {
 		return nil, err
 	}
 
@@ -154,7 +131,7 @@ func (s *Service) findUsers(ctx context.Context, tx Tx, filter manta.UserFilter)
 	users := make([]*manta.User, 0, 8)
 	err = WalkCursor(ctx, c, func(k, v []byte) error {
 		user := &manta.User{}
-		err = user.Unmarshal(v)
+		err = json.Unmarshal(v, user)
 		if err != nil {
 			return err
 		}
@@ -208,7 +185,7 @@ func (s *Service) putUser(ctx context.Context, tx Tx, user *manta.User) error {
 		return err
 	}
 
-	data, err := user.Marshal()
+	data, err := json.Marshal(user)
 	if err != nil {
 		return err
 	}

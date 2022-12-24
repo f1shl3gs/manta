@@ -2,7 +2,6 @@ package manta
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"time"
 )
@@ -31,14 +30,6 @@ type Organization struct {
 	Updated time.Time `json:"updated"`
 	Name    string    `json:"name"`
 	Desc    string    `json:"desc,omitempty"`
-}
-
-func (o *Organization) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, o)
-}
-
-func (o *Organization) Marshal() ([]byte, error) {
-	return json.Marshal(o)
 }
 
 type OrganizationFilter struct {

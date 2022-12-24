@@ -2,7 +2,8 @@ package kv
 
 import (
 	"context"
-	"time"
+    "encoding/json"
+    "time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -51,7 +52,7 @@ func (s *Service) findDashboardByID(ctx context.Context, tx Tx, id manta.ID) (*m
 	}
 
 	d := &manta.Dashboard{}
-	if err = d.Unmarshal(val); err != nil {
+	if err = json.Unmarshal(val, d); err != nil {
 		return nil, err
 	}
 
@@ -96,7 +97,7 @@ func (s *Service) findAllDashboards(ctx context.Context, tx Tx) ([]*manta.Dashbo
 	list := make([]*manta.Dashboard, 0, 8)
 	err = WalkCursor(ctx, c, func(k, v []byte) error {
 		dash := &manta.Dashboard{}
-		if err := dash.Unmarshal(v); err != nil {
+		if err := json.Unmarshal(v, dash); err != nil {
 			return err
 		}
 
@@ -153,9 +154,8 @@ func (s *Service) findDashboardByOrg(ctx context.Context, tx Tx, orgID manta.ID)
 		}
 
 		d := &manta.Dashboard{}
-		if err = d.Unmarshal(val); err != nil {
-			// todo: handle error
-			continue
+		if err = json.Unmarshal(val, d); err != nil {
+			return nil, err
 		}
 
 		ds = append(ds, d)
@@ -207,7 +207,7 @@ func (s *Service) putDashboard(ctx context.Context, tx Tx, d *manta.Dashboard) e
 	if err != nil {
 		return err
 	}
-	val, err := d.Marshal()
+	val, err := json.Marshal(d)
 	if err != nil {
 		return err
 	}

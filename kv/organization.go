@@ -2,7 +2,8 @@ package kv
 
 import (
 	"context"
-	"time"
+    "encoding/json"
+    "time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -41,31 +42,7 @@ func (s *Service) findOrganizationByID(ctx context.Context, tx Tx, id manta.ID) 
 	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	b, err := tx.Bucket(organizationBucket)
-	if err != nil {
-		return nil, err
-	}
-
-	key, err := id.Encode()
-	if err != nil {
-		return nil, err
-	}
-
-	v, err := b.Get(key)
-	if err != nil {
-		if err == ErrKeyNotFound {
-			return nil, manta.ErrOrgNotFound
-		}
-
-		return nil, err
-	}
-
-	org := &manta.Organization{}
-	if err = org.Unmarshal(v); err != nil {
-		return nil, err
-	}
-
-	return org, nil
+    return findByID[manta.Organization](tx, id, organizationBucket)
 }
 
 func (s *Service) findOrganizationByName(ctx context.Context, tx Tx, n string) (*manta.Organization, error) {
@@ -166,7 +143,7 @@ func (s *Service) findAllOrganizations(ctx context.Context, tx Tx) ([]*manta.Org
 	for k, v := c.First(); k != nil; k, v = c.Next() {
 
 		o := &manta.Organization{}
-		if err := o.Unmarshal(v); err != nil {
+		if err := json.Unmarshal(v, o); err != nil {
 			return nil, err
 		}
 
@@ -230,7 +207,7 @@ func (s *Service) putOrganization(ctx context.Context, tx Tx, org *manta.Organiz
 	}
 
 	// organization
-	data, err := org.Marshal()
+	data, err := json.Marshal(org)
 	if err != nil {
 		return err
 	}

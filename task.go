@@ -2,7 +2,6 @@ package manta
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"time"
 )
@@ -26,16 +25,17 @@ var (
 	}
 )
 
+type TaskType string
+
 type Task struct {
 	ID      ID        `json:"id"`
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
-	// store some data for this task
-	Annotations map[string]string `json:"annotations,omitempty"`
-	Type        string            `json:"type,omitempty"`
-	Status      string            `json:"status,omitempty"`
-	OrgID       ID                `json:"orgID,omitempty"`
-	// OwnerID store the creater's id
+
+	Type   TaskType `json:"type,omitempty"`
+	Status string   `json:"status,omitempty"`
+	OrgID  ID       `json:"orgID,omitempty"`
+	// OwnerID store the creater's id, e.g. check
 	OwnerID ID     `json:"ownerID,omitempty"`
 	Cron    string `json:"cron,omitempty"`
 
@@ -54,14 +54,6 @@ func (t *Task) GetID() ID {
 
 func (t *Task) GetOrgID() ID {
 	return t.OrgID
-}
-
-func (t *Task) Marshal() ([]byte, error) {
-	return json.Marshal(t)
-}
-
-func (t *Task) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, t)
 }
 
 type TaskFilter struct {
@@ -135,6 +127,16 @@ type TaskService interface {
 	DeleteTask(ctx context.Context, id ID) error
 }
 
+type RunStatus string
+
+const (
+	RunStarted   RunStatus = "started"
+	RunSuccess   RunStatus = "success"
+	RunFail      RunStatus = "fail"
+	RunCanceled  RunStatus = "canceled"
+	RunScheduled RunStatus = "scheduled"
+)
+
 type RunLog struct {
 	RunID   ID     `json:"runID"`
 	Time    string `json:"time"`
@@ -151,13 +153,3 @@ type Run struct {
 	Status       RunStatus `json:"status"`
 	Logs         []RunLog  `json:"logs,omitempty"`
 }
-
-type RunStatus string
-
-const (
-	RunStarted   RunStatus = "started"
-	RunSuccess   RunStatus = "success"
-	RunFail      RunStatus = "fail"
-	RunCanceled  RunStatus = "canceled"
-	RunScheduled RunStatus = "scheduled"
-)

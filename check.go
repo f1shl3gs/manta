@@ -114,14 +114,6 @@ func (c *Check) GetOrgID() ID {
 	return c.OrgID
 }
 
-func (c *Check) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, c)
-}
-
-func (c *Check) Marshal() ([]byte, error) {
-	return json.Marshal(c)
-}
-
 func (m *Check) Validate() error {
 	if m.Name == "" {
 		return invalidField("name", ErrFieldMustBeSet)

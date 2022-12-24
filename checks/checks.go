@@ -125,7 +125,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 			zap.Error(err))
 	}()
 
-	timestamp := fromTime(time.Now())
+	timestamp := fromTime(ts)
 	for _, sample := range vector {
 		v := sample.V
 		for _, condition := range c.Conditions {
@@ -167,6 +167,7 @@ func (checker *Checker) Process(ctx context.Context, task *manta.Task, ts time.T
 			lb.Set(labels.MetricName, alertMetricName)
 			lb.Set(labels.AlertName, c.Name)
 			lb.Set("check", c.ID.String())
+			lb.Set("status", condition.Status)
 
 			baseLabels := lb.Labels(nil)
 

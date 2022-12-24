@@ -85,7 +85,7 @@ func (h *ConfigurationHandler) getConfiguration(w http.ResponseWriter, r *http.R
 		)
 
 		if strings.Contains(r.Header.Get("accept"), "json") {
-			data, err = cf.Marshal()
+			data, err = json.Marshal(cf)
 			if err != nil {
 				return err
 			}
