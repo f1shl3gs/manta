@@ -39,6 +39,18 @@ const connector = connect(mstp, mdtp)
 type Props = ConnectedProps<typeof connector>
 
 const PropertiesCard: FunctionComponent<Props> = ({cron, setCron}) => {
+  const tooltipContents = (
+    <>
+      <strong>Schedule</strong> defines when it should be scheduled,
+      <br/>
+      Manta use <strong>cron</strong> to implement this feature, so
+      value like " */5 * * * * " is supported.
+      <br/>
+      <br/>
+      For convienent, <strong>@every 1m</strong> is supported too.
+    </>
+  )
+
   return (
     <BuilderCard
       testID={'builder-card-properties'}
@@ -50,13 +62,13 @@ const PropertiesCard: FunctionComponent<Props> = ({cron, setCron}) => {
           <GridRow>
             <GridColumn>
               <FormElement
-                label={'Schedule Every'}
+                label={'Schedule'}
                 labelAddOn={() => (
                   <QuestionMarkTooltip
                     diameter={18}
                     color={ComponentColor.Primary}
                     testID={`aaa--question-mark`}
-                    tooltipContents={'todo'}
+                    tooltipContents={tooltipContents}
                   />
                 )}
               >
