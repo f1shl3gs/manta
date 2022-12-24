@@ -15,6 +15,7 @@ import {
 import CreateCheckButton from 'src/checks/components/CreateCheckButton'
 import GetResources from 'src/resources/components/GetResources'
 import SearchWidget from 'src/shared/components/SearchWidget'
+import CheckCards from 'src/checks/components/CheckCards'
 
 // Types
 import {ResourceType} from 'src/types/resources'
@@ -22,7 +23,6 @@ import {AppState} from 'src/types/stores'
 
 // Actions
 import {setCheckSearchTerm} from 'src/checks/actions/creators'
-import CheckCards from './components/CheckCards'
 
 const mstp = (state: AppState) => {
   const {searchTerm, sortOptions} = state.resources[ResourceType.Checks]

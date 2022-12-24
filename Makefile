@@ -20,6 +20,9 @@ clean:
 	rm -rf bin
 	rm -rf ui/build
 	rm -rf ui/node_modules
+	rm -rf ui/cypress/downloads
+	rm -rf ui/cypress/screenshots
+	rm -rf ui/cypress/videos
 
 .PHONY: dep
 dep:

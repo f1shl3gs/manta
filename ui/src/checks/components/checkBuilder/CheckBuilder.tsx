@@ -19,10 +19,10 @@ import {AppState} from 'src/types/stores'
 
 // Utils
 import {createView} from 'src/visualization/helper'
-import PropertiesCard from './PropertiesCard'
-import CheckQueryEditor from './CheckQueryEditor'
-import TabSwitcher from './TabSwitcher'
-import ConditionList from './ConditionList'
+import PropertiesCard from 'src/checks/components/checkBuilder/PropertiesCard'
+import CheckQueryEditor from 'src/checks/components/checkBuilder/CheckQueryEditor'
+import TabSwitcher from 'src/checks/components/checkBuilder/TabSwitcher'
+import ConditionList from 'src/checks/components/checkBuilder/ConditionList'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 

@@ -3,7 +3,7 @@ import React, {CSSProperties, FunctionComponent, ReactNode} from 'react'
 import classnames from 'classnames'
 
 // Components
-import {DapperScrollbars} from '@influxdata/clockface'
+import {ComponentSize, DapperScrollbars} from '@influxdata/clockface'
 
 interface Props {
   scrollable?: boolean
@@ -44,6 +44,7 @@ const BuilderCardBody: FunctionComponent<Props> = ({
         className={'builder-card--body'}
         style={scrollbarStyles}
         testID={testID}
+        size={ComponentSize.ExtraSmall}
         autoHide={autoHideScrollbars}
       >
         {content()}

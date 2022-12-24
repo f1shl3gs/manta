@@ -8,12 +8,7 @@ import ThresholdRangeInput from 'src/checks/components/checkBuilder/ThresholdRan
 import ThresholdValueInput from 'src/checks/components/checkBuilder/ThresholdValueInput'
 
 // Types
-import {
-  Condition,
-  ConditionStatus,
-  Threshold,
-  ThresholdType,
-} from 'src/types/checks'
+import {Condition, ThresholdType} from 'src/types/checks'
 import {ComponentSize} from '@influxdata/clockface'
 
 // Constants
@@ -29,19 +24,18 @@ const mdtp = {
 }
 
 interface OwnProps {
-  status: ConditionStatus
-  threshold?: Threshold
+  condition: Condition
 }
 
 const connector = connect(null, mdtp)
 type Props = OwnProps & ConnectedProps<typeof connector>
 
 const ConditionCard: FunctionComponent<Props> = ({
-  status,
-  threshold,
+  condition,
   setCondition,
   removeCondition,
 }) => {
+  const {status, threshold} = condition
   const handleAdd = () => {
     const condition: Condition = {
       status,
@@ -79,8 +73,6 @@ const ConditionCard: FunctionComponent<Props> = ({
   }
 
   const handleDelete = () => {
-    console.log('delete')
-
     removeCondition(status)
   }
 
@@ -100,12 +92,29 @@ const ConditionCard: FunctionComponent<Props> = ({
     threshold.type === 'inside' || threshold.type === 'outside' ? (
       <ThresholdRangeInput
         threshold={threshold}
-        onChange={(min, max) => console.log('onchange', min, max)}
+        onChange={(min, max) =>
+          setCondition({
+            ...condition,
+            threshold: {
+              ...threshold,
+              min,
+              max,
+            },
+          })
+        }
       />
     ) : (
       <ThresholdValueInput
         threshold={threshold}
-        onChange={value => console.log('value', value)}
+        onChange={value =>
+          setCondition({
+            ...condition,
+            threshold: {
+              ...threshold,
+              value,
+            },
+          })
+        }
       />
     )
 

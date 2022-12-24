@@ -16,10 +16,7 @@ import useEscape from 'src/shared/useEscape'
 
 // Actions
 import {setName, resetCheckBuilder} from 'src/checks/actions/builder'
-import {
-  getCheckForBuilder,
-  createCheckFromBuilder,
-} from 'src/checks/actions/thunks'
+import {getCheckForBuilder, updateCheck} from 'src/checks/actions/thunks'
 
 const mstp = (state: AppState) => {
   const {name, status} = state.checkBuilder
@@ -33,8 +30,8 @@ const mstp = (state: AppState) => {
 const mdtp = {
   getCheckForBuilder,
   resetCheckBuilder,
+  updateCheck,
   onSetName: setName,
-  onSave: createCheckFromBuilder,
 }
 
 const connector = connect(mstp, mdtp)
@@ -44,12 +41,15 @@ const EditCheckOverlay: FunctionComponent<Props> = ({
   name,
   loading,
   onSetName,
-  onSave,
+  updateCheck,
   getCheckForBuilder,
   resetCheckBuilder,
 }) => {
   const {id} = useParams<{id: string}>()
   const onCancel = useEscape()
+  const onSave = () => {
+    updateCheck(id)
+  }
 
   useEffect(() => {
     getCheckForBuilder(id)

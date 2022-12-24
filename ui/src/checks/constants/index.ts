@@ -4,7 +4,7 @@ import {ComponentColor, InfluxColors} from '@influxdata/clockface'
 export const DEFAULT_CHECK_NAME = 'Name this check'
 export const DEFAULT_CHECK_DESC = 'Describe this check'
 
-export const DEFAULT_CHECK_EVERY = '1m'
+export const DEFAULT_CHECK_CRON = '@every 1m'
 
 export const LEVEL_COMPONENT_COLORS = {
   ok: ComponentColor.Success,

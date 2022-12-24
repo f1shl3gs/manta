@@ -182,19 +182,21 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := decodeCheck(r)
+	check, err := decodeCheck(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	_, err = h.checkService.UpdateCheck(ctx, id, c)
+	check, err = h.checkService.UpdateCheck(ctx, id, check)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	if err := encodeResponse(ctx, w, http.StatusOK, check); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {

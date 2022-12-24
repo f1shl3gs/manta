@@ -4,6 +4,8 @@ import React, {FunctionComponent} from 'react'
 // Component
 import FilterList from 'src/shared/components/FilterList'
 import DashboardCard from 'src/dashboards/components/DashboardCard'
+import EmptyResources from 'src/resources/components/EmptyResources'
+import CreateDashboardButton from 'src/dashboards/components/CreateDashboardButton'
 
 // Hooks
 import {useSelector} from 'react-redux'
@@ -16,8 +18,6 @@ import {AppState} from 'src/types/stores'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
-import EmptyResources from '../../resources/components/EmptyResources'
-import CreateDashboardButton from './CreateDashboardButton'
 
 interface Props {
   search: string

@@ -6,7 +6,11 @@ import {RemoteDataState} from '@influxdata/clockface'
 import {CheckStatus, Conditions} from 'src/types/checks'
 
 // Constants
-import {DEFAULT_CHECK_EVERY, DEFAULT_CHECK_NAME} from 'src/checks/constants'
+import {
+  DEFAULT_CHECK_DESC,
+  DEFAULT_CHECK_CRON,
+  DEFAULT_CHECK_NAME,
+} from 'src/checks/constants'
 
 // Actions
 import {
@@ -39,10 +43,10 @@ export interface CheckBuilderState {
 const initialState = (): CheckBuilderState => ({
   id: null,
   name: DEFAULT_CHECK_NAME,
-  desc: '',
+  desc: DEFAULT_CHECK_DESC,
   activeStatus: 'active',
   conditions: {},
-  cron: DEFAULT_CHECK_EVERY,
+  cron: DEFAULT_CHECK_CRON,
   query: '',
   tab: 'query',
   status: RemoteDataState.NotStarted,

@@ -1,18 +1,15 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-// import {useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 // Components
 import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
-import {useDispatch} from 'react-redux'
-import {createCheck} from '../actions/thunks'
 
 const CreateCheckButton: FunctionComponent = () => {
-  // const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleClick = () => {
-    dispatch(createCheck())
+    navigate(`${window.location.pathname}/new`)
   }
 
   return (

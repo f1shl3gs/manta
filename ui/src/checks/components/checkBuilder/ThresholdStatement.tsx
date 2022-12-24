@@ -68,7 +68,7 @@ const ThresholdStatement: FunctionComponent<Props> = ({
         onClick={onDelete}
       />
 
-      <PanelBody>
+      <PanelBody size={ComponentSize.ExtraSmall}>
         <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Small}>
           <FlexBox
             direction={FlexDirection.Row}
@@ -96,6 +96,7 @@ const ThresholdStatement: FunctionComponent<Props> = ({
               text={status}
               backgroundColor={CHECK_STATUS_COLORS[status]}
               testID={'threshold-level-text-block'}
+              style={{width: '80px'}}
             />
           </FlexBox>
         </FlexBox>

@@ -38,10 +38,14 @@ const ConditionList: FunctionComponent<Props> = ({conditions}) => {
         {CHECK_CONDITION_STATUSES.map(status => (
           <ConditionCard
             key={status}
-            status={status}
-            threshold={
-              conditions[status] ? conditions[status].threshold : undefined
-            }
+            condition={{
+              status,
+              pending: '0s',
+              ...conditions[status],
+              threshold: conditions[status]
+                ? conditions[status].threshold
+                : undefined,
+            }}
           />
         ))}
       </BuilderCardBody>

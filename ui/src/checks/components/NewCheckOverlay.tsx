@@ -5,6 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import CheckOverlayHeader from 'src/checks/components/CheckOverlayHeader'
+import CheckBuilder from 'src/checks/components/checkBuilder/CheckBuilder'
 
 // Types
 import {AppState} from 'src/types/stores'
@@ -54,6 +55,10 @@ const NewCheckOverlay: FunctionComponent<Props> = ({
           onCancel={onCancel}
           onSave={onSave}
         />
+
+        <div className={'veo-contents'}>
+          <CheckBuilder />
+        </div>
       </div>
     </Overlay>
   )
