@@ -1,14 +1,16 @@
-import React, {FunctionComponent} from 'react'
+// Libraries
+import React, {FunctionComponent, useCallback} from 'react'
 
+// Components
 import {Grid, Form, Dropdown} from '@influxdata/clockface'
 import ColumnSelector from 'src/shared/components/ColumnSelector'
-
 import TimeFormatSetting from 'src/timeMachine/components/TimeFormatSetting'
 import YAxisTitle from 'src/timeMachine/components/YAxisTitle'
 import YAxisBase from 'src/timeMachine/components/YAxisBase'
 import AxisAffixes from 'src/timeMachine/components/AxisAffixes'
-import useLineView from 'src/visualization/Line/useLineView'
 import {VisualizationOptionProps} from 'src/visualization'
+
+// Cells
 import {XYViewProperties} from 'src/types/cells'
 
 const dimensions = [
@@ -36,23 +38,99 @@ interface Props extends VisualizationOptionProps {
 
 const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
   const {
-    xColumn,
-    onSetXColumn,
-    yColumn,
-    onSetYColumn,
-    numericColumns,
+    xColumn = '_time',
+    yColumn = '_value',
     timeFormat,
-    onSetTimeFormat,
     hoverDimension,
-    onSetHoverDimension,
     axes: {
       y: {prefix = '', suffix = '', label = '', base = ''},
     },
-    onSetYAxisLabel,
-    onSetYAxisBase,
-    onSetYAxisPrefix,
-    onSetYAxisSuffix,
-  } = useLineView(viewProperties, update)
+  } = viewProperties
+  const numericColumns = [xColumn, yColumn]
+
+  const onSetXColumn = useCallback(
+    (x: string) => {
+      update({
+        ...viewProperties,
+        xColumn: x,
+      })
+    },
+    [viewProperties, update]
+  )
+
+  const onSetYColumn = useCallback(
+    (y: string) => {
+      update({
+        ...viewProperties,
+        yColumn: y,
+      })
+    },
+    [viewProperties, update]
+  )
+
+  const onSetTimeFormat = useCallback(
+    (timeFormat: string) => {
+      update({
+        ...viewProperties,
+        timeFormat,
+      })
+    },
+    [viewProperties, update]
+  )
+
+  const onSetHoverDimension = useCallback(
+    (hoverDimension: 'x' | 'y' | 'xy' | 'auto') => {
+      update({
+        ...viewProperties,
+        hoverDimension,
+      })
+    },
+    [viewProperties, update]
+  )
+
+  const updateYAxis = useCallback(
+    (upd: {[key: string]: string}) => {
+      update({
+        ...viewProperties,
+        axes: {
+          x: viewProperties.axes.x,
+          y: {
+            ...viewProperties.axes.y,
+            ...upd,
+          },
+        },
+      })
+    },
+    [update, viewProperties]
+  )
+
+  const onSetYAxisLabel = useCallback(
+    (label: string) => {
+      updateYAxis({label})
+    },
+    [updateYAxis]
+  )
+
+  const onSetYAxisBase = useCallback(
+    (base: string) => {
+      updateYAxis({base})
+    },
+    [updateYAxis]
+  )
+
+  const onSetYAxisPrefix = useCallback(
+    (prefix: string) => {
+      updateYAxis({prefix})
+    },
+    [updateYAxis]
+  )
+
+  const onSetYAxisSuffix = useCallback(
+    (suffix: string) => {
+      updateYAxis({suffix})
+    },
+    [updateYAxis]
+  )
 
   return (
     <>

@@ -7,11 +7,11 @@ import (
 	"net/http/httputil"
 	"strings"
 
-	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/vertex"
-
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/vertex"
 )
 
 const (

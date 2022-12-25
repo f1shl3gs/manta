@@ -34,8 +34,9 @@
         "xColumn": "_time",
         "yColumn": "_value",
         "hoverDimension": "x",
-        "Position": "overlaid",
-        "geom": "line"
+        "position": "overlaid",
+        "geom": "line",
+        "colors": []
       }
     },
     {
@@ -64,8 +65,9 @@
         "xColumn": "_time",
         "yColumn": "_value",
         "hoverDimension": "auto",
-        "Position": "overlaid",
-        "geom": "line"
+        "position": "overlaid",
+        "geom": "line",
+        "colors": []
       }
     },
     {
@@ -94,8 +96,9 @@
         "xColumn": "_time",
         "yColumn": "_value",
         "hoverDimension": "auto",
-        "Position": "overlaid",
-        "geom": "line"
+        "position": "overlaid",
+        "geom": "line",
+        "colors": []
       }
     },
     {
@@ -124,8 +127,9 @@
         "xColumn": "_time",
         "yColumn": "_value",
         "hoverDimension": "auto",
-        "Position": "overlaid",
-        "geom": "line"
+        "position": "overlaid",
+        "geom": "line",
+        "colors": []
       }
     },
     {
@@ -154,7 +158,7 @@
         "xColumn": "_time",
         "yColumn": "_value",
         "hoverDimension": "auto",
-        "Position": "overlaid",
+        "position": "overlaid",
         "geom": "line"
       }
     },

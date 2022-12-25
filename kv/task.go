@@ -39,7 +39,7 @@ func (s *Service) FindTaskByID(ctx context.Context, id manta.ID) (*manta.Task, e
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-        task, err = findByID[manta.Task](tx, id, TasksBucket)
+		task, err = findByID[manta.Task](tx, id, TasksBucket)
 		return err
 	})
 

@@ -4,17 +4,14 @@ import React, {FunctionComponent, useMemo} from 'react'
 // Components
 import {Config, Plot} from '@influxdata/giraffe'
 
-// Hooks
-import useLineView from 'src/visualization/Line/useLineView'
-
 // Utils
 import {getFormatter} from 'src/shared/utils/vis'
 
 // Types
 import {XYViewProperties} from 'src/types/cells'
 import {VisualizationProps} from 'src/visualization'
-import { DEFAULT_LINE_COLORS } from 'src/shared/constants/graphColorPalettes'
-import {LineHoverDimension} from '@influxdata/giraffe/dist/types';
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
+import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -26,6 +23,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
     timeFormat,
     xColumn,
     yColumn,
+    colors = [],
     axes: {
       x: {label: xAxisLabel},
       y: {
@@ -35,9 +33,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
         suffix: yAxisSuffix,
       },
     },
-  } = useLineView(properties, () => {
-    /* void */
-  })
+  } = properties
 
   // TODO: fix table.getColumnType(xColumn)
   const xFormatter = getFormatter('time', {
@@ -57,12 +53,12 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
   })
 
   const colorHexes = useMemo(() => {
-    const _colors = properties.colors.filter(c => c.type === 'scale')
+    const _colors = colors.filter(c => c.type === 'scale')
     if (_colors && _colors.length) {
       return _colors.map(color => color.hex)
     }
     return DEFAULT_LINE_COLORS.map(color => color.hex)
-  }, [properties.colors])
+  }, [colors])
 
   const config: Config = {
     table,
@@ -82,7 +78,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
         colors: colorHexes,
         shadeBelow: !!properties.shadeBelow,
         shadeBelowOpacity: 0.08,
-        hoverDimension: properties.hoverDimension as LineHoverDimension
+        hoverDimension: properties.hoverDimension as LineHoverDimension,
       },
     ],
   }

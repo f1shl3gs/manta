@@ -2,8 +2,8 @@ package kv
 
 import (
 	"context"
-    "encoding/json"
-    "time"
+	"encoding/json"
+	"time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -42,7 +42,7 @@ func (s *Service) findOrganizationByID(ctx context.Context, tx Tx, id manta.ID) 
 	span, _ := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-    return findByID[manta.Organization](tx, id, organizationBucket)
+	return findByID[manta.Organization](tx, id, organizationBucket)
 }
 
 func (s *Service) findOrganizationByName(ctx context.Context, tx Tx, n string) (*manta.Organization, error) {

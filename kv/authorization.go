@@ -2,8 +2,8 @@ package kv
 
 import (
 	"context"
-    "encoding/json"
-    "errors"
+	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/f1shl3gs/manta"
@@ -59,7 +59,7 @@ func (s *Service) findAuthorizationByID(ctx context.Context, tx Tx, id manta.ID)
 	}
 
 	auth := &manta.Authorization{}
-    if err = json.Unmarshal(data, auth); err != nil {
+	if err = json.Unmarshal(data, auth); err != nil {
 		return nil, err
 	}
 

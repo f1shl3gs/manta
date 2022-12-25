@@ -296,7 +296,7 @@ func findOrgIndexed[
 		}
 
 		t := PT(new(T))
-        if err = json.Unmarshal(val, t); err != nil {
+		if err = json.Unmarshal(val, t); err != nil {
 			return nil, err
 		}
 

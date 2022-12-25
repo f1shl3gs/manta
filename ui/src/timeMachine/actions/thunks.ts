@@ -1,22 +1,34 @@
+// Libraries
+import {fromRows} from '@influxdata/giraffe'
+
+// Types
 import {GetState} from 'src/types/stores'
 import {DashboardQuery} from 'src/types/dashboards'
-import {calculateRange} from 'src/shared/actions/autoRefresh'
-import request from 'src/shared/utils/request'
-import {Row, transformToRows} from 'src/shared/useQueryResult'
-import {getOrg} from 'src/organizations/selectors'
-import {TimeRange} from 'src/types/timeRanges'
-import {fromRows} from '@influxdata/giraffe'
-import {setQueryResult} from 'src/timeMachine/actions'
 import {RemoteDataState} from '@influxdata/clockface'
+import {ViewType} from 'src/types/cells'
 
-const executeQuery = async (
+// Actions
+import {calculateRange} from 'src/shared/actions/autoRefresh'
+import {setQueryResult} from 'src/timeMachine/actions'
+
+// Utils
+import request from 'src/shared/utils/request'
+import {Row, transformToRows} from 'src/shared/utils/transform'
+import {getOrg} from 'src/organizations/selectors'
+
+export const executeQuery = async (
+  type: ViewType,
   query: DashboardQuery,
-  timeRange: TimeRange,
-  orgID: string
+  orgID: string,
+  start: number,
+  end: number,
+  step: number
 ): Promise<Row[]> => {
-  const {start, end, step} = calculateRange(timeRange)
-
-  const resp = await request(`/api/v1/query_range`, {
+  const url =
+    type === 'single-stat' || type === 'gauge'
+      ? `/api/v1/query`
+      : `/api/v1/query_range`
+  const resp = await request(url, {
     query: {
       start: `${start}`,
       end: `${end}`,
@@ -39,8 +51,9 @@ export const loadView =
     const org = getOrg(state)
     const {
       timeRange,
-      viewProperties: {queries},
+      viewProperties: {type, queries},
     } = state.timeMachine
+    const {start, end, step} = calculateRange(timeRange)
 
     const promises = []
     queries.forEach(query => {
@@ -48,11 +61,11 @@ export const loadView =
         return
       }
 
-      if (query.text === '') {
+      if (query.text.trim() === '') {
         return
       }
 
-      promises.push(executeQuery(query, timeRange, org.id))
+      promises.push(executeQuery(type, query, org.id, start, end, step))
     })
 
     const rows = await Promise.all(promises)

@@ -2,7 +2,8 @@ export type Result = {
   metric: {
     [key: string]: string
   }
-  values: [[number, string]]
+  value?: [number, string]
+  values?: [[number, string]]
 }
 
 export interface Row {
@@ -28,7 +29,23 @@ export const transformToRows = (resp: PromResp): Row[] => {
 
   return resp.data.result
     .map((item: Result) => {
-      const {metric, values} = item
+      const {
+        metric,
+        // instant query contains value
+        value,
+        // range query contains values
+        values,
+      } = item
+
+      if (value) {
+        return [
+          {
+            ...metric,
+            _time: value[0] * 1000,
+            _value: Number(value[1]),
+          },
+        ]
+      }
 
       return values.map(val => {
         return {
