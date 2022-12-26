@@ -28,11 +28,6 @@ export const setActiveQueryText = (text: string) =>
 export const addQuery = () =>
   ({
     type: ADD_QUERY,
-    query: {
-      name: '',
-      text: '',
-      hidden: false,
-    },
   } as const)
 
 export const removeQuery = (index: number) =>

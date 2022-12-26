@@ -70,18 +70,34 @@ export const timeMachineReducer = (
         return
 
       case ADD_QUERY:
-        draftState.viewProperties.queries.push(action.query)
+        const queries = draftState.viewProperties.queries
+        queries.push({
+          name: `query ${queries.length + 1}`,
+          text: '',
+          hidden: false,
+        })
+
+        draftState.viewProperties.queries = queries
+        draftState.activeQueryIndex = queries.length - 1
         return
 
       case SET_VIEWING_VIS_OPTIONS:
         draftState.viewingVisOptions = action.viewingVisOptions
         return
 
-      case REMOVE_QUERY:
-        draftState.viewProperties.queries.filter(
-          (_q, index) => index === action.index
-        )
+      case REMOVE_QUERY: {
+        draftState.viewProperties.queries =
+          draftState.viewProperties.queries.filter(
+            (_q, index) => index !== action.index
+          )
+
+        if (draftState.activeQueryIndex >= action.index) {
+          draftState.activeQueryIndex =
+            draftState.viewProperties.queries.length - 1
+        }
+
         return
+      }
 
       case SET_VIEW_NAME:
         draftState.name = action.name
