@@ -156,12 +156,12 @@ func (s *Service) FindRuns(ctx context.Context, filter manta.RunFilter) ([]*mant
 	}
 
 	var (
-	    list = make([]*manta.Run, 0)
-        err error
+		list = make([]*manta.Run, 0)
+		err  error
 	)
 	err = s.kv.View(ctx, func(tx Tx) error {
-        list, _, err = findRuns(tx, filter)
-        return err
+		list, _, err = findRuns(tx, filter)
+		return err
 	})
 
 	if err != nil {
@@ -172,51 +172,51 @@ func (s *Service) FindRuns(ctx context.Context, filter manta.RunFilter) ([]*mant
 }
 
 func findRuns(tx Tx, filter manta.RunFilter) ([]*manta.Run, int, error) {
-    var runs []*manta.Run
+	var runs []*manta.Run
 
-    taskKey, err := filter.Task.Encode()
-    if err != nil {
-        return nil, 0, ErrInvalidTaskID
-    }
+	taskKey, err := filter.Task.Encode()
+	if err != nil {
+		return nil, 0, ErrInvalidTaskID
+	}
 
-    dataBucket, err := tx.Bucket(RunsBucket)
-    if err != nil {
-        return nil, 0, err
-    }
+	dataBucket, err := tx.Bucket(RunsBucket)
+	if err != nil {
+		return nil, 0, err
+	}
 
-    indexBucket, err := tx.Bucket(RunTaskIndexBucket)
-    if err != nil {
-        return nil, 0, err
-    }
+	indexBucket, err := tx.Bucket(RunTaskIndexBucket)
+	if err != nil {
+		return nil, 0, err
+	}
 
-    cursor, err := indexBucket.Cursor(WithCursorHintPrefix(string(taskKey)))
-    if err != nil {
-        return nil, 0, err
-    }
+	cursor, err := indexBucket.Cursor(WithCursorHintPrefix(string(taskKey)))
+	if err != nil {
+		return nil, 0, err
+	}
 
-    k, v := cursor.Seek(taskKey)
-    for {
-        if k == nil || !bytes.HasPrefix(k, taskKey) {
-            break
-        }
+	k, v := cursor.Seek(taskKey)
+	for {
+		if k == nil || !bytes.HasPrefix(k, taskKey) {
+			break
+		}
 
-        // TODO: filter with after and before
+		// TODO: filter with after and before
 
-        value, err := dataBucket.Get(v)
-        if err != nil {
-            return nil, 0, err
-        }
+		value, err := dataBucket.Get(v)
+		if err != nil {
+			return nil, 0, err
+		}
 
-        run := &manta.Run{}
-        if err := json.Unmarshal(value, run); err != nil {
-            return nil, 0, ErrInternalTaskService(err)
-        }
+		run := &manta.Run{}
+		if err := json.Unmarshal(value, run); err != nil {
+			return nil, 0, ErrInternalTaskService(err)
+		}
 
-        runs = append(runs, run)
-        k, v = cursor.Next()
-    }
+		runs = append(runs, run)
+		k, v = cursor.Next()
+	}
 
-    return runs, len(runs), nil
+	return runs, len(runs), nil
 }
 
 // CreateTask creates a task
@@ -328,5 +328,5 @@ func (s *Service) DeleteTask(ctx context.Context, id manta.ID) error {
 }
 
 func deleteTask(tx Tx, id manta.ID) error {
-    return deleteOrgIndexed[manta.Task](tx, id, TasksBucket, TaskOrgIndexBucket)
+	return deleteOrgIndexed[manta.Task](tx, id, TasksBucket, TaskOrgIndexBucket)
 }
