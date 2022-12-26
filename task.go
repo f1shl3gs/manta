@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-const (
-	TaskActive   = "active"
-	TaskInactive = "inactive"
-)
-
 var (
 	ErrTaskNotClaimed = errors.New("task not claimed")
 
@@ -27,14 +22,21 @@ var (
 
 type TaskType string
 
+type TaskStatus string
+
+const (
+	TaskActive   TaskStatus = "active"
+	TaskInactive TaskStatus = "inactive"
+)
+
 type Task struct {
 	ID      ID        `json:"id"`
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
 
-	Type   TaskType `json:"type,omitempty"`
-	Status string   `json:"status,omitempty"`
-	OrgID  ID       `json:"orgID,omitempty"`
+	Type   TaskType   `json:"type,omitempty"`
+	Status TaskStatus `json:"status,omitempty"`
+	OrgID  ID         `json:"orgID,omitempty"`
 	// OwnerID store the creater's id, e.g. check
 	OwnerID ID     `json:"ownerID,omitempty"`
 	Cron    string `json:"cron,omitempty"`
@@ -62,7 +64,9 @@ type TaskFilter struct {
 }
 
 type TaskUpdate struct {
-	Status *string
+	Desc   *string
+	Cron   *string
+	Status *TaskStatus
 
 	LatestCompleted *time.Time
 	LatestScheduled *time.Time

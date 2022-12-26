@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -43,24 +44,63 @@ func (cs *CoordinatingCheckService) CreateCheck(ctx context.Context, check *mant
 }
 
 func (cs *CoordinatingCheckService) UpdateCheck(ctx context.Context, id manta.ID, check *manta.Check) (*manta.Check, error) {
-	check, err := cs.CheckService.UpdateCheck(ctx, id, check)
+	from, err := cs.CheckService.FindCheckByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// todo: not now
+	fromTask, err := cs.taskService.FindTaskByID(ctx, from.TaskID)
+	if err != nil {
+		return nil, err
+	}
 
-	return check, nil
+	to, err := cs.CheckService.UpdateCheck(ctx, id, check)
+	if err != nil {
+		return nil, err
+	}
+
+	toTask, err := cs.taskService.FindTaskByID(ctx, to.TaskID)
+	if err != nil {
+		return nil, err
+	}
+
+	// if the update is to active and the previous task was inactive we should add a "latest completed"
+	// update this allows us to see not run the task for inactive time
+	if fromTask.Status == manta.TaskInactive && toTask.Status == manta.TaskActive {
+		toTask.LatestCompleted = time.Now()
+	}
+
+	return check, cs.coordinator.TaskUpdated(ctx, fromTask, toTask)
 }
 
-func (cs *CoordinatingCheckService) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpdate) (*manta.Check, error) {
-	check, err := cs.CheckService.PatchCheck(ctx, id, u)
+func (cs *CoordinatingCheckService) PatchCheck(ctx context.Context, id manta.ID, upd manta.CheckUpdate) (*manta.Check, error) {
+	from, err := cs.CheckService.FindCheckByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// todo: re-schedule
-	return check, nil
+	fromTask, err := cs.taskService.FindTaskByID(ctx, from.TaskID)
+	if err != nil {
+		return nil, err
+	}
+
+	to, err := cs.CheckService.PatchCheck(ctx, id, upd)
+	if err != nil {
+		return nil, err
+	}
+
+	toTask, err := cs.taskService.FindTaskByID(ctx, to.TaskID)
+	if err != nil {
+		return nil, err
+	}
+
+	// if the update is to activate and the previous task was inactive we should add a "latest completed" update
+	// this allows us to see not run the task for inactive time
+	if fromTask.Status == manta.TaskInactive && toTask.Status == manta.TaskActive {
+		toTask.LatestCompleted = time.Now()
+	}
+
+	return to, cs.coordinator.TaskUpdated(ctx, fromTask, toTask)
 }
 
 func (cs *CoordinatingCheckService) DeleteCheck(ctx context.Context, id manta.ID) error {

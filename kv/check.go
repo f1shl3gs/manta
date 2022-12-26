@@ -63,7 +63,7 @@ func (s *Service) CreateCheck(ctx context.Context, check *manta.Check) error {
 		Created: now,
 		Updated: now,
 		Type:    "check",
-		Status:  check.Status,
+		Status:  manta.TaskStatus(check.Status),
 		OwnerID: check.ID,
 		OrgID:   check.OrgID,
 		Cron:    check.Cron,
@@ -82,46 +82,76 @@ func (s *Service) CreateCheck(ctx context.Context, check *manta.Check) error {
 }
 
 // UpdateCheck updates the whole check returns the new check after update
-func (s *Service) UpdateCheck(ctx context.Context, id manta.ID, c *manta.Check) (*manta.Check, error) {
+func (s *Service) UpdateCheck(ctx context.Context, id manta.ID, check *manta.Check) (*manta.Check, error) {
 	err := s.kv.Update(ctx, func(tx Tx) error {
 		err := deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
 		if err != nil {
 			return err
 		}
 
-		c.Updated = time.Now()
+		check.Updated = time.Now()
 
-		return putOrgIndexed(tx, c, ChecksBucket, CheckOrgIndexBucket)
+		err = putOrgIndexed(tx, check, ChecksBucket, CheckOrgIndexBucket)
+		if err != nil {
+			return err
+		}
+
+		// patch task
+		status := manta.TaskStatus(check.Status)
+		taskUpd := manta.TaskUpdate{
+			Desc:   &check.Desc,
+			Status: &status,
+			Cron:   &check.Cron,
+		}
+
+		_, err = updateTask(tx, check.TaskID, taskUpd)
+		return err
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	return c, nil
+	return check, nil
 }
 
 // PatchCheck updates a single check with changeset
 // Returns the new check after patch
-func (s *Service) PatchCheck(ctx context.Context, id manta.ID, u manta.CheckUpdate) (*manta.Check, error) {
+func (s *Service) PatchCheck(ctx context.Context, id manta.ID, upd manta.CheckUpdate) (*manta.Check, error) {
 	var (
-		c   *manta.Check
-		err error
+		check *manta.Check
+		err   error
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		c, err = findByID[manta.Check](tx, id, ChecksBucket)
+		check, err = findByID[manta.Check](tx, id, ChecksBucket)
 		if err != nil {
 			return err
 		}
 
-		u.Apply(c)
-		c.Updated = time.Now()
+		upd.Apply(check)
+		check.Updated = time.Now()
 
-		return putOrgIndexed(tx, c, ChecksBucket, CheckOrgIndexBucket)
+		err = putOrgIndexed(tx, check, ChecksBucket, CheckOrgIndexBucket)
+		if err != nil {
+			return err
+		}
+
+		// patch task
+		taskUpd := manta.TaskUpdate{
+			Desc: upd.Desc,
+		}
+
+		if upd.Status != nil {
+			status := manta.TaskStatus(*upd.Status)
+			taskUpd.Status = &status
+		}
+
+		_, err = updateTask(tx, check.TaskID, taskUpd)
+		return err
 	})
 
-	return c, err
+	return check, err
 }
 
 // DeleteCheck delete a single check by ID
@@ -135,6 +165,18 @@ func (s *Service) DeleteCheck(ctx context.Context, id manta.ID) error {
 		if err = deleteTask(tx, check.TaskID); err != nil {
 			return err
 		}
+
+        runs, _, err := findRuns(tx, manta.RunFilter{Task: check.TaskID})
+        if err != nil {
+            return err
+        }
+
+        for _, run := range runs {
+            err = deleteRun(tx, check.TaskID, run.ID)
+            if err != nil {
+                return err
+            }
+        }
 
 		return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
 	})

@@ -155,58 +155,68 @@ func (s *Service) FindRuns(ctx context.Context, filter manta.RunFilter) ([]*mant
 		return nil, 0, manta.ErrOutOfBoundsLimit
 	}
 
-	taskKey, err := filter.Task.Encode()
-	if err != nil {
-		return nil, 0, ErrInvalidTaskID
-	}
-
-	var list = make([]*manta.Run, 0)
+	var (
+	    list = make([]*manta.Run, 0)
+        err error
+	)
 	err = s.kv.View(ctx, func(tx Tx) error {
-		dataBucket, err := tx.Bucket(RunsBucket)
-		if err != nil {
-			return err
-		}
-
-		indexBucket, err := tx.Bucket(RunTaskIndexBucket)
-		if err != nil {
-			return err
-		}
-
-		cursor, err := indexBucket.Cursor(WithCursorHintPrefix(string(taskKey)))
-		if err != nil {
-			return err
-		}
-
-		k, v := cursor.Seek(taskKey)
-		for {
-			if k == nil || !bytes.HasPrefix(k, taskKey) {
-				break
-			}
-
-			// TODO: filter with after and before
-
-			value, err := dataBucket.Get(v)
-			if err != nil {
-				return err
-			}
-
-			run := &manta.Run{}
-			if err := json.Unmarshal(value, run); err != nil {
-				return ErrInternalTaskService(err)
-			}
-
-			list = append(list, run)
-			k, v = cursor.Next()
-		}
-
-		return nil
+        list, _, err = findRuns(tx, filter)
+        return err
 	})
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	return list, 0, nil
+	return list, len(list), nil
+}
+
+func findRuns(tx Tx, filter manta.RunFilter) ([]*manta.Run, int, error) {
+    var runs []*manta.Run
+
+    taskKey, err := filter.Task.Encode()
+    if err != nil {
+        return nil, 0, ErrInvalidTaskID
+    }
+
+    dataBucket, err := tx.Bucket(RunsBucket)
+    if err != nil {
+        return nil, 0, err
+    }
+
+    indexBucket, err := tx.Bucket(RunTaskIndexBucket)
+    if err != nil {
+        return nil, 0, err
+    }
+
+    cursor, err := indexBucket.Cursor(WithCursorHintPrefix(string(taskKey)))
+    if err != nil {
+        return nil, 0, err
+    }
+
+    k, v := cursor.Seek(taskKey)
+    for {
+        if k == nil || !bytes.HasPrefix(k, taskKey) {
+            break
+        }
+
+        // TODO: filter with after and before
+
+        value, err := dataBucket.Get(v)
+        if err != nil {
+            return nil, 0, err
+        }
+
+        run := &manta.Run{}
+        if err := json.Unmarshal(value, run); err != nil {
+            return nil, 0, ErrInternalTaskService(err)
+        }
+
+        runs = append(runs, run)
+        k, v = cursor.Next()
+    }
+
+    return runs, len(runs), nil
 }
 
 // CreateTask creates a task
@@ -293,6 +303,23 @@ func (s *Service) UpdateTask(ctx context.Context, id manta.ID, udp manta.TaskUpd
 	return task, err
 }
 
+func updateTask(tx Tx, id manta.ID, upd manta.TaskUpdate) (*manta.Task, error) {
+	task, err := findByID[manta.Task](tx, id, TasksBucket)
+	if err != nil {
+		return nil, err
+	}
+
+	upd.Apply(task)
+	task.Updated = time.Now()
+
+	err = putTask(tx, task)
+	if err != nil {
+		return nil, err
+	}
+
+	return task, nil
+}
+
 // DeleteTask delete a single task by ID
 func (s *Service) DeleteTask(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
@@ -301,64 +328,5 @@ func (s *Service) DeleteTask(ctx context.Context, id manta.ID) error {
 }
 
 func deleteTask(tx Tx, id manta.ID) error {
-	pk, err := id.Encode()
-	if err != nil {
-		return err
-	}
-
-	// retrieve task
-	b, err := tx.Bucket(TasksBucket)
-	if err != nil {
-		return err
-	}
-
-	val, err := b.Get(pk)
-	if err != nil {
-		return err
-	}
-
-	var task manta.Task
-	if err = json.Unmarshal(val, &task); err != nil {
-		return err
-	}
-
-	// delete org index
-	fk, err := task.OrgID.Encode()
-	if err != nil {
-		return err
-	}
-
-	index := IndexKey(fk, pk)
-	b, err = tx.Bucket(TaskOrgIndexBucket)
-	if err != nil {
-		return err
-	}
-
-	if err = b.Delete(index); err != nil {
-		return err
-	}
-
-	// delete owner index
-	fk, err = task.OwnerID.Encode()
-	if err != nil {
-		return err
-	}
-
-	index = IndexKey(fk, pk)
-	b, err = tx.Bucket(TaskOwnerIndexBucket)
-	if err != nil {
-		return err
-	}
-
-	if err = b.Delete(index); err != nil {
-		return err
-	}
-
-	// delete the task
-	b, err = tx.Bucket(TasksBucket)
-	if err != nil {
-		return err
-	}
-
-	return b.Delete(pk)
+    return deleteOrgIndexed[manta.Task](tx, id, TasksBucket, TaskOrgIndexBucket)
 }

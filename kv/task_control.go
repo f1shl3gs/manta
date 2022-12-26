@@ -122,7 +122,7 @@ func (s *Service) FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta
 			return err
 		}
 
-		return removeRun(tx, taskID, runID)
+		return deleteRun(tx, taskID, runID)
 	})
 
 	if err != nil {
@@ -132,7 +132,7 @@ func (s *Service) FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta
 	return run, nil
 }
 
-func removeRun(tx Tx, taskID, runID manta.ID) error {
+func deleteRun(tx Tx, taskID, runID manta.ID) error {
 	pk, err := runID.Encode()
 	if err != nil {
 		return err
