@@ -76,8 +76,10 @@ export const setQueryResult = (
 ) =>
   ({
     type: SET_QUERY_RESULTS,
-    state,
-    result,
+    payload: {
+      state,
+      result,
+    },
   } as const)
 
 export type Action =

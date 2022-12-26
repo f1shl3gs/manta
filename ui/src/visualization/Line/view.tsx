@@ -49,7 +49,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
     suffix: yAxisSuffix,
     base: yAxisBase,
     timeZone: 'Local',
-    timeFormat: timeFormat,
+    timeFormat,
   })
 
   const colorHexes = useMemo(() => {

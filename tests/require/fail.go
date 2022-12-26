@@ -142,7 +142,7 @@ func messageFromMsgAndArgs(msgAndArgs ...interface{}) string {
 
 // labeledOutput returns a string consisting of the provided labeledContent. Each labeled output is appended in the following manner:
 //
-//   \t{{label}}:{{align_spaces}}\t{{content}}\n
+//	\t{{label}}:{{align_spaces}}\t{{content}}\n
 //
 // The initial carriage return is required to undo/erase any padding added by testing.T.Errorf. The "\t{{label}}:" is for the label.
 // If a label is shorter than the longest label provided, padding spaces are added to make all the labels match in length. Once this

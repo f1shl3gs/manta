@@ -28,13 +28,20 @@ export const executeQuery = async (
     type === 'single-stat' || type === 'gauge'
       ? `/api/v1/query`
       : `/api/v1/query_range`
+  const extraQuery =
+    type === 'single-stat' || type === 'gauge'
+      ? {time: `${end}`}
+      : {
+          start: `${start}`,
+          end: `${end}`,
+          step: `${step}`,
+        }
+
   const resp = await request(url, {
     query: {
-      start: `${start}`,
-      end: `${end}`,
-      step: `${step}`,
       orgID,
       query: query.text,
+      ...extraQuery,
     },
   })
   if (resp.status !== 200) {

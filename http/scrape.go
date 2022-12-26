@@ -35,7 +35,6 @@ func NewScrapeHandler(backend *Backend, logger *zap.Logger) {
 	h.HandlerFunc(http.MethodPatch, scrapeIDPath, h.handlePatch)
 }
 
-//
 func (h *ScrapeTargetHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()

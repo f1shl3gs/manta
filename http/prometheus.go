@@ -47,6 +47,15 @@ var (
 	maxTimeFormatted = maxTime.Format(time.RFC3339Nano)
 )
 
+type StatsRenderer func(context.Context, *stats.Statistics, string) stats.QueryStats
+
+func defaultStatsRenderer(ctx context.Context, s *stats.Statistics, param string) stats.QueryStats {
+	if param != "" {
+		return stats.NewQueryStats(s)
+	}
+	return nil
+}
+
 type PromAPIHandler struct {
 	*Router
 	logger *zap.Logger
@@ -125,6 +134,12 @@ func parseTimeParam(r *http.Request, param string, defaultVal time.Time) (time.T
 	return t, err
 }
 
+func extractQueryOpts(r *http.Request) *promql.QueryOpts {
+	return &promql.QueryOpts{
+		EnablePerStepStats: r.FormValue("stats") == "all",
+	}
+}
+
 func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
@@ -142,26 +157,94 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	if to := r.FormValue("timeout"); to != "" {
+		var cancel context.CancelFunc
+
+		timeout, err := parseDuration(to)
+		if err != nil {
+			h.HandleHTTPError(ctx, err, w)
+			return
+		}
+
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		defer cancel()
+	}
+
 	queryable, err := h.tenantStorage.Queryable(ctx, orgID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	qry, err := h.engine.NewInstantQuery(queryable, &promql.QueryOpts{}, r.FormValue("query"), ts)
-	if err != nil {
-		h.HandleHTTPError(ctx, &manta.Error{
-			Code: manta.EInvalid,
-			Msg:  "bad_data: invalid parameter \"query\"",
-			Op:   "createDashboard instant query",
-			Err:  err,
-		}, w)
+	// this func split `query` and `response` into two part,
+	// so we
+	result := func() apiFuncResult {
+		opts := extractQueryOpts(r)
+		qry, err := h.engine.NewInstantQuery(queryable, opts, r.FormValue("query"), ts)
+		if err != nil {
+			return apiFuncResult{
+				nil,
+				&apiError{
+					errorBadData,
+					errors.Wrapf(err, "invalid query %s", r.FormValue("query")),
+				},
+				nil,
+			}
+		}
+
+		defer qry.Close()
+
+		res := qry.Exec(ctx)
+		if res.Err != nil {
+			return apiFuncResult{
+				nil,
+				returnAPIError(res.Err),
+				res.Warnings,
+			}
+		}
+
+		qs := defaultStatsRenderer(ctx, qry.Stats(), r.FormValue("stats"))
+
+		return apiFuncResult{&queryData{
+			ResultType: res.Value.Type(),
+			Result:     res.Value,
+			Stats:      qs,
+		}, nil, res.Warnings}
+	}()
+
+	if result.Err == nil {
+		err := encodeResponse(ctx, w, http.StatusOK, &response{
+			Status:   "success",
+			Data:     result.Data,
+			Warnings: result.Warnings,
+		})
+		if err != nil {
+			logEncodingError(h.logger, r, err)
+		}
+
 		return
 	}
 
-	defer qry.Close()
+	resp := response{
+		Status: StatusError,
+		Error:  result.Err.Error(),
+	}
 
-	h.encodeQueryResult(ctx, w, r, qry)
+	switch result.Err.Err.(type) {
+	case promql.ErrQueryCanceled:
+		resp.ErrorType = ErrorCanceled
+	case promql.ErrQueryTimeout:
+		resp.ErrorType = ErrorTimeout
+	case promql.ErrStorage:
+		resp.ErrorType = ErrorInternal
+	default:
+		resp.ErrorType = ErrorExec
+	}
+
+	err = encodeResponse(ctx, w, http.StatusOK, resp)
+	if err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request) {
@@ -325,17 +408,15 @@ const (
 )
 
 type response struct {
-	Status    string      `json:"status"`
-	Data      interface{} `json:"data,omitempty"`
-	ErrorType ErrorType   `json:"errorType,omitempty"`
-	Error     string      `json:"error,omitempty"`
-	Warnings  []string    `json:"warnings,omitempty"`
+	Status    string           `json:"status"`
+	Data      interface{}      `json:"data,omitempty"`
+	ErrorType ErrorType        `json:"errorType,omitempty"`
+	Error     string           `json:"error,omitempty"`
+	Warnings  storage.Warnings `json:"warnings,omitempty"`
 }
 
 func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseWriter, r *http.Request, qry promql.Query) {
 	res := qry.Exec(ctx)
-	defer qry.Close()
-
 	if res.Err != nil {
 		resp := response{
 			Status: StatusError,
@@ -361,9 +442,11 @@ func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseW
 		return
 	}
 
+	defer qry.Close()
+
 	var qs stats.QueryStats
 	if r.FormValue("stats") != "" {
-		qs = stats.NewQueryStats(qry.Stats())
+		qs = defaultStatsRenderer(ctx, qry.Stats(), r.FormValue("stats"))
 	}
 
 	resp := response{
@@ -376,7 +459,7 @@ func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseW
 	}
 
 	for _, warn := range res.Warnings {
-		resp.Warnings = append(resp.Warnings, warn.Error())
+		resp.Warnings = append(resp.Warnings, warn)
 	}
 
 	err := encodeResponse(ctx, w, http.StatusOK, resp)

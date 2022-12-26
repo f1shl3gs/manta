@@ -95,9 +95,7 @@ export const timeMachineReducer = (
         return initialState()
 
       case SET_QUERY_RESULTS:
-        draftState.queryResult = {
-          ...action,
-        }
+        draftState.queryResult = action.payload
         return
 
       case SET_VIEWTYPE:
