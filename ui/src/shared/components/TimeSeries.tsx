@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useEffect, useState} from 'react'
+import React, {FunctionComponent, useEffect, useRef, useState} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
 import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
@@ -17,6 +17,9 @@ import {FromFluxResult} from '@influxdata/giraffe'
 // Utils
 import {executeQuery} from 'src/timeMachine/actions/thunks'
 
+// Hooks
+import useIntersectionObserver from 'src/shared/userIntersectionObserver'
+
 interface Props {
   viewProperties: ViewProperties
 }
@@ -30,7 +33,15 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
     return state.autoRefresh
   })
 
+  const ref = useRef<HTMLDivElement>(null)
+  const entry = useIntersectionObserver(ref, {})
+  const shouldReload = entry?.isIntersecting ?? false
+
   useEffect(() => {
+    if (!shouldReload) {
+      return;
+    }
+
     if (viewProperties.queries.length === 0) {
       return
     }
@@ -72,6 +83,7 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
         setLoading(RemoteDataState.Error)
       })
   }, [
+    shouldReload,
     setLoading,
     setError,
     start,
@@ -83,14 +95,16 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
   ])
 
   return (
-    <EmptyQueryView
-      queries={viewProperties.queries}
-      hasResults={loading === RemoteDataState.Done && result !== undefined}
-      loading={loading}
-      errorMessage={error}
-    >
-      <View result={result} properties={viewProperties} />
-    </EmptyQueryView>
+    <div ref={ref} className={'time-series-container'}>
+      <EmptyQueryView
+        queries={viewProperties.queries}
+        hasResults={loading === RemoteDataState.Done && result !== undefined}
+        loading={loading}
+        errorMessage={error}
+      >
+        <View result={result} properties={viewProperties} />
+      </EmptyQueryView>
+    </div>
   )
 }
 
