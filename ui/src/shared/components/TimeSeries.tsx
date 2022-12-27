@@ -24,6 +24,22 @@ interface Props {
   viewProperties: ViewProperties
 }
 
+function shallowEqual(object1, object2) {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (const key of keys1) {
+    if (object1[key] !== object2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
   const {orgID} = useParams()
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
@@ -35,10 +51,23 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
 
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, {})
+
+
+  const [lastSES, setLastSES] = useState({start, end, step})
+  const [refreshed, setRefreshed] = useState(true)
+  useEffect(() => {
+    if (shallowEqual(lastSES, {start, end, step})) {
+      setRefreshed(false)
+    } else {
+      setRefreshed(true)
+      setLastSES({start, end, step})
+    }
+  }, [start, end, step, lastSES])
+
   const shouldReload = entry?.isIntersecting ?? false
 
   useEffect(() => {
-    if (!shouldReload) {
+    if (!shouldReload && !refreshed) {
       return;
     }
 
