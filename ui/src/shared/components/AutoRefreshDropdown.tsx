@@ -101,18 +101,15 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
   )
 
   useEffect(() => {
+    setAutoRefreshInterval(selected.seconds)
+  }, [selected.seconds, setAutoRefreshInterval])
+
+  useEffect(() => {
     if (autoRefresh.interval === 0) {
       return
     }
 
-    const timer = setInterval(() => {
-      if (document.hidden) {
-        // page is not focused, no need to refresh
-        return
-      }
-
-      updateAutoRefresh()
-    }, autoRefresh.interval * 1000)
+    const timer = setInterval(updateAutoRefresh, autoRefresh.interval * 1000)
 
     return () => {
       clearInterval(timer)
