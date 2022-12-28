@@ -1,7 +1,7 @@
 import {SelectableDurationTimeRange} from 'src/types/timeRanges'
 
 export const PARAMS_INTERVAL = 'interval'
-export const PARAMS_TIME_RANGE_LOW = 'low'
+export const PARAMS_TIME_RANGE_LOW = 'lower'
 export const PARAMS_TIME_RANGE_TYPE = '_type'
 export const PARAMS_SHOW_VARIABLES_CONTROLS = 'showVariablesControls'
 

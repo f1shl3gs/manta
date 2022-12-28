@@ -1,7 +1,7 @@
 // Libraries
 import React, {useRef, FunctionComponent, useEffect} from 'react'
 import dayjs from 'dayjs'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -13,11 +13,9 @@ import {
 } from '@influxdata/clockface'
 import DateRangePicker from 'src/shared/components/DateRangePicker/DateRangePicker'
 
-// Hooks
-
 // Constants
 import {
-  CUSTOM_TIME_RANGE_LABEL,
+  CUSTOM_TIME_RANGE_LABEL, PARAMS_TIME_RANGE_LOW, PARAMS_TIME_RANGE_TYPE,
   pastHourTimeRange,
   SELECTABLE_TIME_RANGES,
   TIME_RANGE_FORMAT,
@@ -25,10 +23,10 @@ import {
 
 // Types
 import {TimeRange} from 'src/types/timeRanges'
-import {getTimeRange} from 'src/shared/selectors/timeRange'
 
 // Actions
 import {setTimeRange} from 'src/shared/actions/timeRange'
+import {useSearchParams} from 'react-router-dom';
 
 const getTimeRangeLabel = (timeRange: TimeRange): string => {
   if (timeRange.type === 'selectable-duration') {
@@ -48,15 +46,41 @@ const getTimeRangeLabel = (timeRange: TimeRange): string => {
   return 'unknown'
 }
 
+const getTimeRangeFromSearch = (params: URLSearchParams) : TimeRange | undefined => {
+  switch (params.get(PARAMS_TIME_RANGE_TYPE)) {
+    case 'selectable-duration':
+      const low = params.get(PARAMS_TIME_RANGE_LOW)
+      return SELECTABLE_TIME_RANGES.find(tr => tr.lower === low)
+
+    default:
+      return
+  }
+}
+
 const TimeRangeDropdown: FunctionComponent = () => {
-  const timeRange = useSelector(getTimeRange)
+  const [params, setParams] = useSearchParams()
+  const timeRange = getTimeRangeFromSearch(params) || pastHourTimeRange
   const dispatch = useDispatch()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timeRangeLabel = getTimeRangeLabel(timeRange)
 
+  const updateTimeRangeParams = (timeRange: TimeRange) => {
+    setParams(
+      prev => {
+        prev.set(PARAMS_TIME_RANGE_TYPE, timeRange.type)
+        prev.set(PARAMS_TIME_RANGE_LOW, timeRange.lower)
+
+        return prev
+      },
+      {
+        replace: true
+      }
+    )
+  }
+
   useEffect(() => {
-    dispatch(setTimeRange(pastHourTimeRange))
-  }, [dispatch])
+    dispatch(setTimeRange(timeRange))
+  }, [dispatch, timeRange])
 
   const dropdownWidth = (): number => {
     if (timeRange.type === 'custom') {
@@ -122,6 +146,7 @@ const TimeRangeDropdown: FunctionComponent = () => {
               {SELECTABLE_TIME_RANGES.map(item => {
                 const {label} = item
                 const handleClick = (): void => {
+                  updateTimeRangeParams(item)
                   dispatch(setTimeRange(item))
                 }
 
