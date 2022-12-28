@@ -15,6 +15,7 @@ import {getScrapes} from 'src/scrapes/actions/thunks'
 import {getMembers} from 'src/members/actions/thunks'
 import {getConfigs} from 'src/configurations/actions/thunks'
 import {getChecks} from 'src/checks/actions/thunks'
+import {getSecrets} from 'src/secrets/actions/thunks'
 
 // Selectors
 import {getResourcesStatus} from 'src/resources/selectors'
@@ -28,11 +29,12 @@ const mstp = (state: AppState, {resources}: OwnProps) => {
 }
 
 const mdtp = {
+  getChecks,
   getConfigs,
   getDashboards,
   getMembers,
+  getSecrets,
   getScrapes,
-  getChecks,
 }
 
 const connector = connect(mstp, mdtp)
@@ -50,11 +52,12 @@ const GetResources: FunctionComponent<Props> = props => {
     resources,
     loading,
     children,
+    getChecks,
     getConfigs,
     getDashboards,
     getMembers,
+    getSecrets,
     getScrapes,
-    getChecks,
   } = props
 
   useEffect(() => {
@@ -75,6 +78,9 @@ const GetResources: FunctionComponent<Props> = props => {
         case ResourceType.Scrapes:
           return getScrapes()
 
+        case ResourceType.Secrets:
+          return getSecrets()
+
         default:
           throw new Error('incorrent resource type provided')
       }
@@ -87,7 +93,15 @@ const GetResources: FunctionComponent<Props> = props => {
     })
 
     Promise.all(promises)
-  }, [resources, getChecks, getConfigs, getDashboards, getMembers, getScrapes])
+  }, [
+    resources,
+    getChecks,
+    getConfigs,
+    getDashboards,
+    getMembers,
+    getSecrets,
+    getScrapes,
+  ])
 
   return <PageSpinner loading={loading}>{children}</PageSpinner>
 }

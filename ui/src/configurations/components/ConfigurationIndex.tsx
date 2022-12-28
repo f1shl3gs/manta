@@ -6,7 +6,7 @@ import {Route, Routes} from 'react-router-dom'
 import {Columns, Grid, Sort} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import {AutoSizer} from 'react-virtualized'
-import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
+import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
 import CreateConfigurationButton from 'src/configurations/components/CreateConfigurationButton'
 import ConfigurationCard from 'src/configurations/components/ConfigurationCard'
@@ -14,7 +14,7 @@ import {getSortedResources} from 'src/shared/utils/sort'
 import ConfigurationExplainer from 'src/configurations/components/ConfigurationExplainer'
 
 // Types
-import {SortKey, SortTypes} from 'src/types/sort'
+import {SortTypes} from 'src/types/sort'
 import {Configuration} from 'src/types/configuration'
 import {useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
@@ -36,7 +36,7 @@ const ConfigurationIndex: FunctionComponent = () => {
   })
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
-    key: 'updated' as SortKey,
+    key: 'updated',
     type: SortTypes.Date,
     direction: Sort.Descending,
   })
@@ -50,6 +50,7 @@ const ConfigurationIndex: FunctionComponent = () => {
       />
 
       <ResourceSortDropdown
+        resource={ResourceType.Configurations}
         sortKey={sortOption.key}
         sortType={sortOption.type}
         sortDirection={sortOption.direction}

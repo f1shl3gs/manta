@@ -9,7 +9,7 @@ import {CheckEntities} from 'src/types/schemas'
 import {ResourceType} from 'src/types/resources'
 
 // Actions
-import {notifyError} from 'src/shared/actions/notifications'
+import {error} from 'src/shared/actions/notifications'
 import {removeCheck, setCheck, setChecks} from 'src/checks/actions/creators'
 import {back} from '@lagunovsky/redux-react-router'
 import {setCheckBuilder} from 'src/checks/actions/builder'
@@ -50,7 +50,7 @@ export const getChecks =
       console.log(`get checks failed, ${err.message}`)
 
       dispatch(setChecks(RemoteDataState.Error))
-      dispatch(notifyError(`get check failed, ${err}`))
+      dispatch(error(`get check failed, ${err}`))
     }
   }
 
@@ -90,7 +90,7 @@ export const patchCheck =
       dispatch(setCheck(id, RemoteDataState.Done, updated))
     } catch (err) {
       console.error(err)
-      dispatch(notifyError(`Update check failed, ${err}`))
+      dispatch(error(`Update check failed, ${err}`))
     }
   }
 
@@ -109,7 +109,7 @@ export const deleteCheck =
     } catch (err) {
       console.log(err)
 
-      dispatch(notifyError(`Delete check failed, ${err}`))
+      dispatch(error(`Delete check failed, ${err}`))
     }
   }
 
@@ -147,7 +147,7 @@ export const createCheckFromBuilder =
     } catch (err) {
       console.error(err)
 
-      dispatch(notifyError(`Create check failed, ${err}`))
+      dispatch(error(`Create check failed, ${err}`))
     }
   }
 
@@ -171,7 +171,7 @@ export const getCheckForBuilder =
     } catch (err) {
       console.error(err)
 
-      dispatch(notifyError(`Get check failed, ${err}`))
+      dispatch(error(`Get check failed, ${err}`))
     }
   }
 
@@ -207,6 +207,6 @@ export const updateCheck =
     } catch (err) {
       console.error(err)
 
-      dispatch(notifyError(`Update check failed, ${err}`))
+      dispatch(error(`Update check failed, ${err}`))
     }
   }

@@ -4,6 +4,7 @@ import {Cell} from 'src/types/cells'
 import {Configuration} from 'src/types/configuration'
 import {Scrape} from 'src/types/scrape'
 import {Check} from 'src/types/checks'
+import {Secret} from 'src/types/secrets'
 
 // DashboardEntities defines the result of normalizr's normalization of the
 // "dashboards" resource
@@ -35,6 +36,12 @@ export interface ConfigurationEntities {
 export interface CheckEntities {
   checks: {
     [uuid: string]: Check
+  }
+}
+
+export interface SecretEntities {
+  secrets: {
+    [key: string]: Secret
   }
 }
 

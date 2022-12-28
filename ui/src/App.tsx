@@ -20,7 +20,7 @@ import {useSelector} from 'react-redux'
 import {getPresentationMode} from 'src/shared/selectors/app'
 
 // Lazy load components
-const ChecksIndex = lazy(() => import('src/checks/ChecksIndex'))
+const ChecksIndex = lazy(() => import('src/checks/components/ChecksIndex'))
 const CreateOrgOverlay = lazy(
   () => import('src/organizations/components/CreateOrgOverlay')
 )

@@ -13,6 +13,7 @@ import {
   SET_CHECK,
   SET_CHECKS,
   SET_CHECK_SEARCH_TERM,
+  SET_CHECK_SORT_OPTIONS,
 } from 'src/checks/actions/creators'
 import {
   removeResource,
@@ -53,6 +54,10 @@ export const checksReducer = (
 
       case SET_CHECK_SEARCH_TERM:
         draftState.searchTerm = action.searchTerm
+        return
+
+      case SET_CHECK_SORT_OPTIONS:
+        draftState.sortOptions = action.payload
         return
 
       default:

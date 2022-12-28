@@ -1,15 +1,19 @@
 // Libraries
-import React, {MouseEvent} from 'react'
+import React, {FunctionComponent, MouseEvent} from 'react'
 
 // Components
 import {Dropdown, Sort} from '@influxdata/clockface'
 
 // Types
-import {SortKey, SortTypes} from 'src/types/sort'
+import {SortTypes} from 'src/types/sort'
+import {ResourceType} from 'src/types/resources'
+
+// Helpers
+import {generateSortItems} from 'src/shared/components/resource_sort_dropdown/sortItems'
 
 export interface SortDropdownItem {
   label: string
-  sortKey: SortKey
+  sortKey: string
   sortType: SortTypes
   sortDirection: Sort
 }
@@ -17,42 +21,22 @@ export interface SortDropdownItem {
 interface Props {
   width?: number
 
-  sortKey: SortKey
+  resource: ResourceType
+  sortKey: string
   sortType: SortTypes
   sortDirection: Sort
-  onSelect: (sortKey: SortKey, sortDirection: Sort, sortType: SortTypes) => void
+  onSelect: (sortKey: string, sortDirection: Sort, sortType: SortTypes) => void
 }
 
-const sortDropdownItems = [
-  {
-    label: 'Name (A → Z)',
-    sortKey: 'name',
-    sortType: SortTypes.String,
-    sortDirection: Sort.Ascending,
-  },
-  {
-    label: 'Name (Z → A)',
-    sortKey: 'name',
-    sortType: SortTypes.String,
-    sortDirection: Sort.Descending,
-  },
-  {
-    label: 'Modified (Oldest)',
-    sortKey: 'updated',
-    sortType: SortTypes.Date,
-    sortDirection: Sort.Ascending,
-  },
-  {
-    label: 'Modified (Newest)',
-    sortKey: 'updated',
-    sortType: SortTypes.Date,
-    sortDirection: Sort.Descending,
-  },
-]
-
-const ResourceSortDropdown: React.FC<Props> = props => {
-  const {sortKey, sortType, sortDirection, onSelect, width = 210} = props
-
+const ResourceSortDropdown: FunctionComponent<Props> = ({
+  sortKey,
+  sortType,
+  sortDirection,
+  onSelect,
+  resource,
+  width = 210,
+}) => {
+  const sortDropdownItems = generateSortItems(resource)
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const {label} = sortDropdownItems.find(
     item =>

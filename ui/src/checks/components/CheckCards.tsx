@@ -10,7 +10,7 @@ import CheckCard from 'src/checks/components/CheckCard'
 
 // Types
 import {AppState} from 'src/types/stores'
-import {Check, CheckSortParams} from 'src/types/checks'
+import {Check} from 'src/types/checks'
 import {ResourceType} from 'src/types/resources'
 
 // Selectors
@@ -19,15 +19,17 @@ import {getAll} from 'src/resources/selectors'
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
 
-interface Props {
-  searchTerm: string
-  sortOption: CheckSortParams
-}
+const CheckCards: FunctionComponent = () => {
+  const {checks, searchTerm, sortOptions} = useSelector((state: AppState) => {
+    const checks = getAll<Check>(state, ResourceType.Checks)
+    const {searchTerm, sortOptions} = state.resources[ResourceType.Checks]
 
-const CheckCards: FunctionComponent<Props> = ({searchTerm, sortOption}) => {
-  const checks = useSelector((state: AppState) =>
-    getAll<Check>(state, ResourceType.Checks)
-  )
+    return {
+      checks,
+      searchTerm,
+      sortOptions,
+    }
+  })
 
   return (
     <FilterList<Check>
@@ -51,9 +53,9 @@ const CheckCards: FunctionComponent<Props> = ({searchTerm, sortOption}) => {
             <div>
               {getSortedResources<Check>(
                 filtered,
-                sortOption.key,
-                sortOption.type,
-                sortOption.direction
+                sortOptions.key,
+                sortOptions.type,
+                sortOptions.direction
               ).map(check => (
                 <CheckCard key={check.id} check={check} />
               ))}

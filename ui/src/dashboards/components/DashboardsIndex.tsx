@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 import GetResources from 'src/resources/components/GetResources'
 import SearchWidget from 'src/shared/components/SearchWidget'
-import ResourceSortDropdown from 'src/shared/components/ResourceSortDropdown'
+import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import CreateDashboardButton from 'src/dashboards/components/CreateDashboardButton'
 import DashboardCards from 'src/dashboards/components/DashboardCards'
 
@@ -27,6 +27,22 @@ import {
   setDashboardSearchTerm,
   setDashboardSort,
 } from 'src/dashboards/actions/creators'
+
+const mstp = (state: AppState) => {
+  const {sortOptions, searchTerm} = state.resources[ResourceType.Dashboards]
+
+  return {
+    sortOptions,
+    searchTerm,
+  }
+}
+
+const mdtp = {
+  setDashboardSearchTerm,
+  setDashboardSort,
+}
+
+const connector = connect(mstp, mdtp)
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -52,6 +68,7 @@ export const DashboardsIndex: FunctionComponent<Props> = ({
               search={searchTerm}
             />
             <ResourceSortDropdown
+              resource={ResourceType.Dashboards}
               sortKey={sortOptions.key}
               sortType={sortOptions.type}
               sortDirection={sortOptions.direction}
@@ -71,33 +88,13 @@ export const DashboardsIndex: FunctionComponent<Props> = ({
         </PageControlBar>
 
         <PageContents>
-          <DashboardCards search={searchTerm} sortOption={sortOptions} />
+          <GetResources resources={[ResourceType.Dashboards]}>
+            <DashboardCards search={searchTerm} sortOption={sortOptions} />
+          </GetResources>
         </PageContents>
       </Page>
     </>
   )
 }
 
-const mstp = (state: AppState) => {
-  const {sortOptions, searchTerm} = state.resources[ResourceType.Dashboards]
-
-  return {
-    sortOptions,
-    searchTerm,
-  }
-}
-
-const mdtp = {
-  setDashboardSearchTerm,
-  setDashboardSort,
-}
-
-const connector = connect(mstp, mdtp)
-
-const ToExport = connector(DashboardsIndex)
-
-export default () => (
-  <GetResources resources={[ResourceType.Dashboards]}>
-    <ToExport />
-  </GetResources>
-)
+export default connector(DashboardsIndex)

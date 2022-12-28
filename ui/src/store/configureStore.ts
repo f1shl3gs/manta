@@ -38,6 +38,7 @@ import {meReducer} from 'src/me/reducers'
 import {setupReducer} from 'src/setup/reducers'
 import {checksReducer} from 'src/checks/reducers'
 import {checkBuilderReducer} from 'src/checks/reducers/builder'
+import {secretsReduer} from 'src/secrets/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -61,6 +62,7 @@ const rootReducer = (history: History) => (state, action) => {
       [ResourceType.Dashboards]: dashboardsReducer,
       [ResourceType.Members]: usersReducer,
       [ResourceType.Organizations]: organizationsReducer,
+      [ResourceType.Secrets]: secretsReduer,
       [ResourceType.Scrapes]: scrapesReducers,
     }),
     setup: setupReducer,

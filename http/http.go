@@ -29,19 +29,21 @@ type Backend struct {
 
 	router *Router
 
-	BackupService        manta.BackupService
-	OrganizationService  manta.OrganizationService
-	DashboardService     manta.DashboardService
-	UserService          manta.UserService
-	PasswordService      manta.PasswordService
-	AuthorizationService manta.AuthorizationService
-	SessionService       manta.SessionService
-	OnBoardingService    manta.OnBoardingService
-	CheckService         manta.CheckService
-	TaskService          manta.TaskService
-	ConfigurationService manta.ConfigurationService
-	ScraperTargetService manta.ScraperTargetService
-	RegistryService      manta.RegistryService
+	BackupService               manta.BackupService
+	OrganizationService         manta.OrganizationService
+	DashboardService            manta.DashboardService
+	UserService                 manta.UserService
+	PasswordService             manta.PasswordService
+	AuthorizationService        manta.AuthorizationService
+	SessionService              manta.SessionService
+	OnBoardingService           manta.OnBoardingService
+	CheckService                manta.CheckService
+	TaskService                 manta.TaskService
+	ConfigurationService        manta.ConfigurationService
+	ScraperTargetService        manta.ScraperTargetService
+	RegistryService             manta.RegistryService
+	NotificationEndpointService manta.NotificationEndpointService
+	SecretService               manta.SecretService
 
 	TenantStorage         multitsdb.TenantStorage
 	TenantTargetRetriever multitsdb.TenantTargetRetriever
@@ -106,6 +108,8 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewRegistryService(backend, logger)
 	NewChecksHandler(logger, backend.router, backend.CheckService, backend.TaskService)
 	NewTaskHandler(backend, logger)
+	NewSecretHandler(logger, backend)
+	NewNotificationEendpointHandler(logger, backend)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),

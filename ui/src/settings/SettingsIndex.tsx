@@ -2,7 +2,7 @@ import React, {FunctionComponent, lazy} from 'react'
 import TabsPage from 'src/layout/TabsPage'
 
 const Members = lazy(() => import('src/members/MembersIndex'))
-const Secrets = lazy(() => import('src/secrets/SecretsIndex'))
+const Secrets = lazy(() => import('src/secrets/components/SecretsIndex'))
 
 const SettingsPage: FunctionComponent = () => {
   const tabs = [

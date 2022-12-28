@@ -6,6 +6,7 @@ import {Configuration} from 'src/types/configuration'
 import {User} from 'src/types/user'
 import {Scrape} from 'src/types/scrape'
 import {Check, CheckSortParams} from 'src/types/checks'
+import {Secret, SecretSortParams} from 'src/types/secrets'
 
 export interface Resource {
   type: ResourceType
@@ -19,6 +20,7 @@ export enum ResourceType {
   Dashboards = 'dashboards',
   Members = 'members',
   Organizations = 'organizations',
+  Secrets = 'secrets',
   Scrapes = 'scrapes',
   Views = 'views',
 }
@@ -53,6 +55,11 @@ export type MembersState = NormalizedState<User>
 
 export type ScrapesState = NormalizedState<Scrape>
 
+export interface SecretsState extends NormalizedState<Secret> {
+  searchTerm: string
+  sortOptions: SecretSortParams
+}
+
 // Cells 'allIDs' are Dashboard.cells
 export type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
 
@@ -69,5 +76,6 @@ export interface ResourceState {
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Organizations]: OrgsState
   [ResourceType.Members]: MembersState
+  [ResourceType.Secrets]: SecretsState
   [ResourceType.Scrapes]: ScrapesState
 }

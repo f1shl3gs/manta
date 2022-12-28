@@ -198,7 +198,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		if res.Err != nil {
 			return apiFuncResult{
 				nil,
-				returnAPIError(res.Err),
+				promApiErr(res.Err),
 				res.Warnings,
 			}
 		}
@@ -379,7 +379,7 @@ type apiFuncResult struct {
 	Warnings storage.Warnings `json:"warnings,omitempty"`
 }
 
-func returnAPIError(err error) *apiError {
+func promApiErr(err error) *apiError {
 	if err == nil {
 		return nil
 	}
@@ -585,7 +585,7 @@ func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request
 
 	q, err := queryable.Querier(ctx, timestamp.FromTime(start), timestamp.FromTime(end))
 	if err != nil {
-		h.HandleHTTPError(ctx, returnAPIError(err), w)
+		h.HandleHTTPError(ctx, promApiErr(err), w)
 		return
 	}
 

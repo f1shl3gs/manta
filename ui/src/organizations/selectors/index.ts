@@ -14,6 +14,12 @@ export const getOrg = (state: AppState): Organization => {
   return get(state, 'resources.organizations.org', null)
 }
 
+export const getOrgID = (state: AppState): string => {
+  const org = getOrg(state)
+
+  return org.id
+}
+
 export const getOrgs = (state: AppState): Organization[] => {
   return getAll(state, ResourceType.Organizations)
 }

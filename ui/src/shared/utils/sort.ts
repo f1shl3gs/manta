@@ -39,12 +39,7 @@ function orderByType(data: string, type: SortTypes) {
   }
 }
 
-interface Sortable {
-  name: string
-  updated: string
-}
-
-export function getSortedResources<T extends Sortable>(
+export function getSortedResources<T>(
   resourceList: T[],
   sortKey: string,
   sortType: SortTypes,

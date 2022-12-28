@@ -98,10 +98,8 @@ export interface Check extends Omit<CheckBase, 'conditions' | 'status'> {
   status: RemoteDataState
 }
 
-export type CheckSortKey = keyof Check
-
 export interface CheckSortParams {
   direction: Sort
   type: SortTypes
-  key: CheckSortKey
+  key: string
 }
