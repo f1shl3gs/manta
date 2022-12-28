@@ -46,12 +46,12 @@ func newScraper(
 		scrapeTargetService: scrapeTargetService,
 	}
 
-    go func() {
-        err := mgr.Run(ch)
-        if err != nil {
-            logger.Error("scrape manager run failed", zap.Error(err))
-        }
-    }()
+	go func() {
+		err := mgr.Run(ch)
+		if err != nil {
+			logger.Error("scrape manager run failed", zap.Error(err))
+		}
+	}()
 
 	go scraper.syncTargets()
 

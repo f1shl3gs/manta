@@ -25,7 +25,7 @@ func NewScrapeHandler(backend *Backend, logger *zap.Logger) {
 	h := &ScrapeTargetHandler{
 		Router:        backend.router,
 		logger:        logger.With(zap.String("handler", "scrape")),
-		scrapeService: backend.ScraperTargetService,
+		scrapeService: backend.ScrapeTargetService,
 	}
 
 	h.HandlerFunc(http.MethodGet, scrapeIDPath, h.handleGet)

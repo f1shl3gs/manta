@@ -282,7 +282,7 @@ func (l *Launcher) run() error {
 			SessionService:              service,
 			Flusher:                     kvStore,
 			ConfigurationService:        service,
-			ScraperTargetService:        service,
+			ScrapeTargetService:         scrapeTargetService,
 			RegistryService:             service,
 			SecretService:               service,
 			NotificationEndpointService: service,

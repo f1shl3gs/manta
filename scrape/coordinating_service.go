@@ -86,7 +86,7 @@ func (s *CoordinatingScrapeService) FindScrapeTargets(ctx context.Context, filte
 	return s.scrapeTargetService.FindScrapeTargets(ctx, filter)
 }
 
-func (s *CoordinatingScrapeService) CreateScraperTarget(ctx context.Context, target *manta.ScrapeTarget) error {
+func (s *CoordinatingScrapeService) CreateScrapeTarget(ctx context.Context, target *manta.ScrapeTarget) error {
 	if err := s.scrapeTargetService.CreateScrapeTarget(ctx, target); err != nil {
 		return err
 	}
