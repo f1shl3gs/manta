@@ -1,5 +1,6 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, lazy} from 'react'
+import {Routes, Route} from 'react-router-dom'
 
 // Components
 import {Page, PageContents, PageHeader, PageTitle} from '@influxdata/clockface'
@@ -10,21 +11,36 @@ import CheckCards from 'src/checks/components/CheckCards'
 import {ResourceType} from 'src/types/resources'
 import ChecksControlBar from './ChecksControlBar'
 
+// Lazy load
+const NewCheckOverlay = lazy(
+  () => import('src/checks/components/NewCheckOverlay')
+)
+const EditCheckOverlay = lazy(
+  () => import('src/checks/components/EditCheckOverlay')
+)
+
 const ChecksIndex: FunctionComponent = () => {
   return (
-    <Page titleTag={'Checks'}>
-      <PageHeader fullWidth={false}>
-        <PageTitle title={'Checks'} />
-      </PageHeader>
+    <>
+      <Routes>
+        <Route path="new" element={<NewCheckOverlay />} />
+        <Route path=":id/edit" element={<EditCheckOverlay />} />
+      </Routes>
 
-      <ChecksControlBar />
+      <Page titleTag={'Checks'}>
+        <PageHeader fullWidth={false}>
+          <PageTitle title={'Checks'} />
+        </PageHeader>
 
-      <PageContents>
-        <GetResources resources={[ResourceType.Checks]}>
-          <CheckCards />
-        </GetResources>
-      </PageContents>
-    </Page>
+        <ChecksControlBar />
+
+        <PageContents>
+          <GetResources resources={[ResourceType.Checks]}>
+            <CheckCards />
+          </GetResources>
+        </PageContents>
+      </Page>
+    </>
   )
 }
 

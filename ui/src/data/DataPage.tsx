@@ -26,11 +26,7 @@ const DataPage: FunctionComponent = () => {
     },
   ]
 
-  return (
-    <>
-      <TabsPage title={'Data'} tabs={tabs} />
-    </>
-  )
+  return <TabsPage title={'Data'} tabs={tabs} />
 }
 
 export default DataPage

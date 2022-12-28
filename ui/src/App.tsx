@@ -24,24 +24,15 @@ const ChecksIndex = lazy(() => import('src/checks/components/ChecksIndex'))
 const CreateOrgOverlay = lazy(
   () => import('src/organizations/components/CreateOrgOverlay')
 )
-const DashboardImportOverlay = lazy(
-  () => import('src/dashboards/components/DashboardImportOverlay')
-)
 const DashboardsIndex = lazy(
   () => import('src/dashboards/components/DashboardsIndex')
 )
+const Explore = lazy(() => import('src/explore/Explore'))
+const Introduce = lazy(() => import('src/Introduce'))
+const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const DashboardPage = lazy(
   () => import('src/dashboards/components/DashboardPage')
 )
-const EditCheckOverlay = lazy(
-  () => import('src/checks/components/EditCheckOverlay')
-)
-const Explore = lazy(() => import('src/explore/Explore'))
-const Introduce = lazy(() => import('src/Introduce'))
-const NewCheckOverlay = lazy(
-  () => import('src/checks/components/NewCheckOverlay')
-)
-const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 
 const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)
@@ -62,26 +53,13 @@ const App: FunctionComponent = () => {
                 <Route path=":orgID">
                   <Route index={true} element={<Introduce />} />
 
-                  <Route path="checks" element={<ChecksIndex />} />
-
-                  <Route path={'checks/new'} element={<NewCheckOverlay />} />
-
-                  <Route
-                    path={'checks/:id/edit'}
-                    element={<EditCheckOverlay />}
-                  />
+                  <Route path="checks/*" element={<ChecksIndex />} />
 
                   <Route path="data/*" element={<DataPage />} />
 
                   <Route path="explore" element={<Explore />} />
 
                   <Route path="dashboards/*" element={<DashboardsIndex />} />
-
-                  <Route
-                    path="dashboards/import"
-                    element={<DashboardImportOverlay />}
-                  />
-
                   <Route
                     path="dashboards/:dashboardID/*"
                     element={<DashboardPage />}

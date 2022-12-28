@@ -25,19 +25,19 @@ interface Props {
 }
 
 function shallowEqual(object1, object2) {
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
+  const keys1 = Object.keys(object1)
+  const keys2 = Object.keys(object2)
   if (keys1.length !== keys2.length) {
-    return false;
+    return false
   }
 
   for (const key of keys1) {
     if (object1[key] !== object2[key]) {
-      return false;
+      return false
     }
   }
 
-  return true;
+  return true
 }
 
 const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
@@ -51,7 +51,6 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
 
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, {})
-
 
   const [lastSES, setLastSES] = useState({start, end, step})
   const [refreshed, setRefreshed] = useState(true)
@@ -68,7 +67,7 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
 
   useEffect(() => {
     if (!shouldReload && !refreshed) {
-      return;
+      return
     }
 
     if (viewProperties.queries.length === 0) {
@@ -127,7 +126,11 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
     <div ref={ref} className={'time-series-container'}>
       <EmptyQueryView
         queries={viewProperties.queries}
-        hasResults={loading === RemoteDataState.Done && result !== undefined}
+        hasResults={
+          loading === RemoteDataState.Done &&
+          result !== undefined &&
+          result.table.length !== 0
+        }
         loading={loading}
         errorMessage={error}
       >

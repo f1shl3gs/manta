@@ -55,6 +55,11 @@ const DashboardIndex: FunctionComponent<Props> = ({id}) => {
   return (
     <>
       <Page titleTag={`Dashboard | ${name}`}>
+        <Routes>
+          <Route path="cells/new" element={<NewVEO />} />
+          <Route path="cells/:cellID/edit" element={<EditVEO />} />
+        </Routes>
+
         <DashboardHeader />
 
         <Page.Contents scrollable={true} fullWidth={true}>
@@ -70,11 +75,7 @@ export default () => {
 
   return (
     <GetResource resources={[{type: ResourceType.Dashboards, id: dashboardID}]}>
-      <Routes>
-        <Route index element={<DashboardIndex id={dashboardID} />} />
-        <Route path="cells/new" element={<NewVEO />} />
-        <Route path="cells/:cellID/edit" element={<EditVEO />} />
-      </Routes>
+      <DashboardIndex id={dashboardID} />
     </GetResource>
   )
 }

@@ -1,6 +1,7 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, lazy} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {Route, Routes} from 'react-router-dom'
 
 // Components
 import {
@@ -27,6 +28,11 @@ import {
   setDashboardSearchTerm,
   setDashboardSort,
 } from 'src/dashboards/actions/creators'
+
+// Lazy load overlay
+const DashboardImportOverlay = lazy(
+  () => import('src/dashboards/components/DashboardImportOverlay')
+)
 
 const mstp = (state: AppState) => {
   const {sortOptions, searchTerm} = state.resources[ResourceType.Dashboards]
@@ -55,6 +61,10 @@ export const DashboardsIndex: FunctionComponent<Props> = ({
 }) => {
   return (
     <>
+      <Routes>
+        <Route path="import" element={<DashboardImportOverlay />} />
+      </Routes>
+
       <Page titleTag="Dashboards">
         <PageHeader fullWidth={false}>
           <PageTitle title="Dashboards" />
