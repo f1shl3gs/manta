@@ -18,7 +18,7 @@ type ScrapeTargetHandler struct {
 	*Router
 
 	logger        *zap.Logger
-	scrapeService manta.ScraperTargetService
+	scrapeService manta.ScrapeTargetService
 }
 
 func NewScrapeHandler(backend *Backend, logger *zap.Logger) {
@@ -46,7 +46,7 @@ func (h *ScrapeTargetHandler) handleGet(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	s, err := h.scrapeService.FindScraperTargetByID(ctx, id)
+	s, err := h.scrapeService.FindScrapeTargetByID(ctx, id)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -70,7 +70,7 @@ func (h *ScrapeTargetHandler) handleList(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	ts, err := h.scrapeService.FindScraperTargets(ctx, manta.ScraperTargetFilter{OrgID: &orgID})
+	ts, err := h.scrapeService.FindScrapeTargets(ctx, manta.ScrapeTargetFilter{OrgID: &orgID})
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -95,7 +95,7 @@ func (h *ScrapeTargetHandler) handleCreate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = h.scrapeService.CreateScraperTarget(ctx, s)
+	err = h.scrapeService.CreateScrapeTarget(ctx, s)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -118,7 +118,7 @@ func (h *ScrapeTargetHandler) handleDelete(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = h.scrapeService.DeleteScraperTarget(ctx, id)
+	err = h.scrapeService.DeleteScrapeTarget(ctx, id)
 	if err == nil {
 		w.WriteHeader(http.StatusNoContent)
 		return
@@ -130,7 +130,7 @@ func (h *ScrapeTargetHandler) handleDelete(w http.ResponseWriter, r *http.Reques
 func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
-		upd manta.ScraperTargetUpdate
+		upd manta.ScrapeTargetUpdate
 	)
 
 	id, err := idFromPath(r)
@@ -145,7 +145,7 @@ func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	scrape, err := h.scrapeService.UpdateScraperTarget(ctx, id, upd)
+	scrape, err := h.scrapeService.UpdateScrapeTarget(ctx, id, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -156,7 +156,7 @@ func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func decodeScrapePatch(r *http.Request, upd *manta.ScraperTargetUpdate) error {
+func decodeScrapePatch(r *http.Request, upd *manta.ScrapeTargetUpdate) error {
 	err := json.NewDecoder(r.Body).Decode(upd)
 	if err != nil {
 		return err

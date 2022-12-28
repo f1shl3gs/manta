@@ -14,10 +14,6 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/common/model"
-	promconfig "github.com/prometheus/prometheus/config"
-	"github.com/prometheus/prometheus/discovery/targetgroup"
-	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/tsdb"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
@@ -36,6 +32,7 @@ import (
 	"github.com/f1shl3gs/manta/pkg/cgroups"
 	"github.com/f1shl3gs/manta/pkg/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
+	"github.com/f1shl3gs/manta/scrape"
 	"github.com/f1shl3gs/manta/task/backend"
 	"github.com/f1shl3gs/manta/task/backend/coordinator"
 	"github.com/f1shl3gs/manta/task/backend/executor"
@@ -175,6 +172,10 @@ func (l *Launcher) run() error {
 
 	service := kv.NewService(logger, kvStore)
 
+	var (
+		orgService manta.OrganizationService = service
+	)
+
 	prometheus.MustRegister(kvStore)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -209,123 +210,12 @@ func (l *Launcher) run() error {
 		tenantStorage = mtsdb
 	}
 
-	var targetRetrievers = &multitsdb.TargetRetrievers{}
-
-	{
-		// scrape service
-		var scrapeTargetService manta.ScraperTargetService = service
-
-		syncTargetCh := func(orgID manta.ID, mgr *scrape.Manager) chan map[string][]*targetgroup.Group {
-			ch := make(chan map[string][]*targetgroup.Group)
-
-			go func() {
-				ticker := time.NewTicker(15 * time.Second)
-				defer ticker.Stop()
-
-				for {
-					// sync tset as soon as possible
-					targets, err := scrapeTargetService.FindScraperTargets(ctx, manta.ScraperTargetFilter{
-						OrgID: &orgID,
-					})
-					if err != nil {
-						logger.Warn("Find scrape targets failed", zap.Error(err))
-					} else {
-						scf := &promconfig.Config{
-							GlobalConfig: promconfig.GlobalConfig{
-								ScrapeInterval: model.Duration(15 * time.Second),
-								ScrapeTimeout:  model.Duration(10 * time.Second),
-							},
-						}
-
-						tset := make(map[string][]*targetgroup.Group)
-						for _, tg := range targets {
-							scf.ScrapeConfigs = append(scf.ScrapeConfigs, &promconfig.ScrapeConfig{
-								JobName:        tg.Name,
-								ScrapeInterval: model.Duration(15 * time.Second),
-								ScrapeTimeout:  model.Duration(10 * time.Second),
-								MetricsPath:    "/metrics",
-								Scheme:         "http",
-							})
-
-							labelSet := model.LabelSet{}
-							for k, v := range tg.Labels {
-								labelSet[model.LabelName(k)] = model.LabelValue(v)
-							}
-
-							targetLs := make([]model.LabelSet, 0, len(tg.Targets))
-							for _, addr := range tg.Targets {
-								targetLs = append(targetLs, model.LabelSet{
-									model.AddressLabel: model.LabelValue(addr),
-								})
-							}
-
-							tset[tg.Name] = append(tset[tg.Name], &targetgroup.Group{
-								Source:  tg.ID.String(),
-								Labels:  labelSet,
-								Targets: targetLs,
-							})
-						}
-
-						err := mgr.ApplyConfig(scf)
-						if err != nil {
-							logger.Warn("Apply scrape config failed", zap.Error(err))
-						} else {
-							logger.Debug("Apply scrape config success", zap.Int("jobs", len(scf.ScrapeConfigs)))
-						}
-
-						select {
-						case <-ctx.Done():
-							return
-						case ch <- tset:
-						}
-					}
-
-					select {
-					case <-ctx.Done():
-						return
-					case <-ticker.C:
-					}
-				}
-			}()
-
-			return ch
-		}
-
-		orgs, _, err := service.FindOrganizations(ctx, manta.OrganizationFilter{})
-		if err != nil {
-			return err
-		}
-
-		for _, org := range orgs {
-			app, err := tenantStorage.Appendable(ctx, org.ID)
-			if err != nil {
-				return err
-			}
-
-			kl := log.NewZapToGokitLogAdapter(logger.With(
-				zap.String("service", "scrape"),
-				zap.String("tenant", org.ID.String()),
-			))
-
-			orgID := org.ID
-			group.Go(func() error {
-				mgr := scrape.NewManager(nil, kl, app)
-				targetRetrievers.Add(orgID, mgr)
-				errCh := make(chan error)
-				go func() {
-					errCh <- mgr.Run(syncTargetCh(orgID, mgr))
-				}()
-
-				select {
-				case <-ctx.Done():
-					mgr.Stop()
-					return nil
-				case err = <-errCh:
-					return err
-				}
-			})
-		}
+	scrapeTargetService, err := scrape.New(ctx, logger, orgService, service, tenantStorage)
+	if err != nil {
+		return errors.Wrap(err, "create scrape service failed")
 	}
+
+	var targetRetrievers multitsdb.TenantTargetRetriever = scrapeTargetService
 
 	var checkService manta.CheckService
 	var taskService manta.TaskService = service

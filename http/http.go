@@ -40,7 +40,7 @@ type Backend struct {
 	CheckService                manta.CheckService
 	TaskService                 manta.TaskService
 	ConfigurationService        manta.ConfigurationService
-	ScraperTargetService        manta.ScraperTargetService
+	ScraperTargetService        manta.ScrapeTargetService
 	RegistryService             manta.RegistryService
 	NotificationEndpointService manta.NotificationEndpointService
 	SecretService               manta.SecretService

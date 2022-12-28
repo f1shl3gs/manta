@@ -12,7 +12,7 @@ var (
 	ScrapeOrgIndexBucket = []byte("scrapeorgindex")
 )
 
-func (s *Service) FindScraperTargetByID(ctx context.Context, id manta.ID) (*manta.ScrapeTarget, error) {
+func (s *Service) FindScrapeTargetByID(ctx context.Context, id manta.ID) (*manta.ScrapeTarget, error) {
 	var (
 		st  *manta.ScrapeTarget
 		err error
@@ -26,7 +26,7 @@ func (s *Service) FindScraperTargetByID(ctx context.Context, id manta.ID) (*mant
 	return st, err
 }
 
-func (s *Service) FindScraperTargets(ctx context.Context, filter manta.ScraperTargetFilter) ([]*manta.ScrapeTarget, error) {
+func (s *Service) FindScrapeTargets(ctx context.Context, filter manta.ScrapeTargetFilter) ([]*manta.ScrapeTarget, error) {
 	var (
 		list []*manta.ScrapeTarget
 		err  error
@@ -40,7 +40,7 @@ func (s *Service) FindScraperTargets(ctx context.Context, filter manta.ScraperTa
 	return list, err
 }
 
-func (s *Service) CreateScraperTarget(ctx context.Context, target *manta.ScrapeTarget) error {
+func (s *Service) CreateScrapeTarget(ctx context.Context, target *manta.ScrapeTarget) error {
 	now := time.Now()
 	target.ID = s.idGen.ID()
 	target.Created = now
@@ -51,7 +51,7 @@ func (s *Service) CreateScraperTarget(ctx context.Context, target *manta.ScrapeT
 	})
 }
 
-func (s *Service) UpdateScraperTarget(ctx context.Context, id manta.ID, u manta.ScraperTargetUpdate) (*manta.ScrapeTarget, error) {
+func (s *Service) UpdateScrapeTarget(ctx context.Context, id manta.ID, u manta.ScrapeTargetUpdate) (*manta.ScrapeTarget, error) {
 	var (
 		st  *manta.ScrapeTarget
 		err error
@@ -69,7 +69,7 @@ func (s *Service) UpdateScraperTarget(ctx context.Context, id manta.ID, u manta.
 	return st, err
 }
 
-func (s *Service) DeleteScraperTarget(ctx context.Context, id manta.ID) error {
+func (s *Service) DeleteScrapeTarget(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
 		return deleteOrgIndexed[manta.ScrapeTarget](tx, id, ScraperBucket, ScrapeOrgIndexBucket)
 	})
