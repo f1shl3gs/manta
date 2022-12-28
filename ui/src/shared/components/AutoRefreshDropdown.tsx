@@ -26,6 +26,9 @@ import {AppState} from 'src/types/stores'
 // Actions
 import {poll, setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
 
+// Utils
+import {parseDuration} from 'src/shared/utils/duration'
+
 // Constants
 import {AutoRefreshDropdownOptions} from 'src/shared/constants/autoRefresh'
 
@@ -67,11 +70,14 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
   setAutoRefreshInterval,
   updateAutoRefresh,
 }) => {
-  const [_, setParams] = useSearchParams()
+  const [params, setParams] = useSearchParams()
   const [selected, setSelected] = useState(() => {
+    const interval = parseDuration(params.get('interval') || '15s') / 1000
+
     const opt = AutoRefreshDropdownOptions.find(
-      opt => opt.seconds === autoRefresh.interval
+      opt => opt.seconds === interval
     )
+
     if (opt === undefined) {
       return AutoRefreshDropdownOptions[3]
     }
@@ -101,7 +107,7 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
 
     const timer = setInterval(() => {
       if (document.hidden) {
-        // tab is not focused, no need to refresh
+        // page is not focused, no need to refresh
         return
       }
 

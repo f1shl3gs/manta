@@ -1,5 +1,5 @@
 // Libraries
-import React, {useRef, FunctionComponent} from 'react'
+import React, {useRef, FunctionComponent, useEffect} from 'react'
 import dayjs from 'dayjs'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -18,6 +18,7 @@ import DateRangePicker from 'src/shared/components/DateRangePicker/DateRangePick
 // Constants
 import {
   CUSTOM_TIME_RANGE_LABEL,
+  pastHourTimeRange,
   SELECTABLE_TIME_RANGES,
   TIME_RANGE_FORMAT,
 } from 'src/shared/constants/timeRange'
@@ -52,6 +53,10 @@ const TimeRangeDropdown: FunctionComponent = () => {
   const dispatch = useDispatch()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timeRangeLabel = getTimeRangeLabel(timeRange)
+
+  useEffect(() => {
+    dispatch(setTimeRange(pastHourTimeRange))
+  }, [dispatch])
 
   const dropdownWidth = (): number => {
     if (timeRange.type === 'custom') {

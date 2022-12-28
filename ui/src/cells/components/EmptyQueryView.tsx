@@ -18,10 +18,24 @@ interface Props {
 
 const emptyGraphCopy = "Looks like you don't have any queries"
 
-const EmptyQueryView: FunctionComponent<Props> = props => {
-  const {loading, queries, errorMessage, hasResults, isInitialFetch} = props
+const EmptyQueryView: FunctionComponent<Props> = ({
+  loading,
+  queries,
+  errorMessage,
+  hasResults,
+  isInitialFetch,
+  children
+}) => {
+  if (!hasResults) {
+    return (
+      <EmptyGraphMessage
+        message="No results"
+        testID={'empty-graph--no-results'}
+      />
+      )
+  }
 
-  if (loading === RemoteDataState.NotStarted || (queries && !queries.length)) {
+  if (loading === RemoteDataState.NotStarted || (queries && queries.length === 0)) {
     return (
       <EmptyGraphMessage
         message={emptyGraphCopy}
@@ -40,16 +54,7 @@ const EmptyQueryView: FunctionComponent<Props> = props => {
     return <EmptyGraphMessage message="" />
   }
 
-  if (!hasResults) {
-    return (
-      <EmptyGraphMessage
-        message="No results"
-        testID={'empty-graph--no-results'}
-      />
-    )
-  }
-
-  return <>{props.children}</>
+  return <>{children}</>
 }
 
 export default EmptyQueryView

@@ -63,10 +63,14 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
     }
   }, [start, end, step, lastSES])
 
-  const shouldReload = entry?.isIntersecting ?? false
+  const visible = entry?.isIntersecting ?? false
 
   useEffect(() => {
-    if (!shouldReload && !refreshed) {
+    if (!visible && !refreshed) {
+      return
+    }
+
+    if (!refreshed) {
       return
     }
 
@@ -111,7 +115,8 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
         setLoading(RemoteDataState.Error)
       })
   }, [
-    shouldReload,
+    refreshed,
+    visible,
     setLoading,
     setError,
     start,

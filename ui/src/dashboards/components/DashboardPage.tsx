@@ -1,7 +1,7 @@
 // Libraries
-import React, {FunctionComponent, lazy, useEffect} from 'react'
+import React, {FunctionComponent, lazy} from 'react'
 import {Route, Routes, useParams} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
+import { useSelector} from 'react-redux'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -15,16 +15,9 @@ import {ResourceType} from 'src/types/resources'
 import {AppState} from 'src/types/stores'
 import {Dashboard} from 'src/types/dashboards'
 
-// Actions
-import {poll, setAutoRefreshInterval} from 'src/shared/actions/autoRefresh'
-import {setTimeRange} from 'src/shared/actions/timeRange'
-
 // Selectors
 import {getByID} from 'src/resources/selectors'
 import {getCells} from 'src/cells/selectors'
-
-// Constants
-import {pastHourTimeRange} from 'src/shared/constants/timeRange'
 
 // Lazy Loads
 const NewVEO = lazy(() => import('src/dashboards/components/NewVEO'))
@@ -35,7 +28,6 @@ interface Props {
 }
 
 const DashboardIndex: FunctionComponent<Props> = ({id}) => {
-  const dispatch = useDispatch()
   const {name, cells} = useSelector((state: AppState) => {
     const dashbaord = getByID<Dashboard>(state, ResourceType.Dashboards, id)
     const cells = getCells(state, dashbaord.id)
@@ -45,12 +37,6 @@ const DashboardIndex: FunctionComponent<Props> = ({id}) => {
       cells: cells ?? [],
     }
   })
-
-  useEffect(() => {
-    dispatch(setTimeRange(pastHourTimeRange))
-    dispatch(setAutoRefreshInterval(15))
-    dispatch(poll())
-  }, [dispatch])
 
   return (
     <>
