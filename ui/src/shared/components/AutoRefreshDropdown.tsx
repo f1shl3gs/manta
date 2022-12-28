@@ -96,8 +96,10 @@ const AutoRefreshDropdown: FunctionComponent<Props> = ({
         },
         {replace: true}
       )
+
+      updateAutoRefresh()
     },
-    [setAutoRefreshInterval, setParams]
+    [setAutoRefreshInterval, setParams, updateAutoRefresh]
   )
 
   useEffect(() => {
