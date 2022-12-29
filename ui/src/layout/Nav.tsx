@@ -146,7 +146,7 @@ const generateNavItems = (orgID: string): NavItem[] => {
       id: 'checks',
       testID: 'checks',
       label: 'Checks',
-      icon: IconFont.AlertTriangle,
+      icon: IconFont.Bell,
       shortLabel: 'Checks',
       activeKeywords: ['checks'],
       link: {
