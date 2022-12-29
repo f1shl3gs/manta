@@ -24,6 +24,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
     xColumn,
     yColumn,
     colors = [],
+    interpolation,
     axes: {
       x: {label: xAxisLabel},
       y: {
@@ -79,6 +80,7 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
         shadeBelow: !!properties.shadeBelow,
         shadeBelowOpacity: 0.08,
         hoverDimension: properties.hoverDimension as LineHoverDimension,
+        interpolation,
       },
     ],
   }

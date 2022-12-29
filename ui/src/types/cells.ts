@@ -1,4 +1,5 @@
 import {RemoteDataState} from '@influxdata/clockface'
+import {LineInterpolation} from '@influxdata/giraffe'
 import {DashboardColor} from 'src/types/colors'
 import {DashboardQuery} from 'src/types/dashboards'
 
@@ -29,6 +30,7 @@ export interface XYViewProperties {
   geom: XYGeom
   queries: DashboardQuery[]
   colors: DashboardColor[]
+  interpolation: LineInterpolation
 }
 
 export interface Legend {

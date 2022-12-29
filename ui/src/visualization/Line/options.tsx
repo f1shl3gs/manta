@@ -12,8 +12,9 @@ import {VisualizationOptionProps} from 'src/visualization'
 
 // Cells
 import {XYViewProperties} from 'src/types/cells'
+import {LineInterpolation} from '@influxdata/giraffe'
 
-const dimensions = [
+const DIMENSION_OPTIONS = [
   {
     key: 'auto',
     text: 'Auto',
@@ -32,6 +33,39 @@ const dimensions = [
   },
 ]
 
+const getDimensionLabel = (s: string): string => {
+  return DIMENSION_OPTIONS.find(opt => opt.key === s)?.text
+}
+
+const LINE_INTERPOLATION_OPTIONS: {label: string; value: LineInterpolation}[] =
+  [
+    {
+      label: 'Linear',
+      value: 'linear',
+    },
+    {
+      label: 'Smooth',
+      value: 'monotoneX',
+    },
+    {
+      label: 'Step',
+      value: 'step',
+    },
+    {
+      label: 'StepAfter',
+      value: 'stepAfter',
+    },
+    {
+      label: 'StepBefore',
+      value: 'stepBefore',
+    },
+  ]
+
+const getInterpolationLabel = (interpolation: string): string => {
+  return LINE_INTERPOLATION_OPTIONS.find(opt => opt.value === interpolation)
+    ?.label
+}
+
 interface Props extends VisualizationOptionProps {
   viewProperties: XYViewProperties
 }
@@ -42,6 +76,7 @@ const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
     yColumn = '_value',
     timeFormat,
     hoverDimension,
+    interpolation,
     axes: {
       y: {prefix = '', suffix = '', label = '', base = ''},
     },
@@ -83,6 +118,16 @@ const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
       update({
         ...viewProperties,
         hoverDimension,
+      })
+    },
+    [viewProperties, update]
+  )
+
+  const onSetInterpolation = useCallback(
+    (it: string) => {
+      update({
+        ...viewProperties,
+        interpolation: it,
       })
     },
     [viewProperties, update]
@@ -166,12 +211,12 @@ const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
           <Dropdown
             button={(active, onClick) => (
               <Dropdown.Button active={active} onClick={onClick}>
-                {hoverDimension}
+                {getDimensionLabel(hoverDimension)}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dimensions.map(item => (
+                {DIMENSION_OPTIONS.map(item => (
                   <Dropdown.Item
                     id={item.key}
                     key={item.key}
@@ -180,6 +225,31 @@ const LineOptions: FunctionComponent<Props> = ({viewProperties, update}) => {
                     selected={hoverDimension === item.key}
                   >
                     {item.text}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            )}
+          />
+        </Form.Element>
+
+        <Form.Element label={'Interpolation'}>
+          <Dropdown
+            button={(active, onClick) => (
+              <Dropdown.Button active={active} onClick={onClick}>
+                {getInterpolationLabel(interpolation)}
+              </Dropdown.Button>
+            )}
+            menu={onCollapse => (
+              <Dropdown.Menu onCollapse={onCollapse}>
+                {LINE_INTERPOLATION_OPTIONS.map(opt => (
+                  <Dropdown.Item
+                    id={opt.value}
+                    key={opt.value}
+                    value={opt.value}
+                    onClick={onSetInterpolation}
+                    selected={interpolation === opt.value}
+                  >
+                    {opt.label}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>

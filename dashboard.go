@@ -99,6 +99,7 @@ type XYViewProperties struct {
 	HoverDimension string           `json:"hoverDimension,omitempty"`
 	Position       string           `json:"position,omitempty"`
 	Geom           string           `json:"geom,omitempty"`
+	Interpolation  string           `json:"interpolation,omitempty"`
 	Colors         []DashboardColor `json:"colors,omitempty"`
 }
 

@@ -18,7 +18,7 @@ import {Color} from 'src/types/colors'
 import {DEFAULT_THRESHOLDS_LIST_COLORS} from 'src/shared/constants/thresholds'
 import {LineHoverDimension} from '@influxdata/giraffe/dist/types'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
-import {DEFAULT_GAUGE_COLORS} from '@influxdata/giraffe'
+import {DEFAULT_GAUGE_COLORS, LineInterpolation} from '@influxdata/giraffe'
 
 const tickProps = {
   generateXAxisTicks: [],
@@ -69,6 +69,7 @@ const defaultLineViewProperties = () => ({
   showNoteWhenEmpty: false,
   ...tickProps,
   hoverDimension: 'auto' as LineHoverDimension,
+  interpolation: 'linear' as LineInterpolation,
   axes: {
     x: {
       bounds: ['', ''],
