@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/http/middlewares"
+	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/multitsdb"
 )
 
@@ -27,7 +27,7 @@ type Flusher interface {
 type Backend struct {
 	Flusher Flusher
 
-	router *Router
+	router *router.Router
 
 	BackupService               manta.BackupService
 	OrganizationService         manta.OrganizationService
@@ -91,15 +91,15 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	}
 
 	// build api handler
-	backend.router = &Router{
-		Router: httprouter.New(),
-		logger: logger,
-	}
+	backend.router = router.New(router.Trace(), router.Metrics())
+    if logger.Core().Enabled(zapcore.DebugLevel) {
+        backend.router.Use(router.Logging(logger))
+    }
 
 	NewOrganizationHandler(backend, logger)
 	NewSetupHandler(backend, logger)
 	NewSessionHandler(backend.router, logger, backend.UserService, backend.PasswordService, backend.SessionService)
-	NewFlushHandler(logger, backend.router, backend.Flusher)
+	NewFlushHandler(logger, backend)
 	NewDashboardsHandler(backend, logger)
 	NewUserHandler(backend, logger)
 	NewConfigurationService(backend, logger)
@@ -131,19 +131,21 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
 	ah.RegisterNoAuthRoute(http.MethodPost, registryPrefix)
 
-	// set kinds of global middleware
-	handler := http.Handler(ah)
-	handler = middlewares.Trace(handler)
-
-	// enable access log middleware
-	if logger.Core().Enabled(zapcore.DebugLevel) {
-		handler = middlewares.Logging(logger, handler)
-	}
-
 	return &Service{
-		apiHandler:    handler,
+		apiHandler:    ah,
 		docHandler:    Redoc(),
 		metricHandler: promhttp.Handler(),
 		assetsHandler: assetsHandler,
 	}
+}
+
+func logEncodingError(logger *zap.Logger, r *http.Request, err error) {
+	// If we encounter an error while encoding the response to an http request
+	// the best thing we can do is logger that error, as we may have already written
+	// the headers for the http request in question.
+	logger.Info("Error encoding response",
+		zap.String("path", r.URL.Path),
+		zap.String("method", r.Method),
+		zap.String("remote", r.RemoteAddr),
+		zap.Error(err))
 }

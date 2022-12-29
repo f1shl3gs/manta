@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"github.com/f1shl3gs/manta/http/router"
 	"io"
 	"net/http"
 	"net/http/httputil"
@@ -27,7 +28,7 @@ var (
 )
 
 type ConfigurationHandler struct {
-	*Router
+	*router.Router
 
 	logger               *zap.Logger
 	configurationService *vertex.CoordinatingVertexService
@@ -64,7 +65,7 @@ func (h *ConfigurationHandler) listConfigurations(w http.ResponseWriter, r *http
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, cs); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, cs); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -197,7 +198,7 @@ func (h *ConfigurationHandler) updateConfiguration(w http.ResponseWriter, r *htt
 	if cf, err := h.configurationService.UpdateConfiguration(ctx, id, upd); err != nil {
 		h.HandleHTTPError(ctx, err, w)
 	} else {
-		if err = encodeResponse(ctx, w, http.StatusOK, cf); err != nil {
+		if err = h.EncodeResponse(ctx, w, http.StatusOK, cf); err != nil {
 			logEncodingError(h.logger, r, err)
 		}
 	}
@@ -236,7 +237,7 @@ func (h *ConfigurationHandler) createConfiguration(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, &c); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, &c); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

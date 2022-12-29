@@ -2,17 +2,18 @@ package http
 
 import (
 	"encoding/json"
-	"net/http"
+    "net/http"
 
 	"go.uber.org/zap"
 
+    "github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta"
 )
 
 const setupPath = apiV1Prefix + "/setup"
 
 type SetupHandler struct {
-	*Router
+	*router.Router
 
 	logger            *zap.Logger
 	onBoardingService manta.OnBoardingService
@@ -44,7 +45,7 @@ func (h *SetupHandler) onBoarded(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, OnboardedResult{Allow: !allow}); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, OnboardedResult{Allow: !allow}); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -81,7 +82,7 @@ func (h *SetupHandler) onBoarding(w http.ResponseWriter, r *http.Request) {
 			SameSite: http.SameSiteStrictMode,
 		})
 
-		if err = encodeResponse(ctx, w, http.StatusOK, result); err != nil {
+		if err = h.EncodeResponse(ctx, w, http.StatusOK, result); err != nil {
 			logEncodingError(h.logger, r, err)
 		}
 	}

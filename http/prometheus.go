@@ -3,7 +3,8 @@ package http
 import (
 	"context"
 	"fmt"
-	"math"
+    "github.com/f1shl3gs/manta/http/router"
+    "math"
 	"net/http"
 	"sort"
 	"strconv"
@@ -57,7 +58,7 @@ func defaultStatsRenderer(ctx context.Context, s *stats.Statistics, param string
 }
 
 type PromAPIHandler struct {
-	*Router
+	*router.Router
 	logger *zap.Logger
 
 	engine                *promql.Engine
@@ -213,7 +214,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 	}()
 
 	if result.Err == nil {
-		err := encodeResponse(ctx, w, http.StatusOK, &response{
+		err := h.EncodeResponse(ctx, w, http.StatusOK, &response{
 			Status:   "success",
 			Data:     result.Data,
 			Warnings: result.Warnings,
@@ -241,7 +242,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		resp.ErrorType = ErrorExec
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, resp)
+	err = h.EncodeResponse(ctx, w, http.StatusOK, resp)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
@@ -434,7 +435,7 @@ func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseW
 			resp.ErrorType = ErrorExec
 		}
 
-		err := encodeResponse(ctx, w, http.StatusOK, resp)
+		err := h.EncodeResponse(ctx, w, http.StatusOK, resp)
 		if err != nil {
 			logEncodingError(h.logger, r, err)
 		}
@@ -462,7 +463,7 @@ func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseW
 		resp.Warnings = append(resp.Warnings, warn)
 	}
 
-	err := encodeResponse(ctx, w, http.StatusOK, resp)
+	err := h.EncodeResponse(ctx, w, http.StatusOK, resp)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
@@ -540,7 +541,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		res[name] = s
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, &apiFuncResult{
+	err = h.EncodeResponse(ctx, w, http.StatusOK, &apiFuncResult{
 		Data: res,
 	})
 	if err != nil {
@@ -637,7 +638,7 @@ func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request
 		}
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, &promAPIResult{
+	err = h.EncodeResponse(ctx, w, http.StatusOK, &promAPIResult{
 		Data:     names,
 		Status:   "success",
 		Warnings: warnings,
@@ -760,7 +761,7 @@ func (h *PromAPIHandler) handleLabelValues(w http.ResponseWriter, r *http.Reques
 
 	sort.Strings(vals)
 
-	err = encodeResponse(ctx, w, http.StatusOK, &promAPIResult{
+	err = h.EncodeResponse(ctx, w, http.StatusOK, &promAPIResult{
 		Data:     vals,
 		Status:   "success",
 		Warnings: warnings,

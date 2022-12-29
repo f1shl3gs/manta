@@ -2,7 +2,8 @@ package http
 
 import (
 	"encoding/json"
-	"net/http"
+    "github.com/f1shl3gs/manta/http/router"
+    "net/http"
 
 	"go.uber.org/zap"
 
@@ -15,7 +16,7 @@ const (
 )
 
 type ScrapeTargetHandler struct {
-	*Router
+	*router.Router
 
 	logger        *zap.Logger
 	scrapeService manta.ScrapeTargetService
@@ -52,7 +53,7 @@ func (h *ScrapeTargetHandler) handleGet(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, s)
+	err = h.EncodeResponse(ctx, w, http.StatusOK, s)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
@@ -76,7 +77,7 @@ func (h *ScrapeTargetHandler) handleList(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, &ts)
+	err = h.EncodeResponse(ctx, w, http.StatusOK, &ts)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
@@ -101,7 +102,7 @@ func (h *ScrapeTargetHandler) handleCreate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, s); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, s); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -151,7 +152,7 @@ func (h *ScrapeTargetHandler) handlePatch(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, scrape); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, scrape); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

@@ -1,10 +1,10 @@
-package http
+package router
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta"
-	"go.uber.org/zap"
 	"net/http"
+
+	"github.com/f1shl3gs/manta"
 )
 
 // ErrorCodeToStatusCode maps an manta error code string to a
@@ -50,15 +50,4 @@ func init() {
 	for k, v := range mantaErrorToStatusCode {
 		httpStatusCodeToMantaError[v] = k
 	}
-}
-
-func logEncodingError(log *zap.Logger, r *http.Request, err error) {
-	// If we encounter an error while encoding the response to an http request
-	// the best thing we can do is log that error, as we may have already written
-	// the headers for the http request in question.
-	log.Info("Error encoding response",
-		zap.String("path", r.URL.Path),
-		zap.String("method", r.Method),
-		zap.String("remote", r.RemoteAddr),
-		zap.Error(err))
 }

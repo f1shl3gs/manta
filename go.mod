@@ -9,7 +9,7 @@ require (
 	github.com/google/go-cmp v0.5.9
 	github.com/influxdata/cron v0.0.0-20201006132531-4bb0a200dcbe
 	github.com/jsternberg/zap-logfmt v1.3.0
-	github.com/julienschmidt/httprouter v1.3.0
+	github.com/julienschmidt/httprouter v1.3.1-0.20220603155042-829d723ff8dc
 	github.com/mattn/go-isatty v0.0.16
 	github.com/mileusna/useragent v1.2.1
 	github.com/opentracing/opentracing-go v1.2.0

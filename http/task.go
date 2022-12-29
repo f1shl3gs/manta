@@ -1,7 +1,8 @@
 package http
 
 import (
-	"net/http"
+    "github.com/f1shl3gs/manta/http/router"
+    "net/http"
 
 	"github.com/f1shl3gs/manta"
 
@@ -17,7 +18,7 @@ const (
 )
 
 type TaskHandler struct {
-	*Router
+	*router.Router
 	logger *zap.Logger
 
 	taskService manta.TaskService
@@ -49,7 +50,7 @@ func (h *TaskHandler) findTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, task); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, task); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -79,7 +80,7 @@ func (h *TaskHandler) findTaskRuns(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, &runs); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, &runs); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

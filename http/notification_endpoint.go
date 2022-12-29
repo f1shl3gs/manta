@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/notification"
 )
 
@@ -17,7 +18,7 @@ const (
 )
 
 type NotificationEndpointHandler struct {
-	*Router
+	*router.Router
 	logger *zap.Logger
 
 	notificationEndpointService manta.NotificationEndpointService
@@ -52,7 +53,7 @@ func (h *NotificationEndpointHandler) handleList(w http.ResponseWriter, r *http.
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, list); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, list); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -120,7 +121,7 @@ func (h *NotificationEndpointHandler) handlePatch(w http.ResponseWriter, r *http
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, ne); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, ne); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -146,7 +147,7 @@ func (h *NotificationEndpointHandler) handleUpdate(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, ne); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, ne); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

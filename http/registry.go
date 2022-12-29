@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -14,7 +15,7 @@ const (
 )
 
 type RegistryHandler struct {
-	*Router
+	*router.Router
 
 	logger          *zap.Logger
 	registryService manta.RegistryService
@@ -61,7 +62,7 @@ func (h *RegistryHandler) catalog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, &list); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, &list); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -16,14 +17,14 @@ const (
 )
 
 type ChecksHandler struct {
-	*Router
+	*router.Router
 
 	logger       *zap.Logger
 	checkService manta.CheckService
 	taskService  manta.TaskService
 }
 
-func NewChecksHandler(logger *zap.Logger, router *Router, cs manta.CheckService, ts manta.TaskService) {
+func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckService, ts manta.TaskService) {
 	h := &ChecksHandler{
 		Router:       router,
 		logger:       logger.With(zap.String("handler", "check")),
@@ -89,7 +90,7 @@ func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	err = encodeResponse(ctx, w, http.StatusOK, &list)
+	err = h.EncodeResponse(ctx, w, http.StatusOK, &list)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}
@@ -135,7 +136,7 @@ func (h *ChecksHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, c); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, c); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -194,7 +195,7 @@ func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusOK, check); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, check); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -216,7 +217,7 @@ func (h *ChecksHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, c); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, c); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -243,7 +244,7 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
-	if err = encodeResponse(ctx, w, http.StatusOK, check); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, check); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

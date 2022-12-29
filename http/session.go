@@ -3,10 +3,12 @@ package http
 import (
 	"context"
 	"encoding/json"
-	"net/http"
+    "net/http"
 
-	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
+    
+    "github.com/f1shl3gs/manta/http/router"
+	"github.com/f1shl3gs/manta"
 )
 
 const (
@@ -18,7 +20,7 @@ const (
 )
 
 type SessionHandler struct {
-	*Router
+	*router.Router
 
 	logger          *zap.Logger
 	userService     manta.UserService
@@ -27,7 +29,7 @@ type SessionHandler struct {
 }
 
 func NewSessionHandler(
-	router *Router,
+	router *router.Router,
 	logger *zap.Logger,
 	userService manta.UserService,
 	passwordService manta.PasswordService,
@@ -173,7 +175,7 @@ func (h *SessionHandler) handleViewer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, user); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, user); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

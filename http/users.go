@@ -1,10 +1,12 @@
 package http
 
 import (
-	"net/http"
+    "net/http"
 
-	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"
+    
+	"github.com/f1shl3gs/manta"
+    "github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -12,7 +14,7 @@ const (
 )
 
 type UsersHandler struct {
-	*Router
+	*router.Router
 	logger *zap.Logger
 
 	userService manta.UserService
@@ -39,7 +41,7 @@ func (h *UsersHandler) list(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusOK, users); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, users); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

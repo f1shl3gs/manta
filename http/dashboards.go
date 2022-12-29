@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/f1shl3gs/manta"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+
+	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -17,7 +19,7 @@ const (
 )
 
 type DashboardsHandler struct {
-	*Router
+	*router.Router
 
 	logger              *zap.Logger
 	organizationService manta.OrganizationService
@@ -62,7 +64,7 @@ func (h *DashboardsHandler) listDashboard(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusOK, dashboards); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, dashboards); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -95,7 +97,7 @@ func (h *DashboardsHandler) getDashboard(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusOK, d); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, d); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -114,7 +116,7 @@ func (h *DashboardsHandler) createDashboard(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -160,7 +162,7 @@ func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, dashboard); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, dashboard); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -196,7 +198,7 @@ func (h *DashboardsHandler) addCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, cell); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, cell); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -224,7 +226,7 @@ func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, cell); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -259,7 +261,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, cell); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, cell); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -319,7 +321,7 @@ func (h *DashboardsHandler) replaceCells(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, dashboard); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

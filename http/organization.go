@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"github.com/f1shl3gs/manta/http/router"
 	"net/http"
 
 	"github.com/f1shl3gs/manta"
@@ -15,7 +16,7 @@ const (
 )
 
 type OrganizationHandler struct {
-	*Router
+	*router.Router
 
 	logger              *zap.Logger
 	organizationService manta.OrganizationService
@@ -47,7 +48,7 @@ func (h *OrganizationHandler) listOrganizations(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	if err := encodeResponse(ctx, w, http.StatusOK, organizations); err != nil {
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, organizations); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -70,7 +71,7 @@ func (h *OrganizationHandler) getOrganization(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, org); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, org); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -97,7 +98,7 @@ func (h *OrganizationHandler) createOrganization(w http.ResponseWriter, r *http.
 		return
 	}
 
-	err = encodeResponse(ctx, w, http.StatusCreated, &org)
+	err = h.EncodeResponse(ctx, w, http.StatusCreated, &org)
 	if err != nil {
 		logEncodingError(h.logger, r, err)
 	}

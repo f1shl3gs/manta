@@ -2,11 +2,12 @@ package http
 
 import (
 	"encoding/json"
-	"net/http"
+    "net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 
+    "github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta"
 )
 
@@ -16,7 +17,7 @@ var (
 )
 
 type SecretHandler struct {
-	*Router
+	*router.Router
 	logger *zap.Logger
 
 	secretService manta.SecretService
@@ -49,7 +50,7 @@ func (h *SecretHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusOK, secrets); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, secrets); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
@@ -84,7 +85,7 @@ func (h *SecretHandler) handlePut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = encodeResponse(ctx, w, http.StatusCreated, secret); err != nil {
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, secret); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }
