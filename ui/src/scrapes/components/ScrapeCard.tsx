@@ -1,11 +1,15 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
   ButtonShape,
   ComponentColor,
+  ComponentSize,
   IconFont,
+  InfluxColors,
+  Label,
   ResourceCard,
 } from '@influxdata/clockface'
 import Context from 'src/shared/components/context_menu/Context'
@@ -21,7 +25,6 @@ import {fromNow} from 'src/shared/utils/duration'
 
 // Constants
 import {deleteScrape, updateScrape} from 'src/scrapes/actions/thunks'
-import {connect, ConnectedProps} from 'react-redux'
 
 interface OwnProps {
   scrape: Scrape
@@ -41,7 +44,7 @@ const ScrapeCard: FunctionComponent<Props> = ({
   deleteScrape,
   updateScrape,
 }) => {
-  const {id, name, desc, updated} = scrape
+  const {id, name, desc, updated, labels} = scrape
   const navigate = useNavigate()
 
   const handleNameUpdate = (name: string): void => {
@@ -88,6 +91,16 @@ const ScrapeCard: FunctionComponent<Props> = ({
 
       <ResourceCard.Meta>
         {`Last Modified: ${fromNow(updated)}`}
+        {Object.keys(labels).map(key => (
+          <Label
+            id={key}
+            key={key}
+            color={InfluxColors.Ocean}
+            size={ComponentSize.ExtraSmall}
+            name={`${key}=${labels[key]}`}
+            description={labels[key]}
+          />
+        ))}
       </ResourceCard.Meta>
     </ResourceCard>
   )
