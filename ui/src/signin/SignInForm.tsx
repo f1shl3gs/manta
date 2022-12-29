@@ -19,6 +19,9 @@ import {
   InputType,
 } from '@influxdata/clockface'
 
+// Utils
+import request from 'src/shared/utils/request'
+
 const SignInForm: FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -27,11 +30,13 @@ const SignInForm: FC = () => {
   const returnTo = params.get('returnTo') || '/'
 
   const submit = useCallback(() => {
-    fetch(`/api/v1/signin`, {
+    request(`/api/v1/signin`, {
       method: 'POST',
-      body: JSON.stringify({username, password}),
+      body: {
+        username,
+        password,
+      },
     })
-      .then(resp => resp.json())
       .then(_ => navigate(returnTo))
       .catch(err => console.error(err))
   }, [username, password, returnTo, navigate])
