@@ -1,6 +1,11 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
-import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
+
+// Component
+import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
+
+// Actions
 import {createScrape} from 'src/scrapes/actions/thunks'
 
 const CreateScrapeButton: FunctionComponent = () => {
