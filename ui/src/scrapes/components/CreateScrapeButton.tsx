@@ -11,7 +11,7 @@ const CreateScrapeButton: FunctionComponent = () => {
 
   return (
     <Button
-      text={'Create'}
+      text={'Create Scrape'}
       testID={'create-scrape--button'}
       color={ComponentColor.Primary}
       icon={IconFont.Plus_New}

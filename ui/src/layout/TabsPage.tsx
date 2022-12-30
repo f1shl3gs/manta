@@ -12,6 +12,7 @@ import {
 
 interface Tab {
   name: string
+  path: string
   element: JSX.Element
 }
 
@@ -34,10 +35,10 @@ const TabsPage: FunctionComponent<Props> = ({title, tabs}) => {
       <PageContents>
         <TabsContainer orientation={Orientation.Horizontal}>
           <Tabs>
-            {tabs.map(({name}) => (
+            {tabs.map(({name, path}) => (
               <Tabs.Tab
                 key={name}
-                active={selected === name}
+                active={selected === path}
                 id={name}
                 text={name}
                 testID={`tab-${name}`}
@@ -46,7 +47,7 @@ const TabsPage: FunctionComponent<Props> = ({title, tabs}) => {
                     return
                   }
 
-                  navigate(window.location.pathname.replace(selected, name))
+                  navigate(window.location.pathname.replace(selected, path))
                 }}
               />
             ))}
@@ -54,8 +55,8 @@ const TabsPage: FunctionComponent<Props> = ({title, tabs}) => {
 
           <Tabs.TabContents>
             <Routes>
-              {tabs.map(({name, element}) => (
-                <Route key={name} path={`${name}/*`} element={element} />
+              {tabs.map(({name, path, element}) => (
+                <Route key={name} path={`${path}/*`} element={element} />
               ))}
             </Routes>
           </Tabs.TabContents>

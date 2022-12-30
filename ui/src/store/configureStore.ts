@@ -39,14 +39,13 @@ import {setupReducer} from 'src/setup/reducers'
 import {checksReducer} from 'src/checks/reducers'
 import {checkBuilderReducer} from 'src/checks/reducers/builder'
 import {secretsReduer} from 'src/secrets/reducers'
+import {notificationEndpointsReducer} from 'src/notification_endpoints/reducers'
 
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const rootReducer = (history: History) => (state, action) => {
-  if (action.type === 'UserLoggedOut') {
-    state = undefined
-  }
+  // TODO: set state to null when signout
 
   return combineReducers<AppState>({
     router: createRouterReducer(history),
@@ -61,6 +60,7 @@ const rootReducer = (history: History) => (state, action) => {
       [ResourceType.Configurations]: configurationsReducer,
       [ResourceType.Dashboards]: dashboardsReducer,
       [ResourceType.Members]: usersReducer,
+      [ResourceType.NotificationEndpoints]: notificationEndpointsReducer,
       [ResourceType.Organizations]: organizationsReducer,
       [ResourceType.Secrets]: secretsReduer,
       [ResourceType.Scrapes]: scrapesReducers,

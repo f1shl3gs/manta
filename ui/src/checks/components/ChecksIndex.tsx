@@ -3,7 +3,6 @@ import React, {FunctionComponent, lazy} from 'react'
 import {Routes, Route} from 'react-router-dom'
 
 // Components
-import {Page, PageContents, PageHeader, PageTitle} from '@influxdata/clockface'
 import GetResources from 'src/resources/components/GetResources'
 import CheckCards from 'src/checks/components/CheckCards'
 
@@ -27,19 +26,11 @@ const ChecksIndex: FunctionComponent = () => {
         <Route path=":id/edit" element={<EditCheckOverlay />} />
       </Routes>
 
-      <Page titleTag={'Checks'}>
-        <PageHeader fullWidth={false}>
-          <PageTitle title={'Checks'} />
-        </PageHeader>
+      <ChecksControlBar />
 
-        <ChecksControlBar />
-
-        <PageContents>
-          <GetResources resources={[ResourceType.Checks]}>
-            <CheckCards />
-          </GetResources>
-        </PageContents>
-      </Page>
+      <GetResources resources={[ResourceType.Checks]}>
+        <CheckCards />
+      </GetResources>
     </>
   )
 }

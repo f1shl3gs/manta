@@ -1,5 +1,6 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Component
 import FilterList from 'src/shared/components/FilterList'
@@ -7,32 +8,38 @@ import DashboardCard from 'src/dashboards/components/DashboardCard'
 import EmptyResources from 'src/resources/components/EmptyResources'
 import CreateDashboardButton from 'src/dashboards/components/CreateDashboardButton'
 
-// Hooks
-import {useSelector} from 'react-redux'
-
 // Types
 import {ResourceType} from 'src/types/resources'
-import {Dashboard, DashboardSortParams} from 'src/types/dashboards'
+import {Dashboard} from 'src/types/dashboards'
 import {getAll} from 'src/resources/selectors'
 import {AppState} from 'src/types/stores'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
 
-interface Props {
-  search: string
-  sortOption: DashboardSortParams
+const mstp = (state: AppState) => {
+  const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
+  const {sortOptions, searchTerm} = state.resources[ResourceType.Dashboards]
+
+  return {
+    dashboards,
+    searchTerm,
+    sortOptions,
+  }
 }
 
-const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
-  const dashboards = useSelector((state: AppState) =>
-    getAll<Dashboard>(state, ResourceType.Dashboards)
-  )
+const connector = connect(mstp, null)
+type Props = ConnectedProps<typeof connector>
 
+const DashboardCards: FunctionComponent<Props> = ({
+  dashboards,
+  sortOptions,
+  searchTerm,
+}) => {
   return (
     <FilterList<Dashboard>
       list={dashboards}
-      search={search}
+      search={searchTerm}
       searchKeys={['name', 'desc']}
     >
       {filtered => {
@@ -40,7 +47,7 @@ const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
           return (
             <EmptyResources
               resource={ResourceType.Dashboards}
-              searchTerm={search}
+              searchTerm={searchTerm}
               createButton={<CreateDashboardButton />}
             />
           )
@@ -51,9 +58,9 @@ const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
             <div className={'dashboards-card-grid'}>
               {getSortedResources<Dashboard>(
                 filtered,
-                sortOption.key,
-                sortOption.type,
-                sortOption.direction
+                sortOptions.key,
+                sortOptions.type,
+                sortOptions.direction
               ).map(dashboard => (
                 <DashboardCard key={dashboard.id} id={dashboard.id} />
               ))}
@@ -65,4 +72,4 @@ const DashboardCards: FunctionComponent<Props> = ({sortOption, search}) => {
   )
 }
 
-export default DashboardCards
+export default connector(DashboardCards)

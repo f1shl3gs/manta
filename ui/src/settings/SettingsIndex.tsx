@@ -8,10 +8,12 @@ const SettingsPage: FunctionComponent = () => {
   const tabs = [
     {
       name: 'members',
+      path: 'members',
       element: <Members />,
     },
     {
       name: 'secrets',
+      path: 'secrets',
       element: <Secrets />,
     },
   ]

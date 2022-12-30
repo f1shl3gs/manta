@@ -1,5 +1,5 @@
 import {RemoteDataState} from '@influxdata/clockface'
-import {Dashboard, DashboardSortParams} from 'src/types/dashboards'
+import {Dashboard} from 'src/types/dashboards'
 import {Cell} from 'src/types/cells'
 import {Organization} from 'src/types/organization'
 import {Configuration} from 'src/types/configuration'
@@ -7,6 +7,8 @@ import {User} from 'src/types/user'
 import {Scrape} from 'src/types/scrape'
 import {Check, CheckSortParams} from 'src/types/checks'
 import {Secret, SecretSortParams} from 'src/types/secrets'
+import {NotificationEndpoint} from 'src/types/notificationEndpoints'
+import {SortOptions} from 'src/types/sort'
 
 export interface Resource {
   type: ResourceType
@@ -19,6 +21,7 @@ export enum ResourceType {
   Configurations = 'configurations',
   Dashboards = 'dashboards',
   Members = 'members',
+  NotificationEndpoints = 'notificationEndpoints',
   Organizations = 'organizations',
   Secrets = 'secrets',
   Scrapes = 'scrapes',
@@ -44,7 +47,7 @@ export interface DashboardsState extends NormalizedState<Dashboard> {
   current: string
 
   searchTerm: string
-  sortOptions: DashboardSortParams
+  sortOptions: SortOptions
 }
 
 export interface OrgsState extends NormalizedState<Organization> {
@@ -68,14 +71,21 @@ export interface CheckState extends NormalizedState<Check> {
   sortOptions: CheckSortParams
 }
 
+export interface NotificationEndpointState
+  extends NormalizedState<NotificationEndpoint> {
+  searchTerm: string
+  sortOptions: SortOptions
+}
+
 // ResourceState defines the types for normalized resources
 export interface ResourceState {
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: CheckState
   [ResourceType.Configurations]: ConfigurationsState
   [ResourceType.Dashboards]: DashboardsState
-  [ResourceType.Organizations]: OrgsState
   [ResourceType.Members]: MembersState
+  [ResourceType.NotificationEndpoints]: NotificationEndpointState
+  [ResourceType.Organizations]: OrgsState
   [ResourceType.Secrets]: SecretsState
   [ResourceType.Scrapes]: ScrapesState
 }

@@ -1,15 +1,17 @@
-import {RemoteDataState} from '@influxdata/clockface'
+// Libraries
+import {RemoteDataState, Sort} from '@influxdata/clockface'
 import {NormalizedSchema} from 'normalizr'
 
+// Types
 import {DashboardEntities} from 'src/types/schemas'
-import {DashboardSortParams} from 'src/types/dashboards'
+import {SortTypes} from 'src/types/sort'
 
 // Action Types
 export const EDIT_DASHBOARD = 'EDIT_DASHBOARD'
 export const SET_DASHBOARDS = 'SET_DASHBOARDS'
 export const REMOVE_DASHBOARD = 'REMOVE_DASHBOARD'
 export const SET_DASHBOARD = 'SET_DASHBOARD'
-export const SET_DASHBOARD_SORT = 'SET_DASHBOARD_SORT'
+export const SET_DASHBOARD_SORT_OPTIONS = 'SET_DASHBOARD_SORT_OPTIONS'
 export const SET_DASHBOARD_SEARCH_TERM = 'SET_DASHBOARD_SEARCH_TERM'
 
 export type Action =
@@ -17,7 +19,7 @@ export type Action =
   | ReturnType<typeof setDashboards>
   | ReturnType<typeof setDashboard>
   | ReturnType<typeof removeDashboard>
-  | ReturnType<typeof setDashboardSort>
+  | ReturnType<typeof setDashboardSortOptions>
   | ReturnType<typeof setDashboardSearchTerm>
 
 type DashboardSchema<R extends string | string[]> = NormalizedSchema<
@@ -53,10 +55,18 @@ export const removeDashboard = (id: string) =>
     id,
   } as const)
 
-export const setDashboardSort = (sortOptions: DashboardSortParams) =>
+export const setDashboardSortOptions = (
+  key: string,
+  direction: Sort,
+  type: SortTypes
+) =>
   ({
-    type: SET_DASHBOARD_SORT,
-    sortOptions,
+    type: SET_DASHBOARD_SORT_OPTIONS,
+    payload: {
+      key,
+      direction,
+      type,
+    },
   } as const)
 
 export const setDashboardSearchTerm = (searchTerm: string) =>

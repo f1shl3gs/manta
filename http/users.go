@@ -1,12 +1,12 @@
 package http
 
 import (
-    "net/http"
+	"net/http"
 
 	"go.uber.org/zap"
-    
+
 	"github.com/f1shl3gs/manta"
-    "github.com/f1shl3gs/manta/http/router"
+	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (

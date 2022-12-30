@@ -5,25 +5,7 @@ import {Configuration} from 'src/types/configuration'
 import {Scrape} from 'src/types/scrape'
 import {Check} from 'src/types/checks'
 import {Secret} from 'src/types/secrets'
-
-// DashboardEntities defines the result of normalizr's normalization of the
-// "dashboards" resource
-export interface DashboardEntities {
-  dashboards: {
-    [uuid: string]: Dashboard
-  }
-  cells: {
-    [uuid: string]: Cell
-  }
-}
-
-// OrgEntities defines the result of normalizr's normalization
-// of the "organizations" resource
-export interface OrgEntities {
-  orgs: {
-    [uuid: string]: Organization
-  }
-}
+import {NotificationEndpoint} from 'src/types/notificationEndpoints'
 
 // ConfigurationEntities defines the result of normalizr's normalization
 // of the `configurations` resource
@@ -36,6 +18,31 @@ export interface ConfigurationEntities {
 export interface CheckEntities {
   checks: {
     [uuid: string]: Check
+  }
+}
+
+// DashboardEntities defines the result of normalizr's normalization of the
+// "dashboards" resource
+export interface DashboardEntities {
+  dashboards: {
+    [uuid: string]: Dashboard
+  }
+  cells: {
+    [uuid: string]: Cell
+  }
+}
+
+export interface NotificationEndpointEntities {
+  notificationEndpoints: {
+    [uuid: string]: NotificationEndpoint
+  }
+}
+
+// OrgEntities defines the result of normalizr's normalization
+// of the "organizations" resource
+export interface OrgEntities {
+  orgs: {
+    [uuid: string]: Organization
   }
 }
 

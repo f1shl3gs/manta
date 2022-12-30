@@ -1,33 +1,37 @@
+// Libraries
 import {produce} from 'immer'
 
-import {ResourceState, ResourceType} from 'src/types/resources'
+// Types
+import {DashboardsState, ResourceType} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
+import {Dashboard} from 'src/types/dashboards'
+
+// Constants
 import {DEFAULT_DASHBOARD_SORT_OPTIONS} from 'src/shared/constants/dashboard'
 
+// Actions
 import {
   Action as CellAction,
   SET_CELL,
   SET_CELLS,
 } from 'src/cells/actions/creators'
-
 import {
   Action,
   EDIT_DASHBOARD,
   REMOVE_DASHBOARD,
   SET_DASHBOARD,
   SET_DASHBOARD_SEARCH_TERM,
-  SET_DASHBOARD_SORT,
+  SET_DASHBOARD_SORT_OPTIONS,
   SET_DASHBOARDS,
 } from 'src/dashboards/actions/creators'
+
+// Helpers
 import {
   editResource,
   removeResource,
   setResource,
   setResourceAtID,
 } from 'src/resources/reducers/helpers'
-import {Dashboard} from 'src/types/dashboards'
-
-type DashboardsState = ResourceState['dashboards']
 
 const initialState = (): DashboardsState => ({
   byID: {},
@@ -61,8 +65,8 @@ export const dashboardsReducer = (
         setResourceAtID<Dashboard>(draftState, action, ResourceType.Dashboards)
         return
 
-      case SET_DASHBOARD_SORT:
-        draftState.sortOptions = action.sortOptions
+      case SET_DASHBOARD_SORT_OPTIONS:
+        draftState.sortOptions = action.payload
         return
 
       case SET_DASHBOARD_SEARCH_TERM:

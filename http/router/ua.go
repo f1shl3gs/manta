@@ -1,16 +1,16 @@
 package router
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/mileusna/useragent"
+	"github.com/mileusna/useragent"
 )
 
 func UserAgent(r *http.Request) string {
-    header := r.Header.Get("User-Agent")
-    if header == "" {
-        return "unknown"
-    }
+	header := r.Header.Get("User-Agent")
+	if header == "" {
+		return "unknown"
+	}
 
-    return useragent.Parse(header).Name
+	return useragent.Parse(header).Name
 }

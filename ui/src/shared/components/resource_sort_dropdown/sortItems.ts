@@ -1,6 +1,6 @@
 import {Sort} from '@influxdata/clockface'
 import {SortTypes} from 'src/types/sort'
-import {ResourceType} from '../../../types/resources'
+import {ResourceType} from 'src/types/resources'
 
 export const generateSortItems = (resourceType: ResourceType) => {
   switch (resourceType) {

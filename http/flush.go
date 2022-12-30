@@ -1,7 +1,7 @@
 package http
 
 import (
-    "net/http"
+	"net/http"
 
 	"go.uber.org/zap"
 )
@@ -9,12 +9,12 @@ import (
 const debugFlushPath = "/debug/flush"
 
 func NewFlushHandler(logger *zap.Logger, backend *Backend) {
-    flusher := backend.Flusher
-    if flusher == nil {
+	flusher := backend.Flusher
+	if flusher == nil {
 		return
 	}
 
-    router := backend.router
+	router := backend.router
 	router.HandlerFunc(http.MethodGet, debugFlushPath, func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 

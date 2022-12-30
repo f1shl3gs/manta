@@ -21,27 +21,27 @@ type Router struct {
 }
 
 func New(middlewares ...Middleware) *Router {
-    router := &httprouter.Router{
-        RedirectTrailingSlash:  true,
-        RedirectFixedPath:      true,
-        HandleMethodNotAllowed: true,
-        HandleOPTIONS:          true,
-        SaveMatchedRoutePath:   true,
-    }
+	router := &httprouter.Router{
+		RedirectTrailingSlash:  true,
+		RedirectFixedPath:      true,
+		HandleMethodNotAllowed: true,
+		HandleOPTIONS:          true,
+		SaveMatchedRoutePath:   true,
+	}
 
-    return &Router{
-        router: router,
-        middlewares: middlewares,
-    }
+	return &Router{
+		router:      router,
+		middlewares: middlewares,
+	}
 }
 
 // ServeHTTP implement http.Handle
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-    r.router.ServeHTTP(w, req)
+	r.router.ServeHTTP(w, req)
 }
 
 func (r *Router) Use(ms ...Middleware) {
-    r.middlewares = append(r.middlewares, ms...)
+	r.middlewares = append(r.middlewares, ms...)
 }
 
 func (r *Router) HandlerFunc(method, path string, handlerFunc http.HandlerFunc) {
@@ -78,12 +78,12 @@ func (r *Router) HandleHTTPError(ctx context.Context, err error, w http.Response
 
 func (r *Router) EncodeResponse(ctx context.Context, w http.ResponseWriter, status int, payload interface{}) error {
 	if payload == nil {
-        w.WriteHeader(status)
+		w.WriteHeader(status)
 		return nil
 	}
 
 	w.Header().Set("Content-type", "application/json; charset=utf-8")
-    w.WriteHeader(status)
+	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(payload); err != nil {
 		return err
 	}

@@ -40,9 +40,3 @@ export interface DashboardQuery {
 }
 
 export type Dashboards = Dashboard[]
-
-export interface DashboardSortParams {
-  direction: Sort
-  type: SortTypes
-  key: string
-}

@@ -43,7 +43,7 @@ const ResourceSortDropdown: FunctionComponent<Props> = ({
       item.sortKey === sortKey &&
       item.sortDirection === sortDirection &&
       item.sortType === sortType
-  )!
+  )
 
   const button = (
     active: boolean,

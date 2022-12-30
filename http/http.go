@@ -92,9 +92,9 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 
 	// build api handler
 	backend.router = router.New(router.Trace(), router.Metrics())
-    if logger.Core().Enabled(zapcore.DebugLevel) {
-        backend.router.Use(router.Logging(logger))
-    }
+	if logger.Core().Enabled(zapcore.DebugLevel) {
+		backend.router.Use(router.Logging(logger))
+	}
 
 	NewOrganizationHandler(backend, logger)
 	NewSetupHandler(backend, logger)

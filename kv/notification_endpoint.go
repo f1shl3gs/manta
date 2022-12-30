@@ -55,7 +55,7 @@ func findNotificationEndpointByID(tx Tx, id manta.ID) (manta.NotificationEndpoin
 // FindNotificationEndpoints returns a list of notication endpoints that match filter.
 func (s *Service) FindNotificationEndpoints(ctx context.Context, filter manta.NotificationEndpointFilter) ([]manta.NotificationEndpoint, error) {
 	var (
-		list []manta.NotificationEndpoint
+		list = make([]manta.NotificationEndpoint, 0)
 		err  error
 	)
 

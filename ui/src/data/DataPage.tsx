@@ -10,22 +10,25 @@ const ConfigurationPage = lazy(
 )
 const ScrapePage = lazy(() => import('src/scrapes/components/ScrapesIndex'))
 
-const DataPage: FunctionComponent = () => {
-  const tabs = [
-    {
-      name: 'vertex',
-      element: <Todo />,
-    },
-    {
-      name: 'config',
-      element: <ConfigurationPage />,
-    },
-    {
-      name: 'scrape',
-      element: <ScrapePage />,
-    },
-  ]
+const tabs = [
+  {
+    name: 'vertex',
+    path: 'vertex',
+    element: <Todo />,
+  },
+  {
+    name: 'config',
+    path: 'config',
+    element: <ConfigurationPage />,
+  },
+  {
+    name: 'scrape',
+    path: 'scrape',
+    element: <ScrapePage />,
+  },
+]
 
+const DataPage: FunctionComponent = () => {
   return <TabsPage title={'Data'} tabs={tabs} />
 }
 

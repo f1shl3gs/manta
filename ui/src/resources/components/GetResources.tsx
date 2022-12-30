@@ -16,6 +16,7 @@ import {getMembers} from 'src/members/actions/thunks'
 import {getConfigs} from 'src/configurations/actions/thunks'
 import {getChecks} from 'src/checks/actions/thunks'
 import {getSecrets} from 'src/secrets/actions/thunks'
+import {getNotificationEndpoints} from 'src/notification_endpoints/actions/thunks'
 
 // Selectors
 import {getResourcesStatus} from 'src/resources/selectors'
@@ -33,6 +34,7 @@ const mdtp = {
   getConfigs,
   getDashboards,
   getMembers,
+  getNotificationEndpoints,
   getSecrets,
   getScrapes,
 }
@@ -56,6 +58,7 @@ const GetResources: FunctionComponent<Props> = props => {
     getConfigs,
     getDashboards,
     getMembers,
+    getNotificationEndpoints,
     getSecrets,
     getScrapes,
   } = props
@@ -74,6 +77,9 @@ const GetResources: FunctionComponent<Props> = props => {
 
         case ResourceType.Members:
           return getMembers()
+
+        case ResourceType.NotificationEndpoints:
+          return getNotificationEndpoints()
 
         case ResourceType.Scrapes:
           return getScrapes()
@@ -99,6 +105,7 @@ const GetResources: FunctionComponent<Props> = props => {
     getConfigs,
     getDashboards,
     getMembers,
+    getNotificationEndpoints,
     getSecrets,
     getScrapes,
   ])

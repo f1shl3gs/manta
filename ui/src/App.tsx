@@ -18,6 +18,7 @@ import {useSelector} from 'react-redux'
 
 // Selectors
 import {getPresentationMode} from 'src/shared/selectors/app'
+import AlertsIndex from './alerts/AlertsIndex'
 
 // Lazy load components
 const ChecksIndex = lazy(() => import('src/checks/components/ChecksIndex'))
@@ -52,6 +53,8 @@ const App: FunctionComponent = () => {
 
                 <Route path=":orgID">
                   <Route index={true} element={<Introduce />} />
+
+                  <Route path="alerts/*" element={<AlertsIndex />} />
 
                   <Route path="checks/*" element={<ChecksIndex />} />
 

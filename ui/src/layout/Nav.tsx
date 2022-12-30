@@ -143,16 +143,36 @@ const generateNavItems = (orgID: string): NavItem[] => {
       },
     },
     {
-      id: 'checks',
-      testID: 'checks',
-      label: 'Checks',
+      id: 'alerts',
+      testID: 'alerts',
+      label: 'Alerts',
       icon: IconFont.Bell,
-      shortLabel: 'Checks',
-      activeKeywords: ['checks'],
+      shortLabel: 'Alerts',
+      activeKeywords: ['alerts', 'checks'],
       link: {
         type: 'link',
-        location: `${orgPrefix}/checks`,
+        location: `${orgPrefix}/alerts`,
       },
+      menu: [
+        {
+          id: 'checks',
+          testID: 'checks',
+          label: 'Checks',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/alerts/checks`,
+          },
+        },
+        {
+          id: 'notificationEndpoint',
+          testID: 'notificationEndpoint',
+          label: 'Notification Endpoint',
+          link: {
+            type: 'link',
+            location: `${orgPrefix}/alerts/notificationEndpoints`,
+          },
+        },
+      ],
     },
     {
       id: 'settings',
