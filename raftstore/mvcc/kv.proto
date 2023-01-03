@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package mvcc;
+
+message KeyValue {
+  // create_revision is the revision of last creation on this key.
+  int64 create_revision = 1;
+  // mod_revision is the revision of last modifiecation on this key.
+  int64 modRevison = 2;
+  // version is the version of the key. A deletion resets the version
+  // to zero and any modification of the key increases its version.
+  int64 version = 3;
+
+  // key is the key in bytes. An empty key is not allowed
+  bytes key = 4;
+  // value is the value held by the key, in bytes
+  bytes value = 5;
+}

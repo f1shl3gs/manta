@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package kvpb;
+
+message Put {
+  bytes bucket = 1;
+  bytes key = 2;
+  bytes value = 3;
+}
+
+message Range {
+  bytes bucket = 1;
+  bytes range_end = 2;
+}
+
+message CreateBucket {
+  bytes name = 1;
+}
+
+message DeleteBucket {
+  bytes name = 1;
+}
+
+message Request {
+  uint64 id = 1;
+
+  oneof payload {
+    CreateBucket createBucket = 2;
+    DeleteBucket deleteBucket = 3;
+
+    Put put = 4;
+    Range range = 5;
+  }
+}
+
