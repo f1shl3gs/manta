@@ -1,14 +1,20 @@
 // Libraries
-import React, {FunctionComponent, useCallback} from 'react'
+import React, {FunctionComponent, RefObject, useCallback, useRef} from 'react'
 
 // Components
 import {
+  Appearance,
   ButtonShape,
   ComponentColor,
+  ComponentSize,
+  ConfirmationButton,
+  FlexBox,
   IconFont,
+  List,
+  Popover,
   ResourceCard,
+  SquareButton,
 } from '@influxdata/clockface'
-import Context from 'src/shared/components/context_menu/Context'
 
 // Hooks
 import {useNavigate} from 'react-router-dom'
@@ -39,6 +45,9 @@ import {
 // Selectors
 import {getByID} from 'src/resources/selectors'
 
+const fontWeight = {fontWeight: '500px'}
+const minWidth = {minWidth: '165px'}
+
 interface Props {
   id: string
 }
@@ -47,6 +56,7 @@ const DashboardCard: FunctionComponent<Props> = props => {
   const {id: orgID} = useOrg()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const settingRef = useRef<RefObject<HTMLButtonElement>>(null)
   const dashboard = useSelector((state: AppState) => {
     return getByID<Dashboard>(state, ResourceType.Dashboards, props.id)
   })
@@ -79,46 +89,61 @@ const DashboardCard: FunctionComponent<Props> = props => {
     navigate(`${window.location.pathname}/${dashboard.id}/export`)
   }, [dashboard, navigate])
 
-  const contextMenu = (): JSX.Element => (
-    <Context>
-      <Context.Menu
-        icon={IconFont.CogOutline_New}
-        color={ComponentColor.Default}
-        shape={ButtonShape.Square}
-        testID="dashboard-card-context--export"
-      >
-        <Context.Item
-          label="Export"
-          action={handleExport}
-          testID="context_menu-export"
-        />
-
-        <Context.Item
-          label="Clone"
-          action={handleClone}
-          testID={'context_menu-clone'}
-        />
-      </Context.Menu>
-
-      <Context.Menu
+  const contextMenu = (ref): JSX.Element => (
+    <FlexBox margin={ComponentSize.ExtraSmall}>
+      <ConfirmationButton
+        color={ComponentColor.Colorless}
         icon={IconFont.Trash_New}
-        color={ComponentColor.Danger}
         shape={ButtonShape.Square}
-        testID="dashboard-card-context--delete"
-      >
-        <Context.Item
-          label="Delete"
-          action={handleDelete}
-          testID="context_menu-delete"
-        />
-      </Context.Menu>
-    </Context>
+        size={ComponentSize.ExtraSmall}
+        confirmationLabel={'Delete this dashboard'}
+        confirmationButtonText={'Confirm'}
+        onConfirm={handleDelete}
+        testID={'dashboard-card-context--delete'}
+      />
+
+      <SquareButton
+        ref={ref}
+        size={ComponentSize.ExtraSmall}
+        icon={IconFont.CogSolid_New}
+        color={ComponentColor.Colorless}
+        testID={'dashboard-card-context-menu'}
+      />
+
+      <Popover
+        appearance={Appearance.Outline}
+        enableDefaultStyles={false}
+        style={minWidth}
+        contents={_ => (
+          <List>
+            <List.Item
+              onClick={handleClone}
+              size={ComponentSize.ExtraSmall}
+              style={fontWeight}
+              testID={'dashboard-card-context--clone'}
+            >
+              Clone
+            </List.Item>
+
+            <List.Item
+              onClick={handleExport}
+              size={ComponentSize.ExtraSmall}
+              style={fontWeight}
+              testID={'dashboard-card-context--export'}
+              >
+              Export
+            </List.Item>
+          </List>
+        )}
+        triggerRef={ref}
+      />
+    </FlexBox>
   )
 
   return (
     <ResourceCard
       key={dashboard.id}
-      contextMenu={contextMenu()}
+      contextMenu={contextMenu(settingRef)}
       testID={'dashboard-card'}
     >
       <ResourceCard.EditableName

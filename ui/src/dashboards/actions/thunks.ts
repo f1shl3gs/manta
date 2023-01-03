@@ -212,16 +212,11 @@ export const cloneDashboard =
         throw new Error(getResp.data.message)
       }
 
-      const {entities, result} = normalize<
-        Dashboard,
-        DashboardEntities,
-        string
-      >(getResp.data, dashboardSchema)
-      const dash: Dashboard = entities.dashboards[result]
-
+      const dashboard: Dashboard = getResp.data
+      dashboard.name = `${dashboard.name} (Clone)`
       const postResp = await request(`/api/v1/dashboards`, {
         method: 'POST',
-        body: dash,
+        body: getResp.data,
       })
       if (postResp.status !== 201) {
         throw new Error(postResp.data.message)
