@@ -21,7 +21,8 @@ import {AppState} from 'src/types/stores'
 import {getAll} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import GetResources from 'src/resources/components/GetResources'
-import EmptyResources from '../../resources/components/EmptyResources'
+import EmptyResources from 'src/resources/components/EmptyResources'
+import TabbedPageHeader from 'src/shared/components/TabbedPageHeader';
 
 const ConfigurationWizard = lazy(
   () => import('src/configurations/components/ConfigurationWizard')
@@ -42,7 +43,7 @@ const ConfigurationIndex: FunctionComponent = () => {
   })
 
   const left = (
-    <div className={'tabbed-page--header-left'}>
+    <>
       <SearchWidget
         onSearch={t => setSearch(t)}
         placeholder={'Filter Configurations...'}
@@ -62,13 +63,11 @@ const ConfigurationIndex: FunctionComponent = () => {
           })
         }}
       />
-    </div>
+    </>
   )
 
   const right = (
-    <div className={'tabbed-page--header-right'}>
-      <CreateConfigurationButton />
-    </div>
+    <CreateConfigurationButton />
   )
 
   return (
@@ -85,10 +84,7 @@ const ConfigurationIndex: FunctionComponent = () => {
 
           return (
             <>
-              <div className={'tabbed-page--header'} style={{width}}>
-                {left}
-                {right}
-              </div>
+              <TabbedPageHeader left={left} right={right} style={{width}}/>
 
               <Grid style={{width, height: adjustedHeight}}>
                 <Grid.Row>
