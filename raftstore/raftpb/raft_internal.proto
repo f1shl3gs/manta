@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package raftpb;
+
+message CreateBucket {
+  bytes name = 1;
+}
+
+message DeleteBucket {
+  bytes name = 1;
+}
+
+message Compare {
+  bytes key = 1;
+  int64 revision = 2;
+}
+
+message RangeRequest {
+}
+
+message PutRequest {
+}
+
+message DeleteRequest {
+}
+
+message RequestOp {
+  oneof request {
+    RangeRequest range = 1;
+    PutRequest put = 2;
+    DeleteRequest delete = 3;
+  }
+}
+
+message Txn {
+  // compares is a list of predicates representing a conjunction of terms.
+  // If the comparisons succeed, then the success requests will be processed in order,
+  // and the response will contain their respective responses in order.
+  // If the comparisons fail, then the failure requests will be processed in order,
+  // and the response will contain their respective responses in order.
+  repeated Compare compares = 1;
+
+  // successes is a list of requests which will be applied when compare evaluates to true.
+  repeated RequestOp success = 2;
+  // failures is a list of requests which will be applied when compare evaluates to false.
+  repeated RequestOp failures = 3;
+}
+
+message Compact {
+  uint64 revision = 1;
+}
+
+message InternalRequest {
+  uint64 ID = 1;
+
+  oneof request {
+    CreateBucket create_bucket = 2;
+    DeleteBucket delete_bucket = 3;
+
+    Txn txn = 4;
+    Compact compact = 5;
+  }
+}
+
+message InternalResponse {
+  uint64 ID = 1;
+}

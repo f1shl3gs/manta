@@ -80,5 +80,5 @@ func (s *Service) DeleteScrapeTarget(ctx context.Context, id manta.ID) error {
 }
 
 func (s *Service) deleteScrapeTarget(tx Tx, id manta.ID) error {
-    return deleteOrgIndexed[manta.ScrapeTarget](tx, id, ScraperBucket, ScrapeOrgIndexBucket)
+	return deleteOrgIndexed[manta.ScrapeTarget](tx, id, ScraperBucket, ScrapeOrgIndexBucket)
 }

@@ -5,8 +5,7 @@ import (
 	"io"
 
 	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/raftstore/kvpb"
-	"github.com/f1shl3gs/manta/raftstore/mvcc"
+	"github.com/f1shl3gs/manta/raftstore/raftpb"
 )
 
 type writeTx struct {
@@ -29,55 +28,22 @@ func (tx *writeTx) WithContext(ctx context.Context) {
 	tx.ctx = ctx
 }
 
-type Backend interface {
-	// CreateBucket creates a bucket on the underlying store if it does not exist
-	CreateBucket(ctx context.Context, bucket []byte) error
-	// DeleteBucket deletes a bucket on the underlying store if it exists
-	DeleteBucket(ctx context.Context, bucket []byte) error
-}
-
 type Store struct {
-	backend Backend
-	raft    *raftNode
-	kv      mvcc.KV
+	raft *raftNode
 }
 
 // CreateBucket creates a bucket on the underlying store if it does not exist
 func (s *Store) CreateBucket(ctx context.Context, bucket []byte) error {
-	req := kvpb.Request{
-		Id: s.raft.reqIDGen.Next(),
-		Payload: &kvpb.Request_CreateBucket{
-			CreateBucket: &kvpb.CreateBucket{
-				Name: bucket,
-			},
-		},
-	}
-
-	data, err := req.Marshal()
-	if err != nil {
-		return err
-	}
-
-	return s.raft.Propose(ctx, data)
+	return s.raft.Propose(ctx, &raftpb.CreateBucket{
+		Name: bucket,
+	})
 }
 
 // DeleteBucket deletes a bucket on the underlying store if it exists
 func (s *Store) DeleteBucket(ctx context.Context, bucket []byte) error {
-	req := kvpb.Request{
-		Id: s.raft.reqIDGen.Next(),
-		Payload: &kvpb.Request_DeleteBucket{
-			DeleteBucket: &kvpb.DeleteBucket{
-				Name: bucket,
-			},
-		},
-	}
-
-	data, err := req.Marshal()
-	if err != nil {
-		return err
-	}
-
-	return s.raft.Propose(ctx, data)
+	return s.raft.Propose(ctx, &raftpb.DeleteBucket{
+		Name: bucket,
+	})
 }
 
 // View opens up a transaction that will not write to any data. Implementing interfaces

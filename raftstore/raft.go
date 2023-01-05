@@ -3,6 +3,7 @@ package raftstore
 import (
 	"context"
 	"github.com/f1shl3gs/manta/raftstore/id"
+	"github.com/f1shl3gs/manta/raftstore/raftpb"
 	"time"
 )
 
@@ -99,7 +100,17 @@ type raftNode struct {
 	db *bolt.DB
 }
 
-func (r *raftNode) Propose(ctx context.Context, data []byte) error {
+func (r *raftNode) Propose(ctx context.Context, req raftpb.IsInternalRequest) error {
+	ir := raftpb.InternalRequest{
+		ID:      r.reqIDGen.Next(),
+		Request: req,
+	}
+
+	data, err := ir.Marshal()
+	if err != nil {
+		return err
+	}
+
 	panic("not implement")
 }
 

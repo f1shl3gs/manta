@@ -166,26 +166,26 @@ func (s *Service) DeleteCheck(ctx context.Context, id manta.ID) error {
 }
 
 func (s *Service) deleteCheck(tx Tx, id manta.ID) error {
-    check, err := findByID[manta.Check](tx, id, ChecksBucket)
-    if err != nil {
-        return err
-    }
+	check, err := findByID[manta.Check](tx, id, ChecksBucket)
+	if err != nil {
+		return err
+	}
 
-    if err = deleteTask(tx, check.TaskID); err != nil {
-        return err
-    }
+	if err = deleteTask(tx, check.TaskID); err != nil {
+		return err
+	}
 
-    runs, _, err := findRuns(tx, manta.RunFilter{Task: check.TaskID})
-    if err != nil {
-        return err
-    }
+	runs, _, err := findRuns(tx, manta.RunFilter{Task: check.TaskID})
+	if err != nil {
+		return err
+	}
 
-    for _, run := range runs {
-        err = deleteRun(tx, check.TaskID, run.ID)
-        if err != nil {
-            return err
-        }
-    }
+	for _, run := range runs {
+		err = deleteRun(tx, check.TaskID, run.ID)
+		if err != nil {
+			return err
+		}
+	}
 
-    return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
+	return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
 }

@@ -22,5 +22,4 @@ function gen_proto {
 }
 
 # generate proto
-gen_proto ./raftstore/kvpb
-gen_proto ./raftstore/mvcc
+gen_proto ./raftstore/raftpb

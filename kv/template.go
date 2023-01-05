@@ -1,8 +1,8 @@
 package kv
 
 import (
-    "bytes"
-    "context"
+	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -72,7 +72,7 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 
 				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
 					ID:   cf.ID,
-                    Type: res.Type,
+					Type: res.Type,
 					Name: cf.Name,
 				})
 
@@ -90,7 +90,7 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 
 				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
 					ID:   dashboard.ID,
-                    Type: res.Type,
+					Type: res.Type,
 					Name: dashboard.Name,
 				})
 
@@ -108,7 +108,7 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 
 				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
 					ID:   scrape.ID,
-                    Type: res.Type,
+					Type: res.Type,
 					Name: scrape.Name,
 				})
 
@@ -170,97 +170,97 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 
 		for _, res := range tmpl.Resources {
 			switch res.Type {
-            case template.ResourceCheck:
-                err = s.deleteCheck(tx, id)
-                if err == ErrKeyNotFound {
-                    // resource already deleted
-                    continue
-                }
+			case template.ResourceCheck:
+				err = s.deleteCheck(tx, id)
+				if err == ErrKeyNotFound {
+					// resource already deleted
+					continue
+				}
 
-                if err != nil {
-                    return err
-                }
+				if err != nil {
+					return err
+				}
 
-            case template.ResourceConfig:
-                err = s.deleteConfig(tx, id)
-                if err == ErrKeyNotFound {
-                    // resource already deleted
-                    continue
-                }
+			case template.ResourceConfig:
+				err = s.deleteConfig(tx, id)
+				if err == ErrKeyNotFound {
+					// resource already deleted
+					continue
+				}
 
-                if err != nil {
-                    return err
-                }
+				if err != nil {
+					return err
+				}
 
-            case template.ResourceDashboard:
-                err = s.deleteDashboard(ctx, tx, id)
-                if err == ErrKeyNotFound {
-                    // resource already deleted
-                    continue
-                }
+			case template.ResourceDashboard:
+				err = s.deleteDashboard(ctx, tx, id)
+				if err == ErrKeyNotFound {
+					// resource already deleted
+					continue
+				}
 
-                if err != nil {
-                    return err
-                }
+				if err != nil {
+					return err
+				}
 
-            case template.ResourceScrape:
-                err = s.deleteScrapeTarget(tx, id)
-                if err == ErrKeyNotFound {
-                    // resource already deleted
-                    continue
-                }
+			case template.ResourceScrape:
+				err = s.deleteScrapeTarget(tx, id)
+				if err == ErrKeyNotFound {
+					// resource already deleted
+					continue
+				}
 
-                if err != nil {
-                    return err
-                }
+				if err != nil {
+					return err
+				}
 
-            default:
-                return &manta.Error{
-                    Code: manta.EInvalid,
-                    Msg: fmt.Sprintf("unsupport resource type %s, name: %s", res.Type, res.Name),
-                }
+			default:
+				return &manta.Error{
+					Code: manta.EInvalid,
+					Msg:  fmt.Sprintf("unsupport resource type %s, name: %s", res.Type, res.Name),
+				}
 			}
 		}
 
-        return nil
+		return nil
 	})
 }
 
 func (s *Service) ListTemplate(ctx context.Context, orgID manta.ID) ([]*template.Template, error) {
-    var templates []*template.Template
+	var templates []*template.Template
 
 	err := s.kv.View(ctx, func(tx Tx) error {
-        prefix, err := orgID.Encode()
-        if err != nil {
-            return err
-        }
+		prefix, err := orgID.Encode()
+		if err != nil {
+			return err
+		}
 
-        b, err := tx.Bucket(templatesBucket)
-        if err != nil {
-            return err
-        }
+		b, err := tx.Bucket(templatesBucket)
+		if err != nil {
+			return err
+		}
 
-        cursor, err := b.Cursor()
-        if err != nil {
-            return err
-        }
+		cursor, err := b.Cursor()
+		if err != nil {
+			return err
+		}
 
-        for k, v := cursor.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, v = cursor.Next() {
-            tmpl := &template.Template{}
-            err = json.Unmarshal(v, tmpl)
-            if err != nil {
-                return err
-            }
+		for k, v := cursor.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, v = cursor.Next() {
+			tmpl := &template.Template{}
+			err = json.Unmarshal(v, tmpl)
+			if err != nil {
+				return err
+			}
 
-            templates = append(templates, tmpl)
-        }
+			templates = append(templates, tmpl)
+		}
 
-        return nil
+		return nil
 	})
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    return templates, nil
+	return templates, nil
 }

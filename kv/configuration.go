@@ -87,5 +87,5 @@ func (s *Service) DeleteConfiguration(ctx context.Context, id manta.ID) error {
 }
 
 func (s *Service) deleteConfig(tx Tx, id manta.ID) error {
-    return deleteOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket, ConfigurationOrgIndexBucket)
+	return deleteOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket, ConfigurationOrgIndexBucket)
 }
