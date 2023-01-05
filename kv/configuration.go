@@ -14,14 +14,18 @@ var (
 )
 
 func (s *Service) CreateConfiguration(ctx context.Context, cf *manta.Configuration) error {
+	return s.kv.Update(ctx, func(tx Tx) error {
+		return s.createConfiguration(ctx, tx, cf)
+	})
+}
+
+func (s *Service) createConfiguration(ctx context.Context, tx Tx, cf *manta.Configuration) error {
 	now := time.Now()
 	cf.ID = s.idGen.ID()
 	cf.Created = now
 	cf.Updated = now
 
-	return s.kv.Update(ctx, func(tx Tx) error {
-		return putOrgIndexed(tx, cf, ConfigurationBucket, ConfigurationOrgIndexBucket)
-	})
+	return putOrgIndexed(tx, cf, ConfigurationBucket, ConfigurationOrgIndexBucket)
 }
 
 func (s *Service) GetConfiguration(ctx context.Context, id manta.ID) (*manta.Configuration, error) {
@@ -78,6 +82,10 @@ func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd mant
 
 func (s *Service) DeleteConfiguration(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
-		return deleteOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket, ConfigurationOrgIndexBucket)
+		return s.deleteConfig(tx, id)
 	})
+}
+
+func (s *Service) deleteConfig(tx Tx, id manta.ID) error {
+    return deleteOrgIndexed[manta.Configuration](tx, id, ConfigurationBucket, ConfigurationOrgIndexBucket)
 }

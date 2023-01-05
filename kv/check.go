@@ -52,6 +52,12 @@ func (s *Service) FindChecks(ctx context.Context, filter manta.CheckFilter, opt 
 
 // CreateCheck creates a new and set its id with new identifier
 func (s *Service) CreateCheck(ctx context.Context, check *manta.Check) error {
+	return s.kv.Update(ctx, func(tx Tx) error {
+		return s.createCheck(ctx, tx, check)
+	})
+}
+
+func (s *Service) createCheck(ctx context.Context, tx Tx, check *manta.Check) error {
 	now := time.Now()
 
 	check.ID = s.idGen.ID()
@@ -71,14 +77,12 @@ func (s *Service) CreateCheck(ctx context.Context, check *manta.Check) error {
 
 	check.TaskID = task.ID
 
-	return s.kv.Update(ctx, func(tx Tx) error {
-		err := putOrgIndexed(tx, task, TasksBucket, TaskOrgIndexBucket)
-		if err != nil {
-			return err
-		}
+	err := putOrgIndexed(tx, task, TasksBucket, TaskOrgIndexBucket)
+	if err != nil {
+		return err
+	}
 
-		return putOrgIndexed(tx, check, ChecksBucket, CheckOrgIndexBucket)
-	})
+	return putOrgIndexed(tx, check, ChecksBucket, CheckOrgIndexBucket)
 }
 
 // UpdateCheck updates the whole check returns the new check after update
@@ -157,27 +161,31 @@ func (s *Service) PatchCheck(ctx context.Context, id manta.ID, upd manta.CheckUp
 // DeleteCheck delete a single check by ID
 func (s *Service) DeleteCheck(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
-		check, err := findByID[manta.Check](tx, id, ChecksBucket)
-		if err != nil {
-			return err
-		}
-
-		if err = deleteTask(tx, check.TaskID); err != nil {
-			return err
-		}
-
-		runs, _, err := findRuns(tx, manta.RunFilter{Task: check.TaskID})
-		if err != nil {
-			return err
-		}
-
-		for _, run := range runs {
-			err = deleteRun(tx, check.TaskID, run.ID)
-			if err != nil {
-				return err
-			}
-		}
-
-		return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
+		return s.deleteCheck(tx, id)
 	})
+}
+
+func (s *Service) deleteCheck(tx Tx, id manta.ID) error {
+    check, err := findByID[manta.Check](tx, id, ChecksBucket)
+    if err != nil {
+        return err
+    }
+
+    if err = deleteTask(tx, check.TaskID); err != nil {
+        return err
+    }
+
+    runs, _, err := findRuns(tx, manta.RunFilter{Task: check.TaskID})
+    if err != nil {
+        return err
+    }
+
+    for _, run := range runs {
+        err = deleteRun(tx, check.TaskID, run.ID)
+        if err != nil {
+            return err
+        }
+    }
+
+    return deleteOrgIndexed[manta.Check](tx, id, ChecksBucket, CheckOrgIndexBucket)
 }
