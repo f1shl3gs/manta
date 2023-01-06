@@ -84,7 +84,6 @@ const (
 	AuthorizationsResourceType = ResourceType("authorizations")
 	DashboardsResourceType     = ResourceType("dashboards")
 	OrganizationsResourceType  = ResourceType("organizations")
-	OtclResourceType           = ResourceType("otcl")
 	UsersResourceType          = ResourceType("users")
 )
 
@@ -92,7 +91,6 @@ var AllResourceTypes = []ResourceType{
 	AuthorizationsResourceType,
 	DashboardsResourceType,
 	OrganizationsResourceType,
-	OtclResourceType,
 	UsersResourceType,
 }
 

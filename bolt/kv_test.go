@@ -7,10 +7,11 @@ import (
 	"os"
 	"testing"
 
+	"go.uber.org/zap/zaptest"
+    
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/tests"
-	"go.uber.org/zap/zaptest"
 )
 
 func NewTestKVStore(t *testing.T) (*bolt.KVStore, func(), error) {
