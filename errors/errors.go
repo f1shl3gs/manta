@@ -1,11 +1,9 @@
-package manta
+package errors
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 )
 
@@ -263,9 +261,4 @@ func decodeInternalError(target interface{}) error {
 		return internalErr
 	}
 	return nil
-}
-
-// HTTPErrorHandler is the interface to handle http error.
-type HTTPErrorHandler interface {
-	HandleHTTPError(ctx context.Context, err error, w http.ResponseWriter)
 }

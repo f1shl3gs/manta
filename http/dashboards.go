@@ -58,7 +58,7 @@ func (h *DashboardsHandler) listDashboard(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	dashboards, err := h.dashboardService.FindDashboards(ctx, manta.DashboardFilter{OrganizationID: &orgID})
+	dashboards, err := h.dashboardService.FindDashboards(ctx, manta.DashboardFilter{OrgID: orgID})
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -145,18 +145,12 @@ func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 		upd manta.DashboardUpdate
 	)
 
-	id, err := idFromPath(r)
-	if err != nil {
-		h.HandleHTTPError(ctx, err, w)
-		return
-	}
-
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	dashboard, err := h.dashboardService.UpdateDashboard(ctx, id, upd)
+	dashboard, err := h.dashboardService.UpdateDashboard(ctx, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -231,31 +225,40 @@ func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
-	var (
-		upd manta.DashboardCellUpdate
-		ctx = r.Context()
-	)
+func decodeCellUpdate(r *http.Request) (*manta.DashboardCellUpdate, error) {
+	var upd = &manta.DashboardCellUpdate{}
 
 	dashboardID, err := idFromPath(r)
 	if err != nil {
-		h.HandleHTTPError(ctx, err, w)
-		return
+		return nil, err
 	}
 
 	cellId, err := cellIdFromPath(r)
 	if err != nil {
-		h.HandleHTTPError(ctx, err, w)
-		return
+		return nil, err
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&upd)
+	if err != nil {
+		return nil, err
+	}
+
+	upd.DashboardID = dashboardID
+	upd.CellID = cellId
+
+	return upd, nil
+}
+
+func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	upd, err := decodeCellUpdate(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cell, err := h.dashboardService.UpdateDashboardCell(ctx, dashboardID, cellId, upd)
+	cell, err := h.dashboardService.UpdateDashboardCell(ctx, *upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

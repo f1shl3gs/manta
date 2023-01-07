@@ -157,62 +157,67 @@ func (s *MarkdownViewProperties) GetType() string {
 }
 
 type DashboardFilter struct {
-	OrganizationID *ID
+	OrgID ID
 }
 
 type DashboardUpdate struct {
+	ID    ID `json:"ID"`
+	OrgID ID `json:"orgID"`
+
 	Name *string `json:"name,omitempty"`
 	Desc *string `json:"desc,omitempty"`
 }
 
-func (udp DashboardUpdate) Apply(dash *Dashboard) {
-	if udp.Name != nil {
-		dash.Name = *udp.Name
+func (upd DashboardUpdate) Apply(dash *Dashboard) {
+	if upd.Name != nil {
+		dash.Name = *upd.Name
 	}
 
-	if udp.Desc != nil {
-		dash.Desc = *udp.Desc
+	if upd.Desc != nil {
+		dash.Desc = *upd.Desc
 	}
 }
 
 type DashboardCellUpdate struct {
+	DashboardID, OrgID, CellID ID
+
 	Name           *string
 	Desc           *string
 	W, H, X, Y     *int32
 	ViewProperties ViewProperties
 }
 
-func (udp DashboardCellUpdate) Apply(cell *Cell) {
-	if udp.Name != nil {
-		cell.Name = *udp.Name
+func (upd DashboardCellUpdate) Apply(cell *Cell) {
+	if upd.Name != nil {
+		cell.Name = *upd.Name
 	}
 
-	if udp.Desc != nil {
-		cell.Desc = *udp.Desc
+	if upd.Desc != nil {
+		cell.Desc = *upd.Desc
 	}
 
-	if udp.W != nil {
-		cell.W = *udp.W
+	if upd.W != nil {
+		cell.W = *upd.W
 	}
 
-	if udp.H != nil {
-		cell.H = *udp.H
+	if upd.H != nil {
+		cell.H = *upd.H
 	}
 
-	if udp.X != nil {
-		cell.X = *udp.X
+	if upd.X != nil {
+		cell.X = *upd.X
 	}
 
-	if udp.Y != nil {
-		cell.Y = *udp.Y
+	if upd.Y != nil {
+		cell.Y = *upd.Y
 	}
 
-	if udp.ViewProperties != nil {
-		cell.ViewProperties = udp.ViewProperties
+	if upd.ViewProperties != nil {
+		cell.ViewProperties = upd.ViewProperties
 	}
 }
 
-func (udp *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
+func (upd *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
 	var a struct {
 		Name           *string
 		Desc           *string
@@ -232,25 +237,15 @@ func (udp *DashboardCellUpdate) UnmarshalJSON(bytes []byte) error {
 		return err
 	}
 
-	udp.Name = a.Name
-	udp.Desc = a.Desc
-	udp.W = a.W
-	udp.H = a.H
-	udp.X = a.X
-	udp.Y = a.Y
-	udp.ViewProperties = vp
+	upd.Name = a.Name
+	upd.Desc = a.Desc
+	upd.W = a.W
+	upd.H = a.H
+	upd.X = a.X
+	upd.Y = a.Y
+	upd.ViewProperties = vp
 
 	return nil
-}
-
-type ViewUpdate struct {
-}
-
-func (udp ViewUpdate) Apply(view *View) {
-	// todo: implement it
-}
-
-type View struct {
 }
 
 type DashboardService interface {
@@ -260,26 +255,22 @@ type DashboardService interface {
 
 	CreateDashboard(ctx context.Context, d *Dashboard) error
 
-	UpdateDashboard(ctx context.Context, id ID, udp DashboardUpdate) (*Dashboard, error)
+	UpdateDashboard(ctx context.Context, upd DashboardUpdate) (*Dashboard, error)
 
 	AddDashboardCell(ctx context.Context, id ID, cell *Cell) error
 
 	// RemoveDashboardCell remove a panel by ID
-	RemoveDashboardCell(ctx context.Context, did, pid ID) error
+	RemoveDashboardCell(ctx context.Context, dashboardId, cellId ID) error
 
 	// UpdateDashboardCell update the dashboard cell with the provided ids
-	UpdateDashboardCell(ctx context.Context, did, pid ID, udp DashboardCellUpdate) (*Cell, error)
+	UpdateDashboardCell(ctx context.Context, upd DashboardCellUpdate) (*Cell, error)
 
-	GetDashboardCell(ctx context.Context, did, cid ID) (*Cell, error)
-
-	// GetDashboardCellView(ctx context.Context, did, cid ID) (*View, error)
-	//
-	// UpdateDashboardCellView(ctx context.Context, did, cid ID, udp ViewUpdate) (*View, error)
+	GetDashboardCell(ctx context.Context, dashboardID, cellId ID) (*Cell, error)
 
 	// RemoveDashboard removes dashboard by id
 	DeleteDashboard(ctx context.Context, id ID) error
 
-	ReplaceDashboardCells(ctx context.Context, did ID, cells []Cell) error
+	ReplaceDashboardCells(ctx context.Context, dashboardId ID, cells []Cell) error
 }
 
 func (m *Cell) Validate() error {

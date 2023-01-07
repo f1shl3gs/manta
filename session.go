@@ -2,13 +2,15 @@ package manta
 
 import (
 	"context"
-	"errors"
+	baseErrors "errors"
 	"time"
+
+	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
-	ErrSessionNotFound = errors.New("session not found")
-	ErrSessionExpired  = errors.New("session has expired")
+	ErrSessionNotFound = baseErrors.New("session not found")
+	ErrSessionExpired  = baseErrors.New("session has expired")
 )
 
 type Session struct {
@@ -17,6 +19,10 @@ type Session struct {
 	ExpiresAt   time.Time    `json:"expiresAt"`
 	UID         ID           `json:"userId,omitempty"`
 	Permissions []Permission `json:"permissions"`
+}
+
+func (s *Session) Expired() bool {
+	return time.Now().After(s.ExpiresAt)
 }
 
 type SessionService interface {
@@ -49,6 +55,13 @@ func (s *Session) Kind() string {
 	return "session"
 }
 
-func (s *Session) PermissionSet() PermissionSet {
-	return s.Permissions
+func (s *Session) PermissionSet() (PermissionSet, error) {
+	if s.Expired() {
+		return nil, &errors.Error{
+			Code: errors.EForbidden,
+			Msg:  "session has expired",
+		}
+	}
+
+	return s.Permissions, nil
 }

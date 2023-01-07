@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/template"
+	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
@@ -16,20 +16,20 @@ var (
 	templatesBucket = []byte("templates")
 )
 
-func decodeResourceErr(index int, typ template.ResourceType, err error) *manta.Error {
-	return &manta.Error{
-		Code: manta.EInvalid,
+func decodeResourceErr(index int, typ manta.ResourceType, err error) *errors.Error {
+	return &errors.Error{
+		Code: errors.EInvalid,
 		Msg:  fmt.Sprintf("resource[%d] cannot be decoded into %s", index, typ),
 		Err:  err,
 	}
 }
 
-func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (*template.Template, error) {
+func (s *Service) Install(ctx context.Context, create manta.TemplateCreate) (*manta.Template, error) {
 	if len(create.Resources) == 0 {
-		return nil, template.ErrNoResource
+		return nil, manta.ErrNoResource
 	}
 
-	var tmpl = &template.Template{
+	var tmpl = &manta.Template{
 		ID:      s.idGen.ID(),
 		Name:    create.Name,
 		Desc:    create.Desc,
@@ -40,7 +40,7 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 	err := s.kv.Update(ctx, func(tx Tx) error {
 		for i, res := range create.Resources {
 			switch res.Type {
-			case template.ResourceCheck:
+			case manta.ChecksResourceType:
 				check := &manta.Check{}
 				err := json.Unmarshal(res.Spec, check)
 				if err != nil {
@@ -52,13 +52,13 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 					return err
 				}
 
-				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
+				tmpl.Resources = append(tmpl.Resources, manta.ResourceItem{
 					ID:   check.ID,
 					Type: res.Type,
 					Name: check.Name,
 				})
 
-			case template.ResourceConfig:
+			case manta.ConfigsResourceType:
 				cf := &manta.Configuration{}
 				err := json.Unmarshal(res.Spec, cf)
 				if err != nil {
@@ -70,13 +70,13 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 					return err
 				}
 
-				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
+				tmpl.Resources = append(tmpl.Resources, manta.ResourceItem{
 					ID:   cf.ID,
 					Type: res.Type,
 					Name: cf.Name,
 				})
 
-			case template.ResourceDashboard:
+			case manta.DashboardsResourceType:
 				dashboard := &manta.Dashboard{}
 				err := json.Unmarshal(res.Spec, dashboard)
 				if err != nil {
@@ -88,13 +88,13 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 					return err
 				}
 
-				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
+				tmpl.Resources = append(tmpl.Resources, manta.ResourceItem{
 					ID:   dashboard.ID,
 					Type: res.Type,
 					Name: dashboard.Name,
 				})
 
-			case template.ResourceScrape:
+			case manta.ScrapesResourceType:
 				scrape := &manta.ScrapeTarget{}
 				err := json.Unmarshal(res.Spec, scrape)
 				if err != nil {
@@ -106,15 +106,15 @@ func (s *Service) Install(ctx context.Context, create template.TemplateCreate) (
 					return err
 				}
 
-				tmpl.Resources = append(tmpl.Resources, template.ResourceItem{
+				tmpl.Resources = append(tmpl.Resources, manta.ResourceItem{
 					ID:   scrape.ID,
 					Type: res.Type,
 					Name: scrape.Name,
 				})
 
 			default:
-				return &manta.Error{
-					Code: manta.EInvalid,
+				return &errors.Error{
+					Code: errors.EInvalid,
 					Msg:  fmt.Sprintf("unknown resource type %s at resources[%d]", res.Type, i),
 				}
 			}
@@ -162,7 +162,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 			return err
 		}
 
-		var tmpl = &template.Template{}
+		var tmpl = &manta.Template{}
 		err = json.Unmarshal(value, tmpl)
 		if err != nil {
 			return err
@@ -170,7 +170,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 
 		for _, res := range tmpl.Resources {
 			switch res.Type {
-			case template.ResourceCheck:
+			case manta.ChecksResourceType:
 				err = s.deleteCheck(tx, id)
 				if err == ErrKeyNotFound {
 					// resource already deleted
@@ -181,7 +181,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 					return err
 				}
 
-			case template.ResourceConfig:
+			case manta.ConfigsResourceType:
 				err = s.deleteConfig(tx, id)
 				if err == ErrKeyNotFound {
 					// resource already deleted
@@ -192,7 +192,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 					return err
 				}
 
-			case template.ResourceDashboard:
+			case manta.DashboardsResourceType:
 				err = s.deleteDashboard(ctx, tx, id)
 				if err == ErrKeyNotFound {
 					// resource already deleted
@@ -203,7 +203,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 					return err
 				}
 
-			case template.ResourceScrape:
+			case manta.ScrapesResourceType:
 				err = s.deleteScrapeTarget(tx, id)
 				if err == ErrKeyNotFound {
 					// resource already deleted
@@ -215,8 +215,8 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 				}
 
 			default:
-				return &manta.Error{
-					Code: manta.EInvalid,
+				return &errors.Error{
+					Code: errors.EInvalid,
 					Msg:  fmt.Sprintf("unsupport resource type %s, name: %s", res.Type, res.Name),
 				}
 			}
@@ -226,8 +226,8 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 	})
 }
 
-func (s *Service) ListTemplate(ctx context.Context, orgID manta.ID) ([]*template.Template, error) {
-	var templates []*template.Template
+func (s *Service) ListTemplate(ctx context.Context, orgID manta.ID) ([]*manta.Template, error) {
+	var templates []*manta.Template
 
 	err := s.kv.View(ctx, func(tx Tx) error {
 		prefix, err := orgID.Encode()
@@ -246,7 +246,7 @@ func (s *Service) ListTemplate(ctx context.Context, orgID manta.ID) ([]*template
 		}
 
 		for k, v := cursor.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, v = cursor.Next() {
-			tmpl := &template.Template{}
+			tmpl := &manta.Template{}
 			err = json.Unmarshal(v, tmpl)
 			if err != nil {
 				return err

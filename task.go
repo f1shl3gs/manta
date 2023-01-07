@@ -2,20 +2,24 @@ package manta
 
 import (
 	"context"
-	"errors"
 	"time"
+
+	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
-	ErrTaskNotClaimed = errors.New("task not claimed")
+	ErrTaskNotClaimed = &errors.Error{
+		Code: errors.EConflict,
+		Msg:  "task not claimed",
+	}
 
-	ErrOutOfBoundsLimit = &Error{
-		Code: EUnprocessableEntity,
+	ErrOutOfBoundsLimit = &errors.Error{
+		Code: errors.EUnprocessableEntity,
 		Msg:  "run limit is out of bounds, must be between",
 	}
 
-	ErrRunNotFound = &Error{
-		Code: ENotFound,
+	ErrRunNotFound = &errors.Error{
+		Code: errors.ENotFound,
 		Msg:  "run not found",
 	}
 )
@@ -75,29 +79,29 @@ type TaskUpdate struct {
 	LastRunError    *string
 }
 
-func (udp TaskUpdate) Apply(task *Task) {
-	if udp.Status != nil {
-		task.Status = *udp.Status
+func (upd TaskUpdate) Apply(task *Task) {
+	if upd.Status != nil {
+		task.Status = *upd.Status
 	}
 
-	if udp.LatestCompleted != nil {
-		task.LatestCompleted = *udp.LatestCompleted
+	if upd.LatestCompleted != nil {
+		task.LatestCompleted = *upd.LatestCompleted
 	}
 
-	if udp.LatestScheduled != nil {
-		task.LatestScheduled = *udp.LatestScheduled
+	if upd.LatestScheduled != nil {
+		task.LatestScheduled = *upd.LatestScheduled
 	}
 
-	if udp.LatestSuccess != nil {
-		task.LatestSuccess = *udp.LatestSuccess
+	if upd.LatestSuccess != nil {
+		task.LatestSuccess = *upd.LatestSuccess
 	}
 
-	if udp.LatestFailure != nil {
-		task.LatestFailure = *udp.LatestFailure
+	if upd.LatestFailure != nil {
+		task.LatestFailure = *upd.LatestFailure
 	}
 
-	if udp.LastRunError != nil {
-		task.LastRunError = *udp.LastRunError
+	if upd.LastRunError != nil {
+		task.LastRunError = *upd.LastRunError
 	}
 }
 
@@ -125,7 +129,7 @@ type TaskService interface {
 	CreateTask(ctx context.Context, task *Task) error
 
 	// UpdateTask updates a single task with a patch
-	UpdateTask(ctx context.Context, id ID, udp TaskUpdate) (*Task, error)
+	UpdateTask(ctx context.Context, id ID, upd TaskUpdate) (*Task, error)
 
 	// DeleteTask delete a single task by ID
 	DeleteTask(ctx context.Context, id ID) error

@@ -2,6 +2,7 @@ package manta
 
 import (
 	"context"
+	"github.com/f1shl3gs/manta/errors"
 	"time"
 )
 
@@ -57,7 +58,7 @@ func (upd *ScrapeTargetUpdate) Apply(s *ScrapeTarget) {
 
 func (m *ScrapeTarget) Validate() error {
 	if m.Name == "" {
-		return &Error{Code: EInvalid, Msg: "Name is required"}
+		return &errors.Error{Code: errors.EInvalid, Msg: "Name is required"}
 	}
 
 	if !m.OrgID.Valid() {
@@ -69,7 +70,6 @@ func (m *ScrapeTarget) Validate() error {
 
 // ScrapeTargetService defines the crud service for ScraperTarget
 type ScrapeTargetService interface {
-
 	// FindScrapeTargetByID returns a single ScraperTarget by ID
 	FindScrapeTargetByID(ctx context.Context, id ID) (*ScrapeTarget, error)
 

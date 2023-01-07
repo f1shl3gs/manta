@@ -3,7 +3,8 @@ package http
 import (
 	"context"
 	"fmt"
-	"net/http"
+    "github.com/f1shl3gs/manta/errors"
+    "net/http"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
@@ -25,8 +26,8 @@ func orgIdFromQuery(r *http.Request) (manta.ID, error) {
 
 	err := id.DecodeFromString(text)
 	if err != nil {
-		return 0, &manta.Error{
-			Code: manta.EInvalid,
+        return 0, &errors.Error{
+            Code: errors.EInvalid,
 			Msg:  "invalid organization id found in query",
 			Err:  err,
 		}
@@ -42,6 +43,29 @@ func idFromPath(r *http.Request) (manta.ID, error) {
 	)
 
 	return id, id.DecodeFromString(text)
+}
+
+func orgIDFromPath(r *http.Request) (manta.ID, error) {
+	var (
+		text = extractParamFromContext(r.Context(), "orgID")
+		id   manta.ID
+	)
+
+	return id, id.DecodeFromString(text)
+}
+
+func idsFromPath(r *http.Request) (manta.ID, manta.ID, error) {
+	orgID, err := orgIDFromPath(r)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	id, err := idFromPath(r)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return orgID, id, nil
 }
 
 func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
@@ -64,8 +88,8 @@ func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
 	} else {
 		n, err = strconv.ParseInt(s, 10, 64)
 		if err != nil {
-			return 0, &manta.Error{
-				Code: manta.EInvalid,
+            return 0, &errors.Error{
+                Code: errors.EInvalid,
 				Msg:  "Parse limit failed",
 				Op:   "parse limit",
 				Err:  err,
@@ -74,8 +98,8 @@ func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
 	}
 
 	if n > max || n <= 0 {
-		return 0, &manta.Error{
-			Code: manta.EUnprocessableEntity,
+        return 0, &errors.Error{
+            Code: errors.EUnprocessableEntity,
 			Msg:  fmt.Sprintf("Limit value must between 1 and %d", max),
 		}
 	}

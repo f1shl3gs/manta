@@ -11,7 +11,7 @@ import (
 )
 
 type UpdateTaskService interface {
-	UpdateTask(ctx context.Context, id manta.ID, udp manta.TaskUpdate) (*manta.Task, error)
+	UpdateTask(ctx context.Context, id manta.ID, upd manta.TaskUpdate) (*manta.Task, error)
 }
 
 type SchedulableTaskService struct {

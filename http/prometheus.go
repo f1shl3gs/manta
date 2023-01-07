@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/f1shl3gs/manta/http/router"
 	"math"
 	"net/http"
 	"sort"
@@ -24,6 +23,8 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	mantaErrors "github.com/f1shl3gs/manta/errors"
+	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/multitsdb"
 	"github.com/f1shl3gs/manta/pkg/log"
 	"github.com/f1shl3gs/manta/pkg/tracing"
@@ -325,8 +326,8 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 }
 
 func (h *PromAPIHandler) handleInvalidParam(ctx context.Context, w http.ResponseWriter, err error) {
-	h.HandleHTTPError(ctx, &manta.Error{
-		Code: manta.EInvalid,
+	h.HandleHTTPError(ctx, &mantaErrors.Error{
+        Code: mantaErrors.EInvalid,
 		Msg:  "invalid param",
 		Err:  err,
 	}, w)

@@ -2,13 +2,9 @@ package manta
 
 import (
 	"context"
-	"errors"
 
+	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/token"
-)
-
-var (
-	ErrInvalidField = errors.New("invalid failed")
 )
 
 type OnBoardingRequest struct {
@@ -19,29 +15,23 @@ type OnBoardingRequest struct {
 
 func (r *OnBoardingRequest) Validate() error {
 	if r.Username == "" {
-		return &Error{
-			Code: EInvalid,
+		return &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "username cannot be empty",
-			Op:   "validate",
-			Err:  ErrInvalidField,
 		}
 	}
 
 	if r.Password == "" {
-		return &Error{
-			Code: EInvalid,
+		return &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "password cannot be empty",
-			Op:   "validate",
-			Err:  ErrInvalidField,
 		}
 	}
 
 	if r.Organization == "" {
-		return &Error{
-			Code: EInvalid,
+		return &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "organization cannot be empty",
-			Op:   "validate",
-			Err:  ErrInvalidField,
 		}
 	}
 

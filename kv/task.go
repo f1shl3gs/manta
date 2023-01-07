@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/errors"
 )
 
 const TaskDefaultPageSize = 100
@@ -17,15 +18,15 @@ var (
 	TaskOwnerIndexBucket = []byte("taskownerindex")
 
 	// Errors
-	ErrInvalidTaskID = &manta.Error{
-		Code: manta.EInvalid,
+	ErrInvalidTaskID = &errors.Error{
+		Code: errors.EInvalid,
 		Msg:  "invalid task id",
 	}
 )
 
-func ErrInternalTaskService(err error) *manta.Error {
-	return &manta.Error{
-		Code: manta.EInternal,
+func ErrInternalTaskService(err error) *errors.Error {
+	return &errors.Error{
+		Code: errors.EInternal,
 		Msg:  "unexpected error in tasks",
 		Err:  err,
 	}
@@ -282,7 +283,7 @@ func putTask(tx Tx, task *manta.Task) error {
 }
 
 // UpdateTask updates a single task with a patch
-func (s *Service) UpdateTask(ctx context.Context, id manta.ID, udp manta.TaskUpdate) (*manta.Task, error) {
+func (s *Service) UpdateTask(ctx context.Context, id manta.ID, upd manta.TaskUpdate) (*manta.Task, error) {
 	var (
 		task *manta.Task
 		err  error
@@ -294,7 +295,7 @@ func (s *Service) UpdateTask(ctx context.Context, id manta.ID, udp manta.TaskUpd
 			return err
 		}
 
-		udp.Apply(task)
+		upd.Apply(task)
 		task.Updated = time.Now()
 
 		return putTask(tx, task)

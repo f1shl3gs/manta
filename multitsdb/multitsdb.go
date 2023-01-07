@@ -107,7 +107,7 @@ func (m *MultiTSDB) Flush() error {
 	m.mtx.RLock()
 	defer m.mtx.RUnlock()
 
-	errs := &multierr.SyncedErrors{}
+	errs := &multierr.List{}
 	wg := &sync.WaitGroup{}
 
 	for id, tenant := range m.tenants {
@@ -126,21 +126,21 @@ func (m *MultiTSDB) Flush() error {
 
 			head := db.Head()
 			if err := db.CompactHead(tsdb.NewRangeHead(head, head.MinTime(), head.MaxTime()-1)); err != nil {
-				errs.Add(err)
+				errs.Append(err)
 			}
 		}()
 	}
 
 	wg.Wait()
 
-	return errs.Unwrap()
+	return errs.Err()
 }
 
 func (m *MultiTSDB) Close() error {
 	m.mtx.Lock()
 	defer m.mtx.Unlock()
 
-	errs := multierr.Errors{}
+	errs := &multierr.List{}
 	for id, tenant := range m.tenants {
 		db := tenant.readyS.Get()
 		if db == nil {
@@ -150,11 +150,11 @@ func (m *MultiTSDB) Close() error {
 		}
 
 		if err := db.Close(); err != nil {
-			errs.Add(err)
+			errs.Append(err)
 		}
 	}
 
-	return errs.Unwrap()
+	return errs.Err()
 }
 
 func (m *MultiTSDB) RemoveLockFilesIfAny() error {
@@ -167,7 +167,7 @@ func (m *MultiTSDB) RemoveLockFilesIfAny() error {
 		return err
 	}
 
-	errs := &multierr.Errors{}
+	errs := &multierr.List{}
 	for _, fi := range fis {
 		if !fi.IsDir() {
 			continue
@@ -178,14 +178,14 @@ func (m *MultiTSDB) RemoveLockFilesIfAny() error {
 				continue
 			}
 
-			errs.Add(err)
+			errs.Append(err)
 			continue
 		}
 
 		m.logger.Info("a leftover lockfile found and removed", zap.String("tenant", fi.Name()))
 	}
 
-	return errs
+	return errs.Err()
 }
 
 func (m *MultiTSDB) defaultTenantDataDir(tenantID string) string {

@@ -66,8 +66,8 @@ func (s *Service) FindDashboards(ctx context.Context, filter manta.DashboardFilt
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		if filter.OrganizationID != nil {
-			list, err = s.findDashboardByOrg(ctx, tx, *filter.OrganizationID)
+		if filter.OrgID != 0 {
+			list, err = s.findDashboardByOrg(ctx, tx, filter.OrgID)
 		} else {
 			list, err = s.findAllDashboards(ctx, tx)
 		}
@@ -215,19 +215,19 @@ func (s *Service) putDashboard(ctx context.Context, tx Tx, d *manta.Dashboard) e
 	return b.Put(pk, val)
 }
 
-func (s *Service) UpdateDashboard(ctx context.Context, id manta.ID, udp manta.DashboardUpdate) (*manta.Dashboard, error) {
+func (s *Service) UpdateDashboard(ctx context.Context, upd manta.DashboardUpdate) (*manta.Dashboard, error) {
 	var (
 		dash *manta.Dashboard
 		err  error
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		dash, err = s.findDashboardByID(ctx, tx, id)
+		dash, err = s.findDashboardByID(ctx, tx, upd.ID)
 		if err != nil {
 			return err
 		}
 
-		udp.Apply(dash)
+		upd.Apply(dash)
 		dash.Updated = time.Now()
 
 		return s.putDashboard(ctx, tx, dash)
@@ -288,23 +288,23 @@ func (s *Service) RemoveDashboardCell(ctx context.Context, did, cellID manta.ID)
 	})
 }
 
-func (s *Service) UpdateDashboardCell(ctx context.Context, did, cellID manta.ID, udp manta.DashboardCellUpdate) (*manta.Cell, error) {
+func (s *Service) UpdateDashboardCell(ctx context.Context, upd manta.DashboardCellUpdate) (*manta.Cell, error) {
 	var (
 		cell *manta.Cell
 		err  error
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		dash, err := s.findDashboardByID(ctx, tx, did)
+		dash, err := s.findDashboardByID(ctx, tx, upd.DashboardID)
 		if err != nil {
 			return err
 		}
 
 		for i := 0; i < len(dash.Cells); i++ {
-			if dash.Cells[i].ID == cellID {
+			if dash.Cells[i].ID == upd.CellID {
 				cell = &dash.Cells[i]
 
-				udp.Apply(cell)
+				upd.Apply(cell)
 				break
 			}
 		}
@@ -411,23 +411,3 @@ func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*man
 
 	return cell, nil
 }
-
-// func (s *Service) GetDashboardCellView(ctx context.Context, did, cid manta.ID) (*manta.View, error) {
-// 	var (
-// 		cell *manta.Prop
-// 		err error
-// 	)
-//
-// 	err = s.kv.View(ctx, func(tx Tx) error {
-// 		cell, err = s.findDashboardCell(ctx, tx, did, cid)
-// 		if err != nil {
-// 			return err
-// 		}
-//
-// 		return nil
-// 	})
-// }
-//
-// func (s *Service) UpdateDashboardCellView(ctx context.Context, did, cid manta.ID, udp manta.ViewUpdate) (*manta.View, error) {
-// 	panic("implement me")
-// }

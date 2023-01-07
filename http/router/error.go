@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/errors"
 )
 
 // ErrorCodeToStatusCode maps an manta error code string to a
@@ -29,19 +29,19 @@ func ErrorCodeToStatusCode(ctx context.Context, code string) int {
 
 // mantaErrorToStatusCode is a mapping of ErrorCode to http status code.
 var mantaErrorToStatusCode = map[string]int{
-	manta.EInternal:            http.StatusInternalServerError,
-	manta.ENotImplemented:      http.StatusNotImplemented,
-	manta.EInvalid:             http.StatusBadRequest,
-	manta.EUnprocessableEntity: http.StatusUnprocessableEntity,
-	manta.EEmptyValue:          http.StatusBadRequest,
-	manta.EConflict:            http.StatusUnprocessableEntity,
-	manta.ENotFound:            http.StatusNotFound,
-	manta.EUnavailable:         http.StatusServiceUnavailable,
-	manta.EForbidden:           http.StatusForbidden,
-	manta.ETooManyRequests:     http.StatusTooManyRequests,
-	manta.EUnauthorized:        http.StatusUnauthorized,
-	manta.EMethodNotAllowed:    http.StatusMethodNotAllowed,
-	manta.ETooLarge:            http.StatusRequestEntityTooLarge,
+	errors.EInternal:            http.StatusInternalServerError,
+	errors.ENotImplemented:      http.StatusNotImplemented,
+	errors.EInvalid:             http.StatusBadRequest,
+	errors.EUnprocessableEntity: http.StatusUnprocessableEntity,
+	errors.EEmptyValue:          http.StatusBadRequest,
+	errors.EConflict:            http.StatusUnprocessableEntity,
+	errors.ENotFound:            http.StatusNotFound,
+	errors.EUnavailable:         http.StatusServiceUnavailable,
+	errors.EForbidden:           http.StatusForbidden,
+	errors.ETooManyRequests:     http.StatusTooManyRequests,
+	errors.EUnauthorized:        http.StatusUnauthorized,
+	errors.EMethodNotAllowed:    http.StatusMethodNotAllowed,
+	errors.ETooLarge:            http.StatusRequestEntityTooLarge,
 }
 
 var httpStatusCodeToMantaError = map[int]string{}

@@ -12,7 +12,7 @@ import (
 const (
 	organizationPrefix = apiV1Prefix + "/organizations"
 
-	organizationWithID = organizationPrefix + "/:id"
+	organizationWithID = organizationPrefix + "/:orgID"
 )
 
 type OrganizationHandler struct {

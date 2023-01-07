@@ -2,17 +2,18 @@ package manta
 
 import (
 	"context"
+	"github.com/f1shl3gs/manta/errors"
 	"time"
 )
 
 var (
-	ErrUserAlreadyExist = &Error{
-		Code: EInvalid,
+	ErrUserAlreadyExist = &errors.Error{
+		Code: errors.EInvalid,
 		Msg:  "user already exist",
 	}
 
-	ErrUserNotFound = &Error{
-		Code: ENotFound,
+	ErrUserNotFound = &errors.Error{
+		Code: errors.ENotFound,
 		Msg:  "user not found",
 	}
 )
@@ -55,7 +56,7 @@ type UserService interface {
 
 	// Update a single user with changeset
 	// Return the new User after update
-	UpdateUser(ctx context.Context, id ID, udp UserUpdate) (*User, error)
+	UpdateUser(ctx context.Context, id ID, upd UserUpdate) (*User, error)
 
 	// Remove a user by ID
 	DeleteUser(ctx context.Context, id ID) error

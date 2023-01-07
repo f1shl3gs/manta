@@ -2,14 +2,14 @@ package http
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/authz"
+	"github.com/f1shl3gs/manta/authorizer"
+	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
@@ -22,15 +22,15 @@ type AuthenticationHandler struct {
 
 	noAuthRouter *httprouter.Router
 	handler      http.Handler
-	errorHandler manta.HTTPErrorHandler
+	errorHandler errors.HTTPErrorHandler
 }
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var (
-		ctx        = r.Context()
-		authorizer manta.Authorizer
-		err        error
-		path       = r.URL.Path
+		ctx  = r.Context()
+		a    manta.Authorizer
+		err  error
+		path = r.URL.Path
 	)
 
 	if handler, _, _ := h.noAuthRouter.Lookup(r.Method, path); handler != nil {
@@ -42,9 +42,12 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	case "token":
 		// TODO: implement
 	case "session":
-		authorizer, err = h.extractSession(ctx, r)
+		a, err = h.extractSession(ctx, r)
 	default:
-		h.handleUnauthorized(w, r, errors.New("no authorization info"))
+		h.handleUnauthorized(w, r, &errors.Error{
+			Code: errors.EUnauthorized,
+			Msg:  "no auth type found",
+		})
 		return
 	}
 
@@ -61,9 +64,9 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
-	span.SetTag("user_id", authorizer.GetUserID().String())
+	span.SetTag("user_id", a.GetUserID().String())
 
-	ctx = authz.SetAuthorizer(ctx, authorizer)
+	ctx = authorizer.SetAuthorizer(ctx, a)
 	r = r.WithContext(ctx)
 	h.handler.ServeHTTP(w, r)
 }

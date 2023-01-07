@@ -8,12 +8,13 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
-	ChecksPrefix = `/api/v1/checks`
-	ChecksIDPath = `/api/v1/checks/:id`
+	checksPrefix = `/api/v1/checks`
+	checksIDPath = `/api/v1/checks/:id`
 )
 
 type ChecksHandler struct {
@@ -32,12 +33,12 @@ func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckS
 		taskService:  ts,
 	}
 
-	h.HandlerFunc(http.MethodGet, ChecksPrefix, h.handleList)
-	h.HandlerFunc(http.MethodPost, ChecksPrefix, h.handleCreate)
-	h.HandlerFunc(http.MethodDelete, ChecksIDPath, h.handleDelete)
-	h.HandlerFunc(http.MethodPost, ChecksIDPath, h.handleUpdate)
-	h.HandlerFunc(http.MethodPatch, ChecksIDPath, h.handlePatch)
-	h.HandlerFunc(http.MethodGet, ChecksIDPath, h.handleGet)
+	h.HandlerFunc(http.MethodGet, checksPrefix, h.handleList)
+	h.HandlerFunc(http.MethodPost, checksPrefix, h.handleCreate)
+	h.HandlerFunc(http.MethodDelete, checksIDPath, h.handleDelete)
+	h.HandlerFunc(http.MethodPost, checksIDPath, h.handleUpdate)
+	h.HandlerFunc(http.MethodPatch, checksIDPath, h.handlePatch)
+	h.HandlerFunc(http.MethodGet, checksIDPath, h.handleGet)
 }
 
 type check struct {
@@ -100,8 +101,8 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 	c := &manta.Check{}
 	err := json.NewDecoder(r.Body).Decode(c)
 	if err != nil {
-		return nil, &manta.Error{
-			Code: manta.EInvalid,
+		return nil, &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "decode check failed",
 			Err:  err,
 		}
@@ -109,8 +110,8 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 
 	err = c.Validate()
 	if err != nil {
-		return nil, &manta.Error{
-			Code: manta.EInvalid,
+		return nil, &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "validate check failed",
 			Err:  err,
 		}
@@ -162,14 +163,14 @@ func (h *ChecksHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func decodeCheckUpdate(r *http.Request) (manta.CheckUpdate, error) {
-	udp := manta.CheckUpdate{}
+	upd := manta.CheckUpdate{}
 
-	err := json.NewDecoder(r.Body).Decode(&udp)
+	err := json.NewDecoder(r.Body).Decode(&upd)
 	if err != nil {
-		return udp, &manta.Error{Code: manta.EInvalid, Op: "decode CheckUpdate", Err: err}
+		return upd, &errors.Error{Code: errors.EInvalid, Op: "decode CheckUpdate", Err: err}
 	}
 
-	return udp, nil
+	return upd, nil
 }
 
 func (h *ChecksHandler) handleUpdate(w http.ResponseWriter, r *http.Request) {
@@ -233,13 +234,13 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	udp, err := decodeCheckUpdate(r)
+	upd, err := decodeCheckUpdate(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	check, err := h.checkService.PatchCheck(ctx, id, udp)
+	check, err := h.checkService.PatchCheck(ctx, id, upd)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

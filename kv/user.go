@@ -210,14 +210,14 @@ func (s *Service) putUser(ctx context.Context, tx Tx, user *manta.User) error {
 	return b.Put(fk, pk)
 }
 
-func (s *Service) UpdateUser(ctx context.Context, id manta.ID, udp manta.UserUpdate) (*manta.User, error) {
+func (s *Service) UpdateUser(ctx context.Context, id manta.ID, upd manta.UserUpdate) (*manta.User, error) {
 	var (
 		user *manta.User
 		err  error
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		user, err = s.updateUser(ctx, tx, id, udp)
+		user, err = s.updateUser(ctx, tx, id, upd)
 		return err
 	})
 
@@ -228,14 +228,14 @@ func (s *Service) UpdateUser(ctx context.Context, id manta.ID, udp manta.UserUpd
 	return user, nil
 }
 
-func (s *Service) updateUser(ctx context.Context, tx Tx, id manta.ID, udp manta.UserUpdate) (*manta.User, error) {
+func (s *Service) updateUser(ctx context.Context, tx Tx, id manta.ID, upd manta.UserUpdate) (*manta.User, error) {
 	prev, err := s.findUserByID(ctx, tx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	user := *prev
-	udp.Apply(&user)
+	upd.Apply(&user)
 	user.Updated = time.Now()
 
 	err = s.putUser(ctx, tx, &user)

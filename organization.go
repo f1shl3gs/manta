@@ -2,24 +2,25 @@ package manta
 
 import (
 	"context"
-	"errors"
 	"time"
+
+	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
 	// ErrInvalidOrgID signifies invalid IDs.
-	ErrInvalidOrgID = &Error{
-		Code: EInvalid,
+	ErrInvalidOrgID = &errors.Error{
+		Code: errors.EInvalid,
 		Msg:  "invalid Organization ID",
 	}
 
-	ErrOrgAlreadyExist = &Error{
-		Code: EInvalid,
+	ErrOrgAlreadyExist = &errors.Error{
+		Code: errors.EInvalid,
 		Msg:  "Organization already exist",
 	}
 
-	ErrOrgNotFound = &Error{
-		Code: ENotFound,
+	ErrOrgNotFound = &errors.Error{
+		Code: errors.ENotFound,
 		Msg:  "Organization not found",
 	}
 )
@@ -60,12 +61,4 @@ type OrganizationService interface {
 
 	// DeleteOrganization remove a Organization by ID
 	DeleteOrganization(ctx context.Context, id ID) error
-}
-
-func (m *Organization) Validate() error {
-	if m.Name == "" {
-		return errors.New("name is required")
-	}
-
-	return nil
 }
