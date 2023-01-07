@@ -3,8 +3,8 @@ package http
 import (
 	"context"
 	"fmt"
-    "github.com/f1shl3gs/manta/errors"
-    "net/http"
+	"github.com/f1shl3gs/manta/errors"
+	"net/http"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
@@ -26,8 +26,8 @@ func orgIdFromQuery(r *http.Request) (manta.ID, error) {
 
 	err := id.DecodeFromString(text)
 	if err != nil {
-        return 0, &errors.Error{
-            Code: errors.EInvalid,
+		return 0, &errors.Error{
+			Code: errors.EInvalid,
 			Msg:  "invalid organization id found in query",
 			Err:  err,
 		}
@@ -88,8 +88,8 @@ func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
 	} else {
 		n, err = strconv.ParseInt(s, 10, 64)
 		if err != nil {
-            return 0, &errors.Error{
-                Code: errors.EInvalid,
+			return 0, &errors.Error{
+				Code: errors.EInvalid,
 				Msg:  "Parse limit failed",
 				Op:   "parse limit",
 				Err:  err,
@@ -98,8 +98,8 @@ func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
 	}
 
 	if n > max || n <= 0 {
-        return 0, &errors.Error{
-            Code: errors.EUnprocessableEntity,
+		return 0, &errors.Error{
+			Code: errors.EUnprocessableEntity,
 			Msg:  fmt.Sprintf("Limit value must between 1 and %d", max),
 		}
 	}

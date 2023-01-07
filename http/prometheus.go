@@ -327,7 +327,7 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 
 func (h *PromAPIHandler) handleInvalidParam(ctx context.Context, w http.ResponseWriter, err error) {
 	h.HandleHTTPError(ctx, &mantaErrors.Error{
-        Code: mantaErrors.EInvalid,
+		Code: mantaErrors.EInvalid,
 		Msg:  "invalid param",
 		Err:  err,
 	}, w)

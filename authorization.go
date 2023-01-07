@@ -412,3 +412,20 @@ func MePermissions(userID ID) []Permission {
 
 	return ps
 }
+
+// OperPermissions are the default permissions for those who setup the application
+func OperPermissions() []Permission {
+	ps := []Permission{}
+
+	for _, r := range AllResourceTypes {
+		// For now, we are only allowing instance permissions when logged in through session
+		// auth. That is handled in user resource mapping
+		for _, a := range actions {
+			ps = append(ps, Permission{Action: a, Resource: Resource{
+				Type: r,
+			}})
+		}
+	}
+
+	return ps
+}

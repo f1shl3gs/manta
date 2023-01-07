@@ -11,6 +11,12 @@ type ScrapeTargetService struct {
 	scrapeTargetService manta.ScrapeTargetService
 }
 
+func NewScrapeTargetService(ss manta.ScrapeTargetService) *ScrapeTargetService {
+	return &ScrapeTargetService{
+		scrapeTargetService: ss,
+	}
+}
+
 // FindScrapeTargetByID returns a single ScraperTarget by ID
 func (s *ScrapeTargetService) FindScrapeTargetByID(ctx context.Context, id manta.ID) (*manta.ScrapeTarget, error) {
 	st, err := s.scrapeTargetService.FindScrapeTargetByID(ctx, id)

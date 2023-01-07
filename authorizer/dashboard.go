@@ -7,8 +7,16 @@ import (
 	"github.com/f1shl3gs/manta/errors"
 )
 
+var _ manta.DashboardService = &DashboardService{}
+
 type DashboardService struct {
 	dashboardService manta.DashboardService
+}
+
+func NewDashboardService(ds manta.DashboardService) manta.DashboardService {
+	return &DashboardService{
+		dashboardService: ds,
+	}
 }
 
 func (s *DashboardService) FindDashboardByID(ctx context.Context, id manta.ID) (*manta.Dashboard, error) {

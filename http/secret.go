@@ -2,8 +2,8 @@ package http
 
 import (
 	"encoding/json"
-    "github.com/f1shl3gs/manta/errors"
-    "net/http"
+	"github.com/f1shl3gs/manta/errors"
+	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
@@ -62,7 +62,7 @@ func decodeSecret(r *http.Request) (*manta.Secret, error) {
 	err := json.NewDecoder(r.Body).Decode(secret)
 	if err != nil {
 		return nil, &errors.Error{
-            Code: errors.EInvalid,
+			Code: errors.EInvalid,
 			Msg:  "unmarshal secret failed",
 			Err:  err,
 		}

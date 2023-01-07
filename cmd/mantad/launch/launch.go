@@ -23,6 +23,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/authorizer"
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/checks"
 	httpservice "github.com/f1shl3gs/manta/http"
@@ -134,7 +135,7 @@ func (l *Launcher) run() error {
 	defer func() {
 		err = logger.Sync()
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "flush logs failed\n")
+			_, _ = fmt.Fprintf(os.Stderr, "flush logs faile, ed\n")
 		}
 	}()
 
@@ -278,11 +279,11 @@ func (l *Launcher) run() error {
 			UserService:                 service,
 			PasswordService:             service,
 			AuthorizationService:        service,
-			DashboardService:            service,
+			DashboardService:            authorizer.NewDashboardService(service),
 			SessionService:              service,
 			Flusher:                     kvStore,
 			ConfigurationService:        service,
-			ScrapeTargetService:         scrapeTargetService,
+			ScrapeTargetService:         authorizer.NewScrapeTargetService(scrapeTargetService),
 			RegistryService:             service,
 			SecretService:               service,
 			NotificationEndpointService: service,
