@@ -2,6 +2,7 @@ package authorizer
 
 import (
 	"context"
+
 	"github.com/f1shl3gs/manta/errors"
 
 	"github.com/f1shl3gs/manta"

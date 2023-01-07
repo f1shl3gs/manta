@@ -5,8 +5,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/f1shl3gs/manta"
 	"github.com/pkg/errors"
+
+	"github.com/f1shl3gs/manta"
 )
 
 type FilterFn func(key []byte, decodedVal interface{}) bool

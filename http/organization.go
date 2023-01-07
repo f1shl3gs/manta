@@ -2,8 +2,9 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/f1shl3gs/manta/http/router"
 	"net/http"
+
+	"github.com/f1shl3gs/manta/http/router"
 
 	"github.com/f1shl3gs/manta"
 	"go.uber.org/zap"

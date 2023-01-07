@@ -1,0 +1,19 @@
+run:
+  tests: false
+  timeout: 2m
+
+linters-settings:
+  lll:
+    line-length: 120
+
+linters:
+  disable-all: true
+  enable:
+    - goimports
+    - ineffassign
+    - revive
+    - staticcheck
+    - stylecheck
+    - unused
+    - unconvert # Remove unnecessary type conversions
+    - lll

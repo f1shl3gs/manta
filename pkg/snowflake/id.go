@@ -1,8 +1,9 @@
 package snowflake
 
 import (
-	"github.com/f1shl3gs/manta"
 	"math/rand"
+
+	"github.com/f1shl3gs/manta"
 )
 
 type IDGenerator struct {

@@ -2,11 +2,12 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/f1shl3gs/manta/http/router"
 	"io"
 	"net/http"
 	"net/http/httputil"
 	"strings"
+
+	"github.com/f1shl3gs/manta/http/router"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"

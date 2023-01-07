@@ -2,8 +2,9 @@ package manta
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/errors"
 	"time"
+
+	"github.com/f1shl3gs/manta/errors"
 )
 
 type ScrapeTarget struct {

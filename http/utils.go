@@ -3,9 +3,10 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/f1shl3gs/manta/errors"
 	"net/http"
 	"strconv"
+
+	"github.com/f1shl3gs/manta/errors"
 
 	"github.com/julienschmidt/httprouter"
 

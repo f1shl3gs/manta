@@ -26,7 +26,7 @@ const (
 	ChecksResourceType         = ResourceType("checks")
 	ConfigsResourceType        = ResourceType("configs")
 	DashboardsResourceType     = ResourceType("dashboards")
-	OrganizationsResourceType  = ResourceType("organizations")
+	OrgsResourceType           = ResourceType("orgs")
 	ScrapesResourceType        = ResourceType("scrapes")
 	UsersResourceType          = ResourceType("users")
 )
@@ -36,7 +36,7 @@ var AllResourceTypes = []ResourceType{
 	ChecksResourceType,
 	ConfigsResourceType,
 	DashboardsResourceType,
-	OrganizationsResourceType,
+	OrgsResourceType,
 	ScrapesResourceType,
 	UsersResourceType,
 }
@@ -276,7 +276,7 @@ func OwnerPermissions(orgID ID) []Permission {
 
 	for _, r := range AllResourceTypes {
 		for _, a := range actions {
-			if r == OrganizationsResourceType {
+			if r == OrgsResourceType {
 				ps = append(ps, Permission{
 					Action: a,
 					Resource: Resource{
@@ -373,7 +373,7 @@ func MemberPermissions(orgID ID) []Permission {
 	var ps []Permission
 
 	for _, r := range AllResourceTypes {
-		if r == OrganizationsResourceType {
+		if r == OrgsResourceType {
 			ps = append(ps, Permission{
 				Action: ReadAction,
 				Resource: Resource{
