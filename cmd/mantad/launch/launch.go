@@ -153,7 +153,9 @@ func (l *Launcher) run() error {
 		}
 
 		defer closer.Close()
-	}
+	} else {
+        logger.Info("OpenTracing is disabled")
+    }
 
 	// starting services
 	ctx := signals.WithStandardSignals(context.Background())
