@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package raftpb;
+package kvpb;
 
 message CreateBucket {
   bytes name = 1;
@@ -11,25 +11,16 @@ message DeleteBucket {
 }
 
 message Compare {
-  bytes key = 1;
-  int64 revision = 2;
+  bytes bucket = 1;
+  bytes key = 2;
+  int64 version = 3;
 }
 
-message RangeRequest {
-}
-
-message PutRequest {
-}
-
-message DeleteRequest {
-}
-
-message RequestOp {
-  oneof request {
-    RangeRequest range = 1;
-    PutRequest put = 2;
-    DeleteRequest delete = 3;
-  }
+message Operation {
+  bytes bucket = 1;
+  bytes key = 2;
+  bytes value = 3;
+  bool deletion = 4;
 }
 
 message Txn {
@@ -41,13 +32,13 @@ message Txn {
   repeated Compare compares = 1;
 
   // successes is a list of requests which will be applied when compare evaluates to true.
-  repeated RequestOp success = 2;
+  repeated Operation successes = 2;
   // failures is a list of requests which will be applied when compare evaluates to false.
-  repeated RequestOp failures = 3;
+  repeated Operation failures = 3;
 }
 
 message Compact {
-  uint64 revision = 1;
+  uint64 version = 1;
 }
 
 message InternalRequest {

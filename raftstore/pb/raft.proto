@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pb;
+
+message Chunk {
+  bytes data = 1;
+}
+
+message Done {}
+
+service Raft {
+  rpc SendSnapshot(stream Chunk) returns (Done);
+}

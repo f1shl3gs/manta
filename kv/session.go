@@ -35,8 +35,8 @@ func (s *Service) CreateSession(ctx context.Context, uid manta.ID) (*manta.Sessi
 	return session, nil
 }
 
-func (s *Service) createSession(ctx context.Context, tx Tx, uid manta.ID) (*manta.Session, error) {
-	_, err := s.findUserByID(ctx, tx, uid)
+func (s *Service) createSession(ctx context.Context, tx Tx, userID manta.ID) (*manta.Session, error) {
+	_, err := s.findUserByID(ctx, tx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *Service) createSession(ctx context.Context, tx Tx, uid manta.ID) (*mant
 		ID:        s.idGen.ID(),
 		Created:   now,
 		ExpiresAt: now.Add(defaultSessionTTL),
-		UID:       uid,
+		UserID:    userID,
 	}
 
 	if err := s.putSession(ctx, tx, session); err != nil {
@@ -124,7 +124,7 @@ func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.S
 		return nil, err
 	}
 
-	as, err := s.findAuthorizationsByUser(ctx, tx, session.UID)
+	as, err := s.findAuthorizationsByUser(ctx, tx, session.UserID)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"github.com/f1shl3gs/manta/http/middleware"
 	"net/http"
 	_ "net/http/pprof"
 	"strings"
@@ -91,9 +92,9 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	}
 
 	// build api handler
-	backend.router = router.New(router.Trace(), router.Metrics())
+	backend.router = router.New(router.Trace(), middleware.Metrics())
 	if logger.Core().Enabled(zapcore.DebugLevel) {
-		backend.router.Use(router.Logging(logger))
+		backend.router.Use(middleware.Logging(logger))
 	}
 
 	NewOrganizationHandler(backend, logger)

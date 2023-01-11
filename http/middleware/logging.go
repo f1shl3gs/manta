@@ -1,15 +1,16 @@
-package router
+package middleware
 
 import (
 	"net/http"
 	"time"
 
-	"go.uber.org/zap"
-
+	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/pkg/tracing"
+
+	"go.uber.org/zap"
 )
 
-func Logging(logger *zap.Logger) Middleware {
+func Logging(logger *zap.Logger) router.Middleware {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			rw := newRecordableResponse(w)

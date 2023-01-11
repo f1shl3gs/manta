@@ -15,3 +15,10 @@ Requirements
 ```shell
 make build
 ```
+
+## Misc
+| service                 | default port |
+|-------------------------|--------------|
+| http service            | :8088        |
+| internal raft transport | :8089        |
+

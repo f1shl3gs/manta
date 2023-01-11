@@ -169,7 +169,7 @@ func (h *SessionHandler) handleViewer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.FindUserByID(ctx, sess.UID)
+	user, err := h.userService.FindUserByID(ctx, sess.UserID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

@@ -2,7 +2,6 @@ package launch
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"math"
 	"net"
@@ -133,10 +132,11 @@ func (l *Launcher) run() error {
 	}
 
 	defer func() {
-		err = logger.Sync()
-		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "flush logs faile, ed\n")
-		}
+        // Calling fsync on os.Stdout cause EINVAL on Linux platform, but it's fine
+        // on MacOS.
+        //
+        // See https://github.com/uber-go/zap/issues/328#issuecomment-284337436
+		_ = logger.Sync()
 	}()
 
 	CPUToUse := adjustMaxProcs()

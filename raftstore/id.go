@@ -1,7 +1,8 @@
-package internal
+package raftstore
 
 import (
 	"math"
+	"strconv"
 	"sync/atomic"
 	"time"
 )
@@ -12,7 +13,7 @@ const (
 	suffixLen = tsLen + cntLen
 )
 
-// Generator generates unique identifiers based on counters, timestamps, and
+// idGenerator generates unique identifiers based on counters, timestamps, and
 // a node member ID.
 //
 // The initial id is in this format:
@@ -30,30 +31,34 @@ const (
 // It helps to extend the event window to 2^56. This doesn't break that
 // id generated after restart is unique because etcd throughput is <<
 // 256req/ms(250k reqs/second).
-type Generator struct {
+type idGenerator struct {
 	// high order 2 bytes
 	prefix uint64
 	// low order 6 bytes
 	suffix uint64
 }
 
-func NewGenerator(memberID uint16, now time.Time) *Generator {
+func newGenerator(memberID uint16, now time.Time) *idGenerator {
 	prefix := uint64(memberID) << suffixLen
 	unixMilli := uint64(now.UnixNano()) / uint64(time.Millisecond/time.Nanosecond)
 	suffix := lowbit(unixMilli, tsLen) << cntLen
 
-	return &Generator{
+	return &idGenerator{
 		prefix: prefix,
 		suffix: suffix,
 	}
 }
 
 // Next generates an id that is unique
-func (g *Generator) Next() uint64 {
+func (g *idGenerator) Next() uint64 {
 	suffix := atomic.AddUint64(&g.suffix, 1)
 	return g.prefix | lowbit(suffix, suffixLen)
 }
 
 func lowbit(x uint64, n uint) uint64 {
 	return x & (math.MaxUint64 >> (64 - n))
+}
+
+func IDToString(id uint64) string {
+	return strconv.FormatUint(id, 16)
 }

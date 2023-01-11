@@ -1,15 +1,17 @@
-package router
+package middleware
 
 import (
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/f1shl3gs/manta/http/router"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-func Metrics() Middleware {
+func Metrics() router.Middleware {
 	var (
 		namespace = "manta"
 		subsystem = "http"

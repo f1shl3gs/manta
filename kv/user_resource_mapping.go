@@ -9,11 +9,11 @@ import (
 )
 
 var (
-    // Key: resource_id + user_id
-    // Value: manta.UserResourceMapping
-	UrmsBucket         = []byte("userresourcemappings")
-    // Key: user_id + resource_id
-    // Value: nil
+	// Key: resource_id + user_id
+	// Value: manta.UserResourceMapping
+	UrmsBucket = []byte("userresourcemappings")
+	// Key: user_id + resource_id
+	// Value: nil
 	UrmUserIndexBucket = []byte("userresourcemappinguserindex")
 )
 

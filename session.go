@@ -17,7 +17,7 @@ type Session struct {
 	ID          ID           `json:"id,omitempty"`
 	Created     time.Time    `json:"created"`
 	ExpiresAt   time.Time    `json:"expiresAt"`
-	UID         ID           `json:"userId,omitempty"`
+	UserID      ID           `json:"userId,omitempty"`
 	Permissions []Permission `json:"permissions"`
 }
 
@@ -48,7 +48,7 @@ func (s *Session) Identifier() ID {
 }
 
 func (s *Session) GetUserID() ID {
-	return s.UID
+	return s.UserID
 }
 
 func (s *Session) Kind() string {
