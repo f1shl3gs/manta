@@ -2,7 +2,17 @@ package kv
 
 import (
 	"context"
+
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/errors"
+)
+
+var (
+	// ErrOnboardingNotAllowed occurs when request to onboard comes in and we are not allowing this request
+	ErrOnboardingNotAllowed = &errors.Error{
+		Code: errors.EConflict,
+		Msg:  "onboarding has already been completed",
+	}
 )
 
 func (s *Service) Onboarded(ctx context.Context) (bool, error) {
@@ -34,6 +44,15 @@ func (s *Service) Onboarded(ctx context.Context) (bool, error) {
 }
 
 func (s *Service) Setup(ctx context.Context, req *manta.OnBoardingRequest) (*manta.OnboardingResult, error) {
+	onboarded, err := s.Onboarded(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if onboarded {
+		return nil, ErrOnboardingNotAllowed
+	}
+
 	var (
 		org = &manta.Organization{
 			Name: req.Organization,
@@ -43,20 +62,29 @@ func (s *Service) Setup(ctx context.Context, req *manta.OnBoardingRequest) (*man
 			Name:   req.Username,
 			Status: "",
 		}
-
-		err error
 	)
 
 	err = s.kv.Update(ctx, func(tx Tx) error {
-		if org, err = s.createOrganization(ctx, tx, org); err != nil {
-			return err
-		}
-
 		if err = s.createUser(ctx, tx, user); err != nil {
 			return err
 		}
 
 		if err = s.setPassword(ctx, tx, user.ID, req.Password); err != nil {
+			return err
+		}
+
+		if org, err = s.createOrganization(ctx, tx, org); err != nil {
+			return err
+		}
+
+		err = s.createUserResourceMapping(ctx, tx, &manta.UserResourceMapping{
+			UserID:       user.ID,
+			UserType:     manta.Owner,
+			MappingType:  manta.OrgMappingType,
+			ResourceType: manta.InstanceResourceType,
+			ResourceID:   manta.ID(1), // The instance doesn't have a resource id
+		})
+		if err != nil {
 			return err
 		}
 

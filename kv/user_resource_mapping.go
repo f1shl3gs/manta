@@ -65,9 +65,13 @@ func findUserResourceMappingByUser(tx Tx, filter manta.UserResourceMappingFilter
 	}
 
 	var (
-		keys      [][]byte
-		prefix, _ = filter.UserID.Encode()
+		keys [][]byte
 	)
+
+	prefix, err := filter.UserID.Encode()
+	if err != nil {
+		return nil, 0, err
+	}
 
 	b, err := tx.Bucket(UrmUserIndexBucket)
 	if err != nil {
@@ -75,13 +79,18 @@ func findUserResourceMappingByUser(tx Tx, filter manta.UserResourceMappingFilter
 	}
 
 	c, err := b.Cursor()
-	for k, _ := c.Seek(prefix); bytes.HasPrefix(k, prefix); k, _ = c.Next() {
-		fk, pk, err := indexKeyParts(k)
+	k, _ := c.Seek(prefix)
+	if k == nil {
+		k = nil
+	}
+
+	for k, _ := c.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, _ = c.Next() {
+		uk, rk, err := indexKeyParts(k)
 		if err != nil {
 			return nil, 0, err
 		}
 
-		keys = append(keys, IndexKey(pk, fk))
+		keys = append(keys, IndexKey(rk, uk))
 	}
 
 	if len(keys) == 0 {
@@ -165,23 +174,41 @@ func findUserResourceMappingByResource(tx Tx, filter manta.UserResourceMappingFi
 // CreateUserResourceMapping creates a user resource mapping.
 func (s *Service) CreateUserResourceMapping(ctx context.Context, m *manta.UserResourceMapping) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
-		data, err := json.Marshal(m)
-		if err != nil {
-			return err
-		}
-
-		b, err := tx.Bucket(UrmsBucket)
-		if err != nil {
-			return err
-		}
-
-		key, err := indexIDKey(m.ResourceID, m.UserID)
-		if err != nil {
-			return err
-		}
-
-		return b.Put(key, data)
+		return s.createUserResourceMapping(ctx, tx, m)
 	})
+}
+
+func (s *Service) createUserResourceMapping(ctx context.Context, tx Tx, m *manta.UserResourceMapping) error {
+	data, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+
+	b, err := tx.Bucket(UrmsBucket)
+	if err != nil {
+		return err
+	}
+
+	key, err := indexIDKey(m.ResourceID, m.UserID)
+	if err != nil {
+		return err
+	}
+
+	if err = b.Put(key, data); err != nil {
+		return err
+	}
+
+	b, err = tx.Bucket(UrmUserIndexBucket)
+	if err != nil {
+		return err
+	}
+
+	key, err = indexIDKey(m.UserID, m.ResourceID)
+	if err != nil {
+		return err
+	}
+
+	return b.Put(key, nil)
 }
 
 // DeleteUserResourceMapping deletes a user resource mapping.

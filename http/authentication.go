@@ -27,8 +27,10 @@ type AuthenticationHandler struct {
 }
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	span, ctx := tracing.StartSpanFromContext(r.Context())
+	defer span.Finish()
+
 	var (
-		ctx  = r.Context()
 		a    manta.Authorizer
 		err  error
 		path = r.URL.Path
@@ -61,9 +63,6 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		h.errorHandler.HandleHTTPError(ctx, err, w)
 		return
 	}
-
-	span, ctx := tracing.StartSpanFromContext(ctx)
-	defer span.Finish()
 
 	span.SetTag("user_id", a.GetUserID().String())
 

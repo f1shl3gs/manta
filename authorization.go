@@ -4,7 +4,8 @@ import (
 	"context"
 	baseError "errors"
 	"fmt"
-	"time"
+    "path"
+    "time"
 
 	"github.com/f1shl3gs/manta/errors"
 )
@@ -28,7 +29,11 @@ const (
 	DashboardsResourceType     = ResourceType("dashboards")
 	OrgsResourceType           = ResourceType("orgs")
 	ScrapesResourceType        = ResourceType("scrapes")
+	TasksResourceType          = ResourceType("tasks")
 	UsersResourceType          = ResourceType("users")
+
+	// InstanceResourceType is a special permission that allows ownership of the entire instance (creating orgs/operator tokens/etc)
+	InstanceResourceType = ResourceType("instance")
 )
 
 var AllResourceTypes = []ResourceType{
@@ -38,6 +43,7 @@ var AllResourceTypes = []ResourceType{
 	DashboardsResourceType,
 	OrgsResourceType,
 	ScrapesResourceType,
+    TasksResourceType,
 	UsersResourceType,
 }
 
@@ -51,10 +57,27 @@ func (rt ResourceType) Valid() error {
 	return ErrInvalidResourceType
 }
 
+// Resource is an authorizable resource
 type Resource struct {
 	Type  ResourceType `json:"type"`
 	ID    *ID          `json:"id,omitempty"`
 	OrgID *ID          `json:"orgID,omitempty"`
+}
+
+func (r Resource) String() string {
+    if r.OrgID != nil && r.ID != nil {
+        return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type), r.ID.String())
+    }
+
+    if r.OrgID != nil {
+        return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type))
+    }
+
+    if r.ID != nil {
+        return path.Join(string(r.Type), r.ID.String())
+    }
+
+    return string(r.Type)
 }
 
 func (r Resource) Valid() error {
@@ -66,13 +89,17 @@ type Permission struct {
 	Resource Resource `json:"resource"`
 }
 
+func (p Permission) String() string {
+	return fmt.Sprintf("%s:%s", p.Action, p.Resource)
+}
+
 // Valid checks if there the resource and action provided is known.
 func (p *Permission) Valid() error {
 	if err := p.Resource.Valid(); err != nil {
 		return &errors.Error{
 			Code: errors.EInvalid,
 			Err:  err,
-			Msg:  "invalid resource type for permission",
+            Msg:  fmt.Sprintf("invalid resource type %q for permission", p.Resource.Type),
 		}
 	}
 
@@ -92,11 +119,11 @@ func (p *Permission) Valid() error {
 		}
 	}
 
-	if !p.Resource.ID.Valid() {
+	if p.Resource.ID != nil && !p.Resource.ID.Valid() {
 		return &errors.Error{
 			Code: errors.EInvalid,
 			Err:  ErrInvalidID,
-			Msg:  "invalid resource id fro permission",
+			Msg:  "invalid resource id for permission",
 		}
 	}
 
@@ -194,6 +221,10 @@ func (p Permission) Matches(perm Permission) bool {
 func (p Permission) matches(perm Permission) bool {
 	if p.Action != perm.Action {
 		return false
+	}
+
+	if p.Resource.Type == InstanceResourceType {
+		return true
 	}
 
 	if p.Resource.Type != perm.Resource.Type {

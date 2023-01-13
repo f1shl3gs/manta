@@ -12,7 +12,7 @@ import (
 
 type FilterFn func(key []byte, decodedVal interface{}) bool
 
-func indexIDKey(pk, fk manta.ID) ([]byte, error) {
+func indexIDKey(fk, pk manta.ID) ([]byte, error) {
 	fp, err := fk.Encode()
 	if err != nil {
 		return nil, err

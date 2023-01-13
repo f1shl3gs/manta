@@ -121,11 +121,29 @@ func (s *DashboardService) GetDashboardCell(ctx context.Context, dashboardID, ce
 	panic("not implement")
 }
 
-// RemoveDashboard removes dashboard by id
+// DeleteDashboard removes dashboard by id
 func (s *DashboardService) DeleteDashboard(ctx context.Context, id manta.ID) error {
-	panic("not implement")
+	d, err := s.FindDashboardByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	if _, _, err = authorizeWrite(ctx, manta.DashboardsResourceType, d.ID, d.OrgID); err != nil {
+		return err
+	}
+
+	return s.dashboardService.DeleteDashboard(ctx, id)
 }
 
 func (s *DashboardService) ReplaceDashboardCells(ctx context.Context, did manta.ID, cells []manta.Cell) error {
-	panic("not implement")
+	d, err := s.FindDashboardByID(ctx, did)
+	if err != nil {
+		return err
+	}
+
+	if _, _, err = authorizeWrite(ctx, manta.DashboardsResourceType, d.ID, d.OrgID); err != nil {
+		return err
+	}
+
+	return s.dashboardService.ReplaceDashboardCells(ctx, did, cells)
 }

@@ -92,27 +92,27 @@ func (s *Service) FindSession(ctx context.Context, id manta.ID) (*manta.Session,
 
 	err = s.kv.View(ctx, func(tx Tx) error {
 		session, err = s.findSession(ctx, tx, id)
-        if err != nil {
-            return err
-        }
+		if err != nil {
+			return err
+		}
 
-        now := time.Now()
-        if session.ExpiresAt.Before(now) {
-            return manta.ErrSessionExpired
-        }
+		now := time.Now()
+		if session.ExpiresAt.Before(now) {
+			return manta.ErrSessionExpired
+		}
 
-        urms, _, err := findUserResourceMappingByUser(tx, manta.UserResourceMappingFilter{UserID: session.UserID}, manta.FindOptions{})
-        if err != nil {
-            return err
-        }
+		urms, _, err := findUserResourceMappingByUser(tx, manta.UserResourceMappingFilter{UserID: session.UserID}, manta.FindOptions{})
+		if err != nil {
+			return err
+		}
 
-        permissions, err := permissionFromMapping(urms)
-        if err != nil {
-            return err
-        }
+		permissions, err := permissionFromMapping(urms)
+		if err != nil {
+			return err
+		}
 
-        permissions = append(permissions, manta.MePermissions(session.UserID)...)
-        session.Permissions = permissions
+		permissions = append(permissions, manta.MePermissions(session.UserID)...)
+		session.Permissions = permissions
 
 		return err
 	})
@@ -121,22 +121,22 @@ func (s *Service) FindSession(ctx context.Context, id manta.ID) (*manta.Session,
 		return nil, err
 	}
 
-    return session, nil
+	return session, nil
 }
 
 func permissionFromMapping(mappings []*manta.UserResourceMapping) ([]manta.Permission, error) {
-    ps := make([]manta.Permission, 0, len(mappings))
+	ps := make([]manta.Permission, 0, len(mappings))
 
-    for _, m := range mappings {
-        p, err := m.ToPermissions()
-        if err != nil {
-            return nil, err
-        }
+	for _, m := range mappings {
+		p, err := m.ToPermissions()
+		if err != nil {
+			return nil, err
+		}
 
-        ps = append(ps, p)
-    }
+		ps = append(ps, p...)
+	}
 
-    return ps, nil
+	return ps, nil
 }
 
 func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.Session, error) {
