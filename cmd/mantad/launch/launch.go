@@ -2,7 +2,6 @@ package launch
 
 import (
 	"context"
-	"io"
 	"math"
 	"net"
 	"net/http"
@@ -10,13 +9,9 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/prometheus/tsdb"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerzap "github.com/uber/jaeger-client-go/log/zap"
-	jaegerprom "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
@@ -198,6 +193,7 @@ func (l *Launcher) run() error {
 
 		defer func() {
 			logger.Info("Staring flush storage")
+
 			start := time.Now()
 			if err = mtsdb.Flush(); err != nil {
 				logger.Error("Flush storage failed", zap.Error(err))
@@ -355,26 +351,4 @@ func adjustMaxProcs() int {
 	}
 
 	return numCPUToUse
-}
-
-func setupOpentracing(logger *zap.Logger) (io.Closer, error) {
-	cf, err := jaegercfg.FromEnv()
-	if err != nil {
-		return nil, errors.Wrap(err, "create jaeger config failed")
-	}
-
-	jmf := jaegerprom.New(jaegerprom.WithRegisterer(prometheus.DefaultRegisterer))
-	jaegerZapLogger := jaegerzap.NewLogger(logger.With(zap.String("service", "opentracing")))
-
-	tracer, closer, err := cf.NewTracer(
-		jaegercfg.Logger(jaegerZapLogger),
-		jaegercfg.Metrics(jmf),
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "create jaeger tracer failed")
-	}
-
-	opentracing.SetGlobalTracer(tracer)
-
-	return closer, nil
 }

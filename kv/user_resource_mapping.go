@@ -6,12 +6,16 @@ import (
 	"encoding/json"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 var (
+	// UrmsBucket is the bucket to store UserResourceMapping
 	// Key: resource_id + user_id
 	// Value: manta.UserResourceMapping
 	UrmsBucket = []byte("userresourcemappings")
+
+	// UrmUserIndexBucket is the bucket to store user index
 	// Key: user_id + resource_id
 	// Value: nil
 	UrmUserIndexBucket = []byte("userresourcemappinguserindex")
@@ -19,6 +23,9 @@ var (
 
 // FindUserResourceMappings returns a list of UserResourceMappings that match filter and the total count of matching mappings.
 func (s *Service) FindUserResourceMappings(ctx context.Context, filter manta.UserResourceMappingFilter, opts ...manta.FindOptions) ([]*manta.UserResourceMapping, int, error) {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	var (
 		list  []*manta.UserResourceMapping
 		total int
