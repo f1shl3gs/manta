@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
 const (
@@ -14,10 +15,15 @@ const (
 )
 
 var (
+	// every user got an id aka. UserID
+	// session use the user id for key to index session
 	sessionBucket = []byte("sessions")
 )
 
 func (s *Service) CreateSession(ctx context.Context, uid manta.ID) (*manta.Session, error) {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	var (
 		session *manta.Session
 		err     error
@@ -76,6 +82,9 @@ func (s *Service) putSession(ctx context.Context, tx Tx, session *manta.Session)
 }
 
 func (s *Service) FindSession(ctx context.Context, id manta.ID) (*manta.Session, error) {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	var (
 		session *manta.Session
 		err     error
@@ -137,6 +146,9 @@ func (s *Service) findSession(ctx context.Context, tx Tx, id manta.ID) (*manta.S
 }
 
 func (s *Service) RevokeSession(ctx context.Context, id manta.ID) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	return s.kv.Update(ctx, func(tx Tx) error {
 		return s.deleteSession(ctx, tx, id)
 	})
@@ -157,12 +169,16 @@ func (s *Service) deleteSession(ctx context.Context, tx Tx, id manta.ID) error {
 }
 
 func (s *Service) RenewSession(ctx context.Context, id manta.ID, expiration time.Time) error {
+	span, ctx := tracing.StartSpanFromContext(ctx)
+	defer span.Finish()
+
 	return s.kv.Update(ctx, func(tx Tx) error {
 		session, err := s.findSession(ctx, tx, id)
 		if err != nil {
 			return err
 		}
 
+		session.LastSeen = time.Now()
 		session.ExpiresAt = expiration
 
 		return s.putSession(ctx, tx, session)

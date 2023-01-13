@@ -1,7 +1,6 @@
 package fsutil
 
 import (
-	"io/ioutil"
 	"os"
 
 	"path/filepath"

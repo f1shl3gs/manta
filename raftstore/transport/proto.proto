@@ -5,20 +5,13 @@ package transport;
 import "gogoproto/gogo.proto";
 import "raftpb/raft.proto";
 
-message SendRequest {
+message Batch {
   repeated raftpb.Message msgs = 1 [(gogoproto.nullable) = false];
-}
-
-message SendResponse {}
-
-message Chunk {
-  bytes data = 1;
 }
 
 message Done {}
 
-service Raft {
+service RaftInternal {
   rpc Send(raftpb.Message) returns (Done);
-
-  rpc SendSnapshot(stream Chunk) returns (Done);
+  rpc SendBatch(Batch) returns (Done);
 }

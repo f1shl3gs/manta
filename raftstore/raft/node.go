@@ -1,154 +1,88 @@
 package raft
 
 import (
-	"fmt"
-	"github.com/f1shl3gs/manta/pkg/fsutil"
-	"github.com/f1shl3gs/manta/raftstore/raft/cindex"
-	"github.com/f1shl3gs/manta/raftstore/raft/membership"
-	"github.com/pkg/errors"
-	bolt "go.etcd.io/bbolt"
-	"go.etcd.io/etcd/raft/v3"
-	"go.etcd.io/etcd/raft/v3/raftpb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
-	"go.etcd.io/etcd/server/v3/wal"
-	"go.etcd.io/etcd/server/v3/wal/walpb"
+	"github.com/f1shl3gs/manta/raftstore/membership"
+	"github.com/f1shl3gs/manta/raftstore/wal"
+	"go.etcd.io/raft/v3"
 	"go.uber.org/zap"
-	"os"
-	"strings"
 )
 
-const (
-	// The max throughput of etcd will not exceed 100MB/s (100K * 1KB value).
-	// Assuming the RTT is around 10ms, 1MB max size is large enough.
-	maxSizePerMsg = 1 * 1024 * 1024
-	// Never overflow the rafthttp buffer, which is 4096.
-	// TODO: a better const?
-	maxInflightMsgs = 4096 / 8
-)
+func defaultRaftConfig() *raft.Config {
+	return &raft.Config{
+		ElectionTick:    20, // 2s
+		HeartbeatTick:   1,
+		MaxInflightMsgs: 256,
 
-func New(cf *Config, logger *zap.Logger, db *bolt.DB) (raft.Node, error) {
-	var (
-		w  *wal.WAL
-		n  raft.Node
-		s  *raft.MemoryStorage
-		cl *membership.Cluster
-	)
+		// 512 KB should be enough for most txn.
+		MaxSizePerMsg:  512 * 1024,
+		ReadOnlyOption: raft.ReadOnlySafe,
 
-	if cf.MaxRequestBytes > maxRequestBytes {
-		logger.Warn(
-			"exceeded recommended request limit, use max",
-			zap.Uint("max-request-bytes", maxRequestBytes),
-		)
-	}
-
-	// make sure dirs is created and writable
-	if err := fsutil.TouchDirAll(cf.DataDir); err != nil {
-		return nil, errors.Wrapf(err, "cannot create/access data directory %s", cf.DataDir)
-	}
-
-	if err := fsutil.TouchDirAll(cf.WalDir()); err != nil {
-		return nil, errors.Wrapf(err, "cannot access/create wal directory %s", cf.WalDir())
-	}
-
-	haveWal := wal.Exist(cf.WalDir())
-
-	if err := fsutil.TouchDirAll(cf.SnapDir()); err != nil {
-		return nil, errors.Wrapf(err, "cannot create/access snap directory %s", cf.SnapDir())
-	}
-
-	// cleanup temp snaps
-	if entries, err := os.ReadDir(cf.SnapDir()); err != nil {
-		for _, entry := range entries {
-			if !strings.HasPrefix(entry.Name(), "tmp") {
-				continue
-			}
-
-			if err = os.Remove(entry.Name()); err != nil {
-				logger.Error("failed to remove temp file in snapshot directory",
-					zap.String("file", entry.Name()),
-					zap.Error(err))
-			}
-		}
-	}
-
-	var (
-		ss = snap.New(logger, cf.SnapDir())
-		ci = cindex.New()
-		id uint64
-	)
-
-	if haveWal {
-		if err := fsutil.TouchDirAll(cf.MemberDir()); err != nil {
-			return nil, fmt.Errorf("cannot write to access memeber directory: %v", err)
-		}
-
-		// Find a snapshot to start/restart a raft node
-		walSnaps, err := wal.ValidSnapshotEntries(logger, cf.WalDir())
-		if err != nil {
-			return nil, err
-		}
-
-		// snapshot files can be orphaned if server crashes after writing them but
-		// before writing the corresponding wal log entries
-		snapshot, err := ss.LoadNewestAvailable(walSnaps)
-		if err != nil {
-			return nil, err
-		}
-
-		if snapshot != nil {
-			if db, err = recoverSnapshot(cf, db, *snapshot); err != nil {
-				logger.Panic("failed to recover from snapshot", zap.Error(err))
-			}
-
-			logger.Info("recovered from snapshot")
-		} else {
-			logger.Info("no snapshot found. recovering WAL from scratch!")
-		}
-
-		id, cl, n, s, w = restartNode(logger, cf, snapshot)
-
-	} else {
-
+		// When a disconnected node joins back, it forces a leader change,
+		// as it starts with a higher term, as described in Raft thesis
+		// (not the paper) in section 9.6. This setting can avoid that by
+		// only increasing the term, if the node has a good chance of
+		// becoming the leader.
+		PreVote: true,
 	}
 }
 
-func restartNode(logger *zap.Logger, cf *Config, snapshot *raftpb.Snapshot) (uint64, *membership.Cluster, raft.Node, *raft.MemoryStorage, *wal.WAL) {
-	var walSnap walpb.Snapshot
-
-	if snapshot != nil {
-		walSnap.Index, walSnap.Term = snapshot.Metadata.Index, snapshot.Metadata.Term
+func newNode(cf *Config, logger *zap.Logger) (*raftNode, error) {
+	store, err := wal.Init(cf.DataDir, logger)
+	if err != nil {
+		return nil, err
 	}
-	w, id, cid, st, ents := readWAL(logger, cf.WalDir(), walSnap)
 
-	logger.Info(
-		"restarting local member",
-		zap.String("cluster-id", internal.IDToString(cid)),
-		zap.String("local-member", internal.IDToString(id)),
-		zap.Uint64("commit-index", st.Commit),
-	)
-
-	cl := membership.New()
-	cl.SetID(id, cid)
-	s := raft.NewMemoryStorage()
-	if snapshot != nil {
-		s.ApplySnapshot(*snapshot)
+	nid := store.Uint(wal.RaftId)
+	if nid == 0 {
+		nid = membership.GenerateID(cf.Listen)
 	}
-	s.SetHardState(st)
-	s.Append(ents)
 
-	c := &raft.Config{
-		ID:              id,
-		ElectionTick:    cf.ElectionTicks,
+	snap, err := store.Snapshot()
+	if err != nil {
+		return nil, err
+	}
+
+	cfg := &raft.Config{
+		ID:              nid,
+		ElectionTick:    1000 / 100,
 		HeartbeatTick:   1,
-		Storage:         s,
-		MaxSizePerMsg:   maxSizePerMsg,
-		MaxInflightMsgs: maxInflightMsgs,
-		CheckQuorum:     true,
-		PreVote:         cf.PreVote,
-		Logger:          newRaftLoggerZap(logger),
+		MaxInflightMsgs: 256,
+
+		// Setting applied to the first index in the raft log, so it does not
+		// derive it separately, thus avoiding a crash when the Applied is set
+		// to below snapshot index by Raft.
+		//
+		// In case this is a new Raft log, first would be 1, and therefore
+		// Applied would be zero, hence meeting the condition by the library
+		// that Applied should only be set during a restart.
+		Applied: snap.Metadata.Index,
+
+		// Storage is the storage for raft. it is used to store wal and snapshots.
+		Storage: store,
+
+		// MaxSizePerMsg specifies the maximum aggregate byte size of Raft
+		// log entries that a leader will send to followers in a single MsgApp.
+		MaxSizePerMsg: 64 << 10, // 64KB should allow more txn
+
+		// MaxCommittedSizePerReady specifies the maximum aggregate
+		// byte size of the committed log entries which a node will receive in a
+		// single Ready.
+		MaxCommittedSizePerReady: 64 << 20, // 64MB
+
+		PreVote: true,
+		Logger:  newRaftLoggerZap(logger.Named("raft")),
 	}
 
-	n := raft.RestartNode(c)
+	return &raftNode{}, nil
+}
 
-	return id, cl, n, s, w
+func (r *raftNode) initAndStart() error {
+	restart := r.storage.NumEntries() > 1
+
+	if restart {
+		r.logger.Info("restarting node from wal and snapshot")
+
+	} else {
+		r.logger.Info("start a brand new raft node")
+	}
 }

@@ -132,10 +132,10 @@ func (l *Launcher) run() error {
 	}
 
 	defer func() {
-        // Calling fsync on os.Stdout cause EINVAL on Linux platform, but it's fine
-        // on MacOS.
-        //
-        // See https://github.com/uber-go/zap/issues/328#issuecomment-284337436
+		// Calling fsync on os.Stdout cause EINVAL on Linux platform, but it's fine
+		// on MacOS.
+		//
+		// See https://github.com/uber-go/zap/issues/328#issuecomment-284337436
 		_ = logger.Sync()
 	}()
 
@@ -154,8 +154,8 @@ func (l *Launcher) run() error {
 
 		defer closer.Close()
 	} else {
-        logger.Info("OpenTracing is disabled")
-    }
+		logger.Info("OpenTracing is disabled")
+	}
 
 	// starting services
 	ctx := signals.WithStandardSignals(context.Background())

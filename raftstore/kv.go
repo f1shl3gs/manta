@@ -10,7 +10,7 @@ import (
 	"github.com/f1shl3gs/manta/raftstore/kvpb"
 
 	bolt "go.etcd.io/bbolt"
-	"go.etcd.io/etcd/raft/v3"
+	"go.etcd.io/raft/v3"
 )
 
 type KV struct {

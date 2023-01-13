@@ -2,11 +2,12 @@ package raft
 
 import (
 	"fmt"
+	"github.com/f1shl3gs/manta/raftstore/wal"
 	"sync"
 	"time"
 
-	"go.etcd.io/etcd/raft/v3"
-	"go.etcd.io/etcd/raft/v3/raftpb"
+	"go.etcd.io/raft/v3"
+	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 )
 
@@ -30,9 +31,8 @@ type raftNodeConfig struct {
 	// to check if msg receiver is removed from cluster
 	isIDRemoved func(id uint64) bool
 	raft.Node
-	raftStorage *raft.MemoryStorage
-	storage     Storage
-	heartbeat   time.Duration // for logging
+	storage   *wal.DiskStorage
+	heartbeat time.Duration // for logging
 	// transport specifies the transport to send and receive msgs to members.
 	// Sending messages MUST NOT block. It is okay to drop messages, since
 	// clients should timeout and reissue their messages.

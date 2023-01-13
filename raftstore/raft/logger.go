@@ -15,7 +15,7 @@
 package raft
 
 import (
-	"go.etcd.io/etcd/raft/v3"
+	"go.etcd.io/raft/v3"
 	"go.uber.org/zap"
 )
 

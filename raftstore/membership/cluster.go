@@ -1,6 +1,7 @@
 package membership
 
 import (
+	"crypto/sha1"
 	"encoding/binary"
 	"sync"
 	"time"
@@ -45,7 +46,7 @@ func New() *Cluster {
 	}
 }
 
-func generateID(input string) uint64 {
+func GenerateID(input string) uint64 {
 	b := []byte(input)
 	b = append(b, []byte(time.Now().String())...)
 

@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
@@ -110,12 +111,11 @@ func (h *AuthenticationHandler) extractSession(ctx context.Context, r *http.Requ
 		return nil, err
 	}
 
-	if err == manta.ErrSessionExpired {
-		revokeErr := h.SessionService.RevokeSession(ctx, id)
-		if revokeErr != nil {
-			h.logger.Warn("Clean up expired session failed",
-				zap.Error(err))
-		}
+	err = h.SessionService.RenewSession(ctx, id, time.Now().Add(12*time.Hour))
+	if err != nil {
+		h.logger.Error("renew session failed",
+			zap.Error(err),
+			zap.String("userId", id.String()))
 	}
 
 	return session, nil

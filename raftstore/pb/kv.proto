@@ -1,6 +1,12 @@
 syntax = "proto3";
 
-package kvpb;
+package pb;
+
+import "gogoproto/gogo.proto";
+
+option (gogoproto.goproto_enum_prefix_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
 
 message CreateBucket {
   bytes name = 1;
@@ -16,11 +22,16 @@ message Compare {
   int64 version = 3;
 }
 
+enum OperationType {
+  Put = 0;
+  Delete = 1;
+}
+
 message Operation {
-  bytes bucket = 1;
-  bytes key = 2;
-  bytes value = 3;
-  bool deletion = 4;
+  OperationType type = 1;
+  bytes bucket = 2;
+  bytes key = 3;
+  bytes value = 4;
 }
 
 message Txn {

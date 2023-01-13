@@ -1,6 +1,6 @@
 package raft
 
-import "go.etcd.io/etcd/raft/v3/raftpb"
+import "go.etcd.io/raft/v3/raftpb"
 
 type Backend interface {
 	ApplyEntries(entries []raftpb.Entry)

@@ -3,6 +3,8 @@ package raftstore
 import (
 	"context"
 	"github.com/f1shl3gs/manta/raftstore/raft"
+	"github.com/f1shl3gs/manta/raftstore/wal"
+	"go.uber.org/zap"
 	"sync"
 	"time"
 )
@@ -15,7 +17,18 @@ const (
 	initialMmapSize = 64 * 1024 * 1024 // 64MiB
 )
 
-func NewV1(cf *Config) error {
+func NewV1(cf *Config, logger *zap.Logger) error {
+	rs, err := wal.Init(cf.DataDir, logger)
+	if err != nil {
+		return err
+	}
+
+	// TODO: fix id
+	rs.SetUint(wal.RaftId, 0)
+	rs.SetUint(wal.ClusterId, 0)
+
+	rs.Uint()
+
 	db, err := setupDB(cf)
 	if err != nil {
 		return err

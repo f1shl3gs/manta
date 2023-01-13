@@ -2,13 +2,12 @@ package transport
 
 import (
 	"context"
-	"sync"
-	"time"
-
-	"go.etcd.io/etcd/raft/v3/raftpb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
+	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"sync"
+	"time"
 )
 
 const (
@@ -33,43 +32,22 @@ type Peer struct {
 	logger *zap.Logger
 
 	cc     *grpc.ClientConn
-	client RaftClient
+	client RaftInternalClient
 
 	mtx         sync.RWMutex
 	active      bool
 	activeSince time.Time
 }
 
-func (peer *Peer) send(msg raftpb.Message) {
-	ctx, cancel := context.WithTimeout(context.Background(), DefaultConnWriteTimeout)
-	defer cancel()
-
-	_, err := peer.client.Send(ctx, &msg)
-	if err != nil {
-		peer.logger.Warn("send message failed",
-			zap.Error(err))
-		return
-	}
-
-	return
-}
-
-func (peer *Peer) sendSnapshot(msg snap.Message) {
-	// start a new *grpc
-}
-
-func (peer *Peer) stop() {
-	close(peer.stopCh)
-}
-
 func newPeer(id uint64, addr string) (*Peer, error) {
 	peer := &Peer{
 		id:     id,
 		addr:   addr,
+		msgCh:  make(chan raftpb.Message, 64),
 		stopCh: make(chan struct{}),
 	}
 
-	cc, err := grpc.Dial(addr, grpc.WithInsecure())
+	cc, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +56,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 	go func() {
 		defer cc.Close()
 
-		cli := NewRaftClient(cc)
+		cli := NewRaftInternalClient(cc)
 
 		for {
 			select {
@@ -99,6 +77,24 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 	}()
 
 	return peer, nil
+}
+
+func (peer *Peer) send(msg raftpb.Message) {
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultConnWriteTimeout)
+	defer cancel()
+
+	_, err := peer.client.Send(ctx, &msg)
+	if err != nil {
+		peer.logger.Warn("send message failed",
+			zap.Error(err))
+		return
+	}
+
+	return
+}
+
+func (peer *Peer) stop() {
+	close(peer.stopCh)
 }
 
 func (peer *Peer) setActive() {

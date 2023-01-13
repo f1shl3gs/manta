@@ -11,6 +11,9 @@ build: ui $(GOSROUCES)
 	tar czf assets.tgz ui/build
 	CGO_ENABLED=0 $(GOBUILD) -o bin/mantad ./cmd/mantad
 
+genproto:
+	@bash ./scripts/genproto.sh
+
 .PHONY: ui
 ui: $(UISOURCES)
 	cd ui && yarn && yarn build

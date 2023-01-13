@@ -7,22 +7,11 @@ var (
 )
 
 type Config struct {
+	Listen string
+
 	Peers []string
 
-	MaxRequestBytes uint
-	DataDir         string
-
-	ElectionTicks int
-	// PreVote is true to enable Raft Pre-Vote
-	PreVote bool
-}
-
-func (c *Config) WalDir() string {
-	return filepath.Join(c.DataDir, "wals")
-}
-
-func (c *Config) SnapDir() string {
-	return filepath.Join(c.DataDir, "snapshots")
+	DataDir string
 }
 
 func (c *Config) MemberDir() string {

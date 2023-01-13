@@ -3,8 +3,7 @@ package raft
 import (
 	"context"
 
-	"go.etcd.io/etcd/raft/v3/raftpb"
-	"go.etcd.io/etcd/server/v3/etcdserver/api/snap"
+	"go.etcd.io/raft/v3/raftpb"
 )
 
 type Transporter interface {
@@ -13,8 +12,6 @@ type Transporter interface {
 
 	// Send sends out the given messages to the remote peers.
 	Send(msgs []raftpb.Message)
-
-	SendSnapshot(m snap.Message)
 
 	AddRemote()
 }

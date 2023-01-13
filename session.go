@@ -14,11 +14,12 @@ var (
 )
 
 type Session struct {
-	ID          ID           `json:"id,omitempty"`
+	ID          ID           `json:"id"`
 	Created     time.Time    `json:"created"`
+	LastSeen    time.Time    `json:"lastSeen"`
 	ExpiresAt   time.Time    `json:"expiresAt"`
-	UserID      ID           `json:"userId,omitempty"`
-	Permissions []Permission `json:"permissions"`
+	UserID      ID           `json:"userId"`
+	Permissions []Permission `json:"permissions,omitempty"`
 }
 
 func (s *Session) Expired() bool {
