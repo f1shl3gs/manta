@@ -271,7 +271,7 @@ func (l *Launcher) run() error {
 		handler := httpservice.New(hl, &httpservice.Backend{
 			OnBoardingService:           service,
 			BackupService:               kvStore,
-			CheckService:                checkService,
+			CheckService:                authorizer.NewCheckService(checkService),
 			TaskService:                 taskService,
 			OrganizationService:         service,
 			UserService:                 service,
