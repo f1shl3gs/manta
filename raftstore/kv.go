@@ -3,11 +3,11 @@ package raftstore
 import (
 	"context"
 	"fmt"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 	"go.uber.org/zap"
 	"io"
 
 	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/raftstore/kvpb"
 
 	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/raft/v3"
@@ -28,10 +28,10 @@ func (s *KV) CreateBucket(ctx context.Context, bucket []byte) error {
 	id := s.idGen.Next()
 	waitCh := s.wait.Register(id)
 
-	req := kvpb.InternalRequest{
+	req := pb.InternalRequest{
 		ID: id,
-		Request: &kvpb.InternalRequest_CreateBucket{
-			CreateBucket: &kvpb.CreateBucket{
+		Request: &pb.InternalRequest_CreateBucket{
+			CreateBucket: &pb.CreateBucket{
 				Name: bucket,
 			},
 		},
@@ -60,10 +60,10 @@ func (s *KV) DeleteBucket(ctx context.Context, bucket []byte) error {
 	id := s.idGen.Next()
 	waitCh := s.wait.Register(id)
 
-	req := kvpb.InternalRequest{
+	req := pb.InternalRequest{
 		ID: id,
-		Request: &kvpb.InternalRequest_DeleteBucket{
-			DeleteBucket: &kvpb.DeleteBucket{
+		Request: &pb.InternalRequest_DeleteBucket{
+			DeleteBucket: &pb.DeleteBucket{
 				Name: bucket,
 			},
 		},

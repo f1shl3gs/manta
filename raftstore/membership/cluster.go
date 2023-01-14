@@ -28,7 +28,7 @@ func NewWithPeers(addrs []string) *Cluster {
 	}
 
 	for _, addr := range addrs {
-		id := generateID(addr)
+		id := GenerateID(addr)
 		cl.members[id] = &Member{
 			ID:      id,
 			Address: addr,

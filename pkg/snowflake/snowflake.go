@@ -19,7 +19,7 @@ const (
 )
 
 type Generator struct {
-	state   uint64
+	state   atomic.Uint64
 	machine uint64
 }
 
@@ -27,8 +27,9 @@ func New(machineID int) *Generator {
 	if machineID < 0 || machineID > serverMax {
 		panic(fmt.Errorf("invalid machine id; must be 0 ≤ id < %d", serverMax))
 	}
+
 	return &Generator{
-		state:   0,
+		state:   atomic.Uint64{},
 		machine: uint64(machineID << serverShift),
 	}
 }
@@ -45,7 +46,7 @@ func (g *Generator) Next() uint64 {
 	// so we spend around ~3µs total.
 	for i := 0; i < 100; i++ {
 		t := (now() - epoch) & timeMask
-		current := atomic.LoadUint64(&g.state)
+		current := g.state.Load()
 		currentTime := current >> timeShift & timeMask
 		currentSeq := current & sequenceMask
 
@@ -67,7 +68,7 @@ func (g *Generator) Next() uint64 {
 			state = current + 1
 		}
 
-		if atomic.CompareAndSwapUint64(&g.state, current, state) {
+		if g.state.CompareAndSwap(current, state) {
 			break
 		}
 
@@ -82,7 +83,7 @@ func (g *Generator) Next() uint64 {
 	// it to roll over into the machine id. giving the CAS 100 attempts
 	// helps to avoid these problems.
 	if state == 0 {
-		state = atomic.AddUint64(&g.state, 1)
+		state = g.state.Add(1)
 	}
 
 	return state | g.machine

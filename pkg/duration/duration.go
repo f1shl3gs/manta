@@ -72,7 +72,7 @@ func leadingFraction(s string) (x int64, scale float64, rem string) {
 	return x, scale, s[i:]
 }
 
-// ParseDuration parses a duration string.
+// Parse parses a duration string.
 // A duration string is a possibly signed sequence of
 // decimal numbers, each with optional fraction and a unit suffix,
 // such as "300ms", "-1.5h" or "2h45m".

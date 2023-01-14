@@ -386,7 +386,7 @@ func TestPermission_String(t *testing.T) {
 					ID:    validID(),
 				},
 			},
-            want: `write:orgs/0000000000000001/checks/0000000000000064`,
+			want: `write:orgs/0000000000000001/checks/0000000000000064`,
 		},
 		{
 			name: "valid permission with no id or org id",
@@ -396,7 +396,7 @@ func TestPermission_String(t *testing.T) {
 					Type: manta.ChecksResourceType,
 				},
 			},
-            want: `write:checks`,
+			want: `write:checks`,
 		},
 		{
 			name: "valid permission with no org id",
@@ -407,7 +407,7 @@ func TestPermission_String(t *testing.T) {
 					ID:   testutil.IDPtr(1),
 				},
 			},
-            want: `write:checks/0000000000000001`,
+			want: `write:checks/0000000000000001`,
 		},
 	}
 	for _, tt := range tests {

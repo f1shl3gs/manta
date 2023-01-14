@@ -58,7 +58,3 @@ func (g *idGenerator) Next() uint64 {
 func lowbit(x uint64, n uint) uint64 {
 	return x & (math.MaxUint64 >> (64 - n))
 }
-
-func IDToString(id uint64) string {
-	return strconv.FormatUint(id, 16)
-}

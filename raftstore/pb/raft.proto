@@ -2,14 +2,16 @@ syntax = "proto3";
 
 package pb;
 
-message Chunk {
-  bytes data = 1;
-}
+import "raftpb/raft.proto";
+import "gogoproto/gogo.proto";
+
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
 
 message Done {}
 
 service Raft {
-  rpc SendSnapshot(stream Chunk) returns (Done);
+  rpc Send(raftpb.Message) returns (Done);
 }
 
 message Snapshot {

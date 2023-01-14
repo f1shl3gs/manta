@@ -2,6 +2,7 @@ package transport
 
 import (
 	"context"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -32,7 +33,7 @@ type Peer struct {
 	logger *zap.Logger
 
 	cc     *grpc.ClientConn
-	client RaftInternalClient
+	client pb.RaftClient
 
 	mtx         sync.RWMutex
 	active      bool
@@ -56,7 +57,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 	go func() {
 		defer cc.Close()
 
-		cli := NewRaftInternalClient(cc)
+		cli := pb.NewRaftClient(cc)
 
 		for {
 			select {
@@ -66,7 +67,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 				_, err = cli.Send(context.Background(), &msg)
 				if err != nil {
 					peer.logger.Warn("send raft message failed",
-						zap.String("to", internal.IDToString(id)),
+						zap.Uint64("to", id),
 						zap.String("addr", addr))
 					peer.setInactive()
 				} else {

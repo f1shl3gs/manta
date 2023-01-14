@@ -11,7 +11,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 
 	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/raftstore/kvpb"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 )
 
 type valueItem struct {
@@ -82,12 +82,12 @@ type writeTx struct {
 	wset map[string]writeSet
 }
 
-func (tx *writeTx) txn() *kvpb.Txn {
-	txn := &kvpb.Txn{}
+func (tx *writeTx) txn() *pb.Txn {
+	txn := &pb.Txn{}
 
 	for b, rset := range tx.rset {
 		for key, item := range rset {
-			txn.Compares = append(txn.Compares, &kvpb.Compare{
+			txn.Compares = append(txn.Compares, &pb.Compare{
 				Bucket:  unsafeStringToBytes(b),
 				Key:     unsafeStringToBytes(key),
 				Version: item.version,
@@ -97,13 +97,13 @@ func (tx *writeTx) txn() *kvpb.Txn {
 
 	for b, wset := range tx.wset {
 		for key, item := range wset {
-			op := &kvpb.Operation{
+			op := &pb.Operation{
 				Bucket: unsafeStringToBytes(b),
 				Key:    unsafeStringToBytes(key),
 			}
 
 			if item.deletion {
-				op.Deletion = true
+				op.Type = pb.Delete
 			} else {
 				op.Value = item.value
 			}

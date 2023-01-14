@@ -23,6 +23,4 @@ function gen_proto {
 
 # generate proto
 gen_proto ./raftstore/pb
-
-gen_proto ./raftstore/transport
-sed -i -E 's|"raftpb|"go.etcd.io/raft/v3/raftpb|g' ./raftstore/transport/*.pb.go
+sed -i -E 's|"raftpb|"go.etcd.io/raft/v3/raftpb|g' ./raftstore/pb/*.pb.go

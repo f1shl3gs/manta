@@ -88,9 +88,9 @@ func BenchmarkEncode(b *testing.B) {
 	}
 }
 
-var blackhole uint64 // to make sure the g.Next calls are not removed
-
 func BenchmarkNext(b *testing.B) {
+	var blackhole uint64
+
 	g := New(10)
 
 	for i := 0; i < b.N; i++ {
@@ -100,13 +100,15 @@ func BenchmarkNext(b *testing.B) {
 
 func BenchmarkNextParallel(b *testing.B) {
 	g := New(1)
+	var blackhole atomic.Uint64
 
 	b.RunParallel(func(pb *testing.PB) {
 		var lblackhole uint64
 		for pb.Next() {
 			lblackhole += g.Next()
 		}
-		atomic.AddUint64(&blackhole, lblackhole)
+
+		blackhole.Add(lblackhole)
 	})
 }
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	baseError "errors"
 	"fmt"
-    "path"
-    "time"
+	"path"
+	"time"
 
 	"github.com/f1shl3gs/manta/errors"
 )
@@ -43,7 +43,7 @@ var AllResourceTypes = []ResourceType{
 	DashboardsResourceType,
 	OrgsResourceType,
 	ScrapesResourceType,
-    TasksResourceType,
+	TasksResourceType,
 	UsersResourceType,
 }
 
@@ -65,19 +65,19 @@ type Resource struct {
 }
 
 func (r Resource) String() string {
-    if r.OrgID != nil && r.ID != nil {
-        return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type), r.ID.String())
-    }
+	if r.OrgID != nil && r.ID != nil {
+		return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type), r.ID.String())
+	}
 
-    if r.OrgID != nil {
-        return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type))
-    }
+	if r.OrgID != nil {
+		return path.Join(string(OrgsResourceType), r.OrgID.String(), string(r.Type))
+	}
 
-    if r.ID != nil {
-        return path.Join(string(r.Type), r.ID.String())
-    }
+	if r.ID != nil {
+		return path.Join(string(r.Type), r.ID.String())
+	}
 
-    return string(r.Type)
+	return string(r.Type)
 }
 
 func (r Resource) Valid() error {
@@ -99,7 +99,7 @@ func (p *Permission) Valid() error {
 		return &errors.Error{
 			Code: errors.EInvalid,
 			Err:  err,
-            Msg:  fmt.Sprintf("invalid resource type %q for permission", p.Resource.Type),
+			Msg:  fmt.Sprintf("invalid resource type %q for permission", p.Resource.Type),
 		}
 	}
 
