@@ -7,26 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func defaultRaftConfig() *raft.Config {
-	return &raft.Config{
-		ElectionTick:    20, // 2s
-		HeartbeatTick:   1,
-		MaxInflightMsgs: 256,
-
-		// 512 KB should be enough for most txn.
-		MaxSizePerMsg:  512 * 1024,
-		ReadOnlyOption: raft.ReadOnlySafe,
-
-		// When a disconnected node joins back, it forces a leader change,
-		// as it starts with a higher term, as described in Raft thesis
-		// (not the paper) in section 9.6. This setting can avoid that by
-		// only increasing the term, if the node has a good chance of
-		// becoming the leader.
-		PreVote: true,
-	}
-}
-
-func newNode(cf *Config, logger *zap.Logger) (*raftNode, error) {
+func newNode(cf *Config, logger *zap.Logger) (*Node, error) {
 	store, err := wal.Init(cf.DataDir, logger)
 	if err != nil {
 		return nil, err
@@ -69,20 +50,25 @@ func newNode(cf *Config, logger *zap.Logger) (*raftNode, error) {
 		// single Ready.
 		MaxCommittedSizePerReady: 64 << 20, // 64MB
 
+		// When a disconnected node joins back, it forces a leader change,
+		// as it starts with a higher term, as described in Raft thesis
+		// (not the paper) in section 9.6. This setting can avoid that by
+		// only increasing the term, if the node has a good chance of
+		// becoming the leader.
 		PreVote: true,
 		Logger:  newRaftLoggerZap(logger.Named("raft")),
 	}
 
-	return &raftNode{}, nil
+	return &Node{}, nil
 }
 
-func (r *raftNode) initAndStart() error {
-	restart := r.storage.NumEntries() > 1
+func (n *Node) initAndStart() error {
+	restart := n.storage.NumEntries() > 1
 
 	if restart {
-		r.logger.Info("restarting node from wal and snapshot")
+		n.logger.Info("restarting node from wal and snapshot")
 
 	} else {
-		r.logger.Info("start a brand new raft node")
+		n.logger.Info("start a brand new raft node")
 	}
 }

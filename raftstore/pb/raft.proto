@@ -14,7 +14,14 @@ service Raft {
   rpc Send(raftpb.Message) returns (Done);
 }
 
-message Snapshot {
-  uint64 term = 1;
-  uint64 index = 2;
+message Member {
+  uint64 id = 1;
+  string addr = 2;
+  bool leaner = 3;
 }
+
+message Snapshot {
+  repeated Member members = 1;
+  repeated bool removed = 2;
+}
+

@@ -2,7 +2,6 @@ package raftstore
 
 import (
 	"math"
-	"strconv"
 	"sync/atomic"
 	"time"
 )

@@ -2,11 +2,13 @@ package raftstore
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/raftstore/raft"
-	"github.com/f1shl3gs/manta/raftstore/wal"
-	"go.uber.org/zap"
 	"sync"
 	"time"
+
+	"github.com/f1shl3gs/manta/raftstore/raft"
+	"github.com/f1shl3gs/manta/raftstore/wal"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -25,9 +27,7 @@ func NewV1(cf *Config, logger *zap.Logger) error {
 
 	// TODO: fix id
 	rs.SetUint(wal.RaftId, 0)
-	rs.SetUint(wal.ClusterId, 0)
-
-	rs.Uint()
+	rs.SetUint(wal.ClusterId, 0x0001)
 
 	db, err := setupDB(cf)
 	if err != nil {

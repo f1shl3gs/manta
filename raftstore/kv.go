@@ -3,14 +3,14 @@ package raftstore
 import (
 	"context"
 	"fmt"
-	"github.com/f1shl3gs/manta/raftstore/pb"
-	"go.uber.org/zap"
 	"io"
 
 	"github.com/f1shl3gs/manta/kv"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 
 	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/raft/v3"
+	"go.uber.org/zap"
 )
 
 type KV struct {
@@ -18,18 +18,15 @@ type KV struct {
 	db     *bolt.DB
 	raft   raft.Node
 	idGen  *idGenerator
-	wait   Wait
+	wait   wait
 
 	linearizableReadNotify func(ctx context.Context) error
 }
 
 // CreateBucket creates a bucket on the underlying store if it does not exist
 func (s *KV) CreateBucket(ctx context.Context, bucket []byte) error {
-	id := s.idGen.Next()
-	waitCh := s.wait.Register(id)
-
-	req := pb.InternalRequest{
-		ID: id,
+	req := &pb.InternalRequest{
+		ID: s.idGen.Next(),
 		Request: &pb.InternalRequest_CreateBucket{
 			CreateBucket: &pb.CreateBucket{
 				Name: bucket,
@@ -37,31 +34,13 @@ func (s *KV) CreateBucket(ctx context.Context, bucket []byte) error {
 		},
 	}
 
-	data, err := req.Marshal()
-	if err != nil {
-		return err
-	}
-
-	err = s.raft.Propose(ctx, data)
-	if err != nil {
-		return err
-	}
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-waitCh:
-		return nil
-	}
+	return s.propose(ctx, req)
 }
 
 // DeleteBucket deletes a bucket on the underlying store if it exists
 func (s *KV) DeleteBucket(ctx context.Context, bucket []byte) error {
-	id := s.idGen.Next()
-	waitCh := s.wait.Register(id)
-
-	req := pb.InternalRequest{
-		ID: id,
+	req := &pb.InternalRequest{
+		ID: s.idGen.Next(),
 		Request: &pb.InternalRequest_DeleteBucket{
 			DeleteBucket: &pb.DeleteBucket{
 				Name: bucket,
@@ -69,21 +48,7 @@ func (s *KV) DeleteBucket(ctx context.Context, bucket []byte) error {
 		},
 	}
 
-	data, err := req.Marshal()
-	if err != nil {
-		return err
-	}
-
-	if err = s.raft.Propose(ctx, data); err != nil {
-		return err
-	}
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-waitCh:
-		return nil
-	}
+	return s.propose(ctx, req)
 }
 
 // View opens up a transaction that will not write to any value. Implementing interfaces
@@ -147,14 +112,18 @@ func (s *KV) Update(ctx context.Context, fn func(kv.Tx) error) error {
 		return nil
 	}
 
-	id := s.idGen.Next()
-	waitCh := s.wait.Register(id)
-	req := &kvpb.InternalRequest{
-		ID: id,
-		Request: &kvpb.InternalRequest_Txn{
+	req := &pb.InternalRequest{
+		ID: s.idGen.Next(),
+		Request: &pb.InternalRequest_Txn{
 			Txn: txn,
 		},
 	}
+
+	return s.propose(ctx, req)
+}
+
+func (s *KV) propose(ctx context.Context, req *pb.InternalRequest) error {
+	waitCh := s.wait.Register(req.ID)
 
 	data, err := req.Marshal()
 	if err != nil {
@@ -173,8 +142,6 @@ func (s *KV) Update(ctx context.Context, fn func(kv.Tx) error) error {
 	case <-waitCh:
 		return nil
 	}
-
-	return nil
 }
 
 // Backup copies all K:Vs to a writer, file format determined by implementation.

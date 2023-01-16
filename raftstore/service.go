@@ -9,5 +9,9 @@ import (
 type RaftMaintanceService interface {
 	Members() []membership.Member
 
+	// Join add a node to Raft cluster
 	Join(ctx context.Context, addr string) error
+
+	// Leave removes member of Raft cluster
+	Leave(ctx context.Context, id uint64) error
 }

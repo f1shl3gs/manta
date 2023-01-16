@@ -2,10 +2,6 @@ package raft
 
 import "path/filepath"
 
-var (
-	maxRequestBytes uint = 4 * 1024 * 1024
-)
-
 type Config struct {
 	Listen string
 
