@@ -85,6 +85,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(logger *zap.Logger, backend *Backend) *Service {
+	logger = logger.Named("http")
+
 	// assets handler
 	assetsHandler, err := NewAssetsHandler(logger)
 	if err != nil {

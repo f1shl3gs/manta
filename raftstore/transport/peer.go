@@ -25,14 +25,13 @@ const (
 	ConnectionPoolSize = 8
 )
 
-type Peer struct {
+type peer struct {
 	id     uint64
 	addr   string
 	msgCh  chan raftpb.Message
 	stopCh chan struct{}
 	logger *zap.Logger
 
-	cc     *grpc.ClientConn
 	client pb.RaftClient
 
 	mtx         sync.RWMutex
@@ -40,8 +39,8 @@ type Peer struct {
 	activeSince time.Time
 }
 
-func newPeer(id uint64, addr string) (*Peer, error) {
-	peer := &Peer{
+func newPeer(id uint64, addr string) (*peer, error) {
+	peer := &peer{
 		id:     id,
 		addr:   addr,
 		msgCh:  make(chan raftpb.Message, 64),
@@ -63,6 +62,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 			select {
 			case <-peer.stopCh:
 				return
+
 			case msg := <-peer.msgCh:
 				_, err = cli.Send(context.Background(), &msg)
 				if err != nil {
@@ -80,7 +80,7 @@ func newPeer(id uint64, addr string) (*Peer, error) {
 	return peer, nil
 }
 
-func (peer *Peer) send(msg raftpb.Message) {
+func (peer *peer) send(msg raftpb.Message) {
 	ctx, cancel := context.WithTimeout(context.Background(), DefaultConnWriteTimeout)
 	defer cancel()
 
@@ -94,11 +94,11 @@ func (peer *Peer) send(msg raftpb.Message) {
 	return
 }
 
-func (peer *Peer) stop() {
+func (peer *peer) stop() {
 	close(peer.stopCh)
 }
 
-func (peer *Peer) setActive() {
+func (peer *peer) setActive() {
 	peer.mtx.Lock()
 	defer peer.mtx.Unlock()
 
@@ -108,7 +108,7 @@ func (peer *Peer) setActive() {
 	}
 }
 
-func (peer *Peer) setInactive() {
+func (peer *peer) setInactive() {
 	peer.mtx.Lock()
 	defer peer.mtx.Unlock()
 
@@ -116,7 +116,7 @@ func (peer *Peer) setInactive() {
 	peer.activeSince = time.Time{}
 }
 
-func (peer *Peer) activeTime() time.Time {
+func (peer *peer) activeTime() time.Time {
 	peer.mtx.RUnlock()
 	defer peer.mtx.RUnlock()
 

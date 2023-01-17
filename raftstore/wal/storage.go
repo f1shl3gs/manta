@@ -98,7 +98,7 @@ func Init(dir string, logger *zap.Logger) (*DiskStorage, error) {
 	last := s.wal.LastIndex()
 
 	s.logger.Info("init raft storage",
-        zap.Uint64("snap-term", snap.Metadata.Term),
+		zap.Uint64("snap-term", snap.Metadata.Term),
 		zap.Uint64("snap-index", snap.Metadata.Index),
 		zap.Uint64("first", first),
 		zap.Uint64("last", last))

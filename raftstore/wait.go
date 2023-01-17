@@ -79,3 +79,45 @@ func (w *wait) IsRegistered(id uint64) bool {
 
 	return ok
 }
+
+type waitTime struct {
+	mtx                 sync.Mutex
+	lastTriggerDeadline uint64
+	m                   map[uint64]chan struct{}
+}
+
+var closec chan struct{}
+
+func newWaitTime() *waitTime {
+	return &waitTime{
+		m: make(map[uint64]chan struct{}),
+	}
+}
+
+func (w *waitTime) Wait(deadline uint64) <-chan struct{} {
+	w.mtx.Lock()
+	defer w.mtx.Unlock()
+
+	if w.lastTriggerDeadline >= deadline {
+		return closec
+	}
+	ch := w.m[deadline]
+	if ch == nil {
+		ch = make(chan struct{})
+		w.m[deadline] = ch
+	}
+	return ch
+}
+
+func (w *waitTime) Trigger(deadline uint64) {
+	w.mtx.Lock()
+	defer w.mtx.Unlock()
+
+	w.lastTriggerDeadline = deadline
+	for t, ch := range w.m {
+		if t <= deadline {
+			delete(w.m, t)
+			close(ch)
+		}
+	}
+}

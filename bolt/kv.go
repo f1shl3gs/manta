@@ -52,7 +52,7 @@ func WithNoSync(s *KVStore) {
 func NewKVStore(log *zap.Logger, path string, opts ...KVOption) *KVStore {
 	store := &KVStore{
 		path: path,
-		log:  log,
+		log:  log.Named("bolt"),
 	}
 
 	for _, opt := range opts {

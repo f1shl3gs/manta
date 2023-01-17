@@ -3,8 +3,8 @@ package membership
 import (
 	"crypto/sha1"
 	"encoding/binary"
-    "encoding/json"
-    "sync"
+	"encoding/json"
+	"sync"
 	"time"
 )
 
@@ -50,48 +50,56 @@ func (c *Cluster) SetID(localID, cid uint64) {
 }
 
 func (c *Cluster) Members() []Member {
-    c.mtx.RLock()
-    defer c.mtx.RUnlock()
+	c.mtx.RLock()
+	defer c.mtx.RUnlock()
 
-    var ms []Member
-    for _, m := range c.members {
-        ms = append(ms, *m)
-    }
+	var ms []Member
+	for _, m := range c.members {
+		ms = append(ms, *m)
+	}
 
-    return ms
+	return ms
 }
 
 func (c *Cluster) Add(m *Member) {
-    c.mtx.Lock()
-    c.members[m.ID] = m
-    c.mtx.Unlock()
+	c.mtx.Lock()
+	c.members[m.ID] = m
+	c.mtx.Unlock()
 }
 
 func (c *Cluster) Remove(id uint64) {
-    c.mtx.Lock()
-    delete(c.members, id)
-    c.removed[id] = true
-    c.mtx.Unlock()
+	c.mtx.Lock()
+	delete(c.members, id)
+	c.removed[id] = true
+	c.mtx.Unlock()
+}
+
+func (c *Cluster) Removed(id uint64) bool {
+	c.mtx.RLock()
+	r := c.removed[id]
+	c.mtx.RUnlock()
+
+	return r
 }
 
 type state struct {
-    Members map[uint64]*Member
-    // removed contains the list of removed members
-    // those ids connot be reused.
-    Removed map[uint64]bool
+	Members map[uint64]*Member
+	// removed contains the list of removed members
+	// those ids connot be reused.
+	Removed map[uint64]bool
 }
 
 func (c *Cluster) Marshal() []byte {
-    c.mtx.RLock()
-    defer c.mtx.RUnlock()
+	c.mtx.RLock()
+	defer c.mtx.RUnlock()
 
-    data, err := json.Marshal(&state{
-        Members: c.members,
-        Removed: c.removed,
-    })
-    if err != nil {
-        panic(err)
-    }
+	data, err := json.Marshal(&state{
+		Members: c.members,
+		Removed: c.removed,
+	})
+	if err != nil {
+		panic(err)
+	}
 
-    return data
+	return data
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/prometheus/tsdb"
+	"github.com/soheilhy/cmux"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
@@ -54,6 +55,7 @@ type Launcher struct {
 
 	// storage
 	StorageDir string
+	RaftStore  string
 
 	// pprof
 	ProfileDir       string
@@ -151,6 +153,13 @@ func (l *Launcher) run() error {
 	} else {
 		logger.Info("OpenTracing is disabled")
 	}
+
+	listener, err := net.Listen("tcp", l.Listen)
+	if err != nil {
+		return err
+	}
+
+	muxer := cmux.New(listener)
 
 	// starting services
 	ctx := signals.WithStandardSignals(context.Background())
@@ -261,11 +270,14 @@ func (l *Launcher) run() error {
 	}
 
 	{
+		// grpc service
+		// grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+
+	}
+
+	{
 		// http service
-		listener, err := net.Listen("tcp", l.Listen)
-		if err != nil {
-			return err
-		}
+		httpListener := muxer.Match(cmux.HTTP1Fast())
 
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
@@ -299,7 +311,7 @@ func (l *Launcher) run() error {
 			go func() {
 				logger.Info("Start HTTP service",
 					zap.String("listen", l.Listen))
-				errCh <- server.Serve(listener)
+				errCh <- server.Serve(httpListener)
 			}()
 
 			select {
@@ -323,6 +335,28 @@ func (l *Launcher) run() error {
 			}
 		})
 	}
+
+	group.Go(func() error {
+		errCh := make(chan error)
+
+		go func() {
+			errCh <- muxer.Serve()
+		}()
+
+		select {
+		case <-ctx.Done():
+			muxer.Close()
+			return nil
+
+		case err := <-errCh:
+			if err != nil {
+				logger.Error("muxer serve error",
+					zap.Error(err))
+			}
+
+			return err
+		}
+	})
 
 	return group.Wait()
 }

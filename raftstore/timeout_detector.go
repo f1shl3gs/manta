@@ -1,4 +1,4 @@
-package raft
+package raftstore
 
 import (
 	"sync"

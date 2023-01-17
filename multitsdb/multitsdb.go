@@ -62,7 +62,7 @@ func NewMultiTSDB(
 	allowOutOfOrderUpload bool,
 ) *MultiTSDB {
 	return &MultiTSDB{
-		logger:                logger,
+		logger:                logger.Named("multitsdb"),
 		dataDir:               dataDir,
 		reg:                   reg,
 		tsdbOpts:              tsdbOpts,

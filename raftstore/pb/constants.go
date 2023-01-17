@@ -1,3 +1,3 @@
 package pb
 
-const MaxRemovedIDs = 8 * 16 
+const MaxRemovedIDs = 8 * 16

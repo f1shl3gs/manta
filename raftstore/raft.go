@@ -1,8 +1,12 @@
 package raftstore
 
 import (
+	"bytes"
+	"context"
+	"encoding/binary"
+	"errors"
 	"fmt"
-	"github.com/f1shl3gs/manta/raftstore/wal"
+	"strconv"
 	"sync"
 	"time"
 
@@ -12,279 +16,249 @@ import (
 )
 
 const (
-	// max number of in-flight snapshot messages server allows to have
-	// This number is more than enough for most clusters with 5 machines.
-	maxInflightMsgSnap = 16
+	heartbeat = time.Duration(100) * time.Millisecond
+
+	readIndexRetryTime = 500 * time.Millisecond
 )
 
-// ReadyHandler contains a set of operations to be called by Node,
-// and helps decouple state machine logic from Raft algorithms.
-// TODO: add a state machine interface to ToApply the commit entries and do snapshot/recover
-type ReadyHandler interface {
-	GetLead() uint64
-	UpdateLead(uint64)
-	UpdateLeadership(bool)
-	UpdateCommittedIndex(uint64)
-}
+var (
+	ErrLeaderChanged = errors.New("leader changed")
 
-type raftNodeConfig struct {
-	// to check if msg receiver is removed from cluster
-	isIDRemoved func(id uint64) bool
-	raft.Node
-	storage   *wal.DiskStorage
-	heartbeat time.Duration // for logging
-	// transport specifies the transport to send and receive msgs to members.
-	// Sending messages MUST NOT block. It is okay to drop messages, since
-	// clients should timeout and reissue their messages.
-	// If transport is nil, server will panic.
-	transport Transporter
-}
+	ErrTimeout = errors.New("request timed out")
 
-// ToApply contains entries, snapshot to be applied. Once
-// an ToApply is consumed, the entries will be persisted to
+	ErrStopped = errors.New("server stopped")
+)
+
+// toApply contains entries, snapshot to be applied. Once
+// an toApply is consumed, the entries will be persisted to
 // to raft storage concurrently; the application must read
 // raftDone before assuming the raft messages are stable.
-type ToApply struct {
+type toApply struct {
 	entries  []raftpb.Entry
 	snapshot raftpb.Snapshot
 	// notifyCh synchronizes etcd server applies with the raft node
 	notifyCh chan struct{}
 }
 
-type Node struct {
-	logger *zap.Logger
-
-	tickMu *sync.Mutex
-	raftNodeConfig
-
-	// a chan to send/receive snapshot
-	msgSnapCh chan raftpb.Message
-
-	// a chan to send out apply
-	applyCh chan ToApply
-
-	// a chan to send out readState
-	readStateCh chan raft.ReadState
-
-	// utility
-	ticker *time.Ticker
-	// contention detectors for raft heartbeat message
-	td *TimeoutDetector
-
-	stopped chan struct{}
-	done    chan struct{}
-}
-
-func newRaftNode(cfg raftNodeConfig, logger *zap.Logger) *Node {
-	raft.SetLogger(newRaftLoggerZap(logger))
-
-	r := &Node{
-		logger:         logger.With(zap.String("service", "raft")),
-		tickMu:         new(sync.Mutex),
-		raftNodeConfig: cfg,
-		// set up contention detectors for raft heatbeat message.
-		// expect to send a heartbeat within 2 heartbeat intervals.
-		td:          NewTimeoutDetector(2 * cfg.heartbeat),
-		readStateCh: make(chan raft.ReadState, 1),
-		msgSnapCh:   make(chan raftpb.Message, maxInflightMsgSnap),
-		applyCh:     make(chan ToApply),
-		stopped:     make(chan struct{}),
-		done:        make(chan struct{}),
+// advanceTicks advances ticks of raft node.
+// This can be used for fast-forwarding election
+// ticks in multi data-center deployments, thus
+// speeding up election process.
+func (s *Store) advanceTicks(ticks int) {
+	for i := 0; i < ticks; i++ {
+		s.tick()
 	}
-
-	if r.heartbeat == 0 {
-		r.ticker = &time.Ticker{}
-	} else {
-		r.ticker = time.NewTicker(r.heartbeat)
-	}
-
-	return r
 }
 
 // raft.Node does not have locks in Raft package
-func (n *Node) tick() {
-	n.tickMu.Lock()
-	n.Tick()
-	n.tickMu.Unlock()
+func (s *Store) tick() {
+	s.tickMu.Lock()
+	s.raftNode.Tick()
+	s.tickMu.Unlock()
 }
 
-// start prepares and starts Node in a new goroutine. It is no longer safe
+// startRaftLoop prepares and starts Node in a new goroutine. It is no longer safe
 // to modify the fields after it has been started.
-func (n *Node) start(rh ReadyHandler) {
+func (s *Store) startRaftLoop() {
+	isLead := false
 	internalTimeout := time.Second
 
-	go func() {
-		defer n.onStop()
-		isLead := false
+	defer s.onStop()
 
-		for {
-			select {
-			case <-n.ticker.C:
-				n.tick()
+	for {
+		select {
+		case <-s.ticker.C:
+			s.tick()
 
-			case rd := <-n.Ready():
-				if rd.SoftState != nil {
-					newLeader := rd.SoftState.Lead != raft.None && rh.GetLead() != rd.SoftState.Lead
-					if newLeader {
-						// todo: leader change metric
-					}
-
-					/*
-											   // TODO: leader state metric
-						                    if rd.SoftState.Lead == raft.None {
-												hasLeader.Set(0)
-											} else {
-												hasLeader.Set(1)
-						                    }
-					*/
-
-					rh.UpdateLead(rd.SoftState.Lead)
-					isLead = rd.RaftState == raft.StateLeader
-					// TODO: is leader state metric
-
-					rh.UpdateLeadership(newLeader)
-					n.td.Reset()
+		case rd := <-s.raftNode.Ready():
+			if rd.SoftState != nil {
+				newLeader := rd.SoftState.Lead != raft.None && s.getLead() != rd.SoftState.Lead
+				if newLeader {
+					s.leaderChanges.Inc()
 				}
 
-				if len(rd.ReadStates) != 0 {
+				// TODO: leader state metric
+				if rd.SoftState.Lead == raft.None {
+					s.hasLeader.Set(0)
+				} else {
+					s.hasLeader.Set(1)
+				}
+
+				s.updateLead(rd.SoftState.Lead)
+				isLead = rd.RaftState == raft.StateLeader
+				if isLead {
+					s.isLeader.Set(1)
+				} else {
+					s.isLeader.Set(0)
+				}
+
+				s.updateLeadership(newLeader)
+				s.td.Reset()
+			}
+
+			if len(rd.ReadStates) != 0 {
+				select {
+				case s.readStateCh <- rd.ReadStates[len(rd.ReadStates)-1]:
+				case <-time.After(internalTimeout):
+					s.logger.Warn("timed out sending read state",
+						zap.Duration("timeout", internalTimeout))
+				case <-s.stopped:
+					return
+				}
+			}
+
+			notifyCh := make(chan struct{}, 1)
+			ap := toApply{
+				entries:  rd.CommittedEntries,
+				snapshot: rd.Snapshot,
+				notifyCh: notifyCh,
+			}
+
+			// update commited index
+			{
+				var ci uint64
+				if len(ap.entries) != 0 {
+					ci = ap.entries[len(ap.entries)-1].Index
+				}
+				if ap.snapshot.Metadata.Index > ci {
+					ci = ap.snapshot.Metadata.Index
+				}
+				if ci != 0 {
+					s.updateCommittedIndex(ci)
+				}
+			}
+
+			select {
+			case s.applyCh <- ap:
+			case <-s.stopped:
+				return
+			}
+
+			// the leader can write to its disk in parallel with replicating to the
+			// followers and them writing to their disks.
+			// For more details, check raft thesis 10.2.1
+			if isLead {
+				s.transport.Send(s.processMessages(rd.Messages))
+			}
+
+			// Must save the snapshot file and WAL snapshot entry before saving any other
+			// entries or hardstate to ensure that recovery after a snapshot restore is
+			// possible.
+			if !raft.IsEmptySnap(rd.Snapshot) {
+				// we may not need this
+				s.logger.Fatal("save snapshot is not implement")
+			}
+
+			if err := s.raftStorage.Save(&rd.HardState, rd.Entries, &rd.Snapshot); err != nil {
+				s.logger.Fatal("failed to save raft hard state and entries", zap.Error(err))
+			}
+			if !raft.IsEmptyHardState(rd.HardState) {
+				// TODO: proposalsCommitted metrics
+			}
+
+			if !raft.IsEmptySnap(rd.Snapshot) {
+				// Force WAL to fsync its hard state before Release() releases
+				// old data from the WAL. Otherwise could get an error like:
+				// panic: tocommit(107) is out of range [lastIndex(84)]. Was the raft log corrupted, truncated, or lost?
+				// See https://github.com/etcd-io/etcd/issues/10219 for more details.
+				if err := s.raftStorage.Sync(); err != nil {
+					s.logger.Fatal("failed to sync raft snapshot", zap.Error(err))
+				}
+
+				// now claim the snapshot has been persisted onto the disk
+				notifyCh <- struct{}{}
+
+				/*
+				   TODO:
+
+				   s.storage.ApplySnapshot(rd.Snapshot)
+				   s.logger.Info("applied incoming raft snapshot",
+				   zap.Uint64("snapshot-index", rd.Snapshot.Metadata.Index))
+
+				   if err := s.storage.Release(rd.Snapshot); err != nil {
+				   s.logger.Fatal("failed to release raft wal", zap.Error(err))
+				   }
+				*/
+			}
+
+			// s.storage.Append(rd.Entries)
+
+			if !isLead {
+				// finish processing incoming messages before we signal raftdone chan
+				msgs := s.processMessages(rd.Messages)
+
+				// now unblocks 'applyAll' that waits on Raft log disk writes before
+				// triggering snapshots
+				notifyCh <- struct{}{}
+
+				// Candidate or follower needs to wait for all pending configuration
+				// changes to be applied before sending messages.
+				// Otherwise we might incorrectly count votes (e.g. votes from removed members).
+				// Also slow machine's follower raft-layer could proceed to become the leader
+				// on its own single-node cluster, before toApply-layer applies the config change.
+				// We simply wait for ALL pending entries to be applied for now.
+				// We might improve this later on if it causes unnecessary long blocking issues.
+				waitApply := false
+				for _, ent := range rd.CommittedEntries {
+					if ent.Type == raftpb.EntryConfChange {
+						waitApply = true
+						break
+					}
+				}
+				if waitApply {
+					// blocks until 'applyAll' calls 'applyWait.Trigger'
+					// to be in sync with scheduled config-change job
+					// (assume notifyCh has cpa of 1)
 					select {
-					case n.readStateCh <- rd.ReadStates[len(rd.ReadStates)-1]:
-					case <-time.After(internalTimeout):
-						n.logger.Warn("timed out sending read state",
-							zap.Duration("timeout", internalTimeout))
-					case <-n.stopped:
+					case notifyCh <- struct{}{}:
+					case <-s.stopped:
 						return
 					}
 				}
 
-				notifyCh := make(chan struct{}, 1)
-				ap := ToApply{
-					entries:  rd.CommittedEntries,
-					snapshot: rd.Snapshot,
-					notifyCh: notifyCh,
-				}
-
-				updateCommittedIndex(&ap, rh)
-
-				select {
-				case n.applyCh <- ap:
-				case <-n.stopped:
-					return
-				}
-
-				// the leader can write to its disk in parallel with replicating to the
-				// followers and them writing to their disks.
-				// For more details, check raft thesis 10.2.1
-				if isLead {
-					n.transport.Send(n.processMessages(rd.Messages))
-				}
-
-				// Must save the snapshot file and WAL snapshot entry before saving any other
-				// entries or hardstate to ensure that recovery after a snapshot restore is
-				// possible.
-				if !raft.IsEmptySnap(rd.Snapshot) {
-                    // we may not need this
-                    n.logger.Fatal("save snapshot is not implement")
-				}
-
-				if err := n.storage.Save(&rd.HardState, rd.Entries, &rd.Snapshot); err != nil {
-					n.logger.Fatal("failed to save raft hard state and entries", zap.Error(err))
-				}
-				if !raft.IsEmptyHardState(rd.HardState) {
-					// TODO: proposalsCommitted metrics
-				}
-
-				if !raft.IsEmptySnap(rd.Snapshot) {
-					// Force WAL to fsync its hard state before Release() releases
-					// old data from the WAL. Otherwise could get an error like:
-					// panic: tocommit(107) is out of range [lastIndex(84)]. Was the raft log corrupted, truncated, or lost?
-					// See https://github.com/etcd-io/etcd/issues/10219 for more details.
-					if err := n.storage.Sync(); err != nil {
-						n.logger.Fatal("failed to sync raft snapshot", zap.Error(err))
-					}
-
-					// now claim the snapshot has been persisted onto the disk
-					notifyCh <- struct{}{}
-
-					n.raftStorage.ApplySnapshot(rd.Snapshot)
-					n.logger.Info("applied incoming raft snapshot",
-						zap.Uint64("snapshot-index", rd.Snapshot.Metadata.Index))
-
-					if err := n.storage.Release(rd.Snapshot); err != nil {
-						n.logger.Fatal("failed to release raft wal", zap.Error(err))
-					}
-				}
-
-				n.storage.Append(rd.Entries)
-
-				if !isLead {
-					// finish processing incoming messages before we signal raftdone chan
-					msgs := n.processMessages(rd.Messages)
-
-					// now unblocks 'applyAll' that waits on Raft log disk writes before
-					// triggering snapshots
-					notifyCh <- struct{}{}
-
-					// Candidate or follower needs to wait for all pending configuration
-					// changes to be applied before sending messages.
-					// Otherwise we might incorrectly count votes (e.g. votes from removed members).
-					// Also slow machine's follower raft-layer could proceed to become the leader
-					// on its own single-node cluster, before ToApply-layer applies the config change.
-					// We simply wait for ALL pending entries to be applied for now.
-					// We might improve this later on if it causes unnecessary long blocking issues.
-					waitApply := false
-					for _, ent := range rd.CommittedEntries {
-						if ent.Type == raftpb.EntryConfChange {
-							waitApply = true
-							break
-						}
-					}
-					if waitApply {
-						// blocks until 'applyAll' calls 'applyWait.Trigger'
-						// to be in sync with scheduled config-change job
-						// (assume notifyCh has cpa of 1)
-						select {
-						case notifyCh <- struct{}{}:
-						case <-n.stopped:
-							return
-						}
-					}
-
-					n.transport.Send(msgs)
-				} else {
-					// leader already processed 'MsgSnap' and signaled
-					notifyCh <- struct{}{}
-				}
-
-				n.Advance()
-
-			case <-n.stopped:
-				return
+				s.transport.Send(msgs)
+			} else {
+				// leader already processed 'MsgSnap' and signaled
+				notifyCh <- struct{}{}
 			}
+
+			s.raftNode.Advance()
+
+		case <-s.stopped:
+			return
 		}
-	}()
-}
-
-func updateCommittedIndex(ap *ToApply, rh ReadyHandler) {
-	var ci uint64
-
-	if len(ap.entries) != 0 {
-		ci = ap.entries[len(ap.entries)-1].Index
-	}
-	if ap.snapshot.Metadata.Index > ci {
-		ci = ap.snapshot.Metadata.Index
-	}
-
-	if ci != 0 {
-		rh.UpdateCommittedIndex(ci)
 	}
 }
 
-func (n *Node) processMessages(msgs []raftpb.Message) []raftpb.Message {
+func (s *Store) updateLead(lead uint64) {
+	s.lead.Store(lead)
+}
+
+func (s *Store) getLead() uint64 {
+	return s.lead.Load()
+}
+
+func (s *Store) updateLeadership(newLeader bool) {
+	// we can start or stop some backgroud service here
+	s.logger.Info("update leadership", zap.Bool("new leader", newLeader), zap.String("id", strconv.FormatUint(s.getLead(), 16)))
+}
+
+func (s *Store) updateCommittedIndex(ci uint64) {
+	cci := s.committedIndex.Load()
+	if ci > cci {
+		s.committedIndex.Store(ci)
+	}
+}
+
+func (s *Store) isIDRemoved(id uint64) bool {
+	return s.cluster.Removed(id)
+}
+
+func (s *Store) processMessages(msgs []raftpb.Message) []raftpb.Message {
 	sentAppResp := false
 
 	for i := len(msgs) - 1; i >= 0; i-- {
-		if n.isIDRemoved(msgs[i].To) {
+		if s.isIDRemoved(msgs[i].To) {
 			msgs[i].To = 0
 		}
 
@@ -301,7 +275,7 @@ func (n *Node) processMessages(msgs []raftpb.Message) []raftpb.Message {
 			// So we need to redirect the msgSNap to etcd server main loop for mergin
 			// in the current store snapshot and KV snapshot.
 			select {
-			case n.msgSnapCh <- msgs[i]:
+			case s.msgSnapCh <- msgs[i]:
 			default:
 				// drop msgSnap if the inflight chan is full.
 			}
@@ -310,14 +284,14 @@ func (n *Node) processMessages(msgs []raftpb.Message) []raftpb.Message {
 		}
 
 		if msgs[i].Type == raftpb.MsgHeartbeat {
-			ok, exceed := n.td.Observe(msgs[i].To)
+			ok, exceed := s.td.Observe(msgs[i].To)
 			if !ok {
 				// TODO: limit request rate!?
-				n.logger.Warn(
+				s.logger.Warn(
 					"leader failed to send out heartbeat on time; took too long, leader is overloaded likely from slow disk",
-					zap.String("to", fmt.Sprintf("%x", msgs[i].To)),
-					zap.Duration("heartbeat-interval", n.heartbeat),
-					zap.Duration("expected-duration", 2*n.heartbeat),
+					zap.Uint64("to", msgs[i].To),
+					zap.Duration("heartbeat-interval", heartbeat),
+					zap.Duration("expected-duration", 2*heartbeat),
 					zap.Duration("exceeded-duration", exceed),
 				)
 			}
@@ -327,44 +301,258 @@ func (n *Node) processMessages(msgs []raftpb.Message) []raftpb.Message {
 	return msgs
 }
 
-func (n *Node) Apply() chan ToApply {
-	return n.applyCh
+func uint64ToBigEndianBytes(number uint64) []byte {
+	byteResult := make([]byte, 8)
+	binary.BigEndian.PutUint64(byteResult, number)
+	return byteResult
 }
 
-func (n *Node) stop() {
+func (s *Store) reqTimeout() time.Duration {
+	// 5s for queue waiting, computation and disk IO delay
+	// + 2 * election timeout for possible leader election
+	return 5*time.Second + 2*time.Duration(electionTick*tickMs)*time.Millisecond
+}
+
+func (s *Store) sendReadIndex(ctx context.Context, reqIndex uint64) error {
+	toSend := uint64ToBigEndianBytes(reqIndex)
+
+	ctx, cancel := context.WithTimeout(ctx, s.reqTimeout())
+	defer cancel()
+
+	err := s.raftNode.ReadIndex(ctx, toSend)
+	if err == ErrStopped {
+		return err
+	}
+
+	if err != nil {
+		s.logger.Warn("failed to get read index from Raft",
+			zap.Error(err))
+	}
+
+	return err
+}
+
+func (s *Store) requestCurrentIndex(ctx context.Context, leaderChangeNotifier <-chan struct{}, reqID uint64) (uint64, error) {
+	err := s.sendReadIndex(ctx, reqID)
+	if err != nil {
+		return 0, err
+	}
+
+	errTimer := time.NewTimer(s.reqTimeout())
+	defer errTimer.Stop()
+	retryTimer := time.NewTimer(readIndexRetryTime)
+	defer retryTimer.Stop()
+
+	firstCommitInTermNotifier := s.firstCommitInTerm.receive()
+
+	for {
+		select {
+		case rs := <-s.readStateCh:
+			reqIdBytes := uint64ToBigEndianBytes(reqID)
+			gotOwnResp := bytes.Equal(rs.RequestCtx, reqIdBytes)
+			if !gotOwnResp {
+				// a previous request might time out. now we should ignore the
+				// response of it and contine waiting for the response of the
+				// current requests
+				respId := uint64(0)
+				if len(rs.RequestCtx) == 8 {
+					respId = binary.BigEndian.Uint64(rs.RequestCtx)
+				}
+
+				s.logger.Warn("ignored out-of-date read index response; "+
+					"local node read indexes queueing up and waitting to be in sync with leader",
+					zap.Uint64("sent-request-id", reqID),
+					zap.Uint64("received-request-id", respId))
+				s.slowReadInex.Inc()
+				continue
+			}
+
+			return rs.Index, nil
+
+		case <-leaderChangeNotifier:
+			s.readIndexFailed.Inc()
+			return 0, ErrLeaderChanged
+
+		case <-firstCommitInTermNotifier:
+			firstCommitInTermNotifier = s.firstCommitInTerm.receive()
+			s.logger.Info("first commit in current term: resending ReadIndex request")
+			err := s.sendReadIndex(ctx, reqID)
+			if err != nil {
+				return 0, err
+			}
+
+			retryTimer.Reset(readIndexRetryTime)
+			continue
+
+		case <-retryTimer.C:
+			s.logger.Warn("waiting for ReadIndex response took too long, retrying",
+				zap.Uint64("sent-request-id", reqID),
+				zap.Duration("retry-timeout", readIndexRetryTime))
+
+			err := s.sendReadIndex(ctx, reqID)
+			if err != nil {
+				return 0, err
+			}
+
+			retryTimer.Reset(readIndexRetryTime)
+			continue
+
+		case <-errTimer.C:
+			s.logger.Warn("timed out waiting for read inex response (local node might have slow network)",
+				zap.Duration("timeout", s.reqTimeout()))
+			s.slowReadInex.Inc()
+			return 0, ErrTimeout
+
+		case <-s.stopped:
+			return 0, ErrStopped
+		}
+	}
+
+}
+
+func (s *Store) linearizableReadLoop(ctx context.Context) {
+	for {
+		reqID := s.idGen.Next()
+		leaderChangeNotifier := s.leaderChanged.receive()
+
+		select {
+		case <-ctx.Done():
+			return
+		case <-leaderChangeNotifier:
+			continue
+		case <-s.readWaitCh:
+		}
+
+		nextNr := newErrNotifier()
+		s.readMtx.Lock()
+		nr := s.readNotifier
+		s.readNotifier = nextNr
+		s.readMtx.Unlock()
+
+		confirmedIndex, err := s.requestCurrentIndex(ctx, leaderChangeNotifier, reqID)
+		if err == ErrStopped {
+			return
+		}
+		if err != nil {
+			nr.notify(err)
+			continue
+		}
+
+		appliedInex := s.appliedIndex.Load()
+		fmt.Println(appliedInex, confirmedIndex)
+		if appliedInex < confirmedIndex {
+			select {
+			case <-s.applyWait.Wait(confirmedIndex):
+			case <-s.stopped:
+				return
+			}
+		}
+
+		nr.notify(nil)
+	}
+}
+
+type errNotifier struct {
+	ch  chan struct{}
+	err error
+}
+
+func (n *errNotifier) notify(err error) {
+	n.err = err
+	close(n.ch)
+}
+
+func newErrNotifier() *errNotifier {
+	return &errNotifier{
+		ch:  make(chan struct{}),
+		err: nil,
+	}
+}
+
+// notify is a thread safe struct that can be used to send notification
+// about some event to multiple consumer.
+type notifier struct {
+	mtx sync.RWMutex
+	ch  chan struct{}
+}
+
+func newNotifier() *notifier {
+	return &notifier{
+		ch: make(chan struct{}),
+	}
+}
+
+// receive returns channel that can be used to wait for notification.
+// consumers will be informed by closing the channel.
+func (n *notifier) receive() <-chan struct{} {
+	n.mtx.RLock()
+	ch := n.ch
+	n.mtx.RUnlock()
+
+	return ch
+}
+
+// notifiy closes the channel passed to consumers and creates new
+// channel to used for next notification.
+func (n *notifier) notify() {
+	newCh := make(chan struct{})
+	n.mtx.Lock()
+	toClose := n.ch
+	n.ch = newCh
+	n.mtx.Unlock()
+
+	close(toClose)
+}
+
+func (s *Store) linearizableReadNotify(ctx context.Context) error {
+	s.readMtx.RLock()
+	nc := s.readNotifier
+	s.readMtx.RUnlock()
+
+	// signal linearizable loop for current notify if it hasn't been already
 	select {
-	case n.stopped <- struct{}{}:
+	case s.readWaitCh <- struct{}{}:
+	default:
+	}
+
+	// wait for read state notification
+	select {
+	case <-nc.ch:
+		return nc.err
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-s.done:
+		return ErrStopped
+	}
+}
+
+// ReadyNotify returns a channel that will be closed when the
+// server is ready to serve client requests.
+func (s *Store) readyNotify() <-chan struct{} {
+	return s.readyCh
+}
+
+func (s *Store) stop() {
+	select {
+	case s.stopped <- struct{}{}:
 	// Not already stopped, so trigger it
-	case <-n.done:
+	case <-s.done:
 		// has already been stopped - no need to do anything
 		return
 	}
 
 	// Block until the stop has been acknowledged by start()
-	<-n.done
+	<-s.done
 }
 
-func (n *Node) onStop() {
-	n.Stop()
-	n.ticker.Stop()
+func (s *Store) onStop() {
+	s.raftNode.Stop()
+	s.ticker.Stop()
+	s.transport.Stop()
 
-	if err := n.transport.Stop(); err != nil {
-		n.logger.Error("failed to close raft transport", zap.Error(err))
+	if err := s.raftStorage.Close(); err != nil {
+		s.logger.Panic("failed to close raft storage", zap.Error(err))
 	}
 
-	if err := n.storage.Close(); err != nil {
-		n.logger.Panic("failed to close raft storage", zap.Error(err))
-	}
-
-	close(n.done)
-}
-
-// advanceTicks advances ticks of raft node.
-// This can be used for fast-forwarding election
-// ticks in multi data-center deployments, thus
-// speeding up election process.
-func (n *Node) advanceTicks(ticks int) {
-	for i := 0; i < ticks; i++ {
-		n.tick()
-	}
+	close(s.done)
 }
