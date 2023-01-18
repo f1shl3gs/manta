@@ -84,14 +84,18 @@ type waitTime struct {
 	mtx                 sync.Mutex
 	lastTriggerDeadline uint64
 	m                   map[uint64]chan struct{}
+	closedCh            chan struct{}
 }
 
-var closec chan struct{}
-
 func newWaitTime() *waitTime {
-	return &waitTime{
-		m: make(map[uint64]chan struct{}),
+	wt := &waitTime{
+		m:        make(map[uint64]chan struct{}),
+		closedCh: make(chan struct{}),
 	}
+
+	close(wt.closedCh)
+
+	return wt
 }
 
 func (w *waitTime) Wait(deadline uint64) <-chan struct{} {
@@ -99,7 +103,7 @@ func (w *waitTime) Wait(deadline uint64) <-chan struct{} {
 	defer w.mtx.Unlock()
 
 	if w.lastTriggerDeadline >= deadline {
-		return closec
+		return w.closedCh
 	}
 	ch := w.m[deadline]
 	if ch == nil {

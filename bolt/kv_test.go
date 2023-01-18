@@ -60,9 +60,7 @@ func initKVStore(f tests.KVStoreFields, t *testing.T) (kv.Store, func()) {
 	if err != nil {
 		t.Fatalf("failed to put keys: %v", err)
 	}
-	return s, func() {
-		closeFn()
-	}
+	return s, closeFn
 }
 
 func TestKVStore(t *testing.T) {

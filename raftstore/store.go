@@ -6,7 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/f1shl3gs/manta/kv"
-	"github.com/f1shl3gs/manta/raftstore/membership"
+    "github.com/f1shl3gs/manta/pkg/fsutil"
+    "github.com/f1shl3gs/manta/raftstore/membership"
 	"github.com/f1shl3gs/manta/raftstore/pb"
 	"github.com/f1shl3gs/manta/raftstore/transport"
 	"github.com/f1shl3gs/manta/raftstore/wal"
@@ -26,7 +27,7 @@ const (
 	// larger than the potential max db size can prevent writer from blocking reader.
 	//
 	// This only works for linux
-	initialMmapSize = 128 * 1024 * 1024 // 128MiB
+	initialMmapSize = 1024 * 1024 * 1024 // 1024 MiB
 
 	// max number of in-flight snapshot messages server allows to have
 	// This number is more than enough for most clusters with 5 machines.
@@ -41,7 +42,8 @@ const (
 )
 
 var (
-	metaBucket = []byte("__meta")
+	metaBucket       = []byte("__meta")
+	membershipBucket = []byte("__membership")
 
 	consistentIndexKey = []byte("consistentIndex")
 )
@@ -101,6 +103,11 @@ type Store struct {
 
 func New(cf *Config, logger *zap.Logger) (*Store, error) {
 	logger = logger.Named("raftstore")
+
+    err := fsutil.TouchDirAll(cf.DataDir)
+    if err != nil {
+        return nil, err
+    }
 
 	ds, err := wal.Init(cf.DataDir, logger)
 	if err != nil {
@@ -256,8 +263,11 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 
 func (s *Store) Collectors() []prometheus.Collector {
 	return []prometheus.Collector{
-		s.leaderChanges,
-		s.hasLeader,
+        s.leaderChanges,
+        s.hasLeader,
+        s.isLeader,
+        s.slowReadInex,
+        s.readIndexFailed,
 	}
 }
 
@@ -273,6 +283,7 @@ func openDB(cf *Config) (*bolt.DB, error) {
 
 	// sync will be done periodly by another goroutine
 	opt.NoSync = true
+	opt.NoGrowSync = true
 
 	db, err := bolt.Open(path, 0600, opt)
 	if err != nil {
@@ -318,7 +329,7 @@ func (s *Store) Run(ctx context.Context) {
 	var batched uint64
 
 	go s.startRaftLoop()
-	go s.syncBolt(ctx)
+	go s.syncLoop(ctx)
 	go s.linearizableReadLoop(ctx)
 
 	// apply loop
@@ -328,31 +339,26 @@ func (s *Store) Run(ctx context.Context) {
 			return
 
 		case apply := <-s.applyCh:
-			db := s.db.Load()
-
-			err := db.Update(func(tx *bolt.Tx) error {
-				for _, ent := range apply.entries {
-					switch ent.Type {
-					case raftpb.EntryNormal:
-						s.applyNormal(tx, &ent)
-						s.appliedIndex.Store(ent.Index)
-
-					case raftpb.EntryConfChange:
-						// TODO
-
-						s.appliedIndex.Store(ent.Index)
-					default:
-						s.logger.Error("trying to apply unknown entry type",
-							zap.Int32("type", int32(ent.Type)))
-					}
-				}
-
-				return nil
-			})
-			if err != nil {
-				s.logger.Fatal("error while applying to boltdb",
-					zap.Error(err))
+			if len(apply.entries) == 0 {
+				continue
 			}
+
+			var entries []raftpb.Entry
+
+			first := apply.entries[0].Index
+			applied := s.appliedIndex.Load()
+			if applied+1-first < uint64(len(apply.entries)) {
+				entries = apply.entries[applied+1-first:]
+			}
+			if len(entries) == 0 {
+				continue
+			}
+
+			_, appliedIndex := s.apply(entries)
+
+			s.appliedIndex.Store(appliedIndex)
+			s.applyWait.Trigger(appliedIndex)
+			// s.logger.Info("trigger apply wait", zap.Uint64("index", appliedIndex))
 
 			// wait for the raft routine to finish the disk writes before triggering
 			// a snapshot. or applied index might be greater than the last index in
@@ -362,19 +368,54 @@ func (s *Store) Run(ctx context.Context) {
 
 			batched += uint64(len(apply.entries))
 			if batched > batchLimit {
-				err := s.db.Load().Sync()
-				if err != nil {
-					s.logger.Fatal("sync boltdb failed",
-						zap.Error(err))
-				}
-
+				s.sync()
 				batched = 0
 			}
 		}
 	}
 }
 
-func (s *Store) applyNormal(tx *bolt.Tx, ent *raftpb.Entry) {
+func (s *Store) apply(
+	entries []raftpb.Entry,
+) (appliedt, appliedi uint64) {
+	for i := range entries {
+		ent := entries[i]
+
+		s.logger.Debug("Applying entry",
+			zap.Uint64("term", ent.Term),
+			zap.Uint64("index", ent.Index),
+			zap.Stringer("type", ent.Type))
+
+		switch ent.Type {
+		case raftpb.EntryNormal:
+			s.applyNormal(&ent)
+			s.appliedIndex.Store(ent.Index)
+
+		case raftpb.EntryConfChange:
+			var cc raftpb.ConfChange
+			err := cc.Unmarshal(ent.Data)
+			if err != nil {
+				s.logger.Panic("unmarshal config change failed",
+					zap.Error(err))
+			}
+
+			s.raftNode.ApplyConfChange(cc)
+			s.applyConfChange(&cc)
+
+			s.appliedIndex.Store(ent.Index)
+
+		default:
+			s.logger.Panic("trying to apply unknown entry type",
+				zap.Int32("type", int32(ent.Type)))
+		}
+
+		appliedt, appliedi = ent.Term, ent.Index
+	}
+
+	return appliedt, appliedi
+}
+
+func (s *Store) applyNormal(ent *raftpb.Entry) {
 	var req pb.InternalRequest
 
 	err := req.Unmarshal(ent.Data)
@@ -384,7 +425,7 @@ func (s *Store) applyNormal(tx *bolt.Tx, ent *raftpb.Entry) {
 		return
 	}
 
-	err = func() error {
+	err = s.db.Load().Update(func(tx *bolt.Tx) error {
 		if txn := req.GetTxn(); txn != nil {
 			return applyTxn(tx, txn)
 		}
@@ -399,9 +440,34 @@ func (s *Store) applyNormal(tx *bolt.Tx, ent *raftpb.Entry) {
 		}
 
 		return errors.New("empty internal request")
-	}()
+	})
 
 	s.wait.Trigger(req.ID, err)
+}
+
+func (s *Store) applyConfChange(cc *raftpb.ConfChange) {
+	err := s.db.Load().Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists(membershipBucket)
+		if err != nil {
+			return err
+		}
+
+		key := make([]byte, 8)
+		binary.BigEndian.PutUint64(key, cc.ID)
+
+		switch cc.Type {
+		case raftpb.ConfChangeAddNode, raftpb.ConfChangeAddLearnerNode, raftpb.ConfChangeUpdateNode:
+			return b.Put(key, cc.Context)
+		case raftpb.ConfChangeRemoveNode:
+			return b.Delete(key)
+
+		default:
+			return errors.New("unsupported config change type")
+		}
+	})
+	if err != nil {
+		s.logger.Fatal("save ")
+	}
 }
 
 func applyTxn(tx *bolt.Tx, txn *pb.Txn) error {
@@ -426,7 +492,7 @@ func applyTxn(tx *bolt.Tx, txn *pb.Txn) error {
 	return nil
 }
 
-func (s *Store) syncBolt(ctx context.Context) {
+func (s *Store) syncLoop(ctx context.Context) {
 	ticker := time.NewTicker(batchInterval)
 	defer ticker.Stop()
 
@@ -434,12 +500,19 @@ func (s *Store) syncBolt(ctx context.Context) {
 	case <-ctx.Done():
 		return
 	case <-ticker.C:
-		err := s.db.Load().Sync()
-		if err != nil {
-			s.logger.Fatal("sync boltdb failed",
-				zap.Error(err))
-		}
-
+		s.sync()
 		ticker.Reset(batchInterval)
 	}
+}
+
+func (s *Store) sync() {
+	start := time.Now()
+	err := s.db.Load().Sync()
+	elapsed := time.Since(start)
+	if err != nil {
+		s.logger.Fatal("sync boltdb failed",
+			zap.Error(err))
+	}
+
+	s.logger.Info("sync done", zap.Duration("elapsed", elapsed))
 }

@@ -3,10 +3,14 @@ package raftstore
 import (
 	"context"
 	"fmt"
-    "github.com/f1shl3gs/manta"
-    "net"
+    "go.uber.org/zap/zapcore"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
+	"strconv"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -27,7 +31,7 @@ func setupStore(t testing.TB) *Store {
 		Listen:  addr,
 		DataDir: t.TempDir(),
 	}
-	logger := zaptest.NewLogger(t)
+	logger := zaptest.NewLogger(t, zaptest.Level(zapcore.InfoLevel))
 
 	store, err := New(cf, logger)
 	assert.NoError(t, err)
@@ -108,9 +112,13 @@ func dump(t *testing.T, db *bolt.DB) {
 	assert.NoError(t, err)
 }
 
-func BenchmarkOneNodeWrite(b *testing.B) {
-    bucketName := []byte("bn")
-    value := []byte(`{
+func TestBench(t *testing.T) {
+	go func() {
+		_ = http.ListenAndServe(":7000", nil)
+	}()
+
+	bucketName := []byte("bn")
+	value := []byte(`{
 "id": "0a66228cdb616000",
 "created": "2022-12-07T01:47:33.101807828+08:00",
 "updated": "2022-12-07T01:57:01.526551906+08:00",
@@ -477,32 +485,63 @@ func BenchmarkOneNodeWrite(b *testing.B) {
 ]
 }
 `)
-    ctx := context.Background()
+	ctx := context.Background()
 
-    store := setupStore(b)
-    go store.Run(context.Background())
+	store := setupStore(t)
+	go store.Run(context.Background())
 
-    err := store.CreateBucket(ctx, bucketName)
-    assert.NoError(b, err)
+	err := store.CreateBucket(ctx, bucketName)
+	assert.NoError(t, err)
 
-    idgen := newGenerator(1, time.Now())
-    b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-        err = store.Update(ctx, func(tx kv.Tx) error {
-            b, err := tx.Bucket(bucketName)
-            if err != nil {
-                return err
-            }
+	var (
+		total   = uint64(10000)
+		threads = 32
+		counter atomic.Uint64
+		wg      sync.WaitGroup
+	)
 
-            key, err := manta.ID(idgen.Next()).Encode()
-            if err != nil {
-                return err
-            }
+	writer := func() {
+		for {
+			n := counter.Add(1)
+			if n >= total {
+				return
+			}
 
-            return b.Put(key, value)
-        })
-        if err != nil {
-            panic(err)
-        }
+			key := unsafeStringToBytes(strconv.FormatUint(n, 16))
+			err = store.Update(ctx, func(tx kv.Tx) error {
+				b, err := tx.Bucket(bucketName)
+				if err != nil {
+					return err
+				}
+
+				return b.Put(key, value)
+			})
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
+
+	start := time.Now()
+	wg.Add(threads)
+	for i := 0; i < threads; i++ {
+		go func() {
+			defer wg.Done()
+			writer()
+		}()
+	}
+
+	wg.Wait()
+	elapsed := time.Since(start)
+
+	store.sync()
+	file := store.db.Load().Path()
+	stat, err := os.Stat(file)
+	assert.NoError(t, err)
+
+	fmt.Printf("Writers:        %d\n", threads)
+	fmt.Printf("Time:           %s\n", elapsed.String())
+	fmt.Printf("Throughtput:    %f MB/s\n", float64(total)*float64(len(value))/(elapsed.Seconds()*1024.0*1024.0))
+	fmt.Printf("QPS:            %f\n", float64(total)/elapsed.Seconds())
+	fmt.Printf("Size:           %f MB\n", float64(stat.Size())/1024.0/1024.0)
 }

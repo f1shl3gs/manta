@@ -176,7 +176,12 @@ type readOnlyBucket struct {
 
 // Get returns a key within this bucket. Errors if key does not exist.
 func (b *readOnlyBucket) Get(key []byte) ([]byte, error) {
-	return b.bucket.Get(key), nil
+	val := b.bucket.Get(key)
+	if len(val) == 0 {
+		return nil, kv.ErrKeyNotFound
+	}
+
+	return val, nil
 }
 
 // GetBatch returns a corresponding set of values for the provided
@@ -480,6 +485,11 @@ func (tx *writeTx) txn() *pb.Txn {
 func (tx *writeTx) Bucket(b []byte) (kv.Bucket, error) {
 	bs := unsafeBytesToString(b)
 
+	ro := tx.tx.Bucket(b)
+	if ro == nil {
+		return nil, kv.ErrBucketNotFound
+	}
+
 	rset, ok := tx.rset[bs]
 	if !ok {
 		rset = newReadSet()
@@ -494,9 +504,10 @@ func (tx *writeTx) Bucket(b []byte) (kv.Bucket, error) {
 
 	// always assume bucket exist
 	return &bucket{
-		name: b,
-		rset: rset,
-		wset: wset,
+		name:   b,
+		bucket: ro,
+		rset:   rset,
+		wset:   wset,
 	}, nil
 }
 
@@ -520,18 +531,26 @@ type bucket struct {
 // Get returns a key within this bucket. Errors if key does not exist.
 func (b *bucket) Get(key []byte) ([]byte, error) {
 	sk := unsafeBytesToString(key)
-	if value := b.wset.get(key); value != nil {
-		return value, nil
+    if op, exist := b.wset[sk]; exist {
+		if op.deletion {
+            return nil, kv.ErrKeyNotFound
+        }
+
+        return op.value, nil
 	}
 
 	if item, exist := b.rset[sk]; exist {
 		return item.value, nil
 	}
 
-	value := b.bucket.Get(key)
-	b.rset.add(key, value, 0)
+	val := b.bucket.Get(key)
+	if len(val) == 0 {
+		return nil, kv.ErrKeyNotFound
+	}
 
-	return value, nil
+	b.rset.add(key, val, 0)
+
+	return val, nil
 }
 
 // GetBatch returns a corresponding set of values for the provided
@@ -590,10 +609,14 @@ func (b *bucket) Put(key, value []byte) error {
 
 // Delete should error if the transaction it was called in is not writable.
 func (b *bucket) Delete(key []byte) error {
-	b.wset[unsafeBytesToString(key)] = writeOp{
+    sk := unsafeBytesToString(key)
+	b.wset[sk] = writeOp{
 		value:    nil,
 		deletion: true,
 	}
+
+    delete(b.rset, sk)
+    
 	return nil
 }
 

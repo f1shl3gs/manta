@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -439,7 +438,6 @@ func (s *Store) linearizableReadLoop(ctx context.Context) {
 		}
 
 		appliedInex := s.appliedIndex.Load()
-		fmt.Println(appliedInex, confirmedIndex)
 		if appliedInex < confirmedIndex {
 			select {
 			case <-s.applyWait.Wait(confirmedIndex):

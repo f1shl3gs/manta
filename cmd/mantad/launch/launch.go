@@ -2,10 +2,12 @@ package launch
 
 import (
 	"context"
+	"github.com/f1shl3gs/manta/raftstore"
 	"math"
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -37,14 +39,10 @@ import (
 )
 
 type Launcher struct {
-	//
 	Listen string
 
 	// log
 	LogLevel string
-
-	// bolt store
-	BoltPath string
 
 	// opentracing
 	Opentracing bool
@@ -53,9 +51,13 @@ type Launcher struct {
 	noopSchedule bool
 	WorkerLimit  int
 
+	// Store used to specify store type, the available value could be "bolt" or "raftstore"
+	Store string
+	// where to store boltdb file or raftstore's files, e.g. WAL, snapshot, and FSM
+	StorePath string
+
 	// storage
 	StorageDir string
-	RaftStore  string
 
 	// pprof
 	ProfileDir       string
@@ -71,9 +73,14 @@ func (l *Launcher) Options() []Option {
 			Default: ":8088",
 		},
 		{
-			DestP:   &l.BoltPath,
-			Flag:    "bolt.path",
-			Default: "manta.bolt",
+			DestP:   &l.Store,
+			Flag:    "store",
+			Default: "bolt",
+		},
+		{
+			DestP:   &l.StorePath,
+			Flag:    "store.path",
+			Default: "manta",
 		},
 		{
 			DestP:   &l.Opentracing,
@@ -165,11 +172,43 @@ func (l *Launcher) run() error {
 	ctx := signals.WithStandardSignals(context.Background())
 	group, ctx := errgroup.WithContext(ctx)
 
-	kvStore := bolt.NewKVStore(logger, l.BoltPath)
-	if err = kvStore.Open(ctx); err != nil {
-		return err
+	var (
+		kvStore kv.SchemaStore
+		flusher httpservice.Flusher
+	)
+	switch l.Store {
+	case "bolt":
+		bs := bolt.NewKVStore(logger, filepath.Join(l.StorePath, "manta.bolt"))
+		if err = bs.Open(ctx); err != nil {
+			return err
+		}
+
+		kvStore = bs
+		flusher = bs
+		prometheus.MustRegister(bs)
+
+		defer bs.Close()
+	case "raftstore":
+		rs, err := raftstore.New(&raftstore.Config{
+			DataDir:      filepath.Join(l.StorePath, "state"),
+			Listen:       l.Listen,
+			DefragOnBoot: false,
+		}, logger)
+		if err != nil {
+			return err
+		}
+
+		kvStore = rs
+		prometheus.MustRegister(rs.Collectors()...)
+
+		group.Go(func() error {
+			rs.Run(ctx)
+			return nil
+		})
+
+	default:
+		return errors.Errorf("unknown store type %q", l.Store)
 	}
-	defer kvStore.Close()
 
 	migrator := migration.New(logger, kvStore, migration.All...)
 	err = migrator.Up(ctx)
@@ -182,8 +221,6 @@ func (l *Launcher) run() error {
 	var (
 		orgService manta.OrganizationService = service
 	)
-
-	prometheus.MustRegister(kvStore)
 
 	var tenantStorage multitsdb.TenantStorage
 	{
@@ -291,7 +328,7 @@ func (l *Launcher) run() error {
 			AuthorizationService:        service,
 			DashboardService:            authorizer.NewDashboardService(service),
 			SessionService:              service,
-			Flusher:                     kvStore,
+			Flusher:                     flusher,
 			ConfigurationService:        service,
 			ScrapeTargetService:         authorizer.NewScrapeTargetService(scrapeTargetService),
 			RegistryService:             service,
