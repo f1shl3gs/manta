@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"github.com/f1shl3gs/manta/http/middleware"
+	"github.com/f1shl3gs/manta/raftstore"
 	"net/http"
 	_ "net/http/pprof"
 	"strings"
@@ -48,6 +49,8 @@ type Backend struct {
 
 	TenantStorage         multitsdb.TenantStorage
 	TenantTargetRetriever multitsdb.TenantTargetRetriever
+
+	ClusterService raftstore.ClusterService
 }
 
 type Service struct {
@@ -113,6 +116,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewTaskHandler(backend, logger)
 	NewSecretHandler(logger, backend)
 	NewNotificationEendpointHandler(logger, backend)
+	NewClusterServiceHandler(logger, backend)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),

@@ -247,7 +247,7 @@ func getLogFiles(dir string, logger *zap.Logger) ([]*logFile, error) {
 			return nil, err
 		}
 
-		logger.Info("found file", zap.Int64("fid", fid), zap.Uint64("first-index", f.firstIndex()))
+		logger.Info("found wal file", zap.Int64("fid", fid), zap.Uint64("first-index", f.firstIndex()))
 		files = append(files, f)
 	}
 

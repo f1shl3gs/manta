@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 	"strconv"
 	"sync"
 	"time"
@@ -54,6 +55,76 @@ func (s *Store) tick() {
 	s.tickMu.Lock()
 	s.raftNode.Tick()
 	s.tickMu.Unlock()
+}
+
+func (s *Store) checkSnapshot(ctx context.Context) {
+	ticker := time.NewTicker(time.Minute)
+	defer ticker.Stop()
+
+	lastSnapshot := time.Now()
+	snapshotAfterEntries := uint64(10000)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+		}
+
+		if s.lead.Load() != s.self.ID {
+			continue
+		}
+
+		// If leader doesn't have a snapshot, we should create one immediately.
+		// This is very useful when you bring up the cluster. If you remove or
+		// ad a node, the new follower won't get a snapshot if the leader doesn't
+		// have one.
+		snap, err := s.raftStorage.Snapshot()
+		if err != nil {
+			s.logger.Error("while retrieving snapshot from raft storage",
+				zap.Error(err))
+			continue
+		}
+
+		index := uint64(0)
+
+		// If we don't have a snapshot, or if there are too many log files in
+		// Raft.
+		if raft.IsEmptySnap(snap) || s.raftStorage.NumLogFiles() > 4 {
+			index = s.appliedIndex.Load()
+		}
+
+		if index == 0 {
+			first, err := s.raftStorage.FirstIndex()
+			if err == nil {
+				applied := s.appliedIndex.Load()
+				if applied-snapshotAfterEntries > first {
+					index = applied - snapshotAfterEntries
+				}
+			}
+		}
+
+		if index != 0 {
+			pCtx, cancel := context.WithTimeout(ctx, s.reqTimeout())
+			err = s.propose(pCtx, pb.InternalRequest{
+				Snapshot: &pb.Snapshot{
+					Index: index,
+				},
+			})
+			cancel()
+
+			if err != nil {
+				s.logger.Error("propose snapshot failed",
+					zap.Error(err))
+			} else {
+				lastSnapshot = time.Now()
+
+				s.logger.Info("take a snapshot success",
+					zap.Time("lastTime", lastSnapshot),
+					zap.Uint64("toIndex", index))
+			}
+		}
+	}
 }
 
 // startRaftLoop prepares and starts Node in a new goroutine. It is no longer safe
@@ -250,7 +321,7 @@ func (s *Store) updateCommittedIndex(ci uint64) {
 }
 
 func (s *Store) isIDRemoved(id uint64) bool {
-	return s.cluster.Removed(id)
+	return s.transport.Removed(id)
 }
 
 func (s *Store) processMessages(msgs []raftpb.Message) []raftpb.Message {
@@ -316,14 +387,15 @@ func (s *Store) sendReadIndex(ctx context.Context, reqIndex uint64) error {
 	toSend := uint64ToBigEndianBytes(reqIndex)
 
 	ctx, cancel := context.WithTimeout(ctx, s.reqTimeout())
-	defer cancel()
-
 	err := s.raftNode.ReadIndex(ctx, toSend)
+	cancel()
+
 	if err == ErrStopped {
 		return err
 	}
 
 	if err != nil {
+		s.readIndexFailed.Inc()
 		s.logger.Warn("failed to get read index from Raft",
 			zap.Error(err))
 	}
@@ -351,8 +423,8 @@ func (s *Store) requestCurrentIndex(ctx context.Context, leaderChangeNotifier <-
 			gotOwnResp := bytes.Equal(rs.RequestCtx, reqIdBytes)
 			if !gotOwnResp {
 				// a previous request might time out. now we should ignore the
-				// response of it and contine waiting for the response of the
-				// current requests
+				// response of it and continue waiting for the response of the
+				// current requests.
 				respId := uint64(0)
 				if len(rs.RequestCtx) == 8 {
 					respId = binary.BigEndian.Uint64(rs.RequestCtx)
@@ -406,7 +478,6 @@ func (s *Store) requestCurrentIndex(ctx context.Context, leaderChangeNotifier <-
 			return 0, ErrStopped
 		}
 	}
-
 }
 
 func (s *Store) linearizableReadLoop(ctx context.Context) {
@@ -547,10 +618,51 @@ func (s *Store) onStop() {
 	s.raftNode.Stop()
 	s.ticker.Stop()
 	s.transport.Stop()
+	db := s.db.Swap(nil)
+	_ = db.Close()
 
 	if err := s.raftStorage.Close(); err != nil {
 		s.logger.Panic("failed to close raft storage", zap.Error(err))
 	}
 
 	close(s.done)
+}
+
+func (s *Store) adjustTicks() {
+	members := len(s.transport.Peers())
+
+	// single-node fresh start, or single-node recovers from snapshot
+	if members == 1 {
+		ticks := electionTick - 1
+		s.logger.Info("started as single-node, fast-forwarding election ticks", zap.Int("forward-ticks", ticks))
+
+		s.advanceTicks(ticks)
+		return
+	}
+
+	// retry up to "transport.connReadTimeout", which is 5sec
+	// until peer connection reports; otherwise:
+	//
+	waitTime := 5 * time.Second
+	itv := 50 * time.Millisecond
+	for i := int64(0); i < int64(waitTime/itv); i++ {
+		select {
+		case <-time.After(itv):
+		case <-s.stopped:
+			return
+		}
+
+		// todo: this value should be the active one
+		actives := len(s.transport.Peers())
+		if actives > 1 {
+			// multi-node received peer connection reports
+			// adjust ticks, in case slow leader message receive
+			ticks := electionTick - 2
+			s.logger.Info("initialized peer connections, fast-forwarding election ticks",
+				zap.Int("forward-ticks", ticks))
+
+			s.advanceTicks(ticks)
+			return
+		}
+	}
 }

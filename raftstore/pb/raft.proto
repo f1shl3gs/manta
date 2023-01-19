@@ -15,13 +15,7 @@ service Raft {
 }
 
 message Member {
-  uint64 id = 1;
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
   string addr = 2;
-  bool leaner = 3;
+  bool learner = 3;
 }
-
-message Snapshot {
-  repeated Member members = 1;
-  repeated bool removed = 2;
-}
-

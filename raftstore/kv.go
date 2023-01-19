@@ -16,30 +16,20 @@ import (
 
 // CreateBucket creates a bucket on the underlying store if it does not exist
 func (s *Store) CreateBucket(ctx context.Context, bucket []byte) error {
-	req := &pb.InternalRequest{
-		ID: s.idGen.Next(),
-		Request: &pb.InternalRequest_CreateBucket{
-			CreateBucket: &pb.CreateBucket{
-				Name: bucket,
-			},
+	return s.propose(ctx, pb.InternalRequest{
+		CreateBucket: &pb.CreateBucket{
+			Name: bucket,
 		},
-	}
-
-	return s.propose(ctx, req)
+	})
 }
 
 // DeleteBucket deletes a bucket on the underlying store if it exists
 func (s *Store) DeleteBucket(ctx context.Context, bucket []byte) error {
-	req := &pb.InternalRequest{
-		ID: s.idGen.Next(),
-		Request: &pb.InternalRequest_DeleteBucket{
-			DeleteBucket: &pb.DeleteBucket{
-				Name: bucket,
-			},
+	return s.propose(ctx, pb.InternalRequest{
+		DeleteBucket: &pb.DeleteBucket{
+			Name: bucket,
 		},
-	}
-
-	return s.propose(ctx, req)
+	})
 }
 
 // View opens up a transaction that will not write to any value. Implementing interfaces
@@ -105,36 +95,9 @@ func (s *Store) Update(ctx context.Context, fn func(kv.Tx) error) error {
 		return nil
 	}
 
-	req := &pb.InternalRequest{
-		ID: s.idGen.Next(),
-		Request: &pb.InternalRequest_Txn{
-			Txn: txn,
-		},
-	}
-
-	return s.propose(ctx, req)
-}
-
-func (s *Store) propose(ctx context.Context, req *pb.InternalRequest) error {
-	waitCh := s.wait.Register(req.ID)
-
-	data, err := req.Marshal()
-	if err != nil {
-		return err
-	}
-
-	if err = s.raftNode.Propose(ctx, data); err != nil {
-		return err
-	}
-
-	// TODO: retry !?
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-waitCh:
-		return nil
-	}
+	return s.propose(ctx, pb.InternalRequest{
+		Txn: txn,
+	})
 }
 
 // Backup copies all K:Vs to a writer, file format determined by implementation.
@@ -531,12 +494,12 @@ type bucket struct {
 // Get returns a key within this bucket. Errors if key does not exist.
 func (b *bucket) Get(key []byte) ([]byte, error) {
 	sk := unsafeBytesToString(key)
-    if op, exist := b.wset[sk]; exist {
+	if op, exist := b.wset[sk]; exist {
 		if op.deletion {
-            return nil, kv.ErrKeyNotFound
-        }
+			return nil, kv.ErrKeyNotFound
+		}
 
-        return op.value, nil
+		return op.value, nil
 	}
 
 	if item, exist := b.rset[sk]; exist {
@@ -609,14 +572,14 @@ func (b *bucket) Put(key, value []byte) error {
 
 // Delete should error if the transaction it was called in is not writable.
 func (b *bucket) Delete(key []byte) error {
-    sk := unsafeBytesToString(key)
+	sk := unsafeBytesToString(key)
 	b.wset[sk] = writeOp{
 		value:    nil,
 		deletion: true,
 	}
 
-    delete(b.rset, sk)
-    
+	delete(b.rset, sk)
+
 	return nil
 }
 

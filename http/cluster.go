@@ -13,33 +13,43 @@ import (
 )
 
 const (
-	raftServicePrefix = apiV1Prefix + "/cluster"
-	raftServiceIDPath = raftServicePrefix + "/:id"
+	clusterServicePrefix = apiV1Prefix + "/cluster"
+	clusterServiceIDPath = clusterServicePrefix + "/:id"
 )
 
-type RaftServiceHandler struct {
+type ClusterServiceHandler struct {
 	*router.Router
 
 	logger      *zap.Logger
-	raftService raftstore.RaftService
+	raftService raftstore.ClusterService
 }
 
-func NewRaftServiceHandler(logger *zap.Logger, backend *Backend) {
-	if backend.RaftService == nil {
+func NewClusterServiceHandler(logger *zap.Logger, backend *Backend) {
+	if backend.ClusterService == nil {
 		return
 	}
 
-	h := &RaftServiceHandler{
+	h := &ClusterServiceHandler{
 		Router:      backend.router,
 		logger:      logger,
-		raftService: backend.RaftService,
+		raftService: backend.ClusterService,
 	}
 
-	h.HandlerFunc(http.MethodPost, raftServicePrefix, h.add)
-	h.HandlerFunc(http.MethodDelete, raftServiceIDPath, h.delete)
+	h.HandlerFunc(http.MethodGet, clusterServicePrefix, h.list)
+	h.HandlerFunc(http.MethodPost, clusterServicePrefix, h.add)
+	h.HandlerFunc(http.MethodDelete, clusterServiceIDPath, h.delete)
 }
 
-func (h *RaftServiceHandler) add(w http.ResponseWriter, r *http.Request) {
+func (h *ClusterServiceHandler) list(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	members := h.raftService.Members()
+
+	if err := h.EncodeResponse(ctx, w, http.StatusOK, members); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *ClusterServiceHandler) add(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	member := raftstore.Member{}
 
@@ -62,7 +72,7 @@ func (h *RaftServiceHandler) add(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h *RaftServiceHandler) delete(w http.ResponseWriter, r *http.Request) {
+func (h *ClusterServiceHandler) delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	text := extractParamFromContext(r.Context(), "id")

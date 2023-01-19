@@ -14,22 +14,22 @@ const (
 
 // wait is an interface that provides the ability to wait and trigger events that
 // are associated with IDs.
-type wait struct {
-	shards []waitShard
+type wait[T any] struct {
+	shards []waitShard[T]
 }
 
-type waitShard struct {
+type waitShard[T any] struct {
 	l sync.RWMutex
-	m map[uint64]chan interface{}
+	m map[uint64]chan T
 }
 
 // newWait creates a Wait.
-func newWait() *wait {
-	res := wait{
-		shards: make([]waitShard, defaultListElementLength),
+func newWait[T any]() *wait[T] {
+	res := wait[T]{
+		shards: make([]waitShard[T], defaultListElementLength),
 	}
 	for i := 0; i < len(res.shards); i++ {
-		res.shards[i].m = make(map[uint64]chan interface{})
+		res.shards[i].m = make(map[uint64]chan T)
 	}
 	return &res
 }
@@ -37,9 +37,9 @@ func newWait() *wait {
 // Register waits returns a chan that waits on the given ID.
 // The chan will be triggered when Trigger is called with
 // the same ID.
-func (w *wait) Register(id uint64) <-chan interface{} {
+func (w *wait[T]) Register(id uint64) <-chan T {
 	idx := id % defaultListElementLength
-	newCh := make(chan interface{}, 1)
+	newCh := make(chan T, 1)
 
 	w.shards[idx].l.Lock()
 	_, ok := w.shards[idx].m[id]
@@ -56,7 +56,7 @@ func (w *wait) Register(id uint64) <-chan interface{} {
 }
 
 // Trigger triggers the waiting chans with the given ID.
-func (w *wait) Trigger(id uint64, x interface{}) {
+func (w *wait[T]) Trigger(id uint64, x T) {
 	idx := id % defaultListElementLength
 
 	w.shards[idx].l.Lock()
@@ -70,7 +70,7 @@ func (w *wait) Trigger(id uint64, x interface{}) {
 	}
 }
 
-func (w *wait) IsRegistered(id uint64) bool {
+func (w *wait[T]) IsRegistered(id uint64) bool {
 	idx := id % defaultListElementLength
 
 	w.shards[idx].l.RLock()

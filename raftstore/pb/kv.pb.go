@@ -284,29 +284,22 @@ func (m *Compact) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Compact proto.InternalMessageInfo
 
-type InternalRequest struct {
-	ID uint64 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
-	// Types that are valid to be assigned to Request:
-	//
-	//	*InternalRequest_CreateBucket
-	//	*InternalRequest_DeleteBucket
-	//	*InternalRequest_Txn
-	//	*InternalRequest_Compact
-	Request isInternalRequest_Request `protobuf_oneof:"request"`
+type Snapshot struct {
+	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
 }
 
-func (m *InternalRequest) Reset()         { *m = InternalRequest{} }
-func (m *InternalRequest) String() string { return proto.CompactTextString(m) }
-func (*InternalRequest) ProtoMessage()    {}
-func (*InternalRequest) Descriptor() ([]byte, []int) {
+func (m *Snapshot) Reset()         { *m = Snapshot{} }
+func (m *Snapshot) String() string { return proto.CompactTextString(m) }
+func (*Snapshot) ProtoMessage()    {}
+func (*Snapshot) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2216fe83c9c12408, []int{6}
 }
-func (m *InternalRequest) XXX_Unmarshal(b []byte) error {
+func (m *Snapshot) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *InternalRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Snapshot) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_InternalRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Snapshot.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -316,123 +309,17 @@ func (m *InternalRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *InternalRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InternalRequest.Merge(m, src)
+func (m *Snapshot) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Snapshot.Merge(m, src)
 }
-func (m *InternalRequest) XXX_Size() int {
+func (m *Snapshot) XXX_Size() int {
 	return m.Size()
 }
-func (m *InternalRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_InternalRequest.DiscardUnknown(m)
+func (m *Snapshot) XXX_DiscardUnknown() {
+	xxx_messageInfo_Snapshot.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_InternalRequest proto.InternalMessageInfo
-
-type isInternalRequest_Request interface {
-	isInternalRequest_Request()
-	MarshalTo([]byte) (int, error)
-	Size() int
-}
-
-type InternalRequest_CreateBucket struct {
-	CreateBucket *CreateBucket `protobuf:"bytes,2,opt,name=create_bucket,json=createBucket,proto3,oneof" json:"create_bucket,omitempty"`
-}
-type InternalRequest_DeleteBucket struct {
-	DeleteBucket *DeleteBucket `protobuf:"bytes,3,opt,name=delete_bucket,json=deleteBucket,proto3,oneof" json:"delete_bucket,omitempty"`
-}
-type InternalRequest_Txn struct {
-	Txn *Txn `protobuf:"bytes,4,opt,name=txn,proto3,oneof" json:"txn,omitempty"`
-}
-type InternalRequest_Compact struct {
-	Compact *Compact `protobuf:"bytes,5,opt,name=compact,proto3,oneof" json:"compact,omitempty"`
-}
-
-func (*InternalRequest_CreateBucket) isInternalRequest_Request() {}
-func (*InternalRequest_DeleteBucket) isInternalRequest_Request() {}
-func (*InternalRequest_Txn) isInternalRequest_Request()          {}
-func (*InternalRequest_Compact) isInternalRequest_Request()      {}
-
-func (m *InternalRequest) GetRequest() isInternalRequest_Request {
-	if m != nil {
-		return m.Request
-	}
-	return nil
-}
-
-func (m *InternalRequest) GetCreateBucket() *CreateBucket {
-	if x, ok := m.GetRequest().(*InternalRequest_CreateBucket); ok {
-		return x.CreateBucket
-	}
-	return nil
-}
-
-func (m *InternalRequest) GetDeleteBucket() *DeleteBucket {
-	if x, ok := m.GetRequest().(*InternalRequest_DeleteBucket); ok {
-		return x.DeleteBucket
-	}
-	return nil
-}
-
-func (m *InternalRequest) GetTxn() *Txn {
-	if x, ok := m.GetRequest().(*InternalRequest_Txn); ok {
-		return x.Txn
-	}
-	return nil
-}
-
-func (m *InternalRequest) GetCompact() *Compact {
-	if x, ok := m.GetRequest().(*InternalRequest_Compact); ok {
-		return x.Compact
-	}
-	return nil
-}
-
-// XXX_OneofWrappers is for the internal use of the proto package.
-func (*InternalRequest) XXX_OneofWrappers() []interface{} {
-	return []interface{}{
-		(*InternalRequest_CreateBucket)(nil),
-		(*InternalRequest_DeleteBucket)(nil),
-		(*InternalRequest_Txn)(nil),
-		(*InternalRequest_Compact)(nil),
-	}
-}
-
-type InternalResponse struct {
-	ID uint64 `protobuf:"varint,1,opt,name=ID,proto3" json:"ID,omitempty"`
-}
-
-func (m *InternalResponse) Reset()         { *m = InternalResponse{} }
-func (m *InternalResponse) String() string { return proto.CompactTextString(m) }
-func (*InternalResponse) ProtoMessage()    {}
-func (*InternalResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2216fe83c9c12408, []int{7}
-}
-func (m *InternalResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *InternalResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_InternalResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *InternalResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_InternalResponse.Merge(m, src)
-}
-func (m *InternalResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *InternalResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_InternalResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_InternalResponse proto.InternalMessageInfo
+var xxx_messageInfo_Snapshot proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("pb.OperationType", OperationType_name, OperationType_value)
@@ -442,43 +329,36 @@ func init() {
 	proto.RegisterType((*Operation)(nil), "pb.Operation")
 	proto.RegisterType((*Txn)(nil), "pb.Txn")
 	proto.RegisterType((*Compact)(nil), "pb.Compact")
-	proto.RegisterType((*InternalRequest)(nil), "pb.InternalRequest")
-	proto.RegisterType((*InternalResponse)(nil), "pb.InternalResponse")
+	proto.RegisterType((*Snapshot)(nil), "pb.Snapshot")
 }
 
 func init() { proto.RegisterFile("kv.proto", fileDescriptor_2216fe83c9c12408) }
 
 var fileDescriptor_2216fe83c9c12408 = []byte{
-	// 464 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0xf5, 0x7a, 0xd3, 0x38, 0x99, 0x24, 0xc5, 0xac, 0x2a, 0x64, 0x81, 0x64, 0x45, 0x06, 0xd4,
-	0x00, 0x52, 0x90, 0xc2, 0xa1, 0xf7, 0x34, 0x87, 0xe6, 0x80, 0x40, 0x56, 0xee, 0xc8, 0xd9, 0x0e,
-	0x55, 0x14, 0x77, 0x6d, 0xbc, 0xeb, 0x28, 0xf9, 0x01, 0xce, 0x7c, 0x56, 0x8f, 0x39, 0x72, 0xa4,
-	0x09, 0x1f, 0x82, 0x76, 0xed, 0xc4, 0x2e, 0xaa, 0x7a, 0x9b, 0x99, 0xf7, 0xc6, 0xb3, 0xef, 0xcd,
-	0x18, 0x5a, 0xcb, 0xd5, 0x30, 0xcd, 0x12, 0x95, 0x30, 0x3b, 0x9d, 0xbf, 0x3c, 0xbb, 0x49, 0x6e,
-	0x12, 0x93, 0x7e, 0xd4, 0x51, 0x81, 0x04, 0x01, 0x74, 0x2f, 0x33, 0x8c, 0x14, 0x8e, 0x73, 0xbe,
-	0x44, 0xc5, 0x18, 0x34, 0x44, 0x74, 0x8b, 0x1e, 0xe9, 0x93, 0x41, 0x37, 0x34, 0xb1, 0xe6, 0x4c,
-	0x30, 0xc6, 0x27, 0x39, 0x9f, 0xc1, 0xb9, 0x4c, 0x6e, 0xd3, 0x28, 0x43, 0xf6, 0x02, 0x9a, 0x73,
-	0x43, 0x2c, 0x09, 0x65, 0xc6, 0x5c, 0xa0, 0x4b, 0xdc, 0x78, 0xb6, 0x29, 0xea, 0x90, 0x79, 0xe0,
-	0xac, 0x30, 0x93, 0x8b, 0x44, 0x78, 0xb4, 0x4f, 0x06, 0x34, 0x3c, 0xa4, 0x41, 0x06, 0xed, 0x2f,
-	0x29, 0x66, 0x91, 0x5a, 0x24, 0x82, 0xbd, 0x85, 0x86, 0xda, 0xa4, 0xc5, 0xbc, 0xd3, 0xd1, 0xf3,
-	0x61, 0x3a, 0x1f, 0x1e, 0xc1, 0xd9, 0x26, 0xc5, 0xd0, 0xc0, 0xb5, 0xb9, 0xf6, 0x63, 0x73, 0x69,
-	0x35, 0xf7, 0x0c, 0x4e, 0x56, 0x51, 0x9c, 0xa3, 0xd7, 0x30, 0xb5, 0x22, 0x09, 0x7e, 0x12, 0xa0,
-	0xb3, 0xb5, 0x60, 0xe7, 0xd0, 0xe2, 0x85, 0x14, 0xe9, 0x91, 0x3e, 0x1d, 0x74, 0x46, 0x1d, 0x3d,
-	0xb2, 0x94, 0x17, 0x1e, 0x41, 0xf6, 0x01, 0xda, 0x32, 0xe7, 0x1c, 0xa5, 0x44, 0xe9, 0xd9, 0x86,
-	0xd9, 0x7b, 0xf0, 0xb8, 0xb0, 0xc2, 0xd9, 0x3b, 0x68, 0x7d, 0x8f, 0x16, 0x71, 0xae, 0xbf, 0x4a,
-	0x1f, 0xe3, 0x1e, 0xe1, 0xe0, 0x75, 0xe9, 0x25, 0x57, 0x75, 0x87, 0xb4, 0xfa, 0x46, 0xe5, 0xd0,
-	0x5f, 0x02, 0xcf, 0xa6, 0x42, 0x61, 0x26, 0xa2, 0x38, 0xc4, 0x1f, 0x39, 0x4a, 0xc5, 0x4e, 0xc1,
-	0x9e, 0x4e, 0x4a, 0xa2, 0x3d, 0x9d, 0xb0, 0x0b, 0xe8, 0x71, 0xb3, 0xdc, 0x6f, 0x35, 0x63, 0x3a,
-	0x23, 0xd7, 0xc8, 0xa9, 0x6d, 0xfd, 0xca, 0x0a, 0xbb, 0xbc, 0x7e, 0x05, 0x17, 0xd0, 0xbb, 0x36,
-	0x1b, 0x3f, 0x34, 0xd2, 0xaa, 0xb1, 0x7e, 0x0a, 0xba, 0xf1, 0xba, 0x7e, 0x1a, 0xaf, 0x80, 0xaa,
-	0xb5, 0x30, 0xbe, 0x76, 0x46, 0x8e, 0xa6, 0xcf, 0xd6, 0xe2, 0xca, 0x0a, 0x75, 0x95, 0x9d, 0x83,
-	0xc3, 0x0b, 0x5d, 0xde, 0x89, 0x21, 0x54, 0xbe, 0x72, 0xfd, 0xa9, 0x03, 0x3a, 0x6e, 0x83, 0x93,
-	0x15, 0x92, 0x82, 0x00, 0xdc, 0x4a, 0xa5, 0x4c, 0x13, 0x21, 0xf1, 0x7f, 0x99, 0xef, 0xdf, 0x40,
-	0xef, 0xc1, 0x3d, 0x30, 0x07, 0xe8, 0xd7, 0x5c, 0xb9, 0x16, 0x03, 0x68, 0x16, 0xcf, 0x75, 0xc9,
-	0xb8, 0x7f, 0x77, 0xef, 0x5b, 0xdb, 0x7b, 0xdf, 0xba, 0xdb, 0xf9, 0x64, 0xbb, 0xf3, 0xc9, 0x9f,
-	0x9d, 0x4f, 0x7e, 0xed, 0x7d, 0x6b, 0xbb, 0xf7, 0xad, 0xdf, 0x7b, 0xdf, 0x9a, 0x37, 0xcd, 0x2f,
-	0xf1, 0xe9, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xbc, 0xb0, 0xca, 0xb1, 0x38, 0x03, 0x00, 0x00,
+	// 363 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0xcd, 0x6e, 0xda, 0x40,
+	0x18, 0xf4, 0x7a, 0x5d, 0x30, 0x1f, 0x50, 0xd1, 0x15, 0xaa, 0xac, 0x1e, 0x56, 0x96, 0xdb, 0xaa,
+	0xb4, 0x95, 0xa8, 0x44, 0xdf, 0x00, 0x72, 0x8d, 0x12, 0x39, 0xbc, 0x80, 0xed, 0x7c, 0x21, 0x16,
+	0xe0, 0x5d, 0xd9, 0x6b, 0x04, 0x2f, 0x90, 0x73, 0x1e, 0x8b, 0x23, 0xc7, 0x1c, 0x03, 0xbc, 0x48,
+	0xe4, 0xb5, 0xc3, 0x8f, 0x84, 0x72, 0xfb, 0xe6, 0x9b, 0xd1, 0xce, 0xce, 0xec, 0x82, 0x3d, 0x5d,
+	0xf4, 0x65, 0x2a, 0x94, 0x60, 0xa6, 0x0c, 0xbf, 0x75, 0x27, 0x62, 0x22, 0x34, 0xfc, 0x57, 0x4c,
+	0x25, 0xe3, 0x79, 0xd0, 0x1a, 0xa5, 0x18, 0x28, 0x1c, 0xe6, 0xd1, 0x14, 0x15, 0x63, 0x60, 0x25,
+	0xc1, 0x1c, 0x1d, 0xe2, 0x92, 0x5e, 0xcb, 0xd7, 0x73, 0xa1, 0xb9, 0xc2, 0x19, 0x7e, 0xa8, 0xb9,
+	0x86, 0xfa, 0x48, 0xcc, 0x65, 0x90, 0x22, 0xfb, 0x0a, 0xb5, 0x50, 0x0b, 0x2b, 0x41, 0x85, 0x58,
+	0x07, 0xe8, 0x14, 0x57, 0x8e, 0xa9, 0x97, 0xc5, 0xc8, 0x1c, 0xa8, 0x2f, 0x30, 0xcd, 0x62, 0x91,
+	0x38, 0xd4, 0x25, 0x3d, 0xea, 0xbf, 0x43, 0x2f, 0x85, 0xc6, 0x8d, 0xc4, 0x34, 0x50, 0xb1, 0x48,
+	0xd8, 0x4f, 0xb0, 0xd4, 0x4a, 0x96, 0x7e, 0x9f, 0x07, 0x5f, 0xfa, 0x32, 0xec, 0x1f, 0xc8, 0xf1,
+	0x4a, 0xa2, 0xaf, 0xe9, 0x13, 0x5f, 0xf3, 0x92, 0x2f, 0x3d, 0xfa, 0x76, 0xe1, 0xd3, 0x22, 0x98,
+	0xe5, 0xe8, 0x58, 0x7a, 0x57, 0x02, 0xef, 0x89, 0x00, 0x1d, 0x2f, 0x13, 0xf6, 0x0b, 0xec, 0xa8,
+	0x8c, 0x92, 0x39, 0xc4, 0xa5, 0xbd, 0xe6, 0xa0, 0x59, 0x58, 0x56, 0xf1, 0xfc, 0x03, 0xc9, 0xfe,
+	0x42, 0x23, 0xcb, 0xa3, 0x08, 0xb3, 0x0c, 0x33, 0xc7, 0xd4, 0xca, 0xf6, 0xd9, 0xe5, 0xfc, 0x23,
+	0xcf, 0x7e, 0x83, 0xfd, 0x10, 0xc4, 0xb3, 0xbc, 0x38, 0x95, 0x5e, 0xd2, 0x1e, 0x68, 0xef, 0x7b,
+	0xd5, 0x65, 0xa4, 0x4e, 0x1b, 0x2a, 0xd2, 0x5b, 0xc7, 0x86, 0x5c, 0xb0, 0xef, 0x92, 0x40, 0x66,
+	0x8f, 0x42, 0x15, 0x79, 0xe2, 0xe4, 0x1e, 0x97, 0x95, 0xa6, 0x04, 0x7f, 0x7e, 0x40, 0xfb, 0xac,
+	0x26, 0x56, 0x07, 0x7a, 0x9b, 0xab, 0x8e, 0xc1, 0x00, 0x6a, 0xe5, 0x83, 0x76, 0xc8, 0xd0, 0x5d,
+	0x6f, 0xb9, 0xb1, 0xd9, 0x72, 0x63, 0xbd, 0xe3, 0x64, 0xb3, 0xe3, 0xe4, 0x75, 0xc7, 0xc9, 0xf3,
+	0x9e, 0x1b, 0x9b, 0x3d, 0x37, 0x5e, 0xf6, 0xdc, 0x08, 0x6b, 0xfa, 0xa7, 0xfc, 0x7f, 0x0b, 0x00,
+	0x00, 0xff, 0xff, 0xe2, 0xa2, 0x5b, 0x20, 0x4f, 0x02, 0x00, 0x00,
 }
 
 func (m *CreateBucket) Marshal() (dAtA []byte, err error) {
@@ -725,7 +605,7 @@ func (m *Compact) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *InternalRequest) Marshal() (dAtA []byte, err error) {
+func (m *Snapshot) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -735,139 +615,18 @@ func (m *InternalRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *InternalRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *Snapshot) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *InternalRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Snapshot) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Request != nil {
-		{
-			size := m.Request.Size()
-			i -= size
-			if _, err := m.Request.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-		}
-	}
-	if m.ID != 0 {
-		i = encodeVarintKv(dAtA, i, uint64(m.ID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *InternalRequest_CreateBucket) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InternalRequest_CreateBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.CreateBucket != nil {
-		{
-			size, err := m.CreateBucket.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintKv(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	return len(dAtA) - i, nil
-}
-func (m *InternalRequest_DeleteBucket) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InternalRequest_DeleteBucket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.DeleteBucket != nil {
-		{
-			size, err := m.DeleteBucket.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintKv(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	return len(dAtA) - i, nil
-}
-func (m *InternalRequest_Txn) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InternalRequest_Txn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.Txn != nil {
-		{
-			size, err := m.Txn.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintKv(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x22
-	}
-	return len(dAtA) - i, nil
-}
-func (m *InternalRequest_Compact) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InternalRequest_Compact) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	if m.Compact != nil {
-		{
-			size, err := m.Compact.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintKv(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x2a
-	}
-	return len(dAtA) - i, nil
-}
-func (m *InternalResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *InternalResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *InternalResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ID != 0 {
-		i = encodeVarintKv(dAtA, i, uint64(m.ID))
+	if m.Index != 0 {
+		i = encodeVarintKv(dAtA, i, uint64(m.Index))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -994,77 +753,14 @@ func (m *Compact) Size() (n int) {
 	return n
 }
 
-func (m *InternalRequest) Size() (n int) {
+func (m *Snapshot) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.ID != 0 {
-		n += 1 + sovKv(uint64(m.ID))
-	}
-	if m.Request != nil {
-		n += m.Request.Size()
-	}
-	return n
-}
-
-func (m *InternalRequest_CreateBucket) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.CreateBucket != nil {
-		l = m.CreateBucket.Size()
-		n += 1 + l + sovKv(uint64(l))
-	}
-	return n
-}
-func (m *InternalRequest_DeleteBucket) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.DeleteBucket != nil {
-		l = m.DeleteBucket.Size()
-		n += 1 + l + sovKv(uint64(l))
-	}
-	return n
-}
-func (m *InternalRequest_Txn) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Txn != nil {
-		l = m.Txn.Size()
-		n += 1 + l + sovKv(uint64(l))
-	}
-	return n
-}
-func (m *InternalRequest_Compact) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Compact != nil {
-		l = m.Compact.Size()
-		n += 1 + l + sovKv(uint64(l))
-	}
-	return n
-}
-func (m *InternalResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ID != 0 {
-		n += 1 + sovKv(uint64(m.ID))
+	if m.Index != 0 {
+		n += 1 + sovKv(uint64(m.Index))
 	}
 	return n
 }
@@ -1772,7 +1468,7 @@ func (m *Compact) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *InternalRequest) Unmarshal(dAtA []byte) error {
+func (m *Snapshot) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1795,17 +1491,17 @@ func (m *InternalRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: InternalRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: Snapshot: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: InternalRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Snapshot: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
 			}
-			m.ID = 0
+			m.Index = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowKv
@@ -1815,216 +1511,7 @@ func (m *InternalRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreateBucket", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowKv
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthKv
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthKv
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &CreateBucket{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.Request = &InternalRequest_CreateBucket{v}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DeleteBucket", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowKv
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthKv
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthKv
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &DeleteBucket{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.Request = &InternalRequest_DeleteBucket{v}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Txn", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowKv
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthKv
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthKv
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &Txn{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.Request = &InternalRequest_Txn{v}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Compact", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowKv
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthKv
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthKv
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			v := &Compact{}
-			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			m.Request = &InternalRequest_Compact{v}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipKv(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthKv
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *InternalResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowKv
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: InternalResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: InternalResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
-			}
-			m.ID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowKv
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ID |= uint64(b&0x7F) << shift
+				m.Index |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

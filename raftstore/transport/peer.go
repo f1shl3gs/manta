@@ -39,10 +39,11 @@ type peer struct {
 	activeSince time.Time
 }
 
-func newPeer(id uint64, addr string) (*peer, error) {
+func newPeer(id uint64, addr string, logger *zap.Logger) (*peer, error) {
 	peer := &peer{
 		id:     id,
 		addr:   addr,
+		logger: logger,
 		msgCh:  make(chan raftpb.Message, 64),
 		stopCh: make(chan struct{}),
 	}

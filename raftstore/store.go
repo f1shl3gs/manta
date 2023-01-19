@@ -3,23 +3,24 @@ package raftstore
 import (
 	"context"
 	"encoding/binary"
-	"errors"
-	"fmt"
+	"path/filepath"
+	"strconv"
+	"sync"
+	"sync/atomic"
+	"time"
+
 	"github.com/f1shl3gs/manta/kv"
-    "github.com/f1shl3gs/manta/pkg/fsutil"
-    "github.com/f1shl3gs/manta/raftstore/membership"
+	"github.com/f1shl3gs/manta/pkg/fsutil"
 	"github.com/f1shl3gs/manta/raftstore/pb"
 	"github.com/f1shl3gs/manta/raftstore/transport"
 	"github.com/f1shl3gs/manta/raftstore/wal"
+
+	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	bolt "go.etcd.io/bbolt"
 	"go.etcd.io/raft/v3"
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
-	"path/filepath"
-	"sync"
-	"sync/atomic"
-	"time"
 )
 
 const (
@@ -27,7 +28,7 @@ const (
 	// larger than the potential max db size can prevent writer from blocking reader.
 	//
 	// This only works for linux
-	initialMmapSize = 1024 * 1024 * 1024 // 1024 MiB
+	initialMmapSize = 2 * 1024 * 1024 * 1024 // 2 GiB
 
 	// max number of in-flight snapshot messages server allows to have
 	// This number is more than enough for most clusters with 5 machines.
@@ -42,19 +43,17 @@ const (
 )
 
 var (
-	metaBucket       = []byte("__meta")
 	membershipBucket = []byte("__membership")
-
-	consistentIndexKey = []byte("consistentIndex")
 )
 
 type Store struct {
-	logger  *zap.Logger
-	readyCh chan struct{}
-	db      atomic.Pointer[bolt.DB]
-	cluster *membership.Cluster
-	wait    *wait
-	idGen   *idGenerator
+	self      pb.Member
+	logger    *zap.Logger
+	readyCh   chan struct{}
+	db        atomic.Pointer[bolt.DB]
+	wait      *wait[error]
+	idGen     *idGenerator
+	confState atomic.Pointer[raftpb.ConfState]
 
 	// read routine notifies server that it waits for reading by
 	// sending an emtpy struct to readWaitCh
@@ -104,10 +103,10 @@ type Store struct {
 func New(cf *Config, logger *zap.Logger) (*Store, error) {
 	logger = logger.Named("raftstore")
 
-    err := fsutil.TouchDirAll(cf.DataDir)
-    if err != nil {
-        return nil, err
-    }
+	err := fsutil.TouchDirAll(cf.DataDir)
+	if err != nil {
+		return nil, err
+	}
 
 	ds, err := wal.Init(cf.DataDir, logger)
 	if err != nil {
@@ -116,7 +115,7 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 
 	store := &Store{
 		logger:        logger,
-		wait:          newWait(),
+		wait:          newWait[error](),
 		readWaitCh:    make(chan struct{}, 1),
 		leaderChanged: newNotifier(),
 		tickMu:        new(sync.Mutex),
@@ -134,6 +133,7 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		applyWait:         newWaitTime(),
 		firstCommitInTerm: newNotifier(),
 		readNotifier:      newErrNotifier(),
+		transport:         transport.New(logger),
 
 		leaderChanges: prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: "manta",
@@ -173,10 +173,10 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		store.db.Store(db)
 	}
 
-	// TODO: what if there is multiple term in ds
-	term, index, err := store.consistentIndex()
+	appliedIndex, err := ds.Checkpoint()
 	if err != nil {
-		panic("read consistent index failed")
+		logger.Fatal("read checkpoint failed",
+			zap.Error(err))
 	}
 
 	rcf := &raft.Config{
@@ -190,7 +190,7 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		// In case this is a new Raft log, first would be 1, and therefore
 		// Applied would be zero, hence meeting the condition by the library
 		// that Applied should only be set during a restart.
-		Applied: index,
+		Applied: appliedIndex,
 
 		// Storage is the storage for raft. it is used to store wal and snapshots.
 		Storage: ds,
@@ -214,10 +214,11 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 	}
 
 	// if node never start before, we don't need to replay
-	if term == 0 && index == 0 {
+	if appliedIndex == 0 {
 		logger.Info("start a brand new raft cluster")
 
-		rcf.ID = membership.GenerateID(cf.Listen)
+		rcf.ID = generateID(cf.Listen)
+		ds.SetNodeID(rcf.ID)
 		peers := []raft.Peer{
 			{
 				ID:      rcf.ID,
@@ -225,37 +226,90 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 			},
 		}
 
-		trans := transport.New(logger)
 		for _, peer := range peers {
-			err = trans.AddPeer(peer.ID, unsafeBytesToString(peer.Context))
+			err = store.transport.AddPeer(peer.ID, unsafeBytesToString(peer.Context))
 			if err != nil {
 				return nil, err
 			}
 		}
 
+		store.self.ID = rcf.ID
+		store.self.Addr = cf.Listen
 		store.idGen = newGenerator(uint16(rcf.ID), time.Now())
-		store.transport = trans
 		store.raftNode = raft.StartNode(rcf, peers)
 		return store, nil
 	}
 
 	// restart raft node
+	rcf.ID = ds.NodeID()
+	err = store.db.Load().View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(membershipBucket)
 
-	// replaying unapplied entry to backend and restore cluster from it
-	lastIndex, err := ds.LastIndex()
+		return b.ForEach(func(k, v []byte) error {
+			id := binary.BigEndian.Uint64(k)
+			addr := unsafeBytesToString(v)
+
+			return store.transport.AddPeer(id, addr)
+		})
+	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Errorf("load membership from storage failed, %s", err)
 	}
 
-	entries, err := ds.Entries(index, lastIndex, lastIndex-index)
+	logger.Info("restart raft node")
+
+	sp, err := store.raftStorage.Snapshot()
 	if err != nil {
-		return nil, err
+		logger.Fatal("unable to get existing snapshot",
+			zap.Error(err))
 	}
 
-	for _, ent := range entries {
-		if ent.Index <= index {
-			panic("replying entry smaller than current backend")
-		}
+	if !raft.IsEmptySnap(sp) {
+		// It is important that we pick up the conf state here.
+		// Otherwise, we'll lose the store conf state, and it
+		// would get overwritten with an empty state when a new
+		// snapshot is taken. This causes a node to just hang
+		// on restart, because it finds a zero-member Raft group.
+
+		// TODO: set confState
+	}
+
+	store.appliedIndex.Store(appliedIndex)
+	store.self.ID = rcf.ID
+	store.self.Addr = cf.Listen
+	store.idGen = newGenerator(uint16(rcf.ID), time.Now())
+	store.raftNode = raft.RestartNode(rcf)
+
+	/*
+		Note: without this restart will hanging forever, and i notice logs from raftexample when restart it
+
+			raft2023/01/19 04:24:57 INFO: 1 switched to configuration voters=()
+			raft2023/01/19 04:24:57 INFO: 1 became follower at term 3
+			raft2023/01/19 04:24:57 INFO: newRaft 1 [peers: [], term: 3, commit: 1, applied: 0, lastindex: 3, lastterm: 3]
+			raft2023/01/19 04:24:57 INFO: 1 switched to configuration voters=(1)
+			raft2023/01/19 04:24:58 INFO: 1 is starting a new election at term 3
+			raft2023/01/19 04:24:58 INFO: 1 became candidate at term 4
+			raft2023/01/19 04:24:58 INFO: 1 received MsgVoteResp from 1 at term 4
+			raft2023/01/19 04:24:58 INFO: 1 became leader at term 4
+			raft2023/01/19 04:24:58 INFO: raft.node: 1 elected leader 1 at term 4
+
+		raft.StartNode has no voters at first,
+
+			raft2023/01/19 04:24:57 INFO: 1 switched to configuration voters=()
+
+		after it call raft.NewRawNode, rawNode.Bootstrap will be called which
+		call applyConfChange, then we can see that there we have one voter popout
+		and finally cluster can elect a leader.
+
+			raft2023/01/19 04:24:57 INFO: 1 switched to configuration voters=(1)
+
+		But we use disk-based state machine, so we don't need to replay WAL like raftexample does,
+		therefore the voters part will be empty and cluster can never elect a leader.
+	*/
+	for id, peer := range store.transport.Peers() {
+		cc := raftpb.ConfChange{Type: raftpb.ConfChangeAddNode, NodeID: id, Context: unsafeStringToBytes(peer)}
+		cs := store.raftNode.ApplyConfChange(cc)
+		store.confState.Store(cs)
 	}
 
 	return store, nil
@@ -263,11 +317,11 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 
 func (s *Store) Collectors() []prometheus.Collector {
 	return []prometheus.Collector{
-        s.leaderChanges,
-        s.hasLeader,
-        s.isLeader,
-        s.slowReadInex,
-        s.readIndexFailed,
+		s.leaderChanges,
+		s.hasLeader,
+		s.isLeader,
+		s.slowReadInex,
+		s.readIndexFailed,
 	}
 }
 
@@ -290,10 +344,6 @@ func openDB(cf *Config) (*bolt.DB, error) {
 		return nil, err
 	}
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists(metaBucket)
-		return err
-	})
 	if err != nil {
 		db.Close()
 		return nil, err
@@ -302,27 +352,26 @@ func openDB(cf *Config) (*bolt.DB, error) {
 	return db, nil
 }
 
-func (s *Store) consistentIndex() (term, index uint64, err error) {
-	err = s.db.Load().View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(metaBucket)
-		value := b.Get(consistentIndexKey)
+func (s *Store) propose(ctx context.Context, req pb.InternalRequest) error {
+	req.ID = s.idGen.Next()
+	data, err := req.Marshal()
+	if err != nil {
+		return err
+	}
 
-		// first setup
-		if len(value) == 0 {
-			return nil
-		}
+	waitCh := s.wait.Register(req.ID)
+	if err = s.raftNode.Propose(ctx, data); err != nil {
+		return err
+	}
 
-		if len(value) != 16 {
-			term = binary.BigEndian.Uint64(value)
-			index = binary.BigEndian.Uint64(value[8:])
-		} else {
-			panic(fmt.Sprintf("consistent value is not 16 bytes"))
-		}
+	// TODO: retry !?
 
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-waitCh:
 		return nil
-	})
-
-	return
+	}
 }
 
 func (s *Store) Run(ctx context.Context) {
@@ -331,11 +380,25 @@ func (s *Store) Run(ctx context.Context) {
 	go s.startRaftLoop()
 	go s.syncLoop(ctx)
 	go s.linearizableReadLoop(ctx)
+	go s.publish(ctx)
+	go s.adjustTicks()
+	go s.checkSnapshot(ctx)
+
+	defer func() {
+		s.stop()
+
+		s.raftStorage.SetUint(wal.CheckpointIndex, s.appliedIndex.Load())
+		_ = s.raftStorage.Sync()
+	}()
 
 	// apply loop
 	for {
 		select {
 		case <-ctx.Done():
+			return
+
+		// we need this for now, may be remove this later!?
+		case <-s.done:
 			return
 
 		case apply := <-s.applyCh:
@@ -375,6 +438,45 @@ func (s *Store) Run(ctx context.Context) {
 	}
 }
 
+// publish registers server information into the cluster.
+// The function keeps attempting to register until it succeeds,
+// or its server is stopped.
+func (s *Store) publish(ctx context.Context) {
+	req := pb.InternalRequest{
+		Txn: &pb.Txn{
+			Successes: []*pb.Operation{
+				{
+					Type:   pb.Put,
+					Bucket: membershipBucket,
+					Key:    uint64ToBigEndianBytes(s.self.ID),
+					Value:  unsafeStringToBytes(s.self.Addr),
+				},
+			},
+		},
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		sCtx, cancel := context.WithTimeout(ctx, s.reqTimeout())
+		err := s.propose(sCtx, req)
+		cancel()
+		if err == nil {
+			close(s.readyCh)
+			s.logger.Info("published local member to cluster through raft")
+
+			return
+		} else {
+			s.logger.Warn("failed to publish local member to cluster through raft")
+		}
+
+	}
+}
+
 func (s *Store) apply(
 	entries []raftpb.Entry,
 ) (appliedt, appliedi uint64) {
@@ -399,7 +501,6 @@ func (s *Store) apply(
 					zap.Error(err))
 			}
 
-			s.raftNode.ApplyConfChange(cc)
 			s.applyConfChange(&cc)
 
 			s.appliedIndex.Store(ent.Index)
@@ -416,6 +517,13 @@ func (s *Store) apply(
 }
 
 func (s *Store) applyNormal(ent *raftpb.Entry) {
+	// raft state machine may generate noop entry when leader confirmation.
+	// skip it in advance to avoid some potential bug in the future
+	if len(ent.Data) == 0 {
+		s.firstCommitInTerm.notify()
+		return
+	}
+
 	var req pb.InternalRequest
 
 	err := req.Unmarshal(ent.Data)
@@ -425,22 +533,38 @@ func (s *Store) applyNormal(ent *raftpb.Entry) {
 		return
 	}
 
-	err = s.db.Load().Update(func(tx *bolt.Tx) error {
-		if txn := req.GetTxn(); txn != nil {
-			return applyTxn(tx, txn)
+	if snap := req.Snapshot; snap != nil {
+		// do snapshot and clean wals
+		err = s.raftStorage.CreateSnapshot(snap.Index, s.confState.Load(), nil)
+		if err != nil {
+			s.logger.Fatal("create snapshot failed",
+				zap.Uint64("checkpoint", snap.Index),
+				zap.Error(err))
+		}
+	} else {
+		db := s.db.Load()
+		if db == nil {
+			s.wait.Trigger(req.ID, ErrStopped)
+			return
 		}
 
-		if cb := req.GetCreateBucket(); cb != nil {
-			_, err = tx.CreateBucket(cb.Name)
-			return err
-		}
+		err = s.db.Load().Update(func(tx *bolt.Tx) error {
+			if txn := req.Txn; txn != nil {
+				return applyTxn(tx, txn)
+			}
 
-		if d := req.GetDeleteBucket(); d != nil {
-			return tx.DeleteBucket(d.Name)
-		}
+			if cb := req.CreateBucket; cb != nil {
+				_, err = tx.CreateBucket(cb.Name)
+				return err
+			}
 
-		return errors.New("empty internal request")
-	})
+			if d := req.DeleteBucket; d != nil {
+				return tx.DeleteBucket(d.Name)
+			}
+
+			return errors.New("empty internal request")
+		})
+	}
 
 	s.wait.Trigger(req.ID, err)
 }
@@ -452,13 +576,16 @@ func (s *Store) applyConfChange(cc *raftpb.ConfChange) {
 			return err
 		}
 
-		key := make([]byte, 8)
-		binary.BigEndian.PutUint64(key, cc.ID)
-
+		key := uint64ToBigEndianBytes(cc.NodeID)
 		switch cc.Type {
 		case raftpb.ConfChangeAddNode, raftpb.ConfChangeAddLearnerNode, raftpb.ConfChangeUpdateNode:
+			s.logger.Info("add/update node",
+				zap.String("id", strconv.FormatUint(cc.NodeID, 16)),
+				zap.ByteString("addr", cc.Context))
 			return b.Put(key, cc.Context)
 		case raftpb.ConfChangeRemoveNode:
+			s.logger.Info("remove node",
+				zap.String("id", strconv.FormatUint(cc.NodeID, 16)))
 			return b.Delete(key)
 
 		default:
@@ -466,8 +593,12 @@ func (s *Store) applyConfChange(cc *raftpb.ConfChange) {
 		}
 	})
 	if err != nil {
-		s.logger.Fatal("save ")
+		s.logger.Fatal("apply conf change failed",
+			zap.Error(err))
 	}
+
+	cs := s.raftNode.ApplyConfChange(cc)
+	s.confState.Store(cs)
 }
 
 func applyTxn(tx *bolt.Tx, txn *pb.Txn) error {
@@ -507,12 +638,17 @@ func (s *Store) syncLoop(ctx context.Context) {
 
 func (s *Store) sync() {
 	start := time.Now()
-	err := s.db.Load().Sync()
+	db := s.db.Load()
+	if db == nil {
+		return
+	}
+
+	err := db.Sync()
 	elapsed := time.Since(start)
 	if err != nil {
 		s.logger.Fatal("sync boltdb failed",
 			zap.Error(err))
 	}
 
-	s.logger.Info("sync done", zap.Duration("elapsed", elapsed))
+	s.logger.Debug("sync done", zap.Duration("elapsed", elapsed))
 }

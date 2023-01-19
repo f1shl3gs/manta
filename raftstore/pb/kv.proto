@@ -52,18 +52,6 @@ message Compact {
   uint64 version = 1;
 }
 
-message InternalRequest {
-  uint64 ID = 1;
-
-  oneof request {
-    CreateBucket create_bucket = 2;
-    DeleteBucket delete_bucket = 3;
-
-    Txn txn = 4;
-    Compact compact = 5;
-  }
-}
-
-message InternalResponse {
-  uint64 ID = 1;
+message Snapshot {
+  uint64 index = 1;
 }

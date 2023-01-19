@@ -2,13 +2,14 @@ package raftstore
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
 
 func TestWait(t *testing.T) {
 	const eid = 1
-	wt := newWait()
+	wt := newWait[string]()
 	ch := wt.Register(eid)
 	wt.Trigger(eid, "foo")
 	v := <-ch
@@ -16,14 +17,12 @@ func TestWait(t *testing.T) {
 		t.Errorf("<-ch = %v, want %v", g, w)
 	}
 
-	if g := <-ch; g != nil {
-		t.Errorf("unexpected non-nil value: %v (%T)", g, g)
-	}
+	assert.Equal(t, "foo", <-ch)
 }
 
 func TestRegisterDupPanic(t *testing.T) {
 	const eid = 1
-	wt := newWait()
+	wt := newWait[string]()
 	ch1 := wt.Register(eid)
 
 	panicC := make(chan struct{}, 1)
@@ -49,23 +48,20 @@ func TestRegisterDupPanic(t *testing.T) {
 
 func TestTriggerDupSuppression(t *testing.T) {
 	const eid = 1
-	wt := newWait()
+	wt := newWait[string]()
 	ch := wt.Register(eid)
 	wt.Trigger(eid, "foo")
 	wt.Trigger(eid, "bar")
 
 	v := <-ch
-	if g, w := fmt.Sprintf("%v (%T)", v, v), "foo (string)"; g != w {
-		t.Errorf("<-ch = %v, want %v", g, w)
-	}
+	assert.Equal(t, "foo", v)
 
-	if g := <-ch; g != nil {
-		t.Errorf("unexpected non-nil value: %v (%T)", g, g)
-	}
+	_, ok := <-ch
+	assert.False(t, ok)
 }
 
 func TestIsRegistered(t *testing.T) {
-	wt := newWait()
+	wt := newWait[string]()
 
 	wt.Register(0)
 	wt.Register(1)

@@ -81,7 +81,7 @@ func (t *Transporter) AddPeer(id uint64, addr string) error {
 		zap.String("id", strconv.FormatUint(id, 16)),
 		zap.String("addr", addr))
 
-	p, err := newPeer(id, addr)
+	p, err := newPeer(id, addr, t.logger)
 	if err != nil {
 		return err
 	}
@@ -107,4 +107,24 @@ func (t *Transporter) RemovePeer(id uint64) error {
 	delete(t.peers, id)
 
 	return nil
+}
+
+func (t *Transporter) Peers() map[uint64]string {
+	m := make(map[uint64]string)
+
+	t.mtx.RLock()
+	for id, p := range t.peers {
+		m[id] = p.addr
+	}
+	t.mtx.RUnlock()
+
+	return m
+}
+
+func (t *Transporter) Removed(id uint64) bool {
+	t.mtx.RLock()
+	_, ok := t.peers[id]
+	t.mtx.RUnlock()
+
+	return !ok
 }

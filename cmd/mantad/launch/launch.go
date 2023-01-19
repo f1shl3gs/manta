@@ -3,6 +3,8 @@ package launch
 import (
 	"context"
 	"github.com/f1shl3gs/manta/raftstore"
+	"github.com/f1shl3gs/manta/raftstore/pb"
+	"google.golang.org/grpc"
 	"math"
 	"net"
 	"net/http"
@@ -167,14 +169,20 @@ func (l *Launcher) run() error {
 	}
 
 	muxer := cmux.New(listener)
+	muxer.HandleError(func(err error) bool {
+		logger.Error("cmux handle failed",
+			zap.Error(err))
+		return true
+	})
 
 	// starting services
 	ctx := signals.WithStandardSignals(context.Background())
 	group, ctx := errgroup.WithContext(ctx)
 
 	var (
-		kvStore kv.SchemaStore
-		flusher httpservice.Flusher
+		kvStore        kv.SchemaStore
+		flusher        httpservice.Flusher
+		clusterService raftstore.ClusterService
 	)
 	switch l.Store {
 	case "bolt":
@@ -199,13 +207,22 @@ func (l *Launcher) run() error {
 		}
 
 		kvStore = rs
+		clusterService = rs
 		prometheus.MustRegister(rs.Collectors()...)
+
+		group.Go(func() error {
+			grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+			svr := grpc.NewServer()
+			pb.RegisterRaftServer(svr, rs)
+
+			logger.Info("start grpc service for raftstore")
+			return svr.Serve(grpcListener)
+		})
 
 		group.Go(func() error {
 			rs.Run(ctx)
 			return nil
 		})
-
 	default:
 		return errors.Errorf("unknown store type %q", l.Store)
 	}
@@ -242,9 +259,9 @@ func (l *Launcher) run() error {
 
 			start := time.Now()
 			if err = mtsdb.Flush(); err != nil {
-				logger.Error("Flush storage failed", zap.Error(err))
+				logger.Error("Flush tsdb failed", zap.Error(err))
 			} else {
-				logger.Error("Flush storage success", zap.Duration("duration", time.Since(start)))
+				logger.Error("Flush tsdb success", zap.Duration("duration", time.Since(start)))
 			}
 
 			if err = mtsdb.Close(); err != nil {
@@ -308,8 +325,9 @@ func (l *Launcher) run() error {
 
 	{
 		// grpc service
-		// grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+		if l.Store == "raftstore" {
 
+		}
 	}
 
 	{
@@ -337,6 +355,8 @@ func (l *Launcher) run() error {
 
 			TenantStorage:         tenantStorage,
 			TenantTargetRetriever: targetRetrievers,
+
+			ClusterService: clusterService,
 		})
 
 		group.Go(func() error {
