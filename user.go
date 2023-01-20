@@ -44,19 +44,19 @@ func (upd *UserUpdate) Apply(user *User) {
 type UserService interface {
 	FindUserByID(ctx context.Context, id ID) (*User, error)
 
-    // FindUser return the first user that match the filter
+	// FindUser return the first user that match the filter
 	FindUser(ctx context.Context, filter UserFilter) (*User, error)
 
-    // FindUsers return a list of users and the total count of the matching user
+	// FindUsers return a list of users and the total count of the matching user
 	FindUsers(ctx context.Context, filter UserFilter, opts ...FindOptions) ([]*User, error)
 
 	// CreateUser create a new user and set user.id with identifier
 	CreateUser(ctx context.Context, user *User) error
 
-    // UpdateUser a single user with changeset
+	// UpdateUser a single user with changeset
 	// Return the new User after update
 	UpdateUser(ctx context.Context, id ID, upd UserUpdate) (*User, error)
 
-    // DeleteUser a user by ID
+	// DeleteUser a user by ID
 	DeleteUser(ctx context.Context, id ID) error
 }

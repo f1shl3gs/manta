@@ -14,15 +14,15 @@ type OnBoardingRequest struct {
 
 func (r *OnBoardingRequest) Validate() error {
 	if r.Username == "" {
-        return &Error{
-            Code: EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Msg:  "username cannot be empty",
 		}
 	}
 
 	if r.Password == "" {
-        return &Error{
-            Code: EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Msg:  "password cannot be empty",
 		}
 	}

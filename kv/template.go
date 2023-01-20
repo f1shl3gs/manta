@@ -16,8 +16,8 @@ var (
 )
 
 func decodeResourceErr(index int, typ manta.ResourceType, err error) *manta.Error {
-    return &manta.Error{
-        Code: manta.EInvalid,
+	return &manta.Error{
+		Code: manta.EInvalid,
 		Msg:  fmt.Sprintf("resource[%d] cannot be decoded into %s", index, typ),
 		Err:  err,
 	}
@@ -112,8 +112,8 @@ func (s *Service) Install(ctx context.Context, create manta.TemplateCreate) (*ma
 				})
 
 			default:
-                return &manta.Error{
-                Code: manta.EInvalid,
+				return &manta.Error{
+					Code: manta.EInvalid,
 					Msg:  fmt.Sprintf("unknown resource type %s at resources[%d]", res.Type, i),
 				}
 			}
@@ -214,8 +214,8 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 				}
 
 			default:
-                return &manta.Error{
-                Code: manta.EInvalid,
+				return &manta.Error{
+					Code: manta.EInvalid,
 					Msg:  fmt.Sprintf("unsupport resource type %s, name: %s", res.Type, res.Name),
 				}
 			}

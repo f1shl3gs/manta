@@ -57,7 +57,7 @@ func (s *Session) Kind() string {
 func (s *Session) PermissionSet() (PermissionSet, error) {
 	if s.Expired() {
 		return nil, &Error{
-            Code: EForbidden,
+			Code: EForbidden,
 			Msg:  "session has expired",
 		}
 	}

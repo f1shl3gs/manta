@@ -211,6 +211,7 @@ func (s *Service) RenewSession(ctx context.Context, id manta.ID, expiration time
 		}
 
 		session.ExpiresAt = expiration
+		session.LastSeen = time.Now()
 
 		return s.putSession(ctx, tx, session)
 	})

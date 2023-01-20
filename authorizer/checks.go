@@ -41,11 +41,11 @@ func (s *CheckService) FindChecks(ctx context.Context, filter manta.CheckFilter,
 	filtered := checks[:0]
 	for _, c := range checks {
 		_, _, err := authorizeRead(ctx, manta.ChecksResourceType, c.ID, c.OrgID)
-        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
+		if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, 0, err
 		}
 
-        if manta.ErrorCode(err) == manta.EUnauthorized {
+		if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

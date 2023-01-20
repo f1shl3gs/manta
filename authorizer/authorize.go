@@ -15,8 +15,8 @@ func isAllowedAll(authorizer manta.Authorizer, permissions []manta.Permission) e
 
 	for _, p := range permissions {
 		if !pset.Allowed(p) {
-            return &manta.Error{
-                Code: manta.EUnauthorized,
+			return &manta.Error{
+				Code: manta.EUnauthorized,
 				Msg:  fmt.Sprintf("%s is unauthorized", p),
 			}
 		}

@@ -7,8 +7,8 @@ import (
 )
 
 var (
-    ErrNoResource = &Error{
-        Code: EUnprocessableEntity,
+	ErrNoResource = &Error{
+		Code: EUnprocessableEntity,
 		Msg:  "no resource found in template",
 	}
 )

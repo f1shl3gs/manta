@@ -21,13 +21,13 @@ func ErrorsEqual(t *testing.T, actual, expected error) {
 		t.Errorf("expected error %s but received nil", expected.Error())
 	}
 
-    if manta.ErrorCode(expected) != manta.ErrorCode(actual) {
+	if manta.ErrorCode(expected) != manta.ErrorCode(actual) {
 		t.Logf("\nexpected: %v\nactual: %v\n\n", expected, actual)
-        t.Errorf("expected error code %q but received %q", manta.ErrorCode(expected), manta.ErrorCode(actual))
+		t.Errorf("expected error code %q but received %q", manta.ErrorCode(expected), manta.ErrorCode(actual))
 	}
 
-    if manta.ErrorMessage(expected) != manta.ErrorMessage(actual) {
+	if manta.ErrorMessage(expected) != manta.ErrorMessage(actual) {
 		t.Logf("\nexpected: %v\nactual: %v\n\n", expected, actual)
-        t.Errorf("expected error message %q but received %q", manta.ErrorMessage(expected), manta.ErrorMessage(actual))
+		t.Errorf("expected error message %q but received %q", manta.ErrorMessage(expected), manta.ErrorMessage(actual))
 	}
 }

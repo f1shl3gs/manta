@@ -40,11 +40,11 @@ func (s *DashboardService) FindDashboards(ctx context.Context, filter manta.Dash
 	filtered := dashboards[:0]
 	for _, d := range dashboards {
 		_, _, err := authorizeRead(ctx, manta.DashboardsResourceType, d.ID, d.OrgID)
-        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
+		if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, err
 		}
 
-        if manta.ErrorCode(err) == manta.EUnauthorized {
+		if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

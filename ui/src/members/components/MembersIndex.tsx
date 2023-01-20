@@ -1,6 +1,11 @@
+// Libraries
 import React, {FunctionComponent} from 'react'
-import MemberList from 'src/members/MemberList'
+
+// Components
+import MemberList from 'src/members/components/MemberList'
 import GetResources from 'src/resources/components/GetResources'
+
+// Types
 import {ResourceType} from 'src/types/resources'
 
 const MembersIndex: FunctionComponent = () => {

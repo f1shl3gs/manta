@@ -83,44 +83,44 @@ func (h HTTP) Valid() error {
 	}
 
 	if h.URL == "" {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "http endpoint URL is empty",
 		}
 	}
 
 	if _, err := url.Parse(h.URL); err != nil {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "http endpoint URL is invalid",
 			Err:  err,
 		}
 	}
 
 	if !validMethods[h.Method] {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid http method",
 		}
 	}
 
 	if !validAuthMethods[h.AuthMethod] {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid http auth method",
 		}
 	}
 
 	if h.AuthMethod == "basic" && (h.Username.Key == "" || h.Password.Key == "") {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid http username/password for basic auth",
 		}
 	}
 
 	if h.AuthMethod == "baerer" && h.Token.Key == "" {
-        return &manta.Error{
-            Code: manta.EInvalid,
+		return &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid http token for bearer auth",
 		}
 	}
@@ -155,7 +155,7 @@ func (h HTTP) ParseResponse(resp *http.Response) error {
 			return err
 		}
 
-        return &manta.Error{
+		return &manta.Error{
 			Msg: string(body),
 		}
 	}

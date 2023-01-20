@@ -17,15 +17,15 @@ var (
 	TaskOwnerIndexBucket = []byte("taskownerindex")
 
 	// Errors
-    ErrInvalidTaskID = &manta.Error{
-        Code: manta.EInvalid,
+	ErrInvalidTaskID = &manta.Error{
+		Code: manta.EInvalid,
 		Msg:  "invalid task id",
 	}
 )
 
 func ErrInternalTaskService(err error) *manta.Error {
-    return &manta.Error{
-        Code: manta.EInternal,
+	return &manta.Error{
+		Code: manta.EInternal,
 		Msg:  "unexpected error in tasks",
 		Err:  err,
 	}

@@ -12,9 +12,9 @@ var (
 	// ErrAuthorizerNotSupported notes that the provided authorizer is not supported for the action you are trying to perform.
 	ErrAuthorizerNotSupported = errors.New("your authorizer is not supported, please use *platform.Authorization as authorizer")
 	// ErrInvalidResourceType notes that the provided resource is invalid
-    ErrInvalidResourceType = errors.New("unknown resource type for permission")
+	ErrInvalidResourceType = errors.New("unknown resource type for permission")
 	// ErrInvalidAction notes that the provided action is invalid
-    ErrInvalidAction = errors.New("unknown action for permission")
+	ErrInvalidAction = errors.New("unknown action for permission")
 )
 
 // ResourceType is an enum defining all resource types that have a permission model in platform

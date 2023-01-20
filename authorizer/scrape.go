@@ -40,11 +40,11 @@ func (s *ScrapeTargetService) FindScrapeTargets(ctx context.Context, filter mant
 	filtered := ss[:0]
 	for _, st := range ss {
 		_, _, err := authorizeRead(ctx, manta.ScrapesResourceType, st.ID, st.OrgID)
-        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
+		if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, err
 		}
 
-        if manta.ErrorCode(err) == manta.EUnauthorized {
+		if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

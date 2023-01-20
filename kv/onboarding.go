@@ -8,8 +8,8 @@ import (
 
 var (
 	// ErrOnboardingNotAllowed occurs when request to onboard comes in and we are not allowing this request
-    ErrOnboardingNotAllowed = &manta.Error{
-        Code: manta.EConflict,
+	ErrOnboardingNotAllowed = &manta.Error{
+		Code: manta.EConflict,
 		Msg:  "onboarding has already been completed",
 	}
 )
