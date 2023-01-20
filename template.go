@@ -4,13 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
-	ErrNoResource = &errors.Error{
-		Code: errors.EUnprocessableEntity,
+    ErrNoResource = &Error{
+        Code: EUnprocessableEntity,
 		Msg:  "no resource found in template",
 	}
 )

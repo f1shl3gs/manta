@@ -3,8 +3,6 @@ package manta
 import (
 	"context"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 type ScrapeTarget struct {
@@ -59,7 +57,7 @@ func (upd *ScrapeTargetUpdate) Apply(s *ScrapeTarget) {
 
 func (m *ScrapeTarget) Validate() error {
 	if m.Name == "" {
-		return &errors.Error{Code: errors.EInvalid, Msg: "Name is required"}
+		return &Error{Code: EInvalid, Msg: "Name is required"}
 	}
 
 	if !m.OrgID.Valid() {

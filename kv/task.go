@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 const TaskDefaultPageSize = 100
@@ -18,15 +17,15 @@ var (
 	TaskOwnerIndexBucket = []byte("taskownerindex")
 
 	// Errors
-	ErrInvalidTaskID = &errors.Error{
-		Code: errors.EInvalid,
+    ErrInvalidTaskID = &manta.Error{
+        Code: manta.EInvalid,
 		Msg:  "invalid task id",
 	}
 )
 
-func ErrInternalTaskService(err error) *errors.Error {
-	return &errors.Error{
-		Code: errors.EInternal,
+func ErrInternalTaskService(err error) *manta.Error {
+    return &manta.Error{
+        Code: manta.EInternal,
 		Msg:  "unexpected error in tasks",
 		Err:  err,
 	}

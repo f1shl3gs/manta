@@ -2,15 +2,13 @@ package manta
 
 import (
 	"context"
-	baseErrors "errors"
+	"errors"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
-	ErrSessionNotFound = baseErrors.New("session not found")
-	ErrSessionExpired  = baseErrors.New("session has expired")
+	ErrSessionNotFound = errors.New("session not found")
+	ErrSessionExpired  = errors.New("session has expired")
 )
 
 type Session struct {
@@ -58,8 +56,8 @@ func (s *Session) Kind() string {
 
 func (s *Session) PermissionSet() (PermissionSet, error) {
 	if s.Expired() {
-		return nil, &errors.Error{
-			Code: errors.EForbidden,
+		return nil, &Error{
+            Code: EForbidden,
 			Msg:  "session has expired",
 		}
 	}

@@ -4,13 +4,12 @@ import (
 	"context"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
 	// ErrOnboardingNotAllowed occurs when request to onboard comes in and we are not allowing this request
-	ErrOnboardingNotAllowed = &errors.Error{
-		Code: errors.EConflict,
+    ErrOnboardingNotAllowed = &manta.Error{
+        Code: manta.EConflict,
 		Msg:  "onboarding has already been completed",
 	}
 )

@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/http/router"
 )
 
@@ -101,8 +100,8 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 	c := &manta.Check{}
 	err := json.NewDecoder(r.Body).Decode(c)
 	if err != nil {
-		return nil, &errors.Error{
-			Code: errors.EInvalid,
+		return nil, &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "decode check failed",
 			Err:  err,
 		}
@@ -110,8 +109,8 @@ func decodeCheck(r *http.Request) (*manta.Check, error) {
 
 	err = c.Validate()
 	if err != nil {
-		return nil, &errors.Error{
-			Code: errors.EInvalid,
+		return nil, &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "validate check failed",
 			Err:  err,
 		}
@@ -167,7 +166,7 @@ func decodeCheckUpdate(r *http.Request) (manta.CheckUpdate, error) {
 
 	err := json.NewDecoder(r.Body).Decode(&upd)
 	if err != nil {
-		return upd, &errors.Error{Code: errors.EInvalid, Op: "decode CheckUpdate", Err: err}
+		return upd, &manta.Error{Code: manta.EInvalid, Op: "decode CheckUpdate", Err: err}
 	}
 
 	return upd, nil

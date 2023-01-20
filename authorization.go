@@ -2,21 +2,19 @@ package manta
 
 import (
 	"context"
-	baseError "errors"
+	"errors"
 	"fmt"
 	"path"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
 	// ErrAuthorizerNotSupported notes that the provided authorizer is not supported for the action you are trying to perform.
-	ErrAuthorizerNotSupported = baseError.New("your authorizer is not supported, please use *platform.Authorization as authorizer")
+	ErrAuthorizerNotSupported = errors.New("your authorizer is not supported, please use *platform.Authorization as authorizer")
 	// ErrInvalidResourceType notes that the provided resource is invalid
-	ErrInvalidResourceType = baseError.New("unknown resource type for permission")
+    ErrInvalidResourceType = errors.New("unknown resource type for permission")
 	// ErrInvalidAction notes that the provided action is invalid
-	ErrInvalidAction = baseError.New("unknown action for permission")
+    ErrInvalidAction = errors.New("unknown action for permission")
 )
 
 // ResourceType is an enum defining all resource types that have a permission model in platform
@@ -96,32 +94,32 @@ func (p Permission) String() string {
 // Valid checks if there the resource and action provided is known.
 func (p *Permission) Valid() error {
 	if err := p.Resource.Valid(); err != nil {
-		return &errors.Error{
-			Code: errors.EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Err:  err,
 			Msg:  fmt.Sprintf("invalid resource type %q for permission", p.Resource.Type),
 		}
 	}
 
 	if err := p.Action.Valid(); err != nil {
-		return &errors.Error{
-			Code: errors.EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Err:  err,
 			Msg:  "invalid action type for permission",
 		}
 	}
 
 	if p.Resource.OrgID != nil && !p.Resource.OrgID.Valid() {
-		return &errors.Error{
-			Code: errors.EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Err:  ErrInvalidID,
 			Msg:  "invalid org id for permission",
 		}
 	}
 
 	if p.Resource.ID != nil && !p.Resource.ID.Valid() {
-		return &errors.Error{
-			Code: errors.EInvalid,
+		return &Error{
+			Code: EInvalid,
 			Err:  ErrInvalidID,
 			Msg:  "invalid resource id for permission",
 		}

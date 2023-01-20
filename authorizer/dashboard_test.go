@@ -10,7 +10,6 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorizer"
-	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/mock"
 	"github.com/f1shl3gs/manta/tests"
 )
@@ -63,8 +62,8 @@ func TestDashboardService_FindDashboardByID(t *testing.T) {
 				},
 			},
 			id: 1,
-			want: &errors.Error{
-				Code: errors.EUnauthorized,
+            want: &manta.Error{
+                Code: manta.EUnauthorized,
 				Msg:  "{read {dashboards 0000000000000001 000000000000000a}} is unauthorized",
 			},
 		},

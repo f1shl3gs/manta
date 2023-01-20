@@ -3,24 +3,22 @@ package manta
 import (
 	"context"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
 	// ErrInvalidOrgID signifies invalid IDs.
-	ErrInvalidOrgID = &errors.Error{
-		Code: errors.EInvalid,
+	ErrInvalidOrgID = &Error{
+		Code: EInvalid,
 		Msg:  "invalid Organization ID",
 	}
 
-	ErrOrgAlreadyExist = &errors.Error{
-		Code: errors.EInvalid,
+	ErrOrgAlreadyExist = &Error{
+		Code: EInvalid,
 		Msg:  "Organization already exist",
 	}
 
-	ErrOrgNotFound = &errors.Error{
-		Code: errors.ENotFound,
+	ErrOrgNotFound = &Error{
+		Code: ENotFound,
 		Msg:  "Organization not found",
 	}
 )

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/f1shl3gs/manta/errors"
+	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/raftstore"
 	raftstorepb "github.com/f1shl3gs/manta/raftstore/pb"
@@ -56,8 +56,8 @@ func (h *ClusterServiceHandler) add(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&member)
 	if err != nil {
-		h.HandleHTTPError(ctx, &errors.Error{
-			Code: errors.EInvalid,
+		h.HandleHTTPError(ctx, &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "decode cluster member failed",
 			Err:  err,
 		}, w)
@@ -79,7 +79,7 @@ func (h *ClusterServiceHandler) delete(w http.ResponseWriter, r *http.Request) {
 	text := extractParamFromContext(r.Context(), "id")
 	id, err := strconv.ParseUint(text, 16, 64)
 	if err != nil {
-		h.HandleHTTPError(ctx, &errors.Error{Code: errors.EInvalid, Msg: "invalid node id", Err: err}, w)
+		h.HandleHTTPError(ctx, &manta.Error{Code: manta.EInvalid, Msg: "invalid node id", Err: err}, w)
 		return
 	}
 

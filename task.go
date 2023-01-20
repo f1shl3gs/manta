@@ -3,23 +3,21 @@ package manta
 import (
 	"context"
 	"time"
-
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
-	ErrTaskNotClaimed = &errors.Error{
-		Code: errors.EConflict,
+	ErrTaskNotClaimed = &Error{
+		Code: EConflict,
 		Msg:  "task not claimed",
 	}
 
-	ErrOutOfBoundsLimit = &errors.Error{
-		Code: errors.EUnprocessableEntity,
+	ErrOutOfBoundsLimit = &Error{
+		Code: EUnprocessableEntity,
 		Msg:  "run limit is out of bounds, must be between",
 	}
 
-	ErrRunNotFound = &errors.Error{
-		Code: errors.ENotFound,
+	ErrRunNotFound = &Error{
+		Code: ENotFound,
 		Msg:  "run not found",
 	}
 )

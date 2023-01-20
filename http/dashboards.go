@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/f1shl3gs/manta"
-	mError "github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/http/router"
 
 	"github.com/pkg/errors"
@@ -145,8 +144,8 @@ func decodeDashboardUpdate(r *http.Request) (manta.DashboardUpdate, error) {
 
 	err := json.NewDecoder(r.Body).Decode(&upd)
 	if err != nil {
-		return manta.DashboardUpdate{}, &mError.Error{
-			Code: mError.EInvalid,
+		return manta.DashboardUpdate{}, &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid dashboard update",
 			Err:  err,
 		}

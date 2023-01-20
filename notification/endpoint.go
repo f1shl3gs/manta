@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 func UnmarshalJSON(b []byte) (manta.NotificationEndpoint, error) {
@@ -22,15 +21,15 @@ func UnmarshalJSON(b []byte) (manta.NotificationEndpoint, error) {
 	case "http":
 		endpoint = &HTTP{}
 	default:
-		return nil, &errors.Error{
-			Code: errors.EInvalid,
+        return nil, &manta.Error{
+            Code: manta.EInvalid,
 			Msg:  fmt.Sprintf("invliad notification endpoint type %s", raw.Type),
 		}
 	}
 
 	if err := json.Unmarshal(b, endpoint); err != nil {
-		return nil, &errors.Error{
-			Code: errors.EInvalid,
+        return nil, &manta.Error{
+            Code: manta.EInvalid,
 			Err:  err,
 		}
 	}

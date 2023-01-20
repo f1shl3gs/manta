@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var (
@@ -16,9 +15,9 @@ var (
 	templatesBucket = []byte("templates")
 )
 
-func decodeResourceErr(index int, typ manta.ResourceType, err error) *errors.Error {
-	return &errors.Error{
-		Code: errors.EInvalid,
+func decodeResourceErr(index int, typ manta.ResourceType, err error) *manta.Error {
+    return &manta.Error{
+        Code: manta.EInvalid,
 		Msg:  fmt.Sprintf("resource[%d] cannot be decoded into %s", index, typ),
 		Err:  err,
 	}
@@ -113,8 +112,8 @@ func (s *Service) Install(ctx context.Context, create manta.TemplateCreate) (*ma
 				})
 
 			default:
-				return &errors.Error{
-					Code: errors.EInvalid,
+                return &manta.Error{
+                Code: manta.EInvalid,
 					Msg:  fmt.Sprintf("unknown resource type %s at resources[%d]", res.Type, i),
 				}
 			}
@@ -215,8 +214,8 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 				}
 
 			default:
-				return &errors.Error{
-					Code: errors.EInvalid,
+                return &manta.Error{
+                Code: manta.EInvalid,
 					Msg:  fmt.Sprintf("unsupport resource type %s, name: %s", res.Type, res.Name),
 				}
 			}

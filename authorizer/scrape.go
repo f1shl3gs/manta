@@ -3,8 +3,6 @@ package authorizer
 import (
 	"context"
 
-	"github.com/f1shl3gs/manta/errors"
-
 	"github.com/f1shl3gs/manta"
 )
 
@@ -42,11 +40,11 @@ func (s *ScrapeTargetService) FindScrapeTargets(ctx context.Context, filter mant
 	filtered := ss[:0]
 	for _, st := range ss {
 		_, _, err := authorizeRead(ctx, manta.ScrapesResourceType, st.ID, st.OrgID)
-		if err != nil && errors.ErrorCode(err) != errors.EUnauthorized {
+        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, err
 		}
 
-		if errors.ErrorCode(err) == errors.EUnauthorized {
+        if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

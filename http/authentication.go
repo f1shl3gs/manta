@@ -10,7 +10,6 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorizer"
-	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/pkg/tracing"
 )
 
@@ -23,7 +22,7 @@ type AuthenticationHandler struct {
 
 	noAuthRouter *httprouter.Router
 	handler      http.Handler
-	errorHandler errors.HTTPErrorHandler
+	errorHandler manta.HTTPErrorHandler
 }
 
 func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -47,8 +46,8 @@ func (h *AuthenticationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	case "session":
 		a, err = h.extractSession(ctx, r)
 	default:
-		h.handleUnauthorized(w, r, &errors.Error{
-			Code: errors.EUnauthorized,
+		h.handleUnauthorized(w, r, &manta.Error{
+			Code: manta.EUnauthorized,
 			Msg:  "no auth type found",
 		})
 		return

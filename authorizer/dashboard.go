@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 var _ manta.DashboardService = &DashboardService{}
@@ -41,11 +40,11 @@ func (s *DashboardService) FindDashboards(ctx context.Context, filter manta.Dash
 	filtered := dashboards[:0]
 	for _, d := range dashboards {
 		_, _, err := authorizeRead(ctx, manta.DashboardsResourceType, d.ID, d.OrgID)
-		if err != nil && errors.ErrorCode(err) != errors.EUnauthorized {
+        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, err
 		}
 
-		if errors.ErrorCode(err) == errors.EUnauthorized {
+        if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

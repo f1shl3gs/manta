@@ -7,7 +7,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/f1shl3gs/manta/errors"
+	"github.com/f1shl3gs/manta"
 )
 
 // PlatformErrorCodeHeader shows the error code of platform error.
@@ -58,7 +58,7 @@ func (r *Router) HandleHTTPError(ctx context.Context, err error, w http.Response
 		return
 	}
 
-	code := errors.ErrorCode(err)
+	code := manta.ErrorCode(err)
 	w.Header().Set(PlatformErrorCodeHeader, code)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(ErrorCodeToStatusCode(ctx, code))
@@ -66,8 +66,8 @@ func (r *Router) HandleHTTPError(ctx context.Context, err error, w http.Response
 		Code    string `json:"code"`
 		Message string `json:"message"`
 	}
-	e.Code = errors.ErrorCode(err)
-	if mErr, ok := err.(*errors.Error); ok {
+	e.Code = manta.ErrorCode(err)
+	if mErr, ok := err.(*manta.Error); ok {
 		e.Message = mErr.Error()
 	} else {
 		e.Message = "An internal error has occurred, " + err.Error()

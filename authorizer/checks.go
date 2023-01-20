@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 type CheckService struct {
@@ -42,11 +41,11 @@ func (s *CheckService) FindChecks(ctx context.Context, filter manta.CheckFilter,
 	filtered := checks[:0]
 	for _, c := range checks {
 		_, _, err := authorizeRead(ctx, manta.ChecksResourceType, c.ID, c.OrgID)
-		if err != nil && errors.ErrorCode(err) != errors.EUnauthorized {
+        if err != nil && manta.ErrorCode(err) != manta.EUnauthorized {
 			return nil, 0, err
 		}
 
-		if errors.ErrorCode(err) == errors.EUnauthorized {
+        if manta.ErrorCode(err) == manta.EUnauthorized {
 			continue
 		}
 

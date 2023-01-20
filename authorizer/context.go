@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 type contextKey string
@@ -20,15 +19,15 @@ func SetAuthorizer(ctx context.Context, a manta.Authorizer) context.Context {
 func FromContext(ctx context.Context) (manta.Authorizer, error) {
 	a, ok := ctx.Value(authorizerCtxKey).(manta.Authorizer)
 	if !ok {
-		return nil, &errors.Error{
-			Code: errors.EInternal,
+        return nil, &manta.Error{
+            Code: manta.EInternal,
 			Msg:  "authorizer not found on context",
 		}
 	}
 
 	if a == nil {
-		return nil, &errors.Error{
-			Code: errors.EInternal,
+        return nil, &manta.Error{
+            Code: manta.EInternal,
 			Msg:  "unexpected authorizer",
 		}
 	}

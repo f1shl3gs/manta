@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/notification"
 )
@@ -91,8 +90,8 @@ func decodeNotificationEndpointUpdate(r *http.Request) (manta.NotificationEndpoi
 
 	err := json.NewDecoder(r.Body).Decode(&upd)
 	if err != nil {
-		return manta.NotificationEndpointUpdate{}, &errors.Error{
-			Code: errors.EInvalid,
+		return manta.NotificationEndpointUpdate{}, &manta.Error{
+			Code: manta.EInvalid,
 			Msg:  "invalid notification endpoint update",
 			Err:  err,
 		}

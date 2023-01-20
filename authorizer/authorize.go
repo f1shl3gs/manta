@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/errors"
 )
 
 func isAllowedAll(authorizer manta.Authorizer, permissions []manta.Permission) error {
@@ -16,8 +15,8 @@ func isAllowedAll(authorizer manta.Authorizer, permissions []manta.Permission) e
 
 	for _, p := range permissions {
 		if !pset.Allowed(p) {
-			return &errors.Error{
-				Code: errors.EUnauthorized,
+            return &manta.Error{
+                Code: manta.EUnauthorized,
 				Msg:  fmt.Sprintf("%s is unauthorized", p),
 			}
 		}
