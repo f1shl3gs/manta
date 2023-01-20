@@ -17,11 +17,11 @@
         "type": "xy",
         "axes": {
           "x": {
-            "base": ""
+            "base": "10"
           },
           "y": {
             "suffix": "%",
-            "base": ""
+            "base": "10"
           }
         },
         "queries": [
@@ -34,8 +34,7 @@
 
         "hoverDimension": "x",
         "position": "overlaid",
-        "geom": "line",
-        "colors": []
+        "geom": "line"
       }
     },
     {
@@ -49,10 +48,10 @@
         "type": "xy",
         "axes": {
           "x": {
-            "base": ""
+            "base": "10"
           },
           "y": {
-            "base": ""
+            "base": "10"
           }
         },
         "queries": [
@@ -61,11 +60,32 @@
             "text": "go_threads"
           }
         ],
-
+        "xColumn": "_time",
+        "yColumn": "_value",
         "hoverDimension": "auto",
         "position": "overlaid",
         "geom": "line",
-        "colors": []
+        "interpolation": "linear",
+        "colors": [
+          {
+            "id": "#31C0F6",
+            "type": "scale",
+            "hex": "#31C0F6",
+            "name": "Nineteen Eighty Four"
+          },
+          {
+            "id": "#A500A5",
+            "type": "scale",
+            "hex": "#A500A5",
+            "name": "Nineteen Eighty Four"
+          },
+          {
+            "id": "#FF7E27",
+            "type": "scale",
+            "hex": "#FF7E27",
+            "name": "Nineteen Eighty Four"
+          }
+        ]
       }
     },
     {
@@ -79,10 +99,10 @@
         "type": "xy",
         "axes": {
           "x": {
-            "base": ""
+            "base": "10"
           },
           "y": {
-            "base": ""
+            "base": "10"
           }
         },
         "queries": [
@@ -94,8 +114,7 @@
 
         "hoverDimension": "auto",
         "position": "overlaid",
-        "geom": "line",
-        "colors": []
+        "geom": "line"
       }
     },
     {
@@ -109,10 +128,10 @@
         "type": "xy",
         "axes": {
           "x": {
-            "base": ""
+            "base": "10"
           },
           "y": {
-            "base": ""
+            "base": "10"
           }
         },
         "queries": [
@@ -124,8 +143,7 @@
 
         "hoverDimension": "auto",
         "position": "overlaid",
-        "geom": "line",
-        "colors": []
+        "geom": "line"
       }
     },
     {
@@ -139,7 +157,7 @@
         "type": "xy",
         "axes": {
           "x": {
-            "base": ""
+            "base": "10"
           },
           "y": {
             "base": "2"

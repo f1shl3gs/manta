@@ -21,8 +21,8 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
   const {table, fluxGroupKeyUnion} = result
   const {
     timeFormat,
-    xColumn,
-    yColumn,
+    xColumn = '_time',
+    yColumn = '_value',
     colors = [],
     interpolation,
     axes: {
