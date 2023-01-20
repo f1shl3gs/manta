@@ -79,8 +79,8 @@ func NewSchedulerMetrics(te *TreeScheduler) *SchedulerMetrics {
 	}
 }
 
-// PrometheusCollectors satisfies the prom.PrometheusCollector interface.
-func (em *SchedulerMetrics) PrometheusCollectors() []prometheus.Collector {
+// Collectors satisfies the prom.PrometheusCollector interface.
+func (em *SchedulerMetrics) Collectors() []prometheus.Collector {
 	return []prometheus.Collector{
 		em.totalExecuteCalls,
 		em.totalExecuteFailure,

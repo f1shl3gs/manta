@@ -5,7 +5,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
-var _ prometheus.Collector = (*KVStore)(nil)
+var _ prometheus.Collector = (*Collector)(nil)
 
 var (
 	boltWritesDesc = prometheus.NewDesc(
@@ -26,14 +26,24 @@ var (
 	)
 )
 
+type Collector struct {
+	db *bolt.DB
+}
+
+func NewCollector(db *bolt.DB) *Collector {
+	return &Collector{
+		db: db,
+	}
+}
+
 // Describe returns all descriptions of the collector.
-func (s *KVStore) Describe(ch chan<- *prometheus.Desc) {
+func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- prometheus.NewDesc("mantad_boltdb", "", nil, nil)
 }
 
 // Collect returns the current state of all metrics of the collector.
-func (s *KVStore) Collect(ch chan<- prometheus.Metric) {
-	stats := s.db.Stats()
+func (c *Collector) Collect(ch chan<- prometheus.Metric) {
+	stats := c.db.Stats()
 	writes := stats.TxStats.Write
 	reads := stats.TxN
 
@@ -50,7 +60,7 @@ func (s *KVStore) Collect(ch chan<- prometheus.Metric) {
 	)
 
 	keys := make(map[string]int)
-	_ = s.db.View(func(tx *bolt.Tx) error {
+	_ = c.db.View(func(tx *bolt.Tx) error {
 		return tx.ForEach(func(name []byte, b *bolt.Bucket) error {
 			keys[string(name)] = b.Stats().KeyN
 			return nil
@@ -65,9 +75,4 @@ func (s *KVStore) Collect(ch chan<- prometheus.Metric) {
 			key,
 		)
 	}
-
-	s.commitSec.Collect(ch)
-	s.writeSec.Collect(ch)
-	s.updateSec.Collect(ch)
-	s.viewSec.Collect(ch)
 }

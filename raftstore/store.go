@@ -315,16 +315,6 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 	return store, nil
 }
 
-func (s *Store) Collectors() []prometheus.Collector {
-	return []prometheus.Collector{
-		s.leaderChanges,
-		s.hasLeader,
-		s.isLeader,
-		s.slowReadInex,
-		s.readIndexFailed,
-	}
-}
-
 // openDB open a boltdb with default options, and setup(if none) meta buckets
 // to store membership and consistent index.
 func openDB(cf *Config) (*bolt.DB, error) {
@@ -540,6 +530,9 @@ func (s *Store) applyNormal(ent *raftpb.Entry) {
 			s.logger.Fatal("create snapshot failed",
 				zap.Uint64("checkpoint", snap.Index),
 				zap.Error(err))
+		} else {
+			s.logger.Info("create snapshot success",
+				zap.Uint64("index", snap.Index))
 		}
 	} else {
 		db := s.db.Load()

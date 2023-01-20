@@ -66,7 +66,7 @@ type DiskStorage struct {
 func Init(dir string, logger *zap.Logger) (*DiskStorage, error) {
 	s := &DiskStorage{
 		dir:    dir,
-		logger: logger.With(zap.String("service", "raftStorage")),
+		logger: logger,
 	}
 
 	var err error

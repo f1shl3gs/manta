@@ -2,20 +2,20 @@ package http
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/http/middleware"
-	"github.com/f1shl3gs/manta/raftstore"
 	"net/http"
 	_ "net/http/pprof"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta/http/middleware"
 	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/multitsdb"
+	"github.com/f1shl3gs/manta/raftstore"
+	"github.com/f1shl3gs/manta/telemetry/prom"
 )
 
 const (
@@ -29,7 +29,8 @@ type Flusher interface {
 type Backend struct {
 	Flusher Flusher
 
-	router *router.Router
+	router       *router.Router
+	PromRegistry *prom.Registry
 
 	BackupService               manta.BackupService
 	OrganizationService         manta.OrganizationService
@@ -140,7 +141,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	return &Service{
 		apiHandler:    ah,
 		docHandler:    Redoc(),
-		metricHandler: promhttp.Handler(),
+		metricHandler: backend.PromRegistry.HTTPHandler(),
 		assetsHandler: assetsHandler,
 	}
 }

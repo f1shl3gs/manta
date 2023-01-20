@@ -8,6 +8,7 @@ import (
 	"github.com/f1shl3gs/manta/errors"
 	"github.com/f1shl3gs/manta/http/router"
 	"github.com/f1shl3gs/manta/raftstore"
+	raftstorepb "github.com/f1shl3gs/manta/raftstore/pb"
 
 	"go.uber.org/zap"
 )
@@ -51,7 +52,7 @@ func (h *ClusterServiceHandler) list(w http.ResponseWriter, r *http.Request) {
 
 func (h *ClusterServiceHandler) add(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	member := raftstore.Member{}
+	member := raftstorepb.Member{}
 
 	err := json.NewDecoder(r.Body).Decode(&member)
 	if err != nil {

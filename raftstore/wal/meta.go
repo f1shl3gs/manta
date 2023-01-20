@@ -148,8 +148,6 @@ func (m *metaFile) StoreSnapshot(snap *raftpb.Snapshot) error {
 	if err != nil {
 		return errors.Wrapf(err, "cannot marshal snapshot")
 	}
-	m.logger.Info("got valid snapshot to store",
-		zap.Int("length", len(buf)))
 
 	for len(m.Data)-snapshotOffset < len(buf) {
 		if err := m.Truncate(2 * int64(len(m.Data))); err != nil {

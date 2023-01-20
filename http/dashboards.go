@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/f1shl3gs/manta"
+	mError "github.com/f1shl3gs/manta/errors"
+	"github.com/f1shl3gs/manta/http/router"
+
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-
-	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -139,13 +140,28 @@ func (h *DashboardsHandler) deletedashboard(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func decodeDashboardUpdate(r *http.Request) (manta.DashboardUpdate, error) {
+	var upd manta.DashboardUpdate
+
+	err := json.NewDecoder(r.Body).Decode(&upd)
+	if err != nil {
+		return manta.DashboardUpdate{}, &mError.Error{
+			Code: mError.EInvalid,
+			Msg:  "invalid dashboard update",
+			Err:  err,
+		}
+	}
+
+	return upd, nil
+}
+
 func (h *DashboardsHandler) updateMeta(w http.ResponseWriter, r *http.Request) {
 	var (
 		ctx = r.Context()
-		upd manta.DashboardUpdate
 	)
 
-	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
+	upd, err := decodeDashboardUpdate(r)
+	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}

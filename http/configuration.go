@@ -42,7 +42,7 @@ func NewConfigurationService(backend *Backend, logger *zap.Logger) {
 		configurationService: vertex.NewCoordinatingVertexService(backend.ConfigurationService, logger),
 	}
 
-	prometheus.MustRegister(watchStreams)
+	backend.PromRegistry.MustRegister(watchStreams)
 
 	h.HandlerFunc(http.MethodGet, configurationPrefix, h.listConfigurations)
 	h.HandlerFunc(http.MethodPost, configurationPrefix, h.createConfiguration)

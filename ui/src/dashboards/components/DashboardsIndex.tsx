@@ -1,6 +1,5 @@
 // Libraries
-import React, {FunctionComponent, lazy} from 'react'
-import {Route, Routes} from 'react-router-dom'
+import React, {FunctionComponent} from 'react'
 
 // Components
 import {Page, PageContents, PageHeader, PageTitle} from '@influxdata/clockface'
@@ -11,18 +10,9 @@ import DashboardsPageHeader from 'src/dashboards/components/DashboardsPageHeader
 // Types
 import {ResourceType} from 'src/types/resources'
 
-// Lazy load overlay
-const DashboardImportOverlay = lazy(
-  () => import('src/dashboards/components/DashboardImportOverlay')
-)
-
 export const DashboardsIndex: FunctionComponent = () => {
   return (
     <>
-      <Routes>
-        <Route path="import" element={<DashboardImportOverlay />} />
-      </Routes>
-
       <Page titleTag="Dashboards">
         <PageHeader fullWidth={false}>
           <PageTitle title="Dashboards" />

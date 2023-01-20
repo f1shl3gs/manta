@@ -111,8 +111,6 @@ const NEW_VIEW_CREATORS = {
     type: 'xy',
     geom: 'line',
     position: 'overlaid',
-    xColumn: null,
-    yColumn: null,
   }),
 
   'line-plus-single-stat': (): LinePlusSingleStatViewProperties => ({

@@ -5,10 +5,12 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
-	"github.com/f1shl3gs/manta/raftstore/pb"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/f1shl3gs/manta/raftstore/pb"
+	"github.com/f1shl3gs/manta/raftstore/wal"
 
 	"go.etcd.io/raft/v3"
 	"go.etcd.io/raft/v3/raftpb"
@@ -63,6 +65,28 @@ func (s *Store) checkSnapshot(ctx context.Context) {
 
 	lastSnapshot := time.Now()
 	snapshotAfterEntries := uint64(10000)
+	// snapshotFrequence = 30 * time.Minute
+
+	propagateSnapshot := func(index uint64) {
+		pCtx, cancel := context.WithTimeout(ctx, s.reqTimeout())
+		err := s.propose(pCtx, pb.InternalRequest{
+			Snapshot: &pb.Snapshot{
+				Index: index,
+			},
+		})
+		cancel()
+
+		if err != nil {
+			s.logger.Error("propose snapshot failed",
+				zap.Error(err))
+		} else {
+			lastSnapshot = time.Now()
+
+			s.logger.Debug("propagate snapshot success",
+				zap.Time("lastTime", lastSnapshot),
+				zap.Uint64("toIndex", index))
+		}
+	}
 
 	for {
 		select {
@@ -70,6 +94,9 @@ func (s *Store) checkSnapshot(ctx context.Context) {
 			return
 		case <-ticker.C:
 		}
+
+		applied := s.appliedIndex.Load()
+		s.raftStorage.SetUint(wal.CheckpointIndex, applied)
 
 		if s.lead.Load() != s.self.ID {
 			continue
@@ -86,42 +113,31 @@ func (s *Store) checkSnapshot(ctx context.Context) {
 			continue
 		}
 
-		index := uint64(0)
-
 		// If we don't have a snapshot, or if there are too many log files in
 		// Raft.
 		if raft.IsEmptySnap(snap) || s.raftStorage.NumLogFiles() > 4 {
-			index = s.appliedIndex.Load()
+			propagateSnapshot(applied)
+			continue
 		}
 
-		if index == 0 {
-			first, err := s.raftStorage.FirstIndex()
-			if err == nil {
-				applied := s.appliedIndex.Load()
-				if applied-snapshotAfterEntries > first {
-					index = applied - snapshotAfterEntries
-				}
+		first, err := s.raftStorage.FirstIndex()
+		if err == nil {
+			applied := s.appliedIndex.Load()
+			if applied-snapshotAfterEntries > first {
+				applied = applied - snapshotAfterEntries
 			}
 		}
 
-		if index != 0 {
-			pCtx, cancel := context.WithTimeout(ctx, s.reqTimeout())
-			err = s.propose(pCtx, pb.InternalRequest{
-				Snapshot: &pb.Snapshot{
-					Index: index,
-				},
-			})
-			cancel()
-
-			if err != nil {
-				s.logger.Error("propose snapshot failed",
-					zap.Error(err))
-			} else {
-				lastSnapshot = time.Now()
-
-				s.logger.Info("take a snapshot success",
-					zap.Time("lastTime", lastSnapshot),
-					zap.Uint64("toIndex", index))
+		first, err = s.raftStorage.FirstIndex()
+		if err == nil {
+			if applied-first > snapshotAfterEntries {
+				to := first + snapshotAfterEntries
+				s.logger.Info("trying to take snapshot",
+					zap.Uint64("first", first),
+					zap.Uint64("applied", applied),
+					zap.Uint64("to", to),
+					zap.Uint64("snapAfterEntries", applied-first-snapshotAfterEntries))
+				propagateSnapshot(to)
 			}
 		}
 	}

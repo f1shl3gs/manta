@@ -113,12 +113,14 @@ func (s *DashboardService) UpdateDashboardCell(ctx context.Context, upd manta.Da
 }
 
 func (s *DashboardService) GetDashboardCell(ctx context.Context, dashboardID, cellID manta.ID) (*manta.Cell, error) {
-	_, err := s.dashboardService.GetDashboardCell(ctx, dashboardID, cellID)
+	cell, err := s.dashboardService.GetDashboardCell(ctx, dashboardID, cellID)
 	if err != nil {
 		return nil, err
 	}
 
-	panic("not implement")
+	// TODO: authorize
+
+	return cell, err
 }
 
 // DeleteDashboard removes dashboard by id

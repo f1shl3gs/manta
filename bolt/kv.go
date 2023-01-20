@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
 	bolt "go.etcd.io/bbolt"
 	"go.uber.org/zap"
 
@@ -28,13 +28,6 @@ type KVStore struct {
 	log  *zap.Logger
 
 	noSync bool
-
-	// metrics
-	commitSec prometheus.Histogram
-	writeSec  prometheus.Histogram
-
-	updateSec prometheus.Histogram
-	viewSec   prometheus.Histogram
 }
 
 type KVOption func(*KVStore)
@@ -58,38 +51,6 @@ func NewKVStore(log *zap.Logger, path string, opts ...KVOption) *KVStore {
 	for _, opt := range opts {
 		opt(store)
 	}
-
-	store.commitSec = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "manta",
-		Subsystem: "boltdb",
-		Name:      "commit_duration_seconds",
-		Help:      "The latency distributions of commit called by bbolt",
-		Buckets:   prometheus.ExponentialBuckets(0.001, 2, 14),
-	})
-
-	store.writeSec = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "manta",
-		Subsystem: "boltdb",
-		Name:      "commit_write_duration_seconds",
-		Help:      "The latency distributions of commit.write called by bbolt",
-		Buckets:   prometheus.ExponentialBuckets(0.001, 2, 14),
-	})
-
-	store.updateSec = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "manta",
-		Subsystem: "boltdb",
-		Name:      "update_duration_seconds",
-		Help:      "The latency distributions of update called by kv",
-		Buckets:   prometheus.ExponentialBuckets(0.001, 2, 14),
-	})
-
-	store.viewSec = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "manta",
-		Subsystem: "boltdb",
-		Name:      "view_duration_seconds",
-		Help:      "The latency distributions of view called by kv",
-		Buckets:   prometheus.ExponentialBuckets(0.001, 2, 14),
-	})
 
 	return store
 }
@@ -170,6 +131,12 @@ func (s *KVStore) cleanBucket(tx *bolt.Tx, b *bolt.Bucket) {
 // WithDB sets the boltdb on the store.
 func (s *KVStore) WithDB(db *bolt.DB) {
 	s.db = db
+}
+
+func (s *KVStore) Collectors() []prometheus.Collector {
+	return []prometheus.Collector{
+		NewCollector(s.db),
+	}
 }
 
 // View opens up a view transaction against the store.

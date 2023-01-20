@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useEffect, useRef, useState} from 'react'
+import React, {FunctionComponent, useEffect, useState} from 'react'
 import {RemoteDataState} from '@influxdata/clockface'
 import {useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
@@ -17,27 +17,8 @@ import {FromFluxResult} from '@influxdata/giraffe'
 // Utils
 import {executeQuery} from 'src/timeMachine/actions/thunks'
 
-// Hooks
-import useIntersectionObserver from 'src/shared/userIntersectionObserver'
-
 interface Props {
   viewProperties: ViewProperties
-}
-
-function shallowEqual(object1, object2) {
-  const keys1 = Object.keys(object1)
-  const keys2 = Object.keys(object2)
-  if (keys1.length !== keys2.length) {
-    return false
-  }
-
-  for (const key of keys1) {
-    if (object1[key] !== object2[key]) {
-      return false
-    }
-  }
-
-  return true
 }
 
 const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
@@ -49,31 +30,7 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
     return state.autoRefresh
   })
 
-  const ref = useRef<HTMLDivElement>(null)
-  const entry = useIntersectionObserver(ref, {})
-
-  const [lastSES, setLastSES] = useState({start, end, step})
-  const [refreshed, setRefreshed] = useState(true)
   useEffect(() => {
-    if (shallowEqual(lastSES, {start, end, step})) {
-      setRefreshed(false)
-    } else {
-      setRefreshed(true)
-      setLastSES({start, end, step})
-    }
-  }, [start, end, step, lastSES])
-
-  const visible = entry?.isIntersecting ?? false
-
-  useEffect(() => {
-    if (!visible && !refreshed) {
-      return
-    }
-
-    if (!refreshed) {
-      return
-    }
-
     if (viewProperties.queries.length === 0) {
       return
     }
@@ -115,8 +72,6 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
         setLoading(RemoteDataState.Error)
       })
   }, [
-    refreshed,
-    visible,
     setLoading,
     setError,
     start,
@@ -128,7 +83,7 @@ const TimeSeries: FunctionComponent<Props> = ({viewProperties}) => {
   ])
 
   return (
-    <div ref={ref} className={'time-series-container'}>
+    <div className={'time-series-container'}>
       <EmptyQueryView
         queries={viewProperties.queries}
         hasResults={

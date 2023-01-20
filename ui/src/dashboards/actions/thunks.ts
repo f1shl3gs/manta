@@ -16,7 +16,7 @@ import {
 import {RemoteDataState} from '@influxdata/clockface'
 import {getByID, getStatus} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
-import {getOrg} from 'src/organizations/selectors'
+import {getOrg, getOrgID} from 'src/organizations/selectors'
 import {DashboardEntities} from 'src/types/schemas'
 import {Dashboard} from 'src/types/dashboards'
 import {Cell, CellEntities} from 'src/types/cells'
@@ -279,7 +279,7 @@ export const updateDashboard =
     getState: GetState
   ): Promise<void> => {
     const state = getState()
-
+    const orgID = getOrgID(state)
     const current = getByID<Dashboard>(state, ResourceType.Dashboards, id)
 
     const dashboard = {
@@ -293,6 +293,8 @@ export const updateDashboard =
         body: {
           name: dashboard.name,
           desc: dashboard.desc,
+          id,
+          orgID,
         },
       })
       if (resp.status !== 200) {

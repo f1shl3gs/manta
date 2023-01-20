@@ -31,8 +31,7 @@
           }
         ],
         "timeFormat": "HH:mm:ss",
-        "xColumn": "_time",
-        "yColumn": "_value",
+
         "hoverDimension": "x",
         "position": "overlaid",
         "geom": "line",
@@ -62,8 +61,7 @@
             "text": "go_threads"
           }
         ],
-        "xColumn": "_time",
-        "yColumn": "_value",
+
         "hoverDimension": "auto",
         "position": "overlaid",
         "geom": "line",
@@ -93,8 +91,7 @@
             "text": "increase(boltdb_reads_total[1m])"
           }
         ],
-        "xColumn": "_time",
-        "yColumn": "_value",
+
         "hoverDimension": "auto",
         "position": "overlaid",
         "geom": "line",
@@ -124,8 +121,7 @@
             "text": "increase(boltdb_writes_total[1m])"
           }
         ],
-        "xColumn": "_time",
-        "yColumn": "_value",
+
         "hoverDimension": "auto",
         "position": "overlaid",
         "geom": "line",
@@ -155,8 +151,6 @@
             "text": "process_resident_memory_bytes"
           }
         ],
-        "xColumn": "_time",
-        "yColumn": "_value",
         "hoverDimension": "auto",
         "position": "overlaid",
         "geom": "line"

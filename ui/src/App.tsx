@@ -34,6 +34,12 @@ const SettingsPage = lazy(() => import('src/settings/SettingsIndex'))
 const DashboardPage = lazy(
   () => import('src/dashboards/components/DashboardPage')
 )
+const DashboardImportOverlay = lazy(
+  () => import('src/dashboards/components/DashboardImportOverlay')
+)
+const DashboardExportOverlay = lazy(
+  () => import('src/dashboards/components/ExportOverlay')
+)
 
 const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)
@@ -63,6 +69,15 @@ const App: FunctionComponent = () => {
                   <Route path="explore" element={<Explore />} />
 
                   <Route path="dashboards/*" element={<DashboardsIndex />} />
+                  <Route
+                    path="dashboards/import"
+                    element={<DashboardImportOverlay />}
+                  />
+
+                  <Route
+                    path="dashboards/:dashboardID/export"
+                    element={<DashboardExportOverlay />}
+                  />
                   <Route
                     path="dashboards/:dashboardID/*"
                     element={<DashboardPage />}

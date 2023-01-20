@@ -2,9 +2,6 @@ package launch
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/raftstore"
-	"github.com/f1shl3gs/manta/raftstore/pb"
-	"google.golang.org/grpc"
 	"math"
 	"net"
 	"net/http"
@@ -14,12 +11,12 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/prometheus/tsdb"
 	"github.com/soheilhy/cmux"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorizer"
@@ -32,12 +29,15 @@ import (
 	"github.com/f1shl3gs/manta/pkg/cgroups"
 	"github.com/f1shl3gs/manta/pkg/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
+	"github.com/f1shl3gs/manta/raftstore"
+	"github.com/f1shl3gs/manta/raftstore/pb"
 	"github.com/f1shl3gs/manta/scrape"
 	"github.com/f1shl3gs/manta/task/backend"
 	"github.com/f1shl3gs/manta/task/backend/coordinator"
 	"github.com/f1shl3gs/manta/task/backend/executor"
 	"github.com/f1shl3gs/manta/task/backend/middleware"
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
+	"github.com/f1shl3gs/manta/telemetry/prom"
 )
 
 type Launcher struct {
@@ -183,7 +183,9 @@ func (l *Launcher) run() error {
 		kvStore        kv.SchemaStore
 		flusher        httpservice.Flusher
 		clusterService raftstore.ClusterService
+		promRegistry   = prom.NewRegistry(logger)
 	)
+
 	switch l.Store {
 	case "bolt":
 		bs := bolt.NewKVStore(logger, filepath.Join(l.StorePath, "manta.bolt"))
@@ -193,7 +195,7 @@ func (l *Launcher) run() error {
 
 		kvStore = bs
 		flusher = bs
-		prometheus.MustRegister(bs)
+		promRegistry.MustRegister(bs.Collectors()...)
 
 		defer bs.Close()
 	case "raftstore":
@@ -208,7 +210,7 @@ func (l *Launcher) run() error {
 
 		kvStore = rs
 		clusterService = rs
-		prometheus.MustRegister(rs.Collectors()...)
+		promRegistry.MustRegister(rs.Collectors()...)
 
 		group.Go(func() error {
 			grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
@@ -227,6 +229,7 @@ func (l *Launcher) run() error {
 		return errors.Errorf("unknown store type %q", l.Store)
 	}
 
+	kvStore = kv.NewMetricService(kvStore, promRegistry)
 	migrator := migration.New(logger, kvStore, migration.All...)
 	err = migrator.Up(ctx)
 	if err != nil {
@@ -249,7 +252,7 @@ func (l *Launcher) run() error {
 			WALCompression:    true,
 		}
 
-		mtsdb := multitsdb.NewMultiTSDB(l.StorageDir, logger, prometheus.DefaultRegisterer, tsdbOpts, nil, false)
+		mtsdb := multitsdb.NewMultiTSDB(l.StorageDir, logger, promRegistry, tsdbOpts, nil, false)
 		if err := mtsdb.Open(); err != nil {
 			return err
 		}
@@ -312,7 +315,7 @@ func (l *Launcher) run() error {
 			defer tsch.Stop()
 
 			sch = tsch
-			prometheus.MustRegister(sm.PrometheusCollectors()...)
+			promRegistry.MustRegister(sm.Collectors()...)
 		}
 
 		coord := coordinator.NewCoordinator(logger, sch, nil)
@@ -332,10 +335,11 @@ func (l *Launcher) run() error {
 
 	{
 		// http service
-		httpListener := muxer.Match(cmux.HTTP1Fast())
+		httpListener := muxer.Match(cmux.HTTP1Fast(http.MethodPatch))
 
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
+			PromRegistry:                promRegistry,
 			OnBoardingService:           service,
 			BackupService:               kvStore,
 			CheckService:                authorizer.NewCheckService(checkService),

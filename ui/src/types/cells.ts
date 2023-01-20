@@ -1,5 +1,5 @@
 import {RemoteDataState} from '@influxdata/clockface'
-import {LineInterpolation} from '@influxdata/giraffe'
+import {ColumnType, LineInterpolation} from '@influxdata/giraffe'
 import {DashboardColor} from 'src/types/colors'
 import {DashboardQuery} from 'src/types/dashboards'
 

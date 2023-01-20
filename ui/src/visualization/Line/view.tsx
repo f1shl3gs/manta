@@ -36,7 +36,8 @@ const Line: FunctionComponent<Props> = ({properties, result}) => {
     },
   } = properties
 
-  // TODO: fix table.getColumnType(xColumn)
+  // TODO: fromRow treat '_time' as number, so table.getColumnType(xColumn) return 'number'
+  // which is not what we want.
   const xFormatter = getFormatter('time', {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,

@@ -11,11 +11,11 @@ import GetResource from 'src/resources/components/GetResource'
 import {ResourceType} from 'src/types/resources'
 
 // Selectors
-import {getDashboard} from 'src/dashboards/selectors'
+import {getDashboardWithCell} from 'src/dashboards/selectors'
 
 const ExportOverlay: FunctionComponent = () => {
   const {dashboardID} = useParams()
-  const dashboard = useSelector(getDashboard(dashboardID))
+  const dashboard = useSelector(getDashboardWithCell(dashboardID))
 
   return (
     <GetResource resources={[{id: dashboardID, type: ResourceType.Dashboards}]}>
