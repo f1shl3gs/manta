@@ -136,32 +136,32 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		transport:         transport.New(logger),
 
 		leaderChanges: prometheus.NewCounter(prometheus.CounterOpts{
-			Namespace: "manta",
-			Subsystem: "raftstore",
+			Namespace: namespace,
+			Subsystem: subsystem,
 			Name:      "leader_changes_seen_total",
 			Help:      "The number of leader changes seen.",
 		}),
 		hasLeader: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "manta",
-			Subsystem: "raftstore",
+			Namespace: namespace,
+			Subsystem: subsystem,
 			Name:      "has_leader",
 			Help:      "Whether or not a leader exists. 1 is existence, 0 is not.",
 		}),
 		isLeader: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: "manta",
-			Subsystem: "raftstore",
+			Namespace: namespace,
+			Subsystem: subsystem,
 			Name:      "is_leader",
 			Help:      "Whether or not this member is a leader. 1 if is, 0 otherwise.",
 		}),
 		slowReadInex: prometheus.NewCounter(prometheus.CounterOpts{
-			Namespace: "manta",
-			Subsystem: "raftstore",
+			Namespace: namespace,
+			Subsystem: subsystem,
 			Name:      "slow_read_indexes_total",
 			Help:      "The total number of pending read indexes not in sync with leader's or timed out read index requests.",
 		}),
 		readIndexFailed: prometheus.NewCounter(prometheus.CounterOpts{
-			Namespace: "manta",
-			Subsystem: "raftstore",
+			Namespace: namespace,
+			Subsystem: subsystem,
 			Name:      "read_indexes_failed_total",
 			Help:      "The total number of failed read indexes seen.",
 		}),
@@ -365,8 +365,6 @@ func (s *Store) propose(ctx context.Context, req pb.InternalRequest) error {
 }
 
 func (s *Store) Run(ctx context.Context) {
-	var batched uint64
-
 	go s.startRaftLoop()
 	go s.syncLoop(ctx)
 	go s.linearizableReadLoop(ctx)
@@ -418,12 +416,6 @@ func (s *Store) Run(ctx context.Context) {
 			// raft storage. since the raft routine might be slower than toApply
 			// routine.
 			<-apply.notifyCh
-
-			batched += uint64(len(apply.entries))
-			if batched > batchLimit {
-				s.sync()
-				batched = 0
-			}
 		}
 	}
 }
@@ -620,12 +612,14 @@ func (s *Store) syncLoop(ctx context.Context) {
 	ticker := time.NewTicker(batchInterval)
 	defer ticker.Stop()
 
-	select {
-	case <-ctx.Done():
-		return
-	case <-ticker.C:
-		s.sync()
-		ticker.Reset(batchInterval)
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			s.sync()
+            ticker.Reset(batchInterval)
+		}
 	}
 }
 

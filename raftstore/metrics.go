@@ -6,6 +6,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+const (
+	namespace = "manta"
+	subsystem = "raftstore"
+)
+
 type boltCollector func(chan<- prometheus.Metric)
 
 func (c boltCollector) Describe(chan<- *prometheus.Desc) {}
@@ -34,5 +39,33 @@ func (s *Store) Collectors() []prometheus.Collector {
 		s.isLeader,
 		s.slowReadInex,
 		s.readIndexFailed,
+
+		prometheus.NewGaugeFunc(prometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "applied",
+			Help:      "Applied index of raft",
+		}, func() float64 {
+			return float64(s.appliedIndex.Load())
+		}),
+		prometheus.NewGaugeFunc(prometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "commited",
+			Help:      "Commited index of raft",
+		}, func() float64 {
+			return float64(s.committedIndex.Load())
+		}),
 	}
+}
+
+func (s *Store) Describe(chan<- *prometheus.Desc) {}
+
+func (s *Store) Collect(ch chan<- prometheus.Metric) {
+	s.leaderChanges.Collect(ch)
+	s.hasLeader.Collect(ch)
+	s.isLeader.Collect(ch)
+	s.slowReadInex.Collect(ch)
+	s.readIndexFailed.Collect(ch)
+
 }
