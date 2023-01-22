@@ -94,7 +94,7 @@ const CheckCard: FunctionComponent<Props> = ({
 
       <ResourceCard.Meta>
         {`Last Modified: ${fromNow(check.updated)}`}
-        {`Last completed: ${check.latestCompleted}`}
+        {`Last completed: ${check.latestCompleted || 'Never'}`}
       </ResourceCard.Meta>
     </ResourceCard>
   )
