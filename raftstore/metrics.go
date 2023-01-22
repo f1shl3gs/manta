@@ -58,14 +58,3 @@ func (s *Store) Collectors() []prometheus.Collector {
 		}),
 	}
 }
-
-func (s *Store) Describe(chan<- *prometheus.Desc) {}
-
-func (s *Store) Collect(ch chan<- prometheus.Metric) {
-	s.leaderChanges.Collect(ch)
-	s.hasLeader.Collect(ch)
-	s.isLeader.Collect(ch)
-	s.slowReadInex.Collect(ch)
-	s.readIndexFailed.Collect(ch)
-
-}
