@@ -47,6 +47,7 @@ type Backend struct {
 	RegistryService             manta.RegistryService
 	NotificationEndpointService manta.NotificationEndpointService
 	SecretService               manta.SecretService
+	TemplateService             manta.TemplateService
 
 	TenantStorage         multitsdb.TenantStorage
 	TenantTargetRetriever multitsdb.TenantTargetRetriever
