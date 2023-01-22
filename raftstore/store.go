@@ -618,7 +618,7 @@ func (s *Store) syncLoop(ctx context.Context) {
 			return
 		case <-ticker.C:
 			s.sync()
-            ticker.Reset(batchInterval)
+			ticker.Reset(batchInterval)
 		}
 	}
 }
