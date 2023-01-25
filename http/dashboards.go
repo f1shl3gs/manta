@@ -234,7 +234,7 @@ func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cell, err := h.dashboardService.GetDashboardCell(ctx, dashboardID, cellID)
+	cell, err := h.dashboardService.FindDashboardCellByID(ctx, dashboardID, cellID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

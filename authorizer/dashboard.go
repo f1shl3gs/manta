@@ -117,8 +117,11 @@ func (s *DashboardService) UpdateDashboardCell(
 	return s.dashboardService.UpdateDashboardCell(ctx, upd)
 }
 
-func (s *DashboardService) GetDashboardCell(ctx context.Context, dashboardID, cellID manta.ID) (*manta.Cell, error) {
-	cell, err := s.dashboardService.GetDashboardCell(ctx, dashboardID, cellID)
+func (s *DashboardService) FindDashboardCellByID(
+	ctx context.Context,
+	dashboardID, cellID manta.ID,
+) (*manta.Cell, error) {
+	cell, err := s.dashboardService.FindDashboardCellByID(ctx, dashboardID, cellID)
 	if err != nil {
 		return nil, err
 	}

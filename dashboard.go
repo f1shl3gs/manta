@@ -265,7 +265,7 @@ type DashboardService interface {
 	// UpdateDashboardCell update the dashboard cell with the provided ids
 	UpdateDashboardCell(ctx context.Context, upd DashboardCellUpdate) (*Cell, error)
 
-	GetDashboardCell(ctx context.Context, dashboardID, cellID ID) (*Cell, error)
+	FindDashboardCellByID(ctx context.Context, dashboardID, cellID ID) (*Cell, error)
 
 	// RemoveDashboard removes dashboard by id
 	RemoveDashboard(ctx context.Context, id ID) error

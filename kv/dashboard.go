@@ -379,7 +379,7 @@ func (s *Service) ReplaceDashboardCells(ctx context.Context, did manta.ID, cells
 	})
 }
 
-func (s *Service) findDashboardCell(ctx context.Context, tx Tx, did, cid manta.ID) (*manta.Cell, error) {
+func (s *Service) findDashboardCellByID(ctx context.Context, tx Tx, did, cid manta.ID) (*manta.Cell, error) {
 	dash, err := s.findDashboardByID(ctx, tx, did)
 	if err != nil {
 		return nil, err
@@ -394,14 +394,14 @@ func (s *Service) findDashboardCell(ctx context.Context, tx Tx, did, cid manta.I
 	return nil, ErrKeyNotFound
 }
 
-func (s *Service) GetDashboardCell(ctx context.Context, did, cid manta.ID) (*manta.Cell, error) {
+func (s *Service) FindDashboardCellByID(ctx context.Context, did, cid manta.ID) (*manta.Cell, error) {
 	var (
 		cell *manta.Cell
 		err  error
 	)
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		cell, err = s.findDashboardCell(ctx, tx, did, cid)
+		cell, err = s.findDashboardCellByID(ctx, tx, did, cid)
 		return err
 	})
 

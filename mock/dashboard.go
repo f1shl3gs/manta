@@ -25,7 +25,7 @@ type DashboardService struct {
 	// UpdateDashboardCell update the dashboard cell with the provided ids
 	UpdateDashboardCellFn func(context.Context, manta.DashboardCellUpdate) (*manta.Cell, error)
 
-	GetDashboardCellFn func(ctx context.Context, dashboardID, cellId manta.ID) (*manta.Cell, error)
+	FindDashboardCellByIDFn func(ctx context.Context, dashboardID, cellId manta.ID) (*manta.Cell, error)
 
 	// RemoveDashboard removes dashboard by id
 	RemoveDashboardFn func(ctx context.Context, id manta.ID) error
@@ -69,8 +69,12 @@ func (s *DashboardService) UpdateDashboardCell(
 	return s.UpdateDashboardCellFn(ctx, upd)
 }
 
-func (s *DashboardService) GetDashboardCell(ctx context.Context, dashboardID, cellID manta.ID) (*manta.Cell, error) {
-	return s.GetDashboardCellFn(ctx, dashboardID, cellID)
+func (s *DashboardService) FindDashboardCellByID(
+	ctx context.Context,
+	dashboardID,
+	cellID manta.ID,
+) (*manta.Cell, error) {
+	return s.FindDashboardCellByIDFn(ctx, dashboardID, cellID)
 }
 
 // RemoveDashboard removes dashboard by id
