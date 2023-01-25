@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/benbjohnson/clock v1.3.0
+	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/go-kit/log v0.2.1
 	github.com/gogo/protobuf v1.3.3-0.20221024144010-f67b8970b736
 	github.com/golang/snappy v0.0.4
@@ -31,7 +32,7 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.4.0
-	google.golang.org/grpc v1.52.0
+	google.golang.org/grpc v1.52.1
 )
 
 require (
@@ -39,7 +40,6 @@ require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/aws/aws-sdk-go v1.44.159 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
