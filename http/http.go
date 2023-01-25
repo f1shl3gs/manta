@@ -42,7 +42,7 @@ type Backend struct {
 	OnBoardingService           manta.OnBoardingService
 	CheckService                manta.CheckService
 	TaskService                 manta.TaskService
-	ConfigurationService        manta.ConfigurationService
+	ConfigService               manta.ConfigService
 	ScrapeTargetService         manta.ScrapeTargetService
 	RegistryService             manta.RegistryService
 	NotificationEndpointService manta.NotificationEndpointService
@@ -111,7 +111,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewFlushHandler(logger, backend)
 	NewDashboardsHandler(backend, logger)
 	NewUserHandler(backend, logger)
-	NewConfigurationService(backend, logger)
+	NewConfigService(backend, logger)
 	NewPromAPIHandler(backend, logger)
 	NewScrapeHandler(backend, logger)
 	NewRegistryService(backend, logger)
@@ -138,7 +138,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	ah.RegisterNoAuthRoute(http.MethodGet, "/")
 	ah.RegisterNoAuthRoute(http.MethodGet, "/debug/*wild")
 	// TODO: add auth in the future
-	ah.RegisterNoAuthRoute(http.MethodGet, configurationWithID)
+	ah.RegisterNoAuthRoute(http.MethodGet, configWithID)
 	ah.RegisterNoAuthRoute(http.MethodPost, registryPrefix)
 
 	return &Service{

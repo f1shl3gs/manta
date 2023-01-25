@@ -11,61 +11,61 @@ import (
 )
 
 type CoordinatingVertexService struct {
-	manta.ConfigurationService
+	manta.ConfigService
 
 	logger *zap.Logger
 
 	mtx          sync.RWMutex
-	broadcasters map[manta.ID]*broadcast.Broadcaster[*manta.Configuration]
+	broadcasters map[manta.ID]*broadcast.Broadcaster[*manta.Config]
 }
 
 func NewCoordinatingVertexService(
-	configurationService manta.ConfigurationService,
+	configService manta.ConfigService,
 	logger *zap.Logger,
 ) *CoordinatingVertexService {
 	cs := &CoordinatingVertexService{
-		ConfigurationService: configurationService,
-		logger:               logger,
-		broadcasters:         make(map[manta.ID]*broadcast.Broadcaster[*manta.Configuration]),
+		ConfigService: configService,
+		logger:        logger,
+		broadcasters:  make(map[manta.ID]*broadcast.Broadcaster[*manta.Config]),
 	}
 
 	return cs
 }
 
-func (s *CoordinatingVertexService) Sub(id manta.ID) *broadcast.Queue[*manta.Configuration] {
+func (s *CoordinatingVertexService) Sub(id manta.ID) *broadcast.Queue[*manta.Config] {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
 	b, exist := s.broadcasters[id]
 	if !exist {
-		b = broadcast.New[*manta.Configuration]()
+		b = broadcast.New[*manta.Config]()
 		s.broadcasters[id] = b
 	}
 
 	return b.Sub()
 }
 
-func (s *CoordinatingVertexService) CreateConfiguration(ctx context.Context, cf *manta.Configuration) error {
-	return s.ConfigurationService.CreateConfiguration(ctx, cf)
+func (s *CoordinatingVertexService) CreateConfign(ctx context.Context, cf *manta.Config) error {
+	return s.ConfigService.CreateConfig(ctx, cf)
 }
 
-func (s *CoordinatingVertexService) GetConfiguration(ctx context.Context, id manta.ID) (*manta.Configuration, error) {
-	return s.ConfigurationService.GetConfiguration(ctx, id)
+func (s *CoordinatingVertexService) FindConfigByID(ctx context.Context, id manta.ID) (*manta.Config, error) {
+	return s.ConfigService.FindConfigByID(ctx, id)
 }
 
-func (s *CoordinatingVertexService) FindConfigurations(
+func (s *CoordinatingVertexService) FindConfigs(
 	ctx context.Context,
-	filter manta.ConfigurationFilter,
-) ([]*manta.Configuration, error) {
-	return s.ConfigurationService.FindConfigurations(ctx, filter)
+	filter manta.ConfigFilter,
+) ([]*manta.Config, error) {
+	return s.ConfigService.FindConfigs(ctx, filter)
 }
 
-func (s *CoordinatingVertexService) UpdateConfiguration(
+func (s *CoordinatingVertexService) UpdateConfig(
 	ctx context.Context,
 	id manta.ID,
-	upd manta.ConfigurationUpdate,
-) (*manta.Configuration, error) {
-	cf, err := s.ConfigurationService.UpdateConfiguration(ctx, id, upd)
+	upd manta.ConfigUpdate,
+) (*manta.Config, error) {
+	cf, err := s.ConfigService.UpdateConfig(ctx, id, upd)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +81,8 @@ func (s *CoordinatingVertexService) UpdateConfiguration(
 	return cf, nil
 }
 
-func (s *CoordinatingVertexService) DeleteConfiguration(ctx context.Context, id manta.ID) error {
-	err := s.ConfigurationService.DeleteConfiguration(ctx, id)
+func (s *CoordinatingVertexService) DeleteConfig(ctx context.Context, id manta.ID) error {
+	err := s.ConfigService.DeleteConfig(ctx, id)
 	if err != nil {
 		return err
 	}

@@ -237,6 +237,8 @@ func (l *Launcher) run() error {
 		orgService       manta.OrganizationService = service
 		oplogService     manta.OperationLogService = service
 		dashboardService manta.DashboardService    = service
+		taskService      manta.TaskService         = service
+		configService    manta.ConfigService       = service
 	)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -280,7 +282,6 @@ func (l *Launcher) run() error {
 	var targetRetrievers multitsdb.TenantTargetRetriever = scrapeTargetService
 
 	var checkService manta.CheckService
-	var taskService manta.TaskService = service
 	{
 		// checks
 		var (
@@ -338,6 +339,7 @@ func (l *Launcher) run() error {
 		httpListener := muxer.Match(cmux.HTTP1Fast(http.MethodPatch))
 
 		checkService = oplog.NewCheckService(checkService, oplogService, logger)
+		configService = oplog.NewConfigService(configService, oplogService, logger)
 		dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
 
 		hl := logger.With(zap.String("service", "http"))
@@ -354,17 +356,15 @@ func (l *Launcher) run() error {
 			DashboardService:            authorizer.NewDashboardService(dashboardService),
 			SessionService:              service,
 			Flusher:                     flusher,
-			ConfigurationService:        service,
+			ConfigService:               authorizer.NewConfigService(configService),
 			ScrapeTargetService:         authorizer.NewScrapeTargetService(scrapeTargetService),
 			RegistryService:             service,
 			SecretService:               service,
 			NotificationEndpointService: service,
 			OperationLogService:         oplogService,
-
-			TenantStorage:         tenantStorage,
-			TenantTargetRetriever: targetRetrievers,
-
-			ClusterService: clusterService,
+			TenantStorage:               tenantStorage,
+			TenantTargetRetriever:       targetRetrievers,
+			ClusterService:              clusterService,
 		})
 
 		group.Go(func() error {

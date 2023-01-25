@@ -58,13 +58,13 @@ func (s *Service) Install(ctx context.Context, create manta.TemplateCreate) (*ma
 				})
 
 			case manta.ConfigsResourceType:
-				cf := &manta.Configuration{}
+				cf := &manta.Config{}
 				err := json.Unmarshal(res.Spec, cf)
 				if err != nil {
 					return decodeResourceErr(i, res.Type, err)
 				}
 
-				err = s.createConfiguration(ctx, tx, cf)
+				err = s.createConfig(ctx, tx, cf)
 				if err != nil {
 					return err
 				}
