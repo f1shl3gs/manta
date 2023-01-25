@@ -15,6 +15,11 @@ var (
 		Code: ENotFound,
 		Msg:  "user not found",
 	}
+
+	ErrInvalidUserID = &Error{
+		Code: EInvalid,
+		Msg:  "invalid user ID",
+	}
 )
 
 type User struct {

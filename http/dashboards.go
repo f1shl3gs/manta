@@ -14,6 +14,7 @@ import (
 const (
 	dashboardsPrefix     = apiV1Prefix + `/dashboards`
 	dashboardsWithID     = dashboardsPrefix + `/:id`
+	dashboardChangesPath = dashboardsWithID + `/changes`
 	dashboardCellsPrefix = dashboardsWithID + `/cells`
 	dashboardCellIDPath  = dashboardCellsPrefix + `/:cellId`
 )
@@ -24,6 +25,7 @@ type DashboardsHandler struct {
 	logger              *zap.Logger
 	organizationService manta.OrganizationService
 	dashboardService    manta.DashboardService
+	operationLogService manta.OperationLogService
 }
 
 func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandler {
@@ -32,6 +34,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 		logger:              logger.With(zap.String("handler", "dashboard")),
 		organizationService: backend.OrganizationService,
 		dashboardService:    backend.DashboardService,
+        operationLogService: backend.OperationLogService,
 	}
 
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.listDashboard)
@@ -45,6 +48,8 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 	h.HandlerFunc(http.MethodPatch, dashboardCellIDPath, h.updateCell)
 	h.HandlerFunc(http.MethodPut, dashboardCellsPrefix, h.replaceCells)
 	h.HandlerFunc(http.MethodDelete, dashboardCellIDPath, h.deleteCell)
+
+	h.HandlerFunc(http.MethodGet, dashboardChangesPath, h.changes)
 
 	return h
 }
@@ -130,7 +135,7 @@ func (h *DashboardsHandler) deletedashboard(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = h.dashboardService.DeleteDashboard(ctx, id)
+	err = h.dashboardService.RemoveDashboard(ctx, id)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -362,5 +367,19 @@ func (h *DashboardsHandler) deleteCell(w http.ResponseWriter, r *http.Request) {
 	if err = h.dashboardService.RemoveDashboardCell(ctx, did, cid); err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
+	}
+}
+
+func (h *DashboardsHandler) changes(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	logs, _, err := findOplogByResourceID(r, h.operationLogService)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, logs); err != nil {
+		logEncodingError(h.logger, r, err)
 	}
 }

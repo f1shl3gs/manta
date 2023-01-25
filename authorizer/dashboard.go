@@ -122,8 +122,8 @@ func (s *DashboardService) GetDashboardCell(ctx context.Context, dashboardID, ce
 	return cell, err
 }
 
-// DeleteDashboard removes dashboard by id
-func (s *DashboardService) DeleteDashboard(ctx context.Context, id manta.ID) error {
+// RemoveDashboard removes dashboard by id
+func (s *DashboardService) RemoveDashboard(ctx context.Context, id manta.ID) error {
 	d, err := s.FindDashboardByID(ctx, id)
 	if err != nil {
 		return err
@@ -133,7 +133,7 @@ func (s *DashboardService) DeleteDashboard(ctx context.Context, id manta.ID) err
 		return err
 	}
 
-	return s.dashboardService.DeleteDashboard(ctx, id)
+	return s.dashboardService.RemoveDashboard(ctx, id)
 }
 
 func (s *DashboardService) ReplaceDashboardCells(ctx context.Context, did manta.ID, cells []manta.Cell) error {

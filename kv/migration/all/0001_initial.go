@@ -39,6 +39,8 @@ func Migration0000Initial() Spec {
 			kv.NotificationENdpointOrgIndexBucket,
 			kv.UrmsBucket,
 			kv.UrmUserIndexBucket,
+			kv.ChangesBucket,
+			kv.ChangesUserIndexBucket,
 		}
 	)
 

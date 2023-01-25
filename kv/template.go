@@ -192,7 +192,7 @@ func (s *Service) Uninstall(ctx context.Context, orgID, id manta.ID) error {
 				}
 
 			case manta.DashboardsResourceType:
-				err = s.deleteDashboard(ctx, tx, id)
+                err = s.removeDashboard(ctx, tx, id)
 				if err == ErrKeyNotFound {
 					// resource already deleted
 					continue

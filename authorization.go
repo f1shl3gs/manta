@@ -15,10 +15,19 @@ var (
 	ErrInvalidResourceType = errors.New("unknown resource type for permission")
 	// ErrInvalidAction notes that the provided action is invalid
 	ErrInvalidAction = errors.New("unknown action for permission")
+
+	ErrInvalidResourceID = &Error{
+		Code: EInvalid,
+		Msg:  "invalid resource ID",
+	}
 )
 
 // ResourceType is an enum defining all resource types that have a permission model in platform
 type ResourceType string
+
+func (rt ResourceType) String() string {
+	return string(rt)
+}
 
 const (
 	AuthorizationsResourceType = ResourceType("authorizations")

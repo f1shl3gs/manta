@@ -19,6 +19,5 @@ make build
 ## Misc
 | service                 | default port |
 |-------------------------|--------------|
-| http service            | :8088        |
-| internal raft transport | :8089        |
+| http & grpc service     | :8088        |
 

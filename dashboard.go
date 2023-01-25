@@ -257,20 +257,20 @@ type DashboardService interface {
 
 	UpdateDashboard(ctx context.Context, upd DashboardUpdate) (*Dashboard, error)
 
-	AddDashboardCell(ctx context.Context, id ID, cell *Cell) error
+	AddDashboardCell(ctx context.Context, dashboardID ID, cell *Cell) error
 
 	// RemoveDashboardCell remove a panel by ID
-	RemoveDashboardCell(ctx context.Context, dashboardId, cellId ID) error
+	RemoveDashboardCell(ctx context.Context, dashboardID, cellID ID) error
 
 	// UpdateDashboardCell update the dashboard cell with the provided ids
 	UpdateDashboardCell(ctx context.Context, upd DashboardCellUpdate) (*Cell, error)
 
-	GetDashboardCell(ctx context.Context, dashboardID, cellId ID) (*Cell, error)
+	GetDashboardCell(ctx context.Context, dashboardID, cellID ID) (*Cell, error)
 
-	// RemoveDashboard removes dashboard by id
-	DeleteDashboard(ctx context.Context, id ID) error
+    // RemoveDashboard removes dashboard by id
+	RemoveDashboard(ctx context.Context, id ID) error
 
-	ReplaceDashboardCells(ctx context.Context, dashboardId ID, cells []Cell) error
+	ReplaceDashboardCells(ctx context.Context, dashboardID ID, cells []Cell) error
 }
 
 func (m *Cell) Validate() error {

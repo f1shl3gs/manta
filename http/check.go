@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	checksPrefix = `/api/v1/checks`
-	checksIDPath = `/api/v1/checks/:id`
+	checksPrefix     = apiV1Prefix + `/checks`
+	checksIDPath     = checksPrefix + `/:id`
+	checksChangePath = checksIDPath + `/changes`
 )
 
 type ChecksHandler struct {
@@ -22,14 +23,16 @@ type ChecksHandler struct {
 	logger       *zap.Logger
 	checkService manta.CheckService
 	taskService  manta.TaskService
+	oplogService manta.OperationLogService
 }
 
-func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckService, ts manta.TaskService) {
+func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckService, ts manta.TaskService, ol manta.OperationLogService) {
 	h := &ChecksHandler{
 		Router:       router,
 		logger:       logger.With(zap.String("handler", "check")),
 		checkService: cs,
 		taskService:  ts,
+        oplogService: ol,
 	}
 
 	h.HandlerFunc(http.MethodGet, checksPrefix, h.handleList)
@@ -38,6 +41,7 @@ func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckS
 	h.HandlerFunc(http.MethodPost, checksIDPath, h.handleUpdate)
 	h.HandlerFunc(http.MethodPatch, checksIDPath, h.handlePatch)
 	h.HandlerFunc(http.MethodGet, checksIDPath, h.handleGet)
+	h.HandlerFunc(http.MethodGet, checksChangePath, h.handleChanges)
 }
 
 type check struct {
@@ -245,6 +249,20 @@ func (h *ChecksHandler) handlePatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err = h.EncodeResponse(ctx, w, http.StatusOK, check); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *ChecksHandler) handleChanges(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	logs, _, err := findOplogByResourceID(r, h.oplogService)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, logs); err != nil {
 		logEncodingError(h.logger, r, err)
 	}
 }

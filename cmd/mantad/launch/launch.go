@@ -2,21 +2,13 @@ package launch
 
 import (
 	"context"
-	"math"
+    "math"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
-
-	"github.com/pkg/errors"
-	"github.com/prometheus/prometheus/tsdb"
-	"github.com/soheilhy/cmux"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorizer"
@@ -26,6 +18,7 @@ import (
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
 	"github.com/f1shl3gs/manta/multitsdb"
+	"github.com/f1shl3gs/manta/oplog"
 	"github.com/f1shl3gs/manta/pkg/cgroups"
 	"github.com/f1shl3gs/manta/pkg/log"
 	"github.com/f1shl3gs/manta/pkg/signals"
@@ -38,6 +31,14 @@ import (
 	"github.com/f1shl3gs/manta/task/backend/middleware"
 	"github.com/f1shl3gs/manta/task/backend/scheduler"
 	"github.com/f1shl3gs/manta/telemetry/prom"
+
+	"github.com/pkg/errors"
+	"github.com/prometheus/prometheus/tsdb"
+	"github.com/soheilhy/cmux"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
 )
 
 type Launcher struct {
@@ -200,7 +201,7 @@ func (l *Launcher) run() error {
 		defer bs.Close()
 	case "raftstore":
 		rs, err := raftstore.New(&raftstore.Config{
-			DataDir:      filepath.Join(l.StorePath, "state"),
+			DataDir:      filepath.Join(l.StorePath, "raft"),
 			Listen:       l.Listen,
 			DefragOnBoot: false,
 		}, logger)
@@ -239,7 +240,9 @@ func (l *Launcher) run() error {
 	service := kv.NewService(logger, kvStore)
 
 	var (
-		orgService manta.OrganizationService = service
+		orgService   manta.OrganizationService = service
+		oplogService manta.OperationLogService = service
+        dashboardService manta.DashboardService = service
 	)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -337,6 +340,9 @@ func (l *Launcher) run() error {
 		// http service
 		httpListener := muxer.Match(cmux.HTTP1Fast(http.MethodPatch))
 
+		checkService = oplog.NewCheckService(checkService, oplogService, logger)
+        dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
+
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
 			PromRegistry:                promRegistry,
@@ -348,7 +354,7 @@ func (l *Launcher) run() error {
 			UserService:                 service,
 			PasswordService:             service,
 			AuthorizationService:        service,
-			DashboardService:            authorizer.NewDashboardService(service),
+            DashboardService:            authorizer.NewDashboardService(dashboardService),
 			SessionService:              service,
 			Flusher:                     flusher,
 			ConfigurationService:        service,
@@ -356,6 +362,7 @@ func (l *Launcher) run() error {
 			RegistryService:             service,
 			SecretService:               service,
 			NotificationEndpointService: service,
+            OperationLogService: oplogService,
 
 			TenantStorage:         tenantStorage,
 			TenantTargetRetriever: targetRetrievers,
@@ -410,6 +417,10 @@ func (l *Launcher) run() error {
 			return nil
 
 		case err := <-errCh:
+            if err == os.ErrClosed {
+                return nil
+            }
+
 			if err != nil {
 				logger.Error("muxer serve error",
 					zap.Error(err))

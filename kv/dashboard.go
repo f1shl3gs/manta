@@ -320,13 +320,13 @@ func (s *Service) UpdateDashboardCell(ctx context.Context, upd manta.DashboardCe
 	return cell, nil
 }
 
-func (s *Service) DeleteDashboard(ctx context.Context, id manta.ID) error {
+func (s *Service) RemoveDashboard(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
-		return s.deleteDashboard(ctx, tx, id)
+        return s.removeDashboard(ctx, tx, id)
 	})
 }
 
-func (s *Service) deleteDashboard(ctx context.Context, tx Tx, id manta.ID) error {
+func (s *Service) removeDashboard(ctx context.Context, tx Tx, id manta.ID) error {
 	pk, err := id.Encode()
 	if err != nil {
 		return err

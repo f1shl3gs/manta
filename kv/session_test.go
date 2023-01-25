@@ -87,12 +87,12 @@ func CreatSession(t *testing.T, init initSessionService) {
 				uid := manta.ID(1)
 				s1, err := svc.CreateSession(ctx, uid)
 				require.NoError(t, err)
-				require.Equal(t, s1.UID, uid)
+				require.Equal(t, s1.UserID, uid)
 				require.EqualValues(t, s1.ID, 2)
 
 				s2, err := svc.CreateSession(ctx, uid)
 				require.NoError(t, err)
-				require.Equal(t, s2.UID, uid)
+				require.Equal(t, s2.UserID, uid)
 				require.EqualValues(t, s2.ID, 3)
 			},
 		},
@@ -118,7 +118,7 @@ func FindSession(t *testing.T, init initSessionService) {
 			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
 				session, err := svc.CreateSession(ctx, mockUID)
 				require.NoError(t, err)
-				require.Equal(t, mockUID, session.UID)
+				require.Equal(t, mockUID, session.UserID)
 
 				found, err := svc.FindSession(ctx, session.ID)
 				require.NoError(t, err)
@@ -149,7 +149,7 @@ func RenewSession(t *testing.T, init initSessionService) {
 			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
 				session, err := svc.CreateSession(ctx, mockUID)
 				require.NoError(t, err)
-				require.Equal(t, mockUID, session.UID)
+				require.Equal(t, mockUID, session.UserID)
 
 				expiration := time.Now().Add(time.Hour)
 				err = svc.RenewSession(ctx, session.ID, expiration)
@@ -183,7 +183,7 @@ func RevokeSession(t *testing.T, init initSessionService) {
 			fn: func(t *testing.T, ctx context.Context, svc manta.SessionService) {
 				session, err := svc.CreateSession(ctx, mockUID)
 				require.NoError(t, err)
-				require.Equal(t, mockUID, session.UID)
+				require.Equal(t, mockUID, session.UserID)
 
 				err = svc.RevokeSession(ctx, session.ID)
 				require.NoError(t, err)

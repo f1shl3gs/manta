@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/f1shl3gs/manta"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/f1shl3gs/manta"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDecodeFromString(t *testing.T) {

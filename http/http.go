@@ -48,6 +48,7 @@ type Backend struct {
 	NotificationEndpointService manta.NotificationEndpointService
 	SecretService               manta.SecretService
 	TemplateService             manta.TemplateService
+	OperationLogService         manta.OperationLogService
 
 	TenantStorage         multitsdb.TenantStorage
 	TenantTargetRetriever multitsdb.TenantTargetRetriever
@@ -114,11 +115,12 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewPromAPIHandler(backend, logger)
 	NewScrapeHandler(backend, logger)
 	NewRegistryService(backend, logger)
-	NewChecksHandler(logger, backend.router, backend.CheckService, backend.TaskService)
+	NewChecksHandler(logger, backend.router, backend.CheckService, backend.TaskService, backend.OperationLogService)
 	NewTaskHandler(backend, logger)
 	NewSecretHandler(logger, backend)
 	NewNotificationEendpointHandler(logger, backend)
 	NewClusterServiceHandler(logger, backend)
+    NewOperationLogHandler(backend)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),

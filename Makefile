@@ -20,6 +20,7 @@ ui: $(UISOURCES)
 
 .PHONY: clean
 clean:
+	rm -rf assets.tgz
 	rm -rf bin
 	rm -rf ui/build
 	rm -rf ui/node_modules
