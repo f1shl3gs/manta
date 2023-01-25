@@ -54,7 +54,7 @@ var AllResourceTypes = []ResourceType{
 	DashboardsResourceType,
 	OrgsResourceType,
 	ScrapesResourceType,
-    SecretsResourceType,
+	SecretsResourceType,
 	TasksResourceType,
 	UsersResourceType,
 }

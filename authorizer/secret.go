@@ -24,7 +24,7 @@ func (s *SecretService) LoadSecret(ctx context.Context, orgID manta.ID, k string
 		return nil, err
 	}
 
-    return s.service.LoadSecret(ctx, orgID, k)
+	return s.service.LoadSecret(ctx, orgID, k)
 }
 
 // GetSecrets retrieves desensitized secrets of 'orgID'
@@ -42,7 +42,7 @@ func (s *SecretService) PutSecret(ctx context.Context, secret *manta.Secret) (*m
 		return nil, err
 	}
 
-    return s.service.PutSecret(ctx, secret)
+	return s.service.PutSecret(ctx, secret)
 }
 
 // DeleteSecret deletes secrets by keys
@@ -51,5 +51,5 @@ func (s *SecretService) DeleteSecret(ctx context.Context, orgID manta.ID, keys .
 		return err
 	}
 
-    return s.service.DeleteSecret(ctx, orgID, keys...)
+	return s.service.DeleteSecret(ctx, orgID, keys...)
 }
