@@ -239,6 +239,7 @@ func (l *Launcher) run() error {
 		dashboardService manta.DashboardService    = service
 		taskService      manta.TaskService         = service
 		configService    manta.ConfigService       = service
+		secretService    manta.SecretService       = service
 	)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -341,6 +342,7 @@ func (l *Launcher) run() error {
 		checkService = oplog.NewCheckService(checkService, oplogService, logger)
 		configService = oplog.NewConfigService(configService, oplogService, logger)
 		dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
+		secretService = oplog.NewSecretService(secretService, oplogService, logger)
 
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
@@ -359,7 +361,7 @@ func (l *Launcher) run() error {
 			ConfigService:               authorizer.NewConfigService(configService),
 			ScrapeTargetService:         authorizer.NewScrapeTargetService(scrapeTargetService),
 			RegistryService:             service,
-			SecretService:               service,
+			SecretService:               authorizer.NewSecretService(secretService),
 			NotificationEndpointService: service,
 			OperationLogService:         oplogService,
 			TenantStorage:               tenantStorage,

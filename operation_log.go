@@ -3,6 +3,8 @@ package manta
 import (
 	"context"
 	"time"
+
+	"github.com/cespare/xxhash/v2"
 )
 
 const (
@@ -41,6 +43,8 @@ type OperationLogEntry struct {
 }
 
 func (o *OperationLogEntry) Valid() error {
+	// TODO: Some resource like secret does not have a resource ID,
+	// so it will fail here
 	if !o.ResourceID.Valid() {
 		return ErrInvalidResourceID
 	}
@@ -67,4 +71,16 @@ type OperationLogService interface {
 	FindOperationLogsByUser(ctx context.Context, userID ID, opts FindOptions) ([]*OperationLogEntry, int, error)
 
 	// TODO: add a method to delete log entry!?
+}
+
+// UniqueKeyToID transform a key to ID.
+//
+// Secret don't have a resource ID, but an unique key, OperationLogService need
+// a ResourceID to generate key to our KV storage.
+//
+// When AddLogEntry called, key is transformed to an ID and saved into KV store.
+// If user want find the operation logs, just transform it again, we don't need
+// to transform an ID to the Key
+func UniqueKeyToID(key string) ID {
+	return ID(xxhash.Sum64String(key))
 }

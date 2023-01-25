@@ -37,6 +37,7 @@ const (
 	ConfigsResourceType        = ResourceType("configs")
 	DashboardsResourceType     = ResourceType("dashboards")
 	OrgsResourceType           = ResourceType("orgs")
+	SecretsResourceType        = ResourceType("scretes")
 	ScrapesResourceType        = ResourceType("scrapes")
 	TasksResourceType          = ResourceType("tasks")
 	UsersResourceType          = ResourceType("users")

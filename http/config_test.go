@@ -11,8 +11,8 @@ import (
 )
 
 func TestWatch(t *testing.T) {
-    t.SkipNow()
-    
+	t.SkipNow()
+
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8088/api/v1/configs/0a6a1631da5aa000?orgID=0a6723777c969000&watch=true", nil)
 	assert.NoError(t, err)
 

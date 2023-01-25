@@ -97,6 +97,17 @@ func authorizeCreate(
 	return authorizeOrgWriteResource(ctx, rt, oid)
 }
 
+// authorizeOrgReadResource authorizes the given org to read the resources of the given type.
+// NOTE: this is pretty much the same as AuthorizeRead, in the case that the resource ID is ignored.
+// Use it in the case that you do not know which resource in particular you want to give access to.
+func authorizeOrgReadResource(
+	ctx context.Context,
+	rt manta.ResourceType,
+	oid manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
+	return authorize(ctx, manta.ReadAction, rt, nil, &oid)
+}
+
 // authorizeOrgWriteResource authorizes the given org to write the resources of the given type.
 // NOTE: this is pretty much the same as AuthorizeWrite, in the case that the resource ID is ignored.
 // Use it in the case that you do not know which resource in particular you want to give access to.
