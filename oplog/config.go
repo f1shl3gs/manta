@@ -18,8 +18,6 @@ type ConfigService struct {
 	oplog  manta.OperationLogService
 }
 
-var _ manta.ConfigService = &ConfigService{}
-
 func NewConfigService(service manta.ConfigService, oplog manta.OperationLogService, logger *zap.Logger) *ConfigService {
 	return &ConfigService{
 		ConfigService: service,
