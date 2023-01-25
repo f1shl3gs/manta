@@ -34,7 +34,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 		logger:              logger.With(zap.String("handler", "dashboard")),
 		organizationService: backend.OrganizationService,
 		dashboardService:    backend.DashboardService,
-        operationLogService: backend.OperationLogService,
+		operationLogService: backend.OperationLogService,
 	}
 
 	h.HandlerFunc(http.MethodGet, dashboardsPrefix, h.listDashboard)

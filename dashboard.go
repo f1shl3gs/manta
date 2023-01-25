@@ -267,7 +267,7 @@ type DashboardService interface {
 
 	GetDashboardCell(ctx context.Context, dashboardID, cellID ID) (*Cell, error)
 
-    // RemoveDashboard removes dashboard by id
+	// RemoveDashboard removes dashboard by id
 	RemoveDashboard(ctx context.Context, id ID) error
 
 	ReplaceDashboardCells(ctx context.Context, dashboardID ID, cells []Cell) error

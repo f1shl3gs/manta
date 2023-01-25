@@ -120,7 +120,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewSecretHandler(logger, backend)
 	NewNotificationEendpointHandler(logger, backend)
 	NewClusterServiceHandler(logger, backend)
-    NewOperationLogHandler(backend)
+	NewOperationLogHandler(backend)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),

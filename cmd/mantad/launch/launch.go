@@ -2,7 +2,7 @@ package launch
 
 import (
 	"context"
-    "math"
+	"math"
 	"net"
 	"net/http"
 	"os"
@@ -240,9 +240,9 @@ func (l *Launcher) run() error {
 	service := kv.NewService(logger, kvStore)
 
 	var (
-		orgService   manta.OrganizationService = service
-		oplogService manta.OperationLogService = service
-        dashboardService manta.DashboardService = service
+		orgService       manta.OrganizationService = service
+		oplogService     manta.OperationLogService = service
+		dashboardService manta.DashboardService    = service
 	)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -341,7 +341,7 @@ func (l *Launcher) run() error {
 		httpListener := muxer.Match(cmux.HTTP1Fast(http.MethodPatch))
 
 		checkService = oplog.NewCheckService(checkService, oplogService, logger)
-        dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
+		dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
 
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
@@ -354,7 +354,7 @@ func (l *Launcher) run() error {
 			UserService:                 service,
 			PasswordService:             service,
 			AuthorizationService:        service,
-            DashboardService:            authorizer.NewDashboardService(dashboardService),
+			DashboardService:            authorizer.NewDashboardService(dashboardService),
 			SessionService:              service,
 			Flusher:                     flusher,
 			ConfigurationService:        service,
@@ -362,7 +362,7 @@ func (l *Launcher) run() error {
 			RegistryService:             service,
 			SecretService:               service,
 			NotificationEndpointService: service,
-            OperationLogService: oplogService,
+			OperationLogService:         oplogService,
 
 			TenantStorage:         tenantStorage,
 			TenantTargetRetriever: targetRetrievers,
@@ -417,9 +417,9 @@ func (l *Launcher) run() error {
 			return nil
 
 		case err := <-errCh:
-            if err == os.ErrClosed {
-                return nil
-            }
+			if err == os.ErrClosed {
+				return nil
+			}
 
 			if err != nil {
 				logger.Error("muxer serve error",

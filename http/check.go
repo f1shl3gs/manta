@@ -32,7 +32,7 @@ func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckS
 		logger:       logger.With(zap.String("handler", "check")),
 		checkService: cs,
 		taskService:  ts,
-        oplogService: ol,
+		oplogService: ol,
 	}
 
 	h.HandlerFunc(http.MethodGet, checksPrefix, h.handleList)

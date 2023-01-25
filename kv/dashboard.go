@@ -322,7 +322,7 @@ func (s *Service) UpdateDashboardCell(ctx context.Context, upd manta.DashboardCe
 
 func (s *Service) RemoveDashboard(ctx context.Context, id manta.ID) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
-        return s.removeDashboard(ctx, tx, id)
+		return s.removeDashboard(ctx, tx, id)
 	})
 }
 

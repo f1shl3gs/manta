@@ -5,7 +5,7 @@ import (
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/http/router"
-    
+
 	"go.uber.org/zap"
 )
 
@@ -22,7 +22,7 @@ type OperationLogHandler struct {
 
 func NewOperationLogHandler(backend *Backend) {
 	h := &OperationLogHandler{
-        Router: backend.router,
+		Router:       backend.router,
 		oplogService: backend.OperationLogService,
 	}
 
