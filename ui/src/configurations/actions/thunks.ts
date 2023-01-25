@@ -1,23 +1,38 @@
-import {getOrg} from 'src/organizations/selectors'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  defaultDeletionNotification,
-  defaultErrorNotification,
-} from 'src/shared/constants/notification'
+// Libraries
+import {normalize} from 'normalizr'
+
+// Types
+import {RemoteDataState} from '@influxdata/clockface'
 import {GetState} from 'src/types/stores'
-import request from 'src/shared/utils/request'
-import {getByID} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import {Configuration} from 'src/types/configuration'
-import {normalize} from 'normalizr'
 import {ConfigurationEntities} from 'src/types/schemas'
-import {arrayOfConfigurations, configurationSchema} from 'src/schemas'
+
+// Actions
+import {notify} from 'src/shared/actions/notifications'
 import {
   removeConfig,
   setConfig,
   setConfigs,
 } from 'src/configurations/actions/creators'
-import {RemoteDataState} from '@influxdata/clockface'
+
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {getByID} from 'src/resources/selectors'
+
+// Schemas
+import {arrayOfConfigurations, configurationSchema} from 'src/schemas'
+
+// Utils
+import request from 'src/shared/utils/request'
+
+// Constants
+import {
+  defaultDeletionNotification,
+  defaultErrorNotification,
+} from 'src/shared/constants/notification'
+
+const configsPath = '/api/v1/configs'
 
 export const getConfigs =
   () =>
@@ -26,7 +41,7 @@ export const getConfigs =
     const org = getOrg(state)
 
     try {
-      const resp = await request(`/api/v1/configurations?orgID=${org.id}`)
+      const resp = await request(`/api/v1/configs?orgID=${org.id}`)
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
@@ -55,7 +70,7 @@ export const createConfig =
     const org = getOrg(state)
 
     try {
-      const resp = await request('/api/v1/configurations', {
+      const resp = await request(configsPath, {
         method: 'POST',
         body: {
           name,
@@ -90,7 +105,7 @@ export const deleteConfig =
   (id: string) =>
   async (dispatch): Promise<void> => {
     try {
-      const resp = await request(`/api/v1/configurations/${id}`, {
+      const resp = await request(`${configsPath}/${id}`, {
         method: 'DELETE',
       })
       if (resp.status !== 200) {
@@ -138,7 +153,7 @@ export const updateConfig =
     }
 
     try {
-      const resp = await request(`/api/v1/configurations/${id}`, {
+      const resp = await request(`${configsPath}/${id}`, {
         method: 'PATCH',
         body: updates,
       })
