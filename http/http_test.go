@@ -2,8 +2,8 @@ package http
 
 import (
 	"context"
-    "github.com/f1shl3gs/manta/telemetry/prom"
-    "os"
+	"github.com/f1shl3gs/manta/telemetry/prom"
+	"os"
 	"testing"
 
 	"github.com/f1shl3gs/manta/bolt"
@@ -36,7 +36,7 @@ func NewTestHTTPService(t *testing.T) (*Service, *Backend) {
 		OnBoardingService:   service,
 		PasswordService:     service,
 		SessionService:      service,
-        PromRegistry: prom.NewRegistry(logger),
+		PromRegistry:        prom.NewRegistry(logger),
 	}
 
 	// This is very trick, this will deletedashboard the data file, and

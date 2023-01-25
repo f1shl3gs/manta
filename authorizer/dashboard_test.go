@@ -64,7 +64,7 @@ func TestDashboardService_FindDashboardByID(t *testing.T) {
 			id: 1,
 			want: &manta.Error{
 				Code: manta.EUnauthorized,
-                Msg:  "read:orgs/000000000000000a/dashboards/0000000000000001 is unauthorized",
+				Msg:  "read:orgs/000000000000000a/dashboards/0000000000000001 is unauthorized",
 			},
 		},
 	}
