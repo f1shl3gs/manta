@@ -54,7 +54,10 @@ func (h *OperationLogHandler) handleList(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func findOplogByResourceID(r *http.Request, oplogService manta.OperationLogService) ([]*manta.OperationLogEntry, int, error) {
+func findOplogByResourceID(
+	r *http.Request,
+	oplogService manta.OperationLogService,
+) ([]*manta.OperationLogEntry, int, error) {
 	ctx := r.Context()
 
 	id, err := idFromPath(r)

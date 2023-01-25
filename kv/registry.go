@@ -30,7 +30,7 @@ func (s *Service) Register(ctx context.Context, ins *manta.Instance) error {
 			return err
 		}
 
-		return b.Put([]byte(ins.Uuid), data)
+		return b.Put([]byte(ins.UUID), data)
 	})
 }
 

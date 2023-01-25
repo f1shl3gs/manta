@@ -21,8 +21,13 @@ var (
 	UrmUserIndexBucket = []byte("userresourcemappinguserindex")
 )
 
-// FindUserResourceMappings returns a list of UserResourceMappings that match filter and the total count of matching mappings.
-func (s *Service) FindUserResourceMappings(ctx context.Context, filter manta.UserResourceMappingFilter, opts ...manta.FindOptions) ([]*manta.UserResourceMapping, int, error) {
+// FindUserResourceMappings returns a list of UserResourceMappings that match filter and the
+// total count of matching mappings.
+func (s *Service) FindUserResourceMappings(
+	ctx context.Context,
+	filter manta.UserResourceMappingFilter,
+	opts ...manta.FindOptions,
+) ([]*manta.UserResourceMapping, int, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
@@ -38,7 +43,10 @@ func (s *Service) FindUserResourceMappings(ctx context.Context, filter manta.Use
 		} else if filter.ResourceID.Valid() {
 			list, total, err = findUserResourceMappingByResource(tx, filter, opts[0])
 		} else {
-			// TODO
+			return &manta.Error{
+				Code: manta.EInvalid,
+				Msg:  "invalid filter",
+			}
 		}
 
 		return err
@@ -51,7 +59,11 @@ func (s *Service) FindUserResourceMappings(ctx context.Context, filter manta.Use
 	return list, total, nil
 }
 
-func findUserResourceMappingByUser(tx Tx, filter manta.UserResourceMappingFilter, opts manta.FindOptions) ([]*manta.UserResourceMapping, int, error) {
+func findUserResourceMappingByUser(
+	tx Tx,
+	filter manta.UserResourceMappingFilter,
+	opts manta.FindOptions,
+) ([]*manta.UserResourceMapping, int, error) {
 	var (
 		list []*manta.UserResourceMapping
 		seen = 0
@@ -79,9 +91,8 @@ func findUserResourceMappingByUser(tx Tx, filter manta.UserResourceMappingFilter
 	}
 
 	c, err := b.Cursor()
-	k, _ := c.Seek(prefix)
-	if k == nil {
-		k = nil
+	if err != nil {
+		return nil, 0, err
 	}
 
 	for k, _ := c.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, _ = c.Next() {
@@ -123,13 +134,17 @@ func findUserResourceMappingByUser(tx Tx, filter manta.UserResourceMappingFilter
 			list = append(list, m)
 		}
 
-		seen += 1
+		seen++
 	}
 
 	return list, len(list), nil
 }
 
-func findUserResourceMappingByResource(tx Tx, filter manta.UserResourceMappingFilter, opts manta.FindOptions) ([]*manta.UserResourceMapping, int, error) {
+func findUserResourceMappingByResource(
+	tx Tx,
+	filter manta.UserResourceMappingFilter,
+	opts manta.FindOptions,
+) ([]*manta.UserResourceMapping, int, error) {
 	var (
 		list []*manta.UserResourceMapping
 		seen = 0
@@ -164,7 +179,7 @@ func findUserResourceMappingByResource(tx Tx, filter manta.UserResourceMappingFi
 			list = append(list, m)
 		}
 
-		seen += 1
+		seen++
 	}
 
 	return list, len(list), nil

@@ -3,6 +3,8 @@ package wal
 import (
 	"crypto/rand"
 	"fmt"
+	"github.com/f1shl3gs/manta/pkg/mmap"
+	"github.com/pkg/errors"
 	"math"
 	"os"
 	"reflect"
@@ -14,6 +16,56 @@ import (
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap/zaptest"
 )
+
+// Append the new entries to storage.
+func (w *DiskStorage) addEntries(entries []raftpb.Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+
+	first, err := w.FirstIndex()
+	if err != nil {
+		return err
+	}
+	firste := entries[0].Index
+	if firste+uint64(len(entries))-1 < first {
+		// All of these entries have already been compacted.
+		return nil
+	}
+	if first > firste {
+		// Truncate compacted entries
+		entries = entries[first-firste:]
+	}
+
+	// AddEntries would zero out all the entries starting entries[0].Index before writing.
+	if err := w.wal.AddEntries(entries); err != nil {
+		return errors.Wrapf(err, "while adding entries")
+	}
+	return nil
+}
+
+// reset resets the entries. Used for testing.
+func (w *DiskStorage) reset(es []raftpb.Entry) error {
+	// Clean out the state.
+	if err := w.wal.reset(); err != nil {
+		return err
+	}
+	return w.addEntries(es)
+}
+
+// reset deletes all the previous log files, and resets the current log file.
+func (l *wal) reset() error {
+	for _, ef := range l.files {
+		if err := ef.delete(); err != nil {
+			return errors.Wrapf(err, "while deleting %s", ef.Fd.Name())
+		}
+	}
+
+	l.files = l.files[:0]
+	mmap.ZeroOut(l.current.Data, 0, logFileOffset)
+	l.nextEntryIdx = 0
+	return nil
+}
 
 func TestStorageTerm(t *testing.T) {
 	logger := zaptest.NewLogger(t)
@@ -267,11 +319,11 @@ func TestMetaFile(t *testing.T) {
 
 	mf, err := newMetaFile(dir, zaptest.NewLogger(t))
 	require.NoError(t, err)
-	id := mf.Uint(RaftId)
+	id := mf.Uint(RaftID)
 	require.Zero(t, id)
 
-	mf.SetUint(RaftId, 10)
-	id = mf.Uint(RaftId)
+	mf.SetUint(RaftID, 10)
+	id = mf.Uint(RaftID)
 	require.NoError(t, err)
 	require.Equal(t, uint64(10), id)
 

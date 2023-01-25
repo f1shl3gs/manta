@@ -101,7 +101,10 @@ func (s *Service) FindSession(ctx context.Context, id manta.ID) (*manta.Session,
 			return manta.ErrSessionExpired
 		}
 
-		urms, _, err := findUserResourceMappingByUser(tx, manta.UserResourceMappingFilter{UserID: session.UserID}, manta.FindOptions{})
+		urms, _, err := findUserResourceMappingByUser(
+			tx,
+			manta.UserResourceMappingFilter{UserID: session.UserID},
+			manta.FindOptions{})
 		if err != nil {
 			return err
 		}

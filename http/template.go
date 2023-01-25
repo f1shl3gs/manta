@@ -35,7 +35,7 @@ func NewTemplateHandler(backend *Backend, logger *zap.Logger) {
 func (h *TemplateHandler) list(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

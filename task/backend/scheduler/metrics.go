@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type SchedulerMetrics struct {
+type ScheduleMetrics struct {
 	totalExecuteCalls   prometheus.Counter
 	totalExecuteFailure prometheus.Counter
 	scheduleCalls       prometheus.Counter
@@ -23,11 +23,11 @@ type executingTasks struct {
 	ts   *TreeScheduler
 }
 
-func NewSchedulerMetrics(te *TreeScheduler) *SchedulerMetrics {
+func NewSchedulerMetrics(te *TreeScheduler) *ScheduleMetrics {
 	const namespace = "task"
 	const subsystem = "scheduler"
 
-	return &SchedulerMetrics{
+	return &ScheduleMetrics{
 		totalExecuteCalls: prometheus.NewCounter(prometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
@@ -80,7 +80,7 @@ func NewSchedulerMetrics(te *TreeScheduler) *SchedulerMetrics {
 }
 
 // Collectors satisfies the prom.PrometheusCollector interface.
-func (em *SchedulerMetrics) Collectors() []prometheus.Collector {
+func (em *ScheduleMetrics) Collectors() []prometheus.Collector {
 	return []prometheus.Collector{
 		em.totalExecuteCalls,
 		em.totalExecuteFailure,
@@ -93,23 +93,23 @@ func (em *SchedulerMetrics) Collectors() []prometheus.Collector {
 	}
 }
 
-func (em *SchedulerMetrics) schedule(taskID ID) {
+func (em *ScheduleMetrics) schedule(taskID ID) {
 	em.scheduleCalls.Inc()
 }
 
-func (em *SchedulerMetrics) scheduleFail(taskID ID) {
+func (em *ScheduleMetrics) scheduleFail(taskID ID) {
 	em.scheduleFails.Inc()
 }
 
-func (em *SchedulerMetrics) release(taskID ID) {
+func (em *ScheduleMetrics) release(taskID ID) {
 	em.releaseCalls.Inc()
 }
 
-func (em *SchedulerMetrics) reportScheduleDelay(d time.Duration) {
+func (em *ScheduleMetrics) reportScheduleDelay(d time.Duration) {
 	em.scheduleDelay.Observe(d.Seconds())
 }
 
-func (em *SchedulerMetrics) reportExecution(err error, d time.Duration) {
+func (em *ScheduleMetrics) reportExecution(err error, d time.Duration) {
 	em.totalExecuteCalls.Inc()
 	em.executeDelta.Observe(d.Seconds())
 	if err != nil {

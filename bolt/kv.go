@@ -5,17 +5,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
 	"path/filepath"
 	"time"
 
-	bolt "go.etcd.io/bbolt"
-	"go.uber.org/zap"
-
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/pkg/tracing"
+
+	"github.com/prometheus/client_golang/prometheus"
+	bolt "go.etcd.io/bbolt"
+	"go.uber.org/zap"
 )
 
 // check that *KVStore implement kv.SchemaStore interface.
@@ -288,7 +288,8 @@ func (b *Bucket) ForwardCursor(seek []byte, opts ...kv.CursorOption) (kv.Forward
 	key, value = cursor.Seek(seek)
 
 	if config.Prefix != nil && !bytes.HasPrefix(seek, config.Prefix) {
-		return nil, fmt.Errorf("seek bytes %q not prefixed with %q: %w", string(seek), string(config.Prefix), kv.ErrSeekMissingPrefix)
+		return nil, fmt.Errorf("seek bytes %q not prefixed with %q: %w",
+			string(seek), string(config.Prefix), kv.ErrSeekMissingPrefix)
 	}
 
 	c := &Cursor{

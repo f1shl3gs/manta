@@ -21,7 +21,8 @@ type TaskControlService interface {
 	// StartManualRun pulls a manual run from the list and moves it to currently running.
 	StartManualRun(ctx context.Context, taskID, runID manta.ID) (*manta.Run, error)
 
-	// FinishRun removes runID from the list of running tasks and if its `ScheduledFor` is later then last completed update it.
+	// FinishRun removes runID from the list of running tasks and if its `ScheduledFor`
+	// is later then last completed update it.
 	FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta.Run, error)
 
 	// UpdateRunState sets the run state at the respective time.

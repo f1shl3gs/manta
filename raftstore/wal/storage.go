@@ -12,7 +12,7 @@ import (
 )
 
 // versionKey is hardcoded into the special key used to fetch the maximum version from the DB.
-const versionKey = 1
+// const versionKey = 1
 
 // DiskStorage handles disk access and writing for the RAFT write-ahead log.
 // Dir contains wal.meta file and <start idx zero padded>.wal files.
@@ -110,20 +110,11 @@ func (w *DiskStorage) SetUint(info MetaInfo, id uint64) { w.meta.SetUint(info, i
 func (w *DiskStorage) Uint(info MetaInfo) uint64        { return w.meta.Uint(info) }
 
 func (w *DiskStorage) NodeID() uint64 {
-	return w.meta.Uint(RaftId)
+	return w.meta.Uint(RaftID)
 }
 
 func (w *DiskStorage) SetNodeID(id uint64) {
-	w.meta.SetUint(RaftId, id)
-}
-
-// reset resets the entries. Used for testing.
-func (w *DiskStorage) reset(es []raftpb.Entry) error {
-	// Clean out the state.
-	if err := w.wal.reset(); err != nil {
-		return err
-	}
-	return w.addEntries(es)
+	w.meta.SetUint(RaftID, id)
 }
 
 func (w *DiskStorage) HardState() (raftpb.HardState, error) {
@@ -328,33 +319,6 @@ func (w *DiskStorage) Save(h *raftpb.HardState, es []raftpb.Entry, snap *raftpb.
 	}
 	if err := w.meta.StoreSnapshot(snap); err != nil {
 		return err
-	}
-	return nil
-}
-
-// Append the new entries to storage.
-func (w *DiskStorage) addEntries(entries []raftpb.Entry) error {
-	if len(entries) == 0 {
-		return nil
-	}
-
-	first, err := w.FirstIndex()
-	if err != nil {
-		return err
-	}
-	firste := entries[0].Index
-	if firste+uint64(len(entries))-1 < first {
-		// All of these entries have already been compacted.
-		return nil
-	}
-	if first > firste {
-		// Truncate compacted entries
-		entries = entries[first-firste:]
-	}
-
-	// AddEntries would zero out all the entries starting entries[0].Index before writing.
-	if err := w.wal.AddEntries(entries); err != nil {
-		return errors.Wrapf(err, "while adding entries")
 	}
 	return nil
 }

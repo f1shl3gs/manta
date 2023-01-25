@@ -118,7 +118,10 @@ func (s *Service) findAuthorizationByToken(ctx context.Context, tx Tx, token str
 	return auth, nil
 }
 
-func (s *Service) FindAuthorizations(ctx context.Context, filter manta.AuthorizationFilter) ([]*manta.Authorization, error) {
+func (s *Service) FindAuthorizations(
+	ctx context.Context,
+	filter manta.AuthorizationFilter,
+) ([]*manta.Authorization, error) {
 	var (
 		as  []*manta.Authorization
 		err error
@@ -136,7 +139,11 @@ func (s *Service) FindAuthorizations(ctx context.Context, filter manta.Authoriza
 	return as, nil
 }
 
-func (s *Service) findAuthorizations(ctx context.Context, tx Tx, filter manta.AuthorizationFilter) ([]*manta.Authorization, error) {
+func (s *Service) findAuthorizations(
+	ctx context.Context,
+	tx Tx,
+	filter manta.AuthorizationFilter,
+) ([]*manta.Authorization, error) {
 	if filter.UserID != nil {
 		return s.findAuthorizationsByUser(ctx, tx, *filter.UserID)
 	}
@@ -265,7 +272,11 @@ func (s *Service) putAuthorization(ctx context.Context, tx Tx, auth *manta.Autho
 	return b.Put(pk, data)
 }
 
-func (s *Service) UpdateAuthorization(ctx context.Context, id manta.ID, u manta.UpdateAuthorization) (*manta.Authorization, error) {
+func (s *Service) UpdateAuthorization(
+	ctx context.Context,
+	id manta.ID,
+	u manta.UpdateAuthorization,
+) (*manta.Authorization, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
@@ -286,7 +297,12 @@ func (s *Service) UpdateAuthorization(ctx context.Context, id manta.ID, u manta.
 	return a, nil
 }
 
-func (s *Service) updateAuthorization(ctx context.Context, tx Tx, id manta.ID, u manta.UpdateAuthorization) (*manta.Authorization, error) {
+func (s *Service) updateAuthorization(
+	ctx context.Context,
+	tx Tx,
+	id manta.ID,
+	u manta.UpdateAuthorization,
+) (*manta.Authorization, error) {
 	a, err := s.findAuthorizationByID(ctx, tx, id)
 	if err != nil {
 		return nil, err

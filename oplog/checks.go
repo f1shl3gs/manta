@@ -3,11 +3,12 @@ package oplog
 import (
 	"context"
 	"encoding/json"
-	"go.uber.org/zap"
 	"time"
 
 	"github.com/f1shl3gs/manta"
 	"github.com/f1shl3gs/manta/authorizer"
+
+	"go.uber.org/zap"
 )
 
 type CheckService struct {
@@ -17,10 +18,15 @@ type CheckService struct {
 	oplog  manta.OperationLogService
 }
 
-func NewCheckService(checkService manta.CheckService, oplog manta.OperationLogService, logger *zap.Logger) *CheckService {
+func NewCheckService(
+	checkService manta.CheckService,
+	oplog manta.OperationLogService,
+	logger *zap.Logger,
+) *CheckService {
 	return &CheckService{
 		CheckService: checkService,
 		oplog:        oplog,
+		logger:       logger,
 	}
 }
 

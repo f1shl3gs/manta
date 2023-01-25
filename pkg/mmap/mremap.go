@@ -12,7 +12,7 @@ import (
 func mremap(data []byte, size int) ([]byte, error) {
 	//nolint:lll
 	// taken from <https://github.com/torvalds/linux/blob/f8394f232b1eab649ce2df5c5f15b0e528c92091/include/uapi/linux/mman.h#L8>
-	const MREMAP_MAYMOVE = 0x1
+	const mRemapMayMove = 0x1
 
 	header := (*reflect.SliceHeader)(unsafe.Pointer(&data))
 	mmapAddr, mmapSize, errno := unix.Syscall6(
@@ -20,7 +20,7 @@ func mremap(data []byte, size int) ([]byte, error) {
 		header.Data,
 		uintptr(header.Len),
 		uintptr(size),
-		uintptr(MREMAP_MAYMOVE),
+		uintptr(mRemapMayMove),
 		0,
 		0,
 	)

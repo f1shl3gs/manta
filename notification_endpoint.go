@@ -71,6 +71,7 @@ type NotificationEndpointService interface {
 	// Returns the new notification endpoint after patch.
 	PatchNotificationEndpoint(ctx context.Context, id ID, upd NotificationEndpointUpdate) (NotificationEndpoint, error)
 
-	// DeleteNotificationEndpoint remove a notification endpoint by ID, return it's secret fields, orgID for further deletion
+	// DeleteNotificationEndpoint remove a notification endpoint by ID, return it's secret
+	// fields, orgID for further deletion
 	DeleteNotificationEndpoint(ctx context.Context, id ID) ([]SecretField, ID, error)
 }

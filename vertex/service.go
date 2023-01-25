@@ -19,7 +19,10 @@ type CoordinatingVertexService struct {
 	broadcasters map[manta.ID]*broadcast.Broadcaster[*manta.Configuration]
 }
 
-func NewCoordinatingVertexService(configurationService manta.ConfigurationService, logger *zap.Logger) *CoordinatingVertexService {
+func NewCoordinatingVertexService(
+	configurationService manta.ConfigurationService,
+	logger *zap.Logger,
+) *CoordinatingVertexService {
 	cs := &CoordinatingVertexService{
 		ConfigurationService: configurationService,
 		logger:               logger,
@@ -50,11 +53,18 @@ func (s *CoordinatingVertexService) GetConfiguration(ctx context.Context, id man
 	return s.ConfigurationService.GetConfiguration(ctx, id)
 }
 
-func (s *CoordinatingVertexService) FindConfigurations(ctx context.Context, filter manta.ConfigurationFilter) ([]*manta.Configuration, error) {
+func (s *CoordinatingVertexService) FindConfigurations(
+	ctx context.Context,
+	filter manta.ConfigurationFilter,
+) ([]*manta.Configuration, error) {
 	return s.ConfigurationService.FindConfigurations(ctx, filter)
 }
 
-func (s *CoordinatingVertexService) UpdateConfiguration(ctx context.Context, id manta.ID, upd manta.ConfigurationUpdate) (*manta.Configuration, error) {
+func (s *CoordinatingVertexService) UpdateConfiguration(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.ConfigurationUpdate,
+) (*manta.Configuration, error) {
 	cf, err := s.ConfigurationService.UpdateConfiguration(ctx, id, upd)
 	if err != nil {
 		return nil, err

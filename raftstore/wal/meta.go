@@ -17,8 +17,8 @@ import (
 type MetaInfo int
 
 const (
-	RaftId MetaInfo = iota
-	ClusterId
+	RaftID MetaInfo = iota
+	ClusterID
 	CheckpointIndex
 	SnapshotIndex
 	SnapshotTerm
@@ -27,9 +27,9 @@ const (
 // getOffset returns offsets in wal.meta file.
 func getOffset(info MetaInfo) int {
 	switch info {
-	case RaftId:
+	case RaftID:
 		return 0
-	case ClusterId:
+	case ClusterID:
 		return 8
 	case CheckpointIndex:
 		return 16
@@ -61,14 +61,12 @@ func readSlice(dst []byte, offset int) []byte {
 	sz := binary.BigEndian.Uint32(b)
 	return b[4 : 4+sz]
 }
+
 func writeSlice(dst []byte, src []byte) {
 	binary.BigEndian.PutUint32(dst[:4], uint32(len(src)))
 	copy(dst[4:], src)
 }
-func allocateSlice(dst []byte, sz int) []byte {
-	binary.BigEndian.PutUint32(dst[:4], uint32(sz))
-	return dst[4 : 4+sz]
-}
+
 func sliceSize(dst []byte, offset int) int {
 	sz := binary.BigEndian.Uint32(dst[offset:])
 	return 4 + int(sz)
@@ -76,7 +74,7 @@ func sliceSize(dst []byte, offset int) int {
 
 // metaFile stores the RAFT metadata (e.g RAFT ID, snapshot, hard state).
 type metaFile struct {
-	*mmap.MmapFile
+	*mmap.File
 
 	logger *zap.Logger
 }
@@ -91,7 +89,7 @@ func newMetaFile(dir string, logger *zap.Logger) (*metaFile, error) {
 	} else if err != nil {
 		return nil, errors.Wrapf(err, "unable to open meta file")
 	}
-	return &metaFile{MmapFile: mf, logger: logger}, nil
+	return &metaFile{File: mf, logger: logger}, nil
 }
 
 func (m *metaFile) bufAt(info MetaInfo) []byte {

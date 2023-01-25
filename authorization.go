@@ -9,8 +9,10 @@ import (
 )
 
 var (
-	// ErrAuthorizerNotSupported notes that the provided authorizer is not supported for the action you are trying to perform.
-	ErrAuthorizerNotSupported = errors.New("your authorizer is not supported, please use *platform.Authorization as authorizer")
+	// ErrAuthorizerNotSupported notes that the provided authorizer is not supported
+	// for the action you are trying to perform.
+	ErrAuthorizerNotSupported = errors.New("your authorizer is not supported, please " +
+		"use *platform.Authorization as authorizer")
 	// ErrInvalidResourceType notes that the provided resource is invalid
 	ErrInvalidResourceType = errors.New("unknown resource type for permission")
 	// ErrInvalidAction notes that the provided action is invalid
@@ -39,7 +41,8 @@ const (
 	TasksResourceType          = ResourceType("tasks")
 	UsersResourceType          = ResourceType("users")
 
-	// InstanceResourceType is a special permission that allows ownership of the entire instance (creating orgs/operator tokens/etc)
+	// InstanceResourceType is a special permission that allows ownership of the entire
+	// instance (creating orgs/operator tokens/etc)
 	InstanceResourceType = ResourceType("instance")
 )
 

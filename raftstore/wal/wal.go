@@ -360,20 +360,6 @@ func (l *wal) deleteBefore(raftIndex uint64) {
 	return
 }
 
-// reset deletes all the previous log files, and resets the current log file.
-func (l *wal) reset() error {
-	for _, ef := range l.files {
-		if err := ef.delete(); err != nil {
-			return errors.Wrapf(err, "while deleting %s", ef.Fd.Name())
-		}
-	}
-
-	l.files = l.files[:0]
-	mmap.ZeroOut(l.current.Data, 0, logFileOffset)
-	l.nextEntryIdx = 0
-	return nil
-}
-
 // Moves the current logFile into l.files and creates a new logFile.
 func (l *wal) rotate(firstIndex uint64, offset int) error {
 	// Select the name for the new file based on the names of the existing files.
@@ -438,7 +424,7 @@ func openWal(dir string, logger *zap.Logger) (*wal, error) {
 	}
 
 	// No files found. Create a new file.
-	nextFid += 1
+	nextFid++
 	ef, err := openLogFile(dir, nextFid, w.logger)
 	w.current = ef
 	return w, err

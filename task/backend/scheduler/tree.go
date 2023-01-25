@@ -26,42 +26,52 @@ const (
 // TreeScheduler is a Scheduler based on a btree.
 // It calls Executor in-order per ID.  That means you are guaranteed that for a specific ID,
 //
-// - The scheduler should, after creation, automatically call ExecutorFunc, when a task should run as defined by its Schedulable.
+//   - The scheduler should, after creation, automatically call ExecutorFunc, when a task should
+//     run as defined by its Schedulable.
 //
-// - the scheduler's should not be able to get into a state where blocks Release and Schedule indefinitely.
+//   - the scheduler's should not be able to get into a state where blocks Release and Schedule
+//     indefinitely.
 //
-// - Schedule should add a Schedulable to being scheduled, and Release should remove a task from being scheduled.
+//   - Schedule should add a Schedulable to being scheduled, and Release should remove a task
+//     from being scheduled.
 //
-// - Calling of ExecutorFunc should be serial in time on a per taskID basis. I.E.: the run at 12:00 will go before the run at 12:01.
+//   - Calling of ExecutorFunc should be serial in time on a per taskID basis. I.E.: the run
+//     at 12:00 will go before the run at 12:01.
 //
 // Design:
 //
-// The core of the scheduler is a btree keyed by time, a nonce, and a task ID, and a map keyed by task ID and containing a
-// nonce and a time (called a uniqueness index from now on).
-// The map is to ensure task uniqueness in the tree, so we can replace or delete tasks in the tree.
+// The core of the scheduler is a btree keyed by time, a nonce, and a task ID, and a map
+// keyed by task ID and containing a nonce and a time (called a uniqueness index from now on).
+// The map is to ensure task uniqueness in the tree, so we can replace or delete tasks in
+// the tree.
 //
-// Scheduling in the tree consists of a main loop that feeds a fixed set of workers, each with their own communication channel.
-// Distribution is handled by hashing the TaskID (to ensure uniform distribution) and then distributing over those channels
-// evenly based on the hashed ID.  This is to ensure that all tasks of the same ID go to the same worker.
+// Scheduling in the tree consists of a main loop that feeds a fixed set of workers, each
+// with their own communication channel. Distribution is handled by hashing the TaskID (to
+// ensure uniform distribution) and then distributing over those channels evenly based on
+// the hashed ID.  This is to ensure that all tasks of the same ID go to the same worker.
 //
-// The workers call ExecutorFunc handle any errors and update the LastScheduled time internally and also via the Checkpointer.
+// The workers call ExecutorFunc handle any errors and update the LastScheduled time
+// internally and also via the Checkpointer.
 //
 // The main loop:
 //
-// The main loop waits on a time.Timer to grab the task with the minimum time.  Once it successfully grabs a task ready
-// to trigger, it will start walking the btree from the item nearest
+// The main loop waits on a time.Timer to grab the task with the minimum time.
+// Once it successfully grabs a task ready to trigger, it will start walking the btree
+// from the item nearest.
 //
 // Putting a task into the scheduler:
 //
-// Adding a task to the scheduler acquires a write lock, grabs the task from the uniqueness map, and replaces the item
-// in the uniqueness index and btree.  If new task would trigger sooner than the current soonest triggering task, it
-// replaces the Timer when added to the scheduler.  Finally it releases the write lock.
+// Adding a task to the scheduler acquires a write lock, grabs the task from the
+// uniqueness map, and replaces the item in the uniqueness index and btree.  If new
+// task would trigger sooner than the current soonest triggering task, it replaces
+// the Timer when added to the scheduler.  Finally it releases the write lock.
 //
 // Removing a task from the scheduler:
 //
-// Removing a task from the scheduler acquires a write lock, deletes the task from the uniqueness index and from the
-// btree, then releases the lock.  We do not have to readjust the time on delete, because, if the minimum task isn't
-// ready yet, the main loop just resets the timer and keeps going.
+// Removing a task from the scheduler acquires a write lock, deletes the task from
+// the uniqueness index and from the btree, then releases the lock.  We do not have
+// to readjust the time on delete, because, if the minimum task isn't ready yet, the
+// main loop just resets the timer and keeps going.
 type TreeScheduler struct {
 	mu            sync.RWMutex
 	priorityQueue *btree.BTree
@@ -77,17 +87,17 @@ type TreeScheduler struct {
 	checkpointer  SchedulableService
 	items         *itemList
 
-	sm *SchedulerMetrics
+	sm *ScheduleMetrics
 }
 
 // ErrorFunc is a function for error handling.  It is a good way to inject logging into a TreeScheduler.
 type ErrorFunc func(ctx context.Context, taskID ID, scheduledFor time.Time, err error)
 
-type treeSchedulerOptFunc func(t *TreeScheduler) error
+type TreeSchedulerOptFunc func(t *TreeScheduler) error
 
 // WithOnErrorFn is an option that sets the error function that gets called when there is an error in a TreeScheduler.
 // its useful for injecting logging or special error handling.
-func WithOnErrorFn(fn ErrorFunc) treeSchedulerOptFunc {
+func WithOnErrorFn(fn ErrorFunc) TreeSchedulerOptFunc {
 	return func(t *TreeScheduler) error {
 		t.onErr = fn
 		return nil
@@ -95,24 +105,30 @@ func WithOnErrorFn(fn ErrorFunc) treeSchedulerOptFunc {
 }
 
 // WithMaxConcurrentWorkers is an option that sets the max number of concurrent workers that a TreeScheduler will use.
-func WithMaxConcurrentWorkers(n int) treeSchedulerOptFunc {
+func WithMaxConcurrentWorkers(n int) TreeSchedulerOptFunc {
 	return func(t *TreeScheduler) error {
 		t.workchans = make([]chan Item, n)
 		return nil
 	}
 }
 
-// WithTime is an optiom for NewScheduler that allows you to inject a clock.Clock from ben johnson's github.com/benbjohnson/clock library, for testing purposes.
-func WithTime(t clock.Clock) treeSchedulerOptFunc {
+// WithTime is an optiom for NewScheduler that allows you to inject a clock.Clock from
+// ben johnson's github.com/benbjohnson/clock library, for testing purposes.
+func WithTime(t clock.Clock) TreeSchedulerOptFunc {
 	return func(sch *TreeScheduler) error {
 		sch.time = t
 		return nil
 	}
 }
 
-// NewScheduler gives us a new TreeScheduler and SchedulerMetrics when given an  Executor, a SchedulableService, and zero or more options.
+// NewScheduler gives us a new TreeScheduler and ScheduleMetrics when given an  Executor,
+// a SchedulableService, and zero or more options.
 // Schedulers should be initialized with this function.
-func NewScheduler(executor Executor, checkpointer SchedulableService, opts ...treeSchedulerOptFunc) (*TreeScheduler, *SchedulerMetrics, error) {
+func NewScheduler(
+	executor Executor,
+	checkpointer SchedulableService,
+	opts ...TreeSchedulerOptFunc,
+) (*TreeScheduler, *ScheduleMetrics, error) {
 	s := &TreeScheduler{
 		executor:      executor,
 		priorityQueue: btree.New(degreeBtreeScheduled),
@@ -165,10 +181,13 @@ func NewScheduler(executor Executor, checkpointer SchedulableService, opts ...tr
 				s.mu.Unlock()
 				return
 			case <-s.timer.C:
-				for { // this for loop is a work around to the way clock's mock works when you reset duration 0 in a different thread than you are calling your clock.Set
+				for {
+					// this for loop is a work around to the way clock's mock works when you reset
+					// duration 0 in a different thread than you are calling your clock.Set
 					s.mu.Lock()
 					min := s.priorityQueue.Min()
-					if min == nil { // grab a new item, because there could be a different item at the top of the queue
+					if min == nil {
+						// grab a new item, because there could be a different item at the top of the queue
 						s.when = time.Time{}
 						s.mu.Unlock()
 						continue schedulerLoop
@@ -181,7 +200,9 @@ func NewScheduler(executor Executor, checkpointer SchedulableService, opts ...tr
 					}
 					s.process()
 					min = s.priorityQueue.Min()
-					if min == nil { // grab a new item, because there could be a different item at the top of the queue after processing
+					if min == nil {
+						// grab a new item, because there could be a different item at the top of the
+						// queue after processing
 						s.when = time.Time{}
 						s.mu.Unlock()
 						continue schedulerLoop
@@ -245,7 +266,10 @@ func (s *TreeScheduler) iterator(ts time.Time) btree.ItemIterator {
 		if i == nil {
 			return false
 		}
-		it := i.(Item) // we want it to panic if things other than Items are populating the scheduler, as it is something we can't recover from.
+
+		// we want it to panic if things other than Items are populating the scheduler,
+		// as it is something we can't recover from.
+		it := i.(Item)
 		if time.Unix(it.next+it.Offset, 0).After(ts) {
 			return false
 		}
@@ -254,7 +278,8 @@ func (s *TreeScheduler) iterator(ts time.Time) btree.ItemIterator {
 			// old implement
 			// buf := [8]byte{}
 			// binary.LittleEndian.PutUint64(buf[:], uint64(it.id))
-			// wc := xxhash.Sum64(buf[:]) % uint64(len(s.workchans)) // we just hash so that the number is uniformly distributed
+			// we just hash so that the number is uniformly distributed
+			// wc := xxhash.Sum64(buf[:]) % uint64(len(s.workchans))
 
 			// we just hash so that the number is uniformly distributed
 			wc := jumphash.Hash(uint64(it.id), len(s.workchans))

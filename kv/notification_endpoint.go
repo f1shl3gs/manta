@@ -52,8 +52,11 @@ func findNotificationEndpointByID(tx Tx, id manta.ID) (manta.NotificationEndpoin
 	return notification.UnmarshalJSON(data)
 }
 
-// FindNotificationEndpoints returns a list of notication endpoints that match filter.
-func (s *Service) FindNotificationEndpoints(ctx context.Context, filter manta.NotificationEndpointFilter) ([]manta.NotificationEndpoint, error) {
+// FindNotificationEndpoints returns a list of notification endpoints that match filter.
+func (s *Service) FindNotificationEndpoints(
+	ctx context.Context,
+	filter manta.NotificationEndpointFilter,
+) ([]manta.NotificationEndpoint, error) {
 	var (
 		list = make([]manta.NotificationEndpoint, 0)
 		err  error
@@ -165,7 +168,11 @@ func putNotificationEndpoint(tx Tx, ne manta.NotificationEndpoint) error {
 
 // UpdateNotificationEndpoint updates a single notification endpoint.
 // Returns the new notification endpoint after update.
-func (s *Service) UpdateNotificationEndpoint(ctx context.Context, id manta.ID, ne manta.NotificationEndpoint) (manta.NotificationEndpoint, error) {
+func (s *Service) UpdateNotificationEndpoint(
+	ctx context.Context,
+	id manta.ID,
+	ne manta.NotificationEndpoint,
+) (manta.NotificationEndpoint, error) {
 	var (
 		updated manta.NotificationEndpoint
 		err     error
@@ -195,9 +202,13 @@ func (s *Service) UpdateNotificationEndpoint(ctx context.Context, id manta.ID, n
 	return updated, nil
 }
 
-// PatchNotificationENdpoint patch a single notification endpoint.
+// PatchNotificationEndpoint patch a single notification endpoint.
 // Returns the new notification endpoint after patch.
-func (s *Service) PatchNotificationEndpoint(ctx context.Context, id manta.ID, upd manta.NotificationEndpointUpdate) (manta.NotificationEndpoint, error) {
+func (s *Service) PatchNotificationEndpoint(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.NotificationEndpointUpdate,
+) (manta.NotificationEndpoint, error) {
 	var (
 		patched manta.NotificationEndpoint
 		err     error
@@ -227,7 +238,8 @@ func (s *Service) PatchNotificationEndpoint(ctx context.Context, id manta.ID, up
 	return patched, nil
 }
 
-// DeleteNotificationEndpoint remove a notification endpoint by ID, return it's secret fields, orgID for further deletion
+// DeleteNotificationEndpoint remove a notification endpoint by ID, return it's
+// secret fields, orgID for further deletion
 func (s *Service) DeleteNotificationEndpoint(ctx context.Context, id manta.ID) ([]manta.SecretField, manta.ID, error) {
 	var (
 		orgID   manta.ID

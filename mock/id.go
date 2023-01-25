@@ -26,7 +26,8 @@ type IncrementalIDGenerator struct {
 
 func (i *IncrementalIDGenerator) ID() manta.ID {
 	n := i.n
-	i.n += 1
+	i.n++
+
 	return manta.ID(n)
 }
 

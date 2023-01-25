@@ -92,7 +92,7 @@ type Schedule struct {
 
 // Next returns the next time after from that a schedule should trigger on.
 func (s Schedule) Next(from time.Time) (time.Time, error) {
-	return cron.Parsed(s.cron).Next(from)
+	return s.cron.Next(from)
 }
 
 // ValidSchedule returns an error if the cron string is invalid.

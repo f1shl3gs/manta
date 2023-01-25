@@ -86,7 +86,11 @@ func (s *Service) AddLogEntry(ctx context.Context, ent manta.OperationLogEntry) 
 }
 
 // FindOperationLogsByID return operation logs of a resource.
-func (s *Service) FindOperationLogsByID(ctx context.Context, id manta.ID, opts manta.FindOptions) ([]*manta.OperationLogEntry, int, error) {
+func (s *Service) FindOperationLogsByID(
+	ctx context.Context,
+	id manta.ID,
+	opts manta.FindOptions,
+) ([]*manta.OperationLogEntry, int, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
@@ -128,7 +132,11 @@ func (s *Service) FindOperationLogsByID(ctx context.Context, id manta.ID, opts m
 }
 
 // FindOperationLogsByUser returns operation logs made by a user.
-func (s *Service) FindOperationLogsByUser(ctx context.Context, userID manta.ID, opts manta.FindOptions) ([]*manta.OperationLogEntry, int, error) {
+func (s *Service) FindOperationLogsByUser(
+	ctx context.Context,
+	userID manta.ID,
+	opts manta.FindOptions,
+) ([]*manta.OperationLogEntry, int, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 

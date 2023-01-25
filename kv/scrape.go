@@ -26,7 +26,10 @@ func (s *Service) FindScrapeTargetByID(ctx context.Context, id manta.ID) (*manta
 	return st, err
 }
 
-func (s *Service) FindScrapeTargets(ctx context.Context, filter manta.ScrapeTargetFilter) ([]*manta.ScrapeTarget, error) {
+func (s *Service) FindScrapeTargets(
+	ctx context.Context,
+	filter manta.ScrapeTargetFilter,
+) ([]*manta.ScrapeTarget, error) {
 	var (
 		list []*manta.ScrapeTarget
 		err  error
@@ -55,7 +58,11 @@ func (s *Service) createScrapeTarget(ctx context.Context, tx Tx, scrape *manta.S
 	return putOrgIndexed(tx, scrape, ScraperBucket, ScrapeOrgIndexBucket)
 }
 
-func (s *Service) UpdateScrapeTarget(ctx context.Context, id manta.ID, u manta.ScrapeTargetUpdate) (*manta.ScrapeTarget, error) {
+func (s *Service) UpdateScrapeTarget(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.ScrapeTargetUpdate,
+) (*manta.ScrapeTarget, error) {
 	var (
 		st  *manta.ScrapeTarget
 		err error
@@ -64,7 +71,7 @@ func (s *Service) UpdateScrapeTarget(ctx context.Context, id manta.ID, u manta.S
 	err = s.kv.Update(ctx, func(tx Tx) error {
 		st, err = findByID[manta.ScrapeTarget](tx, id, ScraperBucket)
 
-		u.Apply(st)
+		upd.Apply(st)
 		st.Updated = time.Now()
 
 		return err

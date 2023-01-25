@@ -41,7 +41,7 @@ type ComponentResource struct {
 }
 
 type Instance struct {
-	Uuid    string    `json:"uuid"`
+	UUID    string    `json:"uuid"`
 	Created time.Time `json:"created"`
 	Uptime  time.Time `json:"uptime"`
 

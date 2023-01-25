@@ -146,7 +146,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		ctx = r.Context()
 	)
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -199,7 +199,7 @@ func (h *PromAPIHandler) handleInstantQuery(w http.ResponseWriter, r *http.Reque
 		if res.Err != nil {
 			return apiFuncResult{
 				nil,
-				promApiErr(res.Err),
+				promAPIErr(res.Err),
 				res.Warnings,
 			}
 		}
@@ -276,14 +276,16 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 	}
 
 	if step <= 0 {
-		h.handleInvalidParam(ctx, w, errors.New("zero or negative query resolution step widths are not accepted. Try a positive integer"))
+		h.handleInvalidParam(ctx, w, errors.New("zero or negative query resolution step widths"+
+			" are not accepted. Try a positive integer"))
 		return
 	}
 
 	// For safety, limit the number of returned points per timeseries.
 	// This is sufficient for 60s resolution for a week or 1h resolution for a year
 	if end.Sub(start)/step > 11000 {
-		err = errors.New("exceeded maximum resolution of 11,000 points per timeseries. Try decreasing the query resolution (?step=XX)")
+		err = errors.New("exceeded maximum resolution of 11,000 points per timeseries. Try " +
+			"decreasing the query resolution (?step=XX)")
 		h.handleInvalidParam(ctx, w, err)
 		return
 	}
@@ -301,7 +303,7 @@ func (h *PromAPIHandler) handleRangeQuery(w http.ResponseWriter, r *http.Request
 		defer cancel()
 	}
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -380,7 +382,7 @@ type apiFuncResult struct {
 	Warnings storage.Warnings `json:"warnings,omitempty"`
 }
 
-func promApiErr(err error) *apiError {
+func promAPIErr(err error) *apiError {
 	if err == nil {
 		return nil
 	}
@@ -416,7 +418,12 @@ type response struct {
 	Warnings  storage.Warnings `json:"warnings,omitempty"`
 }
 
-func (h *PromAPIHandler) encodeQueryResult(ctx context.Context, w http.ResponseWriter, r *http.Request, qry promql.Query) {
+func (h *PromAPIHandler) encodeQueryResult(
+	ctx context.Context,
+	w http.ResponseWriter,
+	r *http.Request,
+	qry promql.Query,
+) {
 	res := qry.Exec(ctx)
 	if res.Err != nil {
 		resp := response{
@@ -481,7 +488,7 @@ func (h *PromAPIHandler) handleMetadata(w http.ResponseWriter, r *http.Request) 
 		metrics = map[string]map[metadata]struct{}{}
 	)
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -554,7 +561,7 @@ func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request
 		ctx = r.Context()
 	)
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -586,7 +593,7 @@ func (h *PromAPIHandler) handleLabelNames(w http.ResponseWriter, r *http.Request
 
 	q, err := queryable.Querier(ctx, timestamp.FromTime(start), timestamp.FromTime(end))
 	if err != nil {
-		h.HandleHTTPError(ctx, promApiErr(err), w)
+		h.HandleHTTPError(ctx, promAPIErr(err), w)
 		return
 	}
 

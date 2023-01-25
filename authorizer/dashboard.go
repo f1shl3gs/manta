@@ -31,7 +31,10 @@ func (s *DashboardService) FindDashboardByID(ctx context.Context, id manta.ID) (
 	return d, nil
 }
 
-func (s *DashboardService) FindDashboards(ctx context.Context, filter manta.DashboardFilter) ([]*manta.Dashboard, error) {
+func (s *DashboardService) FindDashboards(
+	ctx context.Context,
+	filter manta.DashboardFilter,
+) ([]*manta.Dashboard, error) {
 	dashboards, err := s.dashboardService.FindDashboards(ctx, filter)
 	if err != nil {
 		return nil, err
@@ -98,7 +101,10 @@ func (s *DashboardService) RemoveDashboardCell(ctx context.Context, dashboardID,
 }
 
 // UpdateDashboardCell update the dashboard cell with the provided ids
-func (s *DashboardService) UpdateDashboardCell(ctx context.Context, upd manta.DashboardCellUpdate) (*manta.Cell, error) {
+func (s *DashboardService) UpdateDashboardCell(
+	ctx context.Context,
+	upd manta.DashboardCellUpdate,
+) (*manta.Cell, error) {
 	d, err := s.FindDashboardByID(ctx, upd.DashboardID)
 	if err != nil {
 		return nil, err

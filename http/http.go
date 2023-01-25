@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // enable http pprof
 	"strings"
 
 	"github.com/julienschmidt/httprouter"

@@ -122,14 +122,6 @@ func (s *Store) checkSnapshot(ctx context.Context) {
 
 		first, err := s.raftStorage.FirstIndex()
 		if err == nil {
-			applied := s.appliedIndex.Load()
-			if applied-snapshotAfterEntries > first {
-				applied = applied - snapshotAfterEntries
-			}
-		}
-
-		first, err = s.raftStorage.FirstIndex()
-		if err == nil {
 			if applied-first > snapshotAfterEntries {
 				to := first + snapshotAfterEntries
 				s.logger.Info("trying to take snapshot",
@@ -238,9 +230,9 @@ func (s *Store) startRaftLoop() {
 			if err := s.raftStorage.Save(&rd.HardState, rd.Entries, &rd.Snapshot); err != nil {
 				s.logger.Fatal("failed to save raft hard state and entries", zap.Error(err))
 			}
-			if !raft.IsEmptyHardState(rd.HardState) {
-				// TODO: proposalsCommitted metrics
-			}
+			// if !raft.IsEmptyHardState(rd.HardState) {
+			// TODO: proposalsCommitted metrics
+			// }
 
 			if !raft.IsEmptySnap(rd.Snapshot) {
 				// Force WAL to fsync its hard state before Release() releases
@@ -326,7 +318,9 @@ func (s *Store) getLead() uint64 {
 
 func (s *Store) updateLeadership(newLeader bool) {
 	// we can start or stop some backgroud service here
-	s.logger.Info("update leadership", zap.Bool("new leader", newLeader), zap.String("id", strconv.FormatUint(s.getLead(), 16)))
+	s.logger.Info("update leadership",
+		zap.Bool("new leader", newLeader),
+		zap.String("id", strconv.FormatUint(s.getLead(), 16)))
 }
 
 func (s *Store) updateCommittedIndex(ci uint64) {
@@ -419,7 +413,11 @@ func (s *Store) sendReadIndex(ctx context.Context, reqIndex uint64) error {
 	return err
 }
 
-func (s *Store) requestCurrentIndex(ctx context.Context, leaderChangeNotifier <-chan struct{}, reqID uint64) (uint64, error) {
+func (s *Store) requestCurrentIndex(
+	ctx context.Context,
+	leaderChangeNotifier <-chan struct{},
+	reqID uint64,
+) (uint64, error) {
 	err := s.sendReadIndex(ctx, reqID)
 	if err != nil {
 		return 0, err
@@ -435,21 +433,21 @@ func (s *Store) requestCurrentIndex(ctx context.Context, leaderChangeNotifier <-
 	for {
 		select {
 		case rs := <-s.readStateCh:
-			reqIdBytes := uint64ToBigEndianBytes(reqID)
-			gotOwnResp := bytes.Equal(rs.RequestCtx, reqIdBytes)
+			reqIDBytes := uint64ToBigEndianBytes(reqID)
+			gotOwnResp := bytes.Equal(rs.RequestCtx, reqIDBytes)
 			if !gotOwnResp {
 				// a previous request might time out. now we should ignore the
 				// response of it and continue waiting for the response of the
 				// current requests.
-				respId := uint64(0)
+				respID := uint64(0)
 				if len(rs.RequestCtx) == 8 {
-					respId = binary.BigEndian.Uint64(rs.RequestCtx)
+					respID = binary.BigEndian.Uint64(rs.RequestCtx)
 				}
 
 				s.logger.Warn("ignored out-of-date read index response; "+
 					"local node read indexes queueing up and waitting to be in sync with leader",
 					zap.Uint64("sent-request-id", reqID),
-					zap.Uint64("received-request-id", respId))
+					zap.Uint64("received-request-id", respID))
 				s.slowReadInex.Inc()
 				continue
 			}
@@ -613,7 +611,7 @@ func (s *Store) linearizableReadNotify(ctx context.Context) error {
 
 // ReadyNotify returns a channel that will be closed when the
 // server is ready to serve client requests.
-func (s *Store) readyNotify() <-chan struct{} {
+func (s *Store) ReadyNotify() <-chan struct{} {
 	return s.readyCh
 }
 

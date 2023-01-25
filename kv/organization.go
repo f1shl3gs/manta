@@ -94,7 +94,11 @@ func (s *Service) FindOrganization(ctx context.Context, filter manta.Organizatio
 	return org, nil
 }
 
-func (s *Service) FindOrganizations(ctx context.Context, filter manta.OrganizationFilter, opt ...manta.FindOptions) ([]*manta.Organization, int, error) {
+func (s *Service) FindOrganizations(
+	ctx context.Context,
+	filter manta.OrganizationFilter,
+	opt ...manta.FindOptions,
+) ([]*manta.Organization, int, error) {
 	span, ctx := tracing.StartSpanFromContext(ctx)
 	defer span.Finish()
 
@@ -220,7 +224,11 @@ func (s *Service) putOrganization(ctx context.Context, tx Tx, org *manta.Organiz
 	return b.Put(pk, data)
 }
 
-func (s *Service) UpdateOrganization(ctx context.Context, id manta.ID, u manta.OrganizationUpdate) (*manta.Organization, error) {
+func (s *Service) UpdateOrganization(
+	ctx context.Context,
+	id manta.ID,
+	u manta.OrganizationUpdate,
+) (*manta.Organization, error) {
 	var resp *manta.Organization
 
 	err := s.kv.Update(ctx, func(tx Tx) error {

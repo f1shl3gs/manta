@@ -31,7 +31,10 @@ func (s *ScrapeTargetService) FindScrapeTargetByID(ctx context.Context, id manta
 }
 
 // FindScrapeTargets returns a list of ScraperTargets that match the filter
-func (s *ScrapeTargetService) FindScrapeTargets(ctx context.Context, filter manta.ScrapeTargetFilter) ([]*manta.ScrapeTarget, error) {
+func (s *ScrapeTargetService) FindScrapeTargets(
+	ctx context.Context,
+	filter manta.ScrapeTargetFilter,
+) ([]*manta.ScrapeTarget, error) {
 	ss, err := s.scrapeTargetService.FindScrapeTargets(ctx, filter)
 	if err != nil {
 		return nil, err
@@ -65,7 +68,11 @@ func (s *ScrapeTargetService) CreateScrapeTarget(ctx context.Context, target *ma
 
 // UpdateScrapeTarget update a single ScraperTarget with chageset
 // returns the new ScraperTarget after update
-func (s *ScrapeTargetService) UpdateScrapeTarget(ctx context.Context, id manta.ID, upd manta.ScrapeTargetUpdate) (*manta.ScrapeTarget, error) {
+func (s *ScrapeTargetService) UpdateScrapeTarget(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.ScrapeTargetUpdate,
+) (*manta.ScrapeTarget, error) {
 	st, err := s.scrapeTargetService.FindScrapeTargetByID(ctx, id)
 	if err != nil {
 		return nil, err

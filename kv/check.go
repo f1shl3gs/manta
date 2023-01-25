@@ -29,7 +29,11 @@ func (s *Service) FindCheckByID(ctx context.Context, id manta.ID) (*manta.Check,
 
 // FindChecks returns a list of checks that match the filter and total count of matching checks
 // Additional options provide pagination & sorting.
-func (s *Service) FindChecks(ctx context.Context, filter manta.CheckFilter, opt ...manta.FindOptions) ([]*manta.Check, int, error) {
+func (s *Service) FindChecks(
+	ctx context.Context,
+	filter manta.CheckFilter,
+	opt ...manta.FindOptions,
+) ([]*manta.Check, int, error) {
 	var (
 		list []*manta.Check
 		err  error

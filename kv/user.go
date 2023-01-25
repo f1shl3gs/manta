@@ -100,7 +100,11 @@ func (s *Service) findUserByName(ctx context.Context, tx Tx, name string) (*mant
 	return u, nil
 }
 
-func (s *Service) FindUsers(ctx context.Context, filter manta.UserFilter, opts ...manta.FindOptions) ([]*manta.User, error) {
+func (s *Service) FindUsers(
+	ctx context.Context,
+	filter manta.UserFilter,
+	opts ...manta.FindOptions,
+) ([]*manta.User, error) {
 	var (
 		users []*manta.User
 		err   error

@@ -64,8 +64,13 @@ type UserResourceMappingFilter struct {
 
 // UserResourceMappingService maps the relationships between users and resources
 type UserResourceMappingService interface {
-	// FindUserResourceMappings returns a list of UserResourceMappings that match filter and the total count of matching mappings.
-	FindUserResourceMappings(ctx context.Context, filter UserResourceMappingFilter, opt ...FindOptions) ([]*UserResourceMapping, int, error)
+	// FindUserResourceMappings returns a list of UserResourceMappings that match filter
+	// and the total count of matching mappings.
+	FindUserResourceMappings(
+		ctx context.Context,
+		filter UserResourceMappingFilter,
+		opt ...FindOptions,
+	) ([]*UserResourceMapping, int, error)
 
 	// CreateUserResourceMapping creates a user resource mapping.
 	CreateUserResourceMapping(ctx context.Context, m *UserResourceMapping) error

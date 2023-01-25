@@ -20,7 +20,11 @@ type DashboardService struct {
 
 var _ manta.DashboardService = &DashboardService{}
 
-func NewDashboardService(dashboardService manta.DashboardService, oplog manta.OperationLogService, logger *zap.Logger) *DashboardService {
+func NewDashboardService(
+	dashboardService manta.DashboardService,
+	oplog manta.OperationLogService,
+	logger *zap.Logger,
+) *DashboardService {
 	return &DashboardService{
 		DashboardService: dashboardService,
 		logger:           logger,
@@ -193,7 +197,10 @@ func (s *DashboardService) RemoveDashboardCell(ctx context.Context, dashboardID,
 	return nil
 }
 
-func (s *DashboardService) UpdateDashboardCell(ctx context.Context, upd manta.DashboardCellUpdate) (*manta.Cell, error) {
+func (s *DashboardService) UpdateDashboardCell(
+	ctx context.Context,
+	upd manta.DashboardCellUpdate,
+) (*manta.Cell, error) {
 	auth, err := authorizer.FromContext(ctx)
 	if err != nil {
 		return nil, err

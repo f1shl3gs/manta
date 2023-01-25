@@ -140,15 +140,18 @@ func messageFromMsgAndArgs(msgAndArgs ...interface{}) string {
 	return ""
 }
 
-// labeledOutput returns a string consisting of the provided labeledContent. Each labeled output is appended in the following manner:
+// labeledOutput returns a string consisting of the provided labeledContent. Each labeled
+// output is appended in the following manner:
 //
 //	\t{{label}}:{{align_spaces}}\t{{content}}\n
 //
-// The initial carriage return is required to undo/erase any padding added by testing.T.Errorf. The "\t{{label}}:" is for the label.
-// If a label is shorter than the longest label provided, padding spaces are added to make all the labels match in length. Once this
-// alignment is achieved, "\t{{content}}\n" is added for the output.
+// The initial carriage return is required to undo/erase any padding added by testing.T.Errorf.
+// The "\t{{label}}:" is for the label. If a label is shorter than the longest label provided,
+// padding spaces are added to make all the labels match in length. Once this alignment is
+// achieved, "\t{{content}}\n" is added for the output.
 //
-// If the content of the labeledOutput contains line breaks, the subsequent lines are aligned so that they start at the same location as the first line.
+// If the content of the labeledOutput contains line breaks, the subsequent lines are aligned
+// so that they start at the same location as the first line.
 func labeledOutput(content ...labeledContent) string {
 	longestLabel := 0
 	for _, v := range content {
@@ -158,7 +161,9 @@ func labeledOutput(content ...labeledContent) string {
 	}
 	var output string
 	for _, v := range content {
-		output += "\t" + v.label + ":" + strings.Repeat(" ", longestLabel-len(v.label)) + "\t" + indentMessageLines(v.content, longestLabel) + "\n"
+		output += "\t" + v.label + ":" +
+			strings.Repeat(" ", longestLabel-len(v.label)) +
+			"\t" + indentMessageLines(v.content, longestLabel) + "\n"
 	}
 	return output
 }

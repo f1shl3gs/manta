@@ -185,6 +185,8 @@ func (l *Launcher) run() error {
 		flusher        httpservice.Flusher
 		clusterService raftstore.ClusterService
 		promRegistry   = prom.NewRegistry(logger)
+
+		grpcSvr = grpc.NewServer()
 	)
 
 	switch l.Store {
@@ -212,15 +214,7 @@ func (l *Launcher) run() error {
 		kvStore = rs
 		clusterService = rs
 		promRegistry.MustRegister(rs.Collectors()...)
-
-		group.Go(func() error {
-			grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
-			svr := grpc.NewServer()
-			pb.RegisterRaftServer(svr, rs)
-
-			logger.Info("start grpc service for raftstore")
-			return svr.Serve(grpcListener)
-		})
+		pb.RegisterRaftServer(grpcSvr, rs)
 
 		group.Go(func() error {
 			rs.Run(ctx)
@@ -331,9 +325,12 @@ func (l *Launcher) run() error {
 
 	{
 		// grpc service
-		if l.Store == "raftstore" {
+		grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
 
-		}
+		group.Go(func() error {
+			logger.Info("start grpc service")
+			return grpcSvr.Serve(grpcListener)
+		})
 	}
 
 	{

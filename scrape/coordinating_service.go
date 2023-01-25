@@ -77,12 +77,18 @@ func (s *CoordinatingScrapeService) syncScraper(orgID manta.ID) {
 }
 
 // FindScrapeTargetByID returns a single ScraperTarget by ID
-func (s *CoordinatingScrapeService) FindScrapeTargetByID(ctx context.Context, id manta.ID) (*manta.ScrapeTarget, error) {
+func (s *CoordinatingScrapeService) FindScrapeTargetByID(
+	ctx context.Context,
+	id manta.ID,
+) (*manta.ScrapeTarget, error) {
 	return s.scrapeTargetService.FindScrapeTargetByID(ctx, id)
 }
 
 // FindScrapeTargets returns a list of ScraperTargets that match the filter
-func (s *CoordinatingScrapeService) FindScrapeTargets(ctx context.Context, filter manta.ScrapeTargetFilter) ([]*manta.ScrapeTarget, error) {
+func (s *CoordinatingScrapeService) FindScrapeTargets(
+	ctx context.Context,
+	filter manta.ScrapeTargetFilter,
+) ([]*manta.ScrapeTarget, error) {
 	return s.scrapeTargetService.FindScrapeTargets(ctx, filter)
 }
 
@@ -96,9 +102,13 @@ func (s *CoordinatingScrapeService) CreateScrapeTarget(ctx context.Context, targ
 	return nil
 }
 
-// UpdateScrapeTarget update a single ScraperTarget with chageset
+// UpdateScrapeTarget update a single ScraperTarget with changeset
 // returns the new ScraperTarget after update
-func (s *CoordinatingScrapeService) UpdateScrapeTarget(ctx context.Context, id manta.ID, upd manta.ScrapeTargetUpdate) (*manta.ScrapeTarget, error) {
+func (s *CoordinatingScrapeService) UpdateScrapeTarget(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.ScrapeTargetUpdate,
+) (*manta.ScrapeTarget, error) {
 	target, err := s.scrapeTargetService.UpdateScrapeTarget(ctx, id, upd)
 	if err != nil {
 		return nil, err

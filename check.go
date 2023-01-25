@@ -114,37 +114,37 @@ func (c *Check) GetOrgID() ID {
 	return c.OrgID
 }
 
-func (m *Check) Validate() error {
-	if m.Name == "" {
+func (c *Check) Validate() error {
+	if c.Name == "" {
 		return invalidField("name", ErrFieldMustBeSet)
 	}
 
-	if m.Desc == "" {
+	if c.Desc == "" {
 		return invalidField("desc", ErrFieldMustBeSet)
 	}
 
-	if m.Query == "" {
+	if c.Query == "" {
 		return invalidField("query", ErrFieldMustBeSet)
 	}
 
-	if m.Status == "" {
+	if c.Status == "" {
 		return invalidField("status", ErrFieldMustBeSet)
 	}
 
-	if err := validateStatus(m.Status); err != nil {
+	if err := validateStatus(c.Status); err != nil {
 		return invalidField("status", err)
 	}
 
-	if _, err := cron.ParseUTC(m.Cron); err != nil {
+	if _, err := cron.ParseUTC(c.Cron); err != nil {
 		return invalidField("cron", err)
 	}
 
-	if len(m.Conditions) == 0 {
+	if len(c.Conditions) == 0 {
 		return invalidField("conditions", ErrFieldMustBeSet)
 	}
 
-	for i := 0; i < len(m.Conditions); i++ {
-		if err := m.Conditions[i].Validate(); err != nil {
+	for i := 0; i < len(c.Conditions); i++ {
+		if err := c.Conditions[i].Validate(); err != nil {
 			return err
 		}
 	}

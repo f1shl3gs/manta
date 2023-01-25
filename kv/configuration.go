@@ -42,7 +42,10 @@ func (s *Service) GetConfiguration(ctx context.Context, id manta.ID) (*manta.Con
 	return cf, err
 }
 
-func (s *Service) FindConfigurations(ctx context.Context, filter manta.ConfigurationFilter) ([]*manta.Configuration, error) {
+func (s *Service) FindConfigurations(
+	ctx context.Context,
+	filter manta.ConfigurationFilter,
+) ([]*manta.Configuration, error) {
 	var (
 		cs  []*manta.Configuration
 		err error
@@ -56,7 +59,11 @@ func (s *Service) FindConfigurations(ctx context.Context, filter manta.Configura
 	return cs, err
 }
 
-func (s *Service) UpdateConfiguration(ctx context.Context, id manta.ID, upd manta.ConfigurationUpdate) (*manta.Configuration, error) {
+func (s *Service) UpdateConfiguration(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.ConfigurationUpdate,
+) (*manta.Configuration, error) {
 	var (
 		cf  *manta.Configuration
 		err error

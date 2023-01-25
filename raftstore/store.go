@@ -167,11 +167,12 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 		}),
 	}
 
-	if db, err := openDB(cf); err != nil {
+	db, err := openDB(cf)
+	if err != nil {
 		return nil, err
-	} else {
-		store.db.Store(db)
 	}
+
+	store.db.Store(db)
 
 	appliedIndex, err := ds.Checkpoint()
 	if err != nil {
@@ -258,21 +259,15 @@ func New(cf *Config, logger *zap.Logger) (*Store, error) {
 
 	logger.Info("restart raft node")
 
-	sp, err := store.raftStorage.Snapshot()
-	if err != nil {
-		logger.Fatal("unable to get existing snapshot",
-			zap.Error(err))
-	}
+	// if !raft.IsEmptySnap(sp) {
+	// It is important that we pick up the conf state here.
+	// Otherwise, we'll lose the store conf state, and it
+	// would get overwritten with an empty state when a new
+	// snapshot is taken. This causes a node to just hang
+	// on restart, because it finds a zero-member Raft group.
 
-	if !raft.IsEmptySnap(sp) {
-		// It is important that we pick up the conf state here.
-		// Otherwise, we'll lose the store conf state, and it
-		// would get overwritten with an empty state when a new
-		// snapshot is taken. This causes a node to just hang
-		// on restart, because it finds a zero-member Raft group.
-
-		// TODO: set confState
-	}
+	// TODO: set confState
+	// }
 
 	store.appliedIndex.Store(appliedIndex)
 	store.self.ID = rcf.ID
@@ -452,10 +447,10 @@ func (s *Store) publish(ctx context.Context) {
 			s.logger.Info("published local member to cluster through raft")
 
 			return
-		} else {
-			s.logger.Warn("failed to publish local member to cluster through raft")
 		}
 
+		s.logger.Warn("failed to publish local member to cluster through raft",
+			zap.Error(err))
 	}
 }
 

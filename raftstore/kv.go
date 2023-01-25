@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"math"
 	"unsafe"
 
 	"github.com/f1shl3gs/manta/kv"
@@ -222,7 +221,7 @@ func (c *cursor) Next() (k []byte, v []byte) {
 	// get and unset previously seeked values if they exist
 	k, v, c.key, c.value = c.key, c.value, nil, nil
 	if len(k) > 0 || len(v) > 0 {
-		c.seen += 1
+		c.seen++
 		return
 	}
 
@@ -236,7 +235,7 @@ func (c *cursor) Next() (k []byte, v []byte) {
 		return nil, nil
 	}
 
-	c.seen += 1
+	c.seen++
 
 	return k, v
 }
@@ -311,7 +310,8 @@ func (b *readOnlyBucket) ForwardCursor(seek []byte, opts ...kv.CursorOption) (kv
 	key, value = c.Seek(seek)
 
 	if config.Prefix != nil && !bytes.HasPrefix(seek, config.Prefix) {
-		return nil, fmt.Errorf("seek bytes %q not prefixed with %q: %w", string(seek), string(config.Prefix), kv.ErrSeekMissingPrefix)
+		return nil, fmt.Errorf("seek bytes %q not prefixed with %q: %w",
+			string(seek), string(config.Prefix), kv.ErrSeekMissingPrefix)
 	}
 
 	fc := &cursor{
@@ -358,16 +358,16 @@ func (rs readSet) add(key, value []byte, version int64) {
 }
 
 // first returns the store version from the first fetch
-func (rs readSet) first() int64 {
-	ret := int64(math.MaxInt64 - 1)
-	for _, item := range rs {
-		if ret < item.version {
-			ret = item.version
-		}
-	}
-
-	return ret
-}
+// func (rs readSet) first() int64 {
+// 	ret := int64(math.MaxInt64 - 1)
+// 	for _, item := range rs {
+// 		if ret < item.version {
+// 			ret = item.version
+// 		}
+// 	}
+//
+// 	return ret
+// }
 
 func unsafeBytesToString(bs []byte) string {
 	return *(*string)(unsafe.Pointer(&bs))
@@ -386,19 +386,6 @@ type writeSet map[string]writeOp
 
 func newWriteSet() writeSet {
 	return make(map[string]writeOp)
-}
-
-func (s writeSet) get(key []byte) []byte {
-	op, exist := s[unsafeBytesToString(key)]
-	if !exist {
-		return nil
-	}
-
-	if op.deletion {
-		return nil
-	}
-
-	return op.value
 }
 
 type writeTx struct {

@@ -26,7 +26,7 @@ type ClusterServiceHandler struct {
 }
 
 func NewClusterServiceHandler(logger *zap.Logger, backend *Backend) {
-	if backend.ClusterService == nil {
+	if backend.ClusterService == raftstore.ClusterService(nil) {
 		return
 	}
 

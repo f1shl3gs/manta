@@ -27,9 +27,7 @@ const (
 	maxNumEntries = 30000
 	// logFileOffset is offset in the log file where data is stored.
 	logFileOffset = 1 << 20 // 1MB
-	// encOffset is offset in the log file where keyID (first 8 bytes)
-	// and baseIV (remaining 8 bytes) are stored.
-	encOffset = logFileOffset - 16 // 1MB - 16B
+
 	// logFileSize is the initial size of the log file.
 	logFileSize = 256 << 20 // 256MB
 	// entrySize is the size in bytes of a single entry.
@@ -62,7 +60,7 @@ func marshalEntry(b []byte, term, index, do, typ uint64) {
 
 // logFile represents a single log file.
 type logFile struct {
-	*mmap.MmapFile
+	*mmap.File
 
 	fid    int64
 	logger *zap.Logger
@@ -82,7 +80,7 @@ func openLogFile(dir string, fid int64, logger *zap.Logger) (*logFile, error) {
 	}
 	var err error
 	// Open the file in read-write mode and create it if it doesn't exist yet.
-	lf.MmapFile, err = mmap.OpenMmapFile(fpath, os.O_RDWR|os.O_CREATE, logFileSize)
+	lf.File, err = mmap.OpenMmapFile(fpath, os.O_RDWR|os.O_CREATE, logFileSize)
 	if err == mmap.ErrNewFile {
 		// New file created
 		mmap.ZeroOut(lf.Data, 0, logFileOffset)

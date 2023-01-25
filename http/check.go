@@ -26,7 +26,13 @@ type ChecksHandler struct {
 	oplogService manta.OperationLogService
 }
 
-func NewChecksHandler(logger *zap.Logger, router *router.Router, cs manta.CheckService, ts manta.TaskService, ol manta.OperationLogService) {
+func NewChecksHandler(
+	logger *zap.Logger,
+	router *router.Router,
+	cs manta.CheckService,
+	ts manta.TaskService,
+	ol manta.OperationLogService,
+) {
 	h := &ChecksHandler{
 		Router:       router,
 		logger:       logger.With(zap.String("handler", "check")),
@@ -61,7 +67,7 @@ func (h *ChecksHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		filter = manta.CheckFilter{}
 	)
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err == nil {
 		filter.OrgID = &orgID
 	}

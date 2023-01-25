@@ -55,12 +55,12 @@ func (upd *ScrapeTargetUpdate) Apply(s *ScrapeTarget) {
 	}
 }
 
-func (m *ScrapeTarget) Validate() error {
-	if m.Name == "" {
+func (s *ScrapeTarget) Validate() error {
+	if s.Name == "" {
 		return &Error{Code: EInvalid, Msg: "Name is required"}
 	}
 
-	if !m.OrgID.Valid() {
+	if !s.OrgID.Valid() {
 		return ErrInvalidOrgID
 	}
 

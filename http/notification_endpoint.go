@@ -41,13 +41,15 @@ func NewNotificationEendpointHandler(logger *zap.Logger, backend *Backend) {
 func (h *NotificationEndpointHandler) handleList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	list, err := h.notificationEndpointService.FindNotificationEndpoints(ctx, manta.NotificationEndpointFilter{OrgID: orgID})
+	list, err := h.notificationEndpointService.FindNotificationEndpoints(ctx, manta.NotificationEndpointFilter{
+		OrgID: orgID,
+	})
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

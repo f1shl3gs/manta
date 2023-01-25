@@ -157,19 +157,19 @@ func (h *SessionHandler) handleViewer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var sessId manta.ID
-	if err = sessId.DecodeFromString(cookie.Value); err != nil {
+	var sessionID manta.ID
+	if err = sessionID.DecodeFromString(cookie.Value); err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	sess, err := h.sessionService.FindSession(ctx, sessId)
+	session, err := h.sessionService.FindSession(ctx, sessionID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	user, err := h.userService.FindUserByID(ctx, sess.UserID)
+	user, err := h.userService.FindUserByID(ctx, session.UserID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

@@ -57,7 +57,7 @@ func NewDashboardsHandler(backend *Backend, logger *zap.Logger) *DashboardsHandl
 func (h *DashboardsHandler) listDashboard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	orgID, err := orgIdFromQuery(r)
+	orgID, err := orgIDFromQuery(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -222,19 +222,19 @@ func (h *DashboardsHandler) getCell(w http.ResponseWriter, r *http.Request) {
 		ctx = r.Context()
 	)
 
-	dashId, err := idFromPath(r)
+	dashboardID, err := idFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cellId, err := cellIdFromPath(r)
+	cellID, err := cellIDFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
 	}
 
-	cell, err := h.dashboardService.GetDashboardCell(ctx, dashId, cellId)
+	cell, err := h.dashboardService.GetDashboardCell(ctx, dashboardID, cellID)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return
@@ -253,7 +253,7 @@ func decodeCellUpdate(r *http.Request) (*manta.DashboardCellUpdate, error) {
 		return nil, err
 	}
 
-	cellId, err := cellIdFromPath(r)
+	cellID, err := cellIDFromPath(r)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +264,7 @@ func decodeCellUpdate(r *http.Request) (*manta.DashboardCellUpdate, error) {
 	}
 
 	upd.DashboardID = dashboardID
-	upd.CellID = cellId
+	upd.CellID = cellID
 
 	return upd, nil
 }
@@ -289,7 +289,7 @@ func (h *DashboardsHandler) updateCell(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func cellIdFromPath(r *http.Request) (manta.ID, error) {
+func cellIDFromPath(r *http.Request) (manta.ID, error) {
 	var id manta.ID
 
 	text := extractParamFromContext(r.Context(), "cellId")
@@ -358,7 +358,7 @@ func (h *DashboardsHandler) deleteCell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cid, err := cellIdFromPath(r)
+	cid, err := cellIDFromPath(r)
 	if err != nil {
 		h.HandleHTTPError(ctx, err, w)
 		return

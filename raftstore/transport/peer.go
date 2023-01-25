@@ -2,13 +2,15 @@ package transport
 
 import (
 	"context"
+	"sync"
+	"time"
+
 	"github.com/f1shl3gs/manta/raftstore/pb"
+
 	"go.etcd.io/raft/v3/raftpb"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"sync"
-	"time"
 )
 
 const (
@@ -115,11 +117,4 @@ func (peer *peer) setInactive() {
 
 	peer.active = false
 	peer.activeSince = time.Time{}
-}
-
-func (peer *peer) activeTime() time.Time {
-	peer.mtx.RUnlock()
-	defer peer.mtx.RUnlock()
-
-	return peer.activeSince
 }

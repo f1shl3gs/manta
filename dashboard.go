@@ -43,7 +43,7 @@ type Query struct {
 }
 
 type DashboardColor struct {
-	Id    string `json:"id,omitempty"`
+	ID    string `json:"id,omitempty"`
 	Type  string `json:"type,omitempty"`
 	Hex   string `json:"hex,omitempty"`
 	Name  string `json:"name,omitempty"`
@@ -143,8 +143,8 @@ type LinePlusSingleStatViewProperties struct {
 	Colors            []DashboardColor `json:"colors"`
 }
 
-func (s *LinePlusSingleStatViewProperties) GetType() string {
-	return s.Type
+func (l *LinePlusSingleStatViewProperties) GetType() string {
+	return l.Type
 }
 
 type MarkdownViewProperties struct {
@@ -383,32 +383,32 @@ func unmarshalCellPropertiesJSON(b []byte) (ViewProperties, error) {
 	}
 }
 
-func (m *XYViewProperties) Validate() error {
-	if len(m.Queries) == 0 {
+func (x *XYViewProperties) Validate() error {
+	if len(x.Queries) == 0 {
 		return errors.New("queries of XYViewProperties is required")
 	}
 
 	return nil
 }
 
-func (m *GaugeViewProperties) Validate() error {
-	if len(m.Queries) == 0 {
+func (g *GaugeViewProperties) Validate() error {
+	if len(g.Queries) == 0 {
 		return errors.New("queries is required")
 	}
 
 	return nil
 }
 
-func (m *SingleStatViewProperties) Validate() error {
-	if len(m.Queries) == 0 {
+func (s *SingleStatViewProperties) Validate() error {
+	if len(s.Queries) == 0 {
 		return errors.New("queries is required")
 	}
 
 	return nil
 }
 
-func (m *LinePlusSingleStatViewProperties) Validate() error {
-	if len(m.Queries) == 0 {
+func (l *LinePlusSingleStatViewProperties) Validate() error {
+	if len(l.Queries) == 0 {
 		return errors.New("queries is required")
 	}
 

@@ -42,7 +42,8 @@ func LogError(span opentracing.Span, err error) error {
 // InjectToHTTPRequest adds tracing headers to an HTTP request.
 // Easier than adding this boilerplate everywhere.
 func InjectToHTTPRequest(span opentracing.Span, req *http.Request) {
-	err := opentracing.GlobalTracer().Inject(span.Context(), opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
+	err := opentracing.GlobalTracer().
+		Inject(span.Context(), opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
 	if err != nil {
 		_ = LogError(span, err)
 	}
@@ -52,7 +53,8 @@ func InjectToHTTPRequest(span opentracing.Span, req *http.Request) {
 // Returns the request with updated tracing context.
 // Easier than adding this boilerplate everywhere.
 func ExtractFromHTTPRequest(req *http.Request, handlerName string) (opentracing.Span, *http.Request) {
-	spanContext, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
+	spanContext, err := opentracing.GlobalTracer().
+		Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(req.Header))
 	if err != nil {
 		span, ctx := opentracing.StartSpanFromContext(req.Context(), "request")
 		annotateSpan(span, handlerName, req)
@@ -74,7 +76,7 @@ func annotateSpan(span opentracing.Span, handlerName string, req *http.Request) 
 	span.LogKV("path", req.URL.Path)
 }
 
-// span is a simple wrapper around opentracing.Span in order to
+// Span is a simple wrapper around opentracing.Span in order to
 // get access to the duration of the span for metrics reporting.
 type Span struct {
 	opentracing.Span
@@ -84,7 +86,13 @@ type Span struct {
 	gauge    prometheus.Gauge
 }
 
-func StartSpanFromContextWithPromMetrics(ctx context.Context, operationName string, hist prometheus.Observer, gauge prometheus.Gauge, opts ...opentracing.StartSpanOption) (*Span, context.Context) {
+func StartSpanFromContextWithPromMetrics(
+	ctx context.Context,
+	operationName string,
+	hist prometheus.Observer,
+	gauge prometheus.Gauge,
+	opts ...opentracing.StartSpanOption,
+) (*Span, context.Context) {
 	start := time.Now()
 	s, sctx := StartSpanFromContextWithOperationName(ctx, operationName, opentracing.StartTime(start))
 	gauge.Inc()
@@ -127,7 +135,10 @@ func (s *Span) Finish() {
 //
 //	// Sugar to create a child span
 //	span, ctx := opentracing.StartSpanFromContext(ctx, "operation name")
-func StartSpanFromContext(ctx context.Context, opts ...opentracing.StartSpanOption) (opentracing.Span, context.Context) {
+func StartSpanFromContext(
+	ctx context.Context,
+	opts ...opentracing.StartSpanOption,
+) (opentracing.Span, context.Context) {
 	if ctx == nil {
 		panic("StartSpanFromContext called with nil context")
 	}
@@ -164,8 +175,13 @@ func StartSpanFromContext(ctx context.Context, opts ...opentracing.StartSpanOpti
 	return span, ctx
 }
 
-// StartSpanFromContextWithOperationName is like StartSpanFromContext, but the caller determines the operation name.
-func StartSpanFromContextWithOperationName(ctx context.Context, operationName string, opts ...opentracing.StartSpanOption) (opentracing.Span, context.Context) {
+// StartSpanFromContextWithOperationName is like StartSpanFromContext, but the caller
+// determines the operation name.
+func StartSpanFromContextWithOperationName(
+	ctx context.Context,
+	operationName string,
+	opts ...opentracing.StartSpanOption,
+) (opentracing.Span, context.Context) {
 	if ctx == nil {
 		panic("StartSpanFromContextWithOperationName called with nil context")
 	}

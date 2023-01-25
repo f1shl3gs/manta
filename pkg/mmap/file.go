@@ -10,16 +10,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-// MmapFile represents an mmapd file and includes both the buffer to the data
+// File represents an mmapd file and includes both the buffer to the data
 // and the file descriptor.
-type MmapFile struct {
+type File struct {
 	Data []byte
 	Fd   *os.File
 }
 
 var ErrNewFile = errors.New("Create a new file")
 
-func OpenMmapFileUsing(fd *os.File, sz int, writable bool) (*MmapFile, error) {
+func OpenMmapFileUsing(fd *os.File, sz int, writable bool) (*File, error) {
 	filename := fd.Name()
 	fi, err := fd.Stat()
 	if err != nil {
@@ -47,7 +47,7 @@ func OpenMmapFileUsing(fd *os.File, sz int, writable bool) (*MmapFile, error) {
 		dir, _ := filepath.Split(filename)
 		go SyncDir(dir)
 	}
-	return &MmapFile{
+	return &File{
 		Data: buf,
 		Fd:   fd,
 	}, rerr
@@ -57,7 +57,7 @@ func OpenMmapFileUsing(fd *os.File, sz int, writable bool) (*MmapFile, error) {
 // created, it would truncate the file to maxSz. In both cases, it would mmap
 // the file to maxSz and returned it. In case the file is created, z.NewFile is
 // returned.
-func OpenMmapFile(filename string, flag int, maxSz int) (*MmapFile, error) {
+func OpenMmapFile(filename string, flag int, maxSz int) (*File, error) {
 	// fmt.Printf("opening file %s with flag: %v\n", filename, flag)
 	fd, err := os.OpenFile(filename, flag, 0666)
 	if err != nil {
@@ -87,7 +87,7 @@ func (mr *mmapReader) Read(buf []byte) (int, error) {
 	return n, nil
 }
 
-func (m *MmapFile) NewReader(offset int) io.Reader {
+func (m *File) NewReader(offset int) io.Reader {
 	return &mmapReader{
 		Data:   m.Data,
 		offset: offset,
@@ -96,7 +96,7 @@ func (m *MmapFile) NewReader(offset int) io.Reader {
 
 // Bytes returns data starting from offset off of size sz. If there's not enough data, it would
 // return nil slice and io.EOF.
-func (m *MmapFile) Bytes(off, sz int) ([]byte, error) {
+func (m *File) Bytes(off, sz int) ([]byte, error) {
 	if len(m.Data[off:]) < sz {
 		return nil, io.EOF
 	}
@@ -104,7 +104,7 @@ func (m *MmapFile) Bytes(off, sz int) ([]byte, error) {
 }
 
 // Slice returns the slice at the given offset.
-func (m *MmapFile) Slice(offset int) []byte {
+func (m *File) Slice(offset int) []byte {
 	sz := binary.BigEndian.Uint32(m.Data[offset:])
 	start := offset + 4
 	next := start + int(sz)
@@ -116,7 +116,7 @@ func (m *MmapFile) Slice(offset int) []byte {
 }
 
 // AllocateSlice allocates a slice of the given size at the given offset.
-func (m *MmapFile) AllocateSlice(sz, offset int) ([]byte, int, error) {
+func (m *File) AllocateSlice(sz, offset int) ([]byte, int, error) {
 	start := offset + 4
 
 	// If the file is too small, double its size or increase it by 1GB, whichever is smaller.
@@ -138,14 +138,14 @@ func (m *MmapFile) AllocateSlice(sz, offset int) ([]byte, int, error) {
 	return m.Data[start : start+sz], start + sz, nil
 }
 
-func (m *MmapFile) Sync() error {
+func (m *File) Sync() error {
 	if m == nil {
 		return nil
 	}
 	return Msync(m.Data)
 }
 
-func (m *MmapFile) Delete() error {
+func (m *File) Delete() error {
 	// Badger can set the m.Data directly, without setting any Fd. In that case, this should be a
 	// NOOP.
 	if m.Fd == nil {
@@ -153,34 +153,34 @@ func (m *MmapFile) Delete() error {
 	}
 
 	if err := Munmap(m.Data); err != nil {
-		return fmt.Errorf("while munmap file: %s, error: %v\n", m.Fd.Name(), err)
+		return fmt.Errorf("while munmap file: %s, error: %v", m.Fd.Name(), err)
 	}
 	m.Data = nil
 	if err := m.Fd.Truncate(0); err != nil {
-		return fmt.Errorf("while truncate file: %s, error: %v\n", m.Fd.Name(), err)
+		return fmt.Errorf("while truncate file: %s, error: %v", m.Fd.Name(), err)
 	}
 	if err := m.Fd.Close(); err != nil {
-		return fmt.Errorf("while close file: %s, error: %v\n", m.Fd.Name(), err)
+		return fmt.Errorf("while close file: %s, error: %v", m.Fd.Name(), err)
 	}
 	return os.Remove(m.Fd.Name())
 }
 
 // Close would close the file. It would also truncate the file if maxSz >= 0.
-func (m *MmapFile) Close(maxSz int64) error {
+func (m *File) Close(maxSz int64) error {
 	// Badger can set the m.Data directly, without setting any Fd. In that case, this should be a
 	// NOOP.
 	if m.Fd == nil {
 		return nil
 	}
 	if err := m.Sync(); err != nil {
-		return fmt.Errorf("while sync file: %s, error: %v\n", m.Fd.Name(), err)
+		return fmt.Errorf("while sync file: %s, error: %v", m.Fd.Name(), err)
 	}
 	if err := Munmap(m.Data); err != nil {
-		return fmt.Errorf("while munmap file: %s, error: %v\n", m.Fd.Name(), err)
+		return fmt.Errorf("while munmap file: %s, error: %v", m.Fd.Name(), err)
 	}
 	if maxSz >= 0 {
 		if err := m.Fd.Truncate(maxSz); err != nil {
-			return fmt.Errorf("while truncate file: %s, error: %v\n", m.Fd.Name(), err)
+			return fmt.Errorf("while truncate file: %s, error: %v", m.Fd.Name(), err)
 		}
 	}
 	return m.Fd.Close()

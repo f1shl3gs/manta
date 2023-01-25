@@ -56,7 +56,11 @@ func (tcs *TaskControlService) SetManualRuns(runs []*manta.Run) {
 	tcs.manualRuns = runs
 }
 
-func (tcs *TaskControlService) CreateRun(_ context.Context, taskID manta.ID, scheduledFor time.Time, runAt time.Time) (*manta.Run, error) {
+func (tcs *TaskControlService) CreateRun(
+	_ context.Context,
+	taskID manta.ID,
+	scheduledFor, runAt time.Time,
+) (*manta.Run, error) {
 	tcs.mu.Lock()
 	defer tcs.mu.Unlock()
 
@@ -130,7 +134,12 @@ func (tcs *TaskControlService) ManualRuns(ctx context.Context, taskID manta.ID) 
 }
 
 // UpdateRunState sets the run state at the respective time.
-func (tcs *TaskControlService) UpdateRunState(ctx context.Context, taskID, runID manta.ID, when time.Time, state manta.RunStatus) error {
+func (tcs *TaskControlService) UpdateRunState(
+	ctx context.Context,
+	taskID, runID manta.ID,
+	when time.Time,
+	state manta.RunStatus,
+) error {
 	tcs.mu.Lock()
 	defer tcs.mu.Unlock()
 
@@ -153,7 +162,12 @@ func (tcs *TaskControlService) UpdateRunState(ctx context.Context, taskID, runID
 }
 
 // AddRunLog adds a file line to the run.
-func (tcs *TaskControlService) AddRunLog(ctx context.Context, taskID, runID manta.ID, when time.Time, log string) error {
+func (tcs *TaskControlService) AddRunLog(
+	ctx context.Context,
+	taskID, runID manta.ID,
+	when time.Time,
+	log string,
+) error {
 	tcs.mu.Lock()
 	defer tcs.mu.Unlock()
 
@@ -187,7 +201,8 @@ func (tcs *TaskControlService) TotalRunsCreatedForTask(taskID manta.ID) int {
 	return tcs.totalRunsCreated[taskID]
 }
 
-// PollForNumberCreated blocks for a small amount of time waiting for exactly the given count of created and unfinished runs for the given task ID.
+// PollForNumberCreated blocks for a small amount of time waiting for exactly the given count
+// of created and unfinished runs for the given task ID.
 // If the expected number isn't found in time, it returns an error.
 //
 // Because the scheduler and executor do a lot of state changes asynchronously, this is useful in test.
@@ -196,14 +211,17 @@ func (tcs *TaskControlService) PollForNumberCreated(taskID manta.ID, count int) 
 	actualCount := 0
 	var created []*manta.Run
 	for i := 0; i < numAttempts; i++ {
-		time.Sleep(2 * time.Millisecond) // we sleep even on first so it becomes more likely that we catch when too many are produced.
+		// we sleep even on first so it becomes more likely that we catch when too many are produced.
+		time.Sleep(2 * time.Millisecond)
 		created = tcs.CreatedFor(taskID)
 		actualCount = len(created)
 		if actualCount == count {
 			return created, nil
 		}
 	}
-	return created, fmt.Errorf("did not see count of %dcs created run(s) for task with ID %s in time, instead saw %dcs", count, taskID, actualCount) // we return created anyways, to make it easier to debug
+	return created, fmt.Errorf(
+		"did not see count of %dcs created run(s) for task with ID %s in time, instead saw %dcs",
+		count, taskID, actualCount) // we return created anyways, to make it easier to debug
 }
 
 func (tcs *TaskControlService) FinishedRun(runID manta.ID) *manta.Run {

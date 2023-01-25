@@ -43,7 +43,11 @@ func (cs *CoordinatingCheckService) CreateCheck(ctx context.Context, check *mant
 	return nil
 }
 
-func (cs *CoordinatingCheckService) UpdateCheck(ctx context.Context, id manta.ID, check *manta.Check) (*manta.Check, error) {
+func (cs *CoordinatingCheckService) UpdateCheck(
+	ctx context.Context,
+	id manta.ID,
+	check *manta.Check,
+) (*manta.Check, error) {
 	from, err := cs.CheckService.FindCheckByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -73,7 +77,11 @@ func (cs *CoordinatingCheckService) UpdateCheck(ctx context.Context, id manta.ID
 	return check, cs.coordinator.TaskUpdated(ctx, fromTask, toTask)
 }
 
-func (cs *CoordinatingCheckService) PatchCheck(ctx context.Context, id manta.ID, upd manta.CheckUpdate) (*manta.Check, error) {
+func (cs *CoordinatingCheckService) PatchCheck(
+	ctx context.Context,
+	id manta.ID,
+	upd manta.CheckUpdate,
+) (*manta.Check, error) {
 	from, err := cs.CheckService.FindCheckByID(ctx, id)
 	if err != nil {
 		return nil, err

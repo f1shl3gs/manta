@@ -29,7 +29,12 @@ func isAllowed(authorizer manta.Authorizer, p manta.Permission) error {
 	return isAllowedAll(authorizer, []manta.Permission{p})
 }
 
-func authorize(ctx context.Context, action manta.Action, rt manta.ResourceType, rid, oid *manta.ID) (manta.Authorizer, manta.Permission, error) {
+func authorize(
+	ctx context.Context,
+	action manta.Action,
+	rt manta.ResourceType,
+	rid, oid *manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
 	var (
 		p   *manta.Permission
 		err error
@@ -57,26 +62,48 @@ func authorize(ctx context.Context, action manta.Action, rt manta.ResourceType, 
 	return auth, *p, isAllowed(auth, *p)
 }
 
-// AuthorizeRead authorizes the user in the context to read the specified resource (identified by its type, ID, and orgID).
-// NOTE: authorization will pass even if the user only has permissions for the resource type and organization ID only.
-func authorizeRead(ctx context.Context, rt manta.ResourceType, rid, oid manta.ID) (manta.Authorizer, manta.Permission, error) {
+// AuthorizeRead authorizes the user in the context to read the specified resource (identified by
+// its type, ID, and orgID).
+//
+// NOTE: authorization will pass even if the user only has permissions for the resource type and
+// organization ID only.
+func authorizeRead(
+	ctx context.Context,
+	rt manta.ResourceType,
+	rid, oid manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
 	return authorize(ctx, manta.ReadAction, rt, &rid, &oid)
 }
 
-// AuthorizeWrite authorizes the user in the context to write the specified resource (identified by its type, ID, and orgID).
-// NOTE: authorization will pass even if the user only has permissions for the resource type and organization ID only.
-func authorizeWrite(ctx context.Context, rt manta.ResourceType, rid, oid manta.ID) (manta.Authorizer, manta.Permission, error) {
+// AuthorizeWrite authorizes the user in the context to write the specified resource (identified by
+// its type, ID, and orgID).
+// NOTE: authorization will pass even if the user only has permissions for the resource type and
+// organization ID only.
+func authorizeWrite(
+	ctx context.Context,
+	rt manta.ResourceType,
+	rid, oid manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
+
 	return authorize(ctx, manta.WriteAction, rt, &rid, &oid)
 }
 
 // authorizeCreate authorizes a user to create a resource of the given type for the given org
-func authorizeCreate(ctx context.Context, rt manta.ResourceType, oid manta.ID) (manta.Authorizer, manta.Permission, error) {
+func authorizeCreate(
+	ctx context.Context,
+	rt manta.ResourceType,
+	oid manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
 	return authorizeOrgWriteResource(ctx, rt, oid)
 }
 
 // authorizeOrgWriteResource authorizes the given org to write the resources of the given type.
 // NOTE: this is pretty much the same as AuthorizeWrite, in the case that the resource ID is ignored.
-// Use it in the case that you do not know shich resource in particular you want to give access to.
-func authorizeOrgWriteResource(ctx context.Context, rt manta.ResourceType, oid manta.ID) (manta.Authorizer, manta.Permission, error) {
+// Use it in the case that you do not know which resource in particular you want to give access to.
+func authorizeOrgWriteResource(
+	ctx context.Context,
+	rt manta.ResourceType,
+	oid manta.ID,
+) (manta.Authorizer, manta.Permission, error) {
 	return authorize(ctx, manta.WriteAction, rt, nil, &oid)
 }

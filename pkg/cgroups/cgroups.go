@@ -14,7 +14,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -369,6 +368,6 @@ func readFile(filepath string) (res []byte, err error) {
 			err = f.Close()
 		}
 	}()
-	res, err = ioutil.ReadAll(f)
+	res, err = os.ReadFile(filepath)
 	return res, err
 }

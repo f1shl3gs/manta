@@ -7,7 +7,8 @@ import (
 	"unsafe"
 )
 
-// IDLength is the exact length a string (or a byte slice representing it) must have in order to be decoded into a valid ID.
+// IDLength is the exact length a string (or a byte slice representing it)
+// must have in order to be decoded into a valid ID.
 const IDLength = 16
 
 var (

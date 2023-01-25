@@ -15,7 +15,11 @@ var (
 )
 
 // CreateRun creates a run with a scheduled for time.
-func (s *Service) CreateRun(ctx context.Context, taskID manta.ID, scheduledFor time.Time, runAt time.Time) (*manta.Run, error) {
+func (s *Service) CreateRun(
+	ctx context.Context,
+	taskID manta.ID,
+	scheduledFor, runAt time.Time,
+) (*manta.Run, error) {
 	run := &manta.Run{
 		ID:           s.idGen.ID(),
 		TaskID:       taskID,
@@ -84,7 +88,8 @@ func (s *Service) StartManualRun(ctx context.Context, taskID, runID manta.ID) (*
 	panic("implement me")
 }
 
-// FinishRun removes runID from the list of running tasks and if its `ScheduledFor` is later then last completed update it.
+// FinishRun removes runID from the list of running tasks and if its `ScheduledFor` is
+// later then last completed update it.
 func (s *Service) FinishRun(ctx context.Context, taskID, runID manta.ID) (*manta.Run, error) {
 	var (
 		run *manta.Run
@@ -163,7 +168,12 @@ func deleteRun(tx Tx, taskID, runID manta.ID) error {
 }
 
 // UpdateRunState sets the run state at the respective time.
-func (s *Service) UpdateRunState(ctx context.Context, taskID, runID manta.ID, when time.Time, state manta.RunStatus) error {
+func (s *Service) UpdateRunState(
+	ctx context.Context,
+	taskID, runID manta.ID,
+	when time.Time,
+	state manta.RunStatus,
+) error {
 	return s.kv.Update(ctx, func(tx Tx) error {
 		run, err := findByID[manta.Run](tx, runID, RunsBucket)
 		if err != nil {

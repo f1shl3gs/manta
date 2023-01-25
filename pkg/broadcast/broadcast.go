@@ -32,7 +32,7 @@ func (b *Broadcaster[T]) Sub() *Queue[T] {
 	b.mtx.Lock()
 	defer b.mtx.Unlock()
 
-	b.n += 1
+	b.n++
 
 	q := &Queue[T]{
 		id:          b.n,

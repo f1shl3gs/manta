@@ -17,7 +17,7 @@ func extractParamFromContext(ctx context.Context, name string) string {
 	return params.ByName(name)
 }
 
-func orgIdFromQuery(r *http.Request) (manta.ID, error) {
+func orgIDFromQuery(r *http.Request) (manta.ID, error) {
 	var (
 		text = r.URL.Query().Get("orgID")
 		id   manta.ID
@@ -42,29 +42,6 @@ func idFromPath(r *http.Request) (manta.ID, error) {
 	)
 
 	return id, id.DecodeFromString(text)
-}
-
-func orgIDFromPath(r *http.Request) (manta.ID, error) {
-	var (
-		text = extractParamFromContext(r.Context(), "orgID")
-		id   manta.ID
-	)
-
-	return id, id.DecodeFromString(text)
-}
-
-func idsFromPath(r *http.Request) (manta.ID, manta.ID, error) {
-	orgID, err := orgIDFromPath(r)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	id, err := idFromPath(r)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	return orgID, id, nil
 }
 
 func limitFromQuery(r *http.Request, defaultValue, max int64) (int, error) {
