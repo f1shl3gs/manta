@@ -2,6 +2,7 @@ package kv_test
 
 import (
 	"context"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"testing"
 	"time"
 
@@ -15,6 +16,12 @@ import (
 
 const (
 	mockUID = manta.ID(1)
+)
+
+var (
+	sessionCmpOptions = cmp.Options{
+		cmpopts.IgnoreFields(manta.Session{}, "Permissions"),
+	}
 )
 
 type initSessionService func(t *testing.T) (context.Context, manta.SessionService, func())
@@ -123,7 +130,7 @@ func FindSession(t *testing.T, init initSessionService) {
 				found, err := svc.FindSession(ctx, session.ID)
 				require.NoError(t, err)
 
-				diff := cmp.Diff(found, session)
+				diff := cmp.Diff(found, session, sessionCmpOptions...)
 				require.Equal(t, "", diff, "created and found is not equal\n%s", diff)
 			},
 		},

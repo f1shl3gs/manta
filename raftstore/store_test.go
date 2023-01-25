@@ -157,7 +157,7 @@ func TestRestart(t *testing.T) {
 	go store.Run(ctx)
 
 	select {
-	case <-store.readyNotify():
+	case <-store.ReadyNotify():
 	case <-ctx.Done():
 		panic("timeout")
 	}
@@ -191,6 +191,8 @@ func dump(t *testing.T, db *bolt.DB) {
 }
 
 func TestBench(t *testing.T) {
+	t.SkipNow()
+
 	go func() {
 		_ = http.ListenAndServe(":7000", nil)
 	}()

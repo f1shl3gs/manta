@@ -2,13 +2,15 @@ package http
 
 import (
 	"context"
-	"os"
+    "github.com/f1shl3gs/manta/telemetry/prom"
+    "os"
 	"testing"
 
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
-	"github.com/julienschmidt/httprouter"
+
+	"github.com/f1shl3gs/manta/http/router"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zaptest"
 )
@@ -28,15 +30,13 @@ func NewTestHTTPService(t *testing.T) (*Service, *Backend) {
 
 	service := kv.NewService(logger, store)
 	backend := &Backend{
-		router: &Router{
-			Router: httprouter.New(),
-			logger: logger,
-		},
+		router:              router.New(),
 		OrganizationService: service,
 		UserService:         service,
 		OnBoardingService:   service,
 		PasswordService:     service,
 		SessionService:      service,
+        PromRegistry: prom.NewRegistry(logger),
 	}
 
 	// This is very trick, this will deletedashboard the data file, and

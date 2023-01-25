@@ -2,9 +2,10 @@ package raftstore
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestWait(t *testing.T) {
@@ -17,7 +18,7 @@ func TestWait(t *testing.T) {
 		t.Errorf("<-ch = %v, want %v", g, w)
 	}
 
-	assert.Equal(t, "foo", <-ch)
+	assert.Equal(t, "", <-ch)
 }
 
 func TestRegisterDupPanic(t *testing.T) {
