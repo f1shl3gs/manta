@@ -2,7 +2,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 import {Dashboard} from 'src/types/dashboards'
 import {Cell} from 'src/types/cells'
 import {Organization} from 'src/types/organization'
-import {Configuration} from 'src/types/configuration'
+import {Config} from 'src/types/config'
 import {User} from 'src/types/user'
 import {Scrape} from 'src/types/scrape'
 import {Check, CheckSortParams} from 'src/types/checks'
@@ -18,7 +18,7 @@ export interface Resource {
 export enum ResourceType {
   Cells = 'cells',
   Checks = 'checks',
-  Configurations = 'configurations',
+  Configs = 'configs',
   Dashboards = 'dashboards',
   Members = 'members',
   NotificationEndpoints = 'notificationEndpoints',
@@ -36,7 +36,7 @@ export interface NormalizedState<R> {
   status: RemoteDataState
 }
 
-export interface ConfigurationsState extends NormalizedState<Configuration> {
+export interface ConfigsState extends NormalizedState<Config> {
   config: {
     status: RemoteDataState
     content: string
@@ -81,7 +81,7 @@ export interface NotificationEndpointState
 export interface ResourceState {
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: CheckState
-  [ResourceType.Configurations]: ConfigurationsState
+  [ResourceType.Configs]: ConfigsState
   [ResourceType.Dashboards]: DashboardsState
   [ResourceType.Members]: MembersState
   [ResourceType.NotificationEndpoints]: NotificationEndpointState

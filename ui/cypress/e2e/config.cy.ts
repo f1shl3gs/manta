@@ -1,24 +1,24 @@
 import {Organization} from '../../src/types/organization'
 
-describe('Configuration', () => {
+describe('Config', () => {
   beforeEach(() => {
     cy.setup().then(() => cy.visit('/'))
 
     cy.getByTestID('nav-item-data').should('be.visible')
     cy.getByTestID('nav-item-data--config').click({force: true})
 
-    cy.getByTestID('configuration-card').should('have.length', 0)
+    cy.getByTestID('config-card').should('have.length', 0)
   })
 
   it('Create', () => {
     // create
-    cy.getByTestID('button-create-configuration').first().click()
+    cy.getByTestID('button-create-config').first().click()
     cy.url().should('include', 'data/config/new')
     cy.getByTestID('yaml-editor').type('foo: bar{enter}')
-    cy.getByTestID('create-configuration--button').click()
+    cy.getByTestID('create-config--button').click()
 
     // create should be success
-    cy.getByTestID('configuration-card').should('have.length', 1)
+    cy.getByTestID('config-card').should('have.length', 1)
   })
 
   describe('when a config already exist', () => {
@@ -38,15 +38,15 @@ describe('Configuration', () => {
       })
 
       // create should be success
-      cy.getByTestID('configuration-card').should('have.length', 1)
+      cy.getByTestID('config-card').should('have.length', 1)
     })
 
     it('delete config', () => {
-      cy.getByTestID('configuration-card-context--delete').click()
+      cy.getByTestID('config-card-context--delete').click()
       cy.getByTestID('context_menu-delete').click()
 
       // the initial one should be deleted already
-      cy.getByTestID('configuration-card').should('have.length', 0)
+      cy.getByTestID('config-card').should('have.length', 0)
     })
   })
 })

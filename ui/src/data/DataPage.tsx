@@ -5,9 +5,7 @@ import React, {FunctionComponent, lazy} from 'react'
 import TabsPage from 'src/layout/TabsPage'
 
 const Todo = lazy(() => import('src/Todo'))
-const ConfigurationPage = lazy(
-  () => import('src/configurations/components/ConfigurationIndex')
-)
+const ConfigPage = lazy(() => import('src/configs/components/ConfigIndex'))
 const ScrapePage = lazy(() => import('src/scrapes/components/ScrapesIndex'))
 
 const tabs = [
@@ -19,7 +17,7 @@ const tabs = [
   {
     name: 'config',
     path: 'config',
-    element: <ConfigurationPage />,
+    element: <ConfigPage />,
   },
   {
     name: 'scrape',

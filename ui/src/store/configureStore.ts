@@ -31,7 +31,7 @@ import {organizationsReducer} from 'src/organizations/reducers'
 import {notificationsReducer} from 'src/shared/reducers/notifications'
 import {cellsReducer} from 'src/cells/reducers'
 import {timeMachineReducer} from 'src/timeMachine/reducers'
-import {configurationsReducer} from 'src/configurations/reducers'
+import {configsReducer} from 'src/configs/reducers'
 import {usersReducer} from 'src/members/reducers'
 import {scrapesReducers} from 'src/scrapes/reducers'
 import {meReducer} from 'src/me/reducers'
@@ -57,7 +57,7 @@ const rootReducer = (history: History) => (state, action) => {
     resources: combineReducers({
       [ResourceType.Cells]: cellsReducer,
       [ResourceType.Checks]: checksReducer,
-      [ResourceType.Configurations]: configurationsReducer,
+      [ResourceType.Configs]: configsReducer,
       [ResourceType.Dashboards]: dashboardsReducer,
       [ResourceType.Members]: usersReducer,
       [ResourceType.NotificationEndpoints]: notificationEndpointsReducer,

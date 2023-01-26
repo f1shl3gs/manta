@@ -2,7 +2,7 @@ import {NormalizedSchema} from 'normalizr'
 
 import {RemoteDataState} from '@influxdata/clockface'
 
-import {ConfigurationEntities} from 'src/types/schemas'
+import {ConfigEntities} from 'src/types/schemas'
 
 // Action Types
 export const SET_CONFIGS = 'SET_CONFIGS'
@@ -16,7 +16,7 @@ export type Action =
 
 export const setConfigs = (
   status: RemoteDataState,
-  schema?: NormalizedSchema<ConfigurationEntities, string[]>
+  schema?: NormalizedSchema<ConfigEntities, string[]>
 ) =>
   ({
     type: SET_CONFIGS,
@@ -33,7 +33,7 @@ export const removeConfig = (id: string) =>
 export const setConfig = (
   id: string,
   status: RemoteDataState,
-  schema?: NormalizedSchema<ConfigurationEntities, string>
+  schema?: NormalizedSchema<ConfigEntities, string>
 ) =>
   ({
     type: SET_CONFIG,

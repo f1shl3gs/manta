@@ -5,23 +5,19 @@ import {normalize} from 'normalizr'
 import {RemoteDataState} from '@influxdata/clockface'
 import {GetState} from 'src/types/stores'
 import {ResourceType} from 'src/types/resources'
-import {Configuration} from 'src/types/configuration'
-import {ConfigurationEntities} from 'src/types/schemas'
+import {Config} from 'src/types/config'
+import {ConfigEntities} from 'src/types/schemas'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
-import {
-  removeConfig,
-  setConfig,
-  setConfigs,
-} from 'src/configurations/actions/creators'
+import {removeConfig, setConfig, setConfigs} from 'src/configs/actions/creators'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getByID} from 'src/resources/selectors'
 
 // Schemas
-import {arrayOfConfigurations, configurationSchema} from 'src/schemas'
+import {arrayOfConfigs, configSchema} from 'src/schemas'
 
 // Utils
 import request from 'src/shared/utils/request'
@@ -46,9 +42,9 @@ export const getConfigs =
         throw new Error(resp.data.message)
       }
 
-      const norm = normalize<Configuration, ConfigurationEntities, string[]>(
+      const norm = normalize<Config, ConfigEntities, string[]>(
         resp.data,
-        arrayOfConfigurations
+        arrayOfConfigs
       )
       dispatch(setConfigs(RemoteDataState.Done, norm))
     } catch (err) {
@@ -83,9 +79,9 @@ export const createConfig =
         throw new Error(resp.data.message)
       }
 
-      const norm = normalize<Configuration, ConfigurationEntities, string>(
+      const norm = normalize<Config, ConfigEntities, string>(
         resp.data,
-        configurationSchema
+        configSchema
       )
 
       dispatch(setConfig(norm.result, RemoteDataState.Done, norm))
@@ -95,7 +91,7 @@ export const createConfig =
       dispatch(
         notify({
           ...defaultErrorNotification,
-          message: `Create Configuration failed, ${err}`,
+          message: `Create Config failed, ${err}`,
         })
       )
     }
@@ -141,11 +137,7 @@ export const updateConfig =
   (id: string, updates: ConfigUpdate) =>
   async (dispatch, getState: GetState): Promise<void> => {
     const state = getState()
-    const current = getByID<Configuration>(
-      state,
-      ResourceType.Configurations,
-      id
-    )
+    const current = getByID<Config>(state, ResourceType.Configs, id)
 
     const config = {
       ...current,
@@ -161,9 +153,9 @@ export const updateConfig =
         throw new Error(resp.data.message)
       }
 
-      const norm = normalize<Configuration, ConfigurationEntities, string>(
+      const norm = normalize<Config, ConfigEntities, string>(
         resp.data,
-        configurationSchema
+        configSchema
       )
 
       dispatch(setConfig(norm.result, RemoteDataState.Done, norm))

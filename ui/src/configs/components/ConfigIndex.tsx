@@ -8,32 +8,30 @@ import FilterList from 'src/shared/components/FilterList'
 import {AutoSizer} from 'react-virtualized'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import SearchWidget from 'src/shared/components/SearchWidget'
-import CreateConfigurationButton from 'src/configurations/components/CreateConfigurationButton'
-import ConfigurationCard from 'src/configurations/components/ConfigurationCard'
+import CreateConfigButton from 'src/configs/components/CreateConfigButton'
+import ConfigCard from 'src/configs/components/ConfigCard'
 import {getSortedResources} from 'src/shared/utils/sort'
-import ConfigurationExplainer from 'src/configurations/components/ConfigurationExplainer'
+import ConfigExplainer from 'src/configs/components/ConfigExplainer'
 
 // Types
 import {SortTypes} from 'src/types/sort'
-import {Configuration} from 'src/types/configuration'
+import {Config} from 'src/types/config'
 import {useSelector} from 'react-redux'
 import {AppState} from 'src/types/stores'
 import {getAll} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
 import GetResources from 'src/resources/components/GetResources'
 import EmptyResources from 'src/resources/components/EmptyResources'
-import TabbedPageHeader from 'src/shared/components/TabbedPageHeader';
+import TabbedPageHeader from 'src/shared/components/TabbedPageHeader'
 
-const ConfigurationWizard = lazy(
-  () => import('src/configurations/components/ConfigurationWizard')
-)
+const ConfigWizard = lazy(() => import('src/configs/components/ConfigWizard'))
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
 
-const ConfigurationIndex: FunctionComponent = () => {
+const ConfigIndex: FunctionComponent = () => {
   const configs = useSelector((state: AppState) => {
-    return getAll<Configuration>(state, ResourceType.Configurations)
+    return getAll<Config>(state, ResourceType.Configs)
   })
   const [search, setSearch] = useState('')
   const [sortOption, setSortOption] = useState({
@@ -46,12 +44,12 @@ const ConfigurationIndex: FunctionComponent = () => {
     <>
       <SearchWidget
         onSearch={t => setSearch(t)}
-        placeholder={'Filter Configurations...'}
+        placeholder={'Filter Configs...'}
         search={search}
       />
 
       <ResourceSortDropdown
-        resource={ResourceType.Configurations}
+        resource={ResourceType.Configs}
         sortKey={sortOption.key}
         sortType={sortOption.type}
         sortDirection={sortOption.direction}
@@ -66,14 +64,12 @@ const ConfigurationIndex: FunctionComponent = () => {
     </>
   )
 
-  const right = (
-    <CreateConfigurationButton />
-  )
+  const right = <CreateConfigButton />
 
   return (
     <>
       <Routes>
-        <Route path="new" element={<ConfigurationWizard />} />
+        <Route path="new" element={<ConfigWizard />} />
       </Routes>
 
       <AutoSizer>
@@ -84,7 +80,7 @@ const ConfigurationIndex: FunctionComponent = () => {
 
           return (
             <>
-              <TabbedPageHeader left={left} right={right} style={{width}}/>
+              <TabbedPageHeader left={left} right={right} style={{width}} />
 
               <Grid style={{width, height: adjustedHeight}}>
                 <Grid.Row>
@@ -94,7 +90,7 @@ const ConfigurationIndex: FunctionComponent = () => {
                     widthMD={Columns.Nine}
                     widthLG={Columns.Ten}
                   >
-                    <FilterList<Configuration>
+                    <FilterList<Config>
                       list={configs}
                       search={search}
                       searchKeys={['name', 'desc']}
@@ -104,24 +100,21 @@ const ConfigurationIndex: FunctionComponent = () => {
                           return (
                             <EmptyResources
                               searchTerm={search}
-                              resource={ResourceType.Configurations}
-                              createButton={<CreateConfigurationButton />}
+                              resource={ResourceType.Configs}
+                              createButton={<CreateConfigButton />}
                             />
                           )
                         }
 
                         return (
                           <div style={{height: '100%', display: 'grid'}}>
-                            {getSortedResources<Configuration>(
+                            {getSortedResources<Config>(
                               filtered,
                               sortOption.key,
                               sortOption.type,
                               sortOption.direction
                             ).map(cf => (
-                              <ConfigurationCard
-                                key={cf.id}
-                                configuration={cf}
-                              />
+                              <ConfigCard key={cf.id} config={cf} />
                             ))}
                           </div>
                         )
@@ -135,7 +128,7 @@ const ConfigurationIndex: FunctionComponent = () => {
                     widthMD={Columns.Three}
                     widthLG={Columns.Two}
                   >
-                    <ConfigurationExplainer />
+                    <ConfigExplainer />
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
@@ -148,7 +141,7 @@ const ConfigurationIndex: FunctionComponent = () => {
 }
 
 export default () => (
-  <GetResources resources={[ResourceType.Configurations]}>
-    <ConfigurationIndex />
+  <GetResources resources={[ResourceType.Configs]}>
+    <ConfigIndex />
   </GetResources>
 )

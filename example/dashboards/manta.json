@@ -311,7 +311,7 @@
         "queries": [
           {
             "name": "query 1",
-            "text": "boltdb_keys_total{bucket=\"configurations\"}"
+            "text": "boltdb_keys_total{bucket=\"configs\"}"
           }
         ],
         "colors": [

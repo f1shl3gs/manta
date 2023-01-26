@@ -1,11 +1,11 @@
 import {Gradients, Panel} from '@influxdata/clockface'
 import React, {FunctionComponent} from 'react'
 
-const ConfigurationExplainer: FunctionComponent = () => {
+const ConfigExplainer: FunctionComponent = () => {
   return (
     <Panel gradient={Gradients.PolarExpress} border={true}>
       <Panel.Header>
-        <h5>What is a Configuration?</h5>
+        <h5>What is a Config?</h5>
       </Panel.Header>
 
       <Panel.Body>
@@ -15,4 +15,4 @@ const ConfigurationExplainer: FunctionComponent = () => {
   )
 }
 
-export default ConfigurationExplainer
+export default ConfigExplainer

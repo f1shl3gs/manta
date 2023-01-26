@@ -25,7 +25,7 @@ import {useDispatch} from 'react-redux'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 // Actions
-import {createConfig} from 'src/configurations/actions/thunks'
+import {createConfig} from 'src/configs/actions/thunks'
 import {useNavigate} from 'react-router-dom'
 
 const defaultConfig = `sources:
@@ -52,7 +52,7 @@ sinks:
     endpoint: 0.0.0.0:9100
 `
 
-const ConfigurationWizard: FunctionComponent = () => {
+const ConfigWizard: FunctionComponent = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [content, setContent] = useState(defaultConfig)
@@ -68,10 +68,7 @@ const ConfigurationWizard: FunctionComponent = () => {
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={1200}>
-        <Overlay.Header
-          title={'Create a Configuration'}
-          onDismiss={onDismiss}
-        />
+        <Overlay.Header title={'Create a Config'} onDismiss={onDismiss} />
 
         <Overlay.Body>
           <Panel style={{marginBottom: '8px'}}>
@@ -107,7 +104,7 @@ const ConfigurationWizard: FunctionComponent = () => {
           <Button
             color={ComponentColor.Success}
             text="Save"
-            testID={'create-configuration--button'}
+            testID={'create-config--button'}
             onClick={handleSave}
           />
         </Overlay.Footer>
@@ -116,4 +113,4 @@ const ConfigurationWizard: FunctionComponent = () => {
   )
 }
 
-export default ConfigurationWizard
+export default ConfigWizard

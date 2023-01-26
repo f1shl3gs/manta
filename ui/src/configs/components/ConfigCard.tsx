@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import {Configuration} from 'src/types/configuration'
+import {Config} from 'src/types/config'
 import {
   ButtonShape,
   ComponentColor,
@@ -14,14 +14,14 @@ import {
   ConfigUpdate,
   deleteConfig,
   updateConfig,
-} from 'src/configurations/actions/thunks'
+} from 'src/configs/actions/thunks'
 
 interface Props {
-  configuration: Configuration
+  config: Config
 }
 
-const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
-  const {id} = configuration
+const ConfigCard: FunctionComponent<Props> = ({config}) => {
+  const {id} = config
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const {orgID} = useParams()
@@ -42,7 +42,7 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
         icon={IconFont.Trash_New}
         color={ComponentColor.Danger}
         shape={ButtonShape.Square}
-        testID={'configuration-card-context--delete'}
+        testID={'config-card-context--delete'}
       >
         <Context.Item
           label={'Delete'}
@@ -55,29 +55,29 @@ const ConfigurationCard: FunctionComponent<Props> = ({configuration}) => {
 
   return (
     <ResourceCard
-      key={configuration.id}
-      testID={'configuration-card'}
+      key={config.id}
+      testID={'config-card'}
       contextMenu={contextMenu()}
     >
       <ResourceCard.EditableName
-        name={configuration.name}
+        name={config.name}
         onUpdate={name => handleUpdate({name})}
         onClick={() => {
-          navigate(`/orgs/${orgID}/data/config/${configuration.id}`)
+          navigate(`/orgs/${orgID}/data/config/${config.id}`)
         }}
       />
 
       <ResourceCard.EditableDescription
-        description={configuration.desc}
-        placeholder={`Describe ${configuration.name}`}
+        description={config.desc}
+        placeholder={`Describe ${config.name}`}
         onUpdate={desc => handleUpdate({desc})}
       />
 
       <ResourceCard.Meta>
-        {`Last Modified: ${fromNow(configuration.updated)}`}
+        {`Last Modified: ${fromNow(config.updated)}`}
       </ResourceCard.Meta>
     </ResourceCard>
   )
 }
 
-export default ConfigurationCard
+export default ConfigCard

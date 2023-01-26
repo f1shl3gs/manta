@@ -12,7 +12,7 @@ tags:
   - name: User
   - name: Dashboards
   - name: Session
-  - name: Configuration
+  - name: Config
 
 paths:
   /setup:
@@ -315,12 +315,12 @@ paths:
                   $ref: '#/components/schemas/User'
         default:
           $ref: '#/components/responses/default'
-  /configurations:
+  /configs:
     get:
-      operationId: getAllConfigurations
+      operationId: getAllConfigs
       tags:
-        - Configuration
-      description: Get all configurations of the specified org
+        - Config
+      description: Get all configs of the specified org
       parameters:
         - $ref: '#/components/parameters/TraceSpan'
         - name: orgID
@@ -336,28 +336,28 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Configuration'
+                  $ref: '#/components/schemas/Config'
         default:
           $ref: '#/components/responses/default'
     post:
-      operationId: createConfiguration
+      operationId: createConfig
       tags:
-        - Configuration
-      description: Create a configuration
+        - Config
+      description: Create a config
       parameters:
         - $ref: '#/components/parameters/TraceSpan'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Configuration'
+              $ref: '#/components/schemas/Config'
       responses:
         201:
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Configuration'
+                $ref: '#/components/schemas/Config'
         default:
           $ref: '#/components/responses/default'
 
@@ -579,7 +579,7 @@ components:
           type: string
           required: false
 
-    Configuration:
+    Config:
       type: object
       properties:
         id:
@@ -600,7 +600,7 @@ components:
           type: string
           required: true
 
-    ConfigurationUpdate:
+    ConfigUpdate:
       type: object
       properties:
         name:

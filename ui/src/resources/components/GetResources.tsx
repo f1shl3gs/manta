@@ -13,7 +13,7 @@ import {AppState} from 'src/types/stores'
 import {getDashboards} from 'src/dashboards/actions/thunks'
 import {getScrapes} from 'src/scrapes/actions/thunks'
 import {getMembers} from 'src/members/actions/thunks'
-import {getConfigs} from 'src/configurations/actions/thunks'
+import {getConfigs} from 'src/configs/actions/thunks'
 import {getChecks} from 'src/checks/actions/thunks'
 import {getSecrets} from 'src/secrets/actions/thunks'
 import {getNotificationEndpoints} from 'src/notification_endpoints/actions/thunks'
@@ -69,7 +69,7 @@ const GetResources: FunctionComponent<Props> = props => {
         case ResourceType.Checks:
           return getChecks()
 
-        case ResourceType.Configurations:
+        case ResourceType.Configs:
           return getConfigs()
 
         case ResourceType.Dashboards:

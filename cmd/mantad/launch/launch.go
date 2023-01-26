@@ -328,14 +328,14 @@ func (l *Launcher) run() error {
 
 	{
 		// grpc service
-        if l.Store == "raftstore" {
-            grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
+		if l.Store == "raftstore" {
+			grpcListener := muxer.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
 
-            group.Go(func() error {
-                logger.Info("start grpc service")
-                return grpcSvr.Serve(grpcListener)
-            })
-        }
+			group.Go(func() error {
+				logger.Info("start grpc service")
+				return grpcSvr.Serve(grpcListener)
+			})
+		}
 	}
 
 	{

@@ -1,6 +1,6 @@
 import {RemoteDataState} from '@influxdata/clockface'
 
-export interface Configuration {
+export interface Config {
   id: string
   created: string
   updated: string

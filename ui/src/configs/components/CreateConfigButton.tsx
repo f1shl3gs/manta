@@ -3,7 +3,7 @@ import React, {FunctionComponent, useCallback} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {useOrg} from 'src/organizations/selectors'
 
-const CreateConfigurationButton: FunctionComponent = () => {
+const CreateConfigButton: FunctionComponent = () => {
   const navigate = useNavigate()
   const {id: orgID} = useOrg()
   const create = useCallback(() => {
@@ -12,8 +12,8 @@ const CreateConfigurationButton: FunctionComponent = () => {
 
   return (
     <Button
-      testID={'button-create-configuration'}
-      text="Create Configuration"
+      testID={'button-create-config'}
+      text="Create Config"
       icon={IconFont.Plus_New}
       color={ComponentColor.Primary}
       onClick={create}
@@ -21,4 +21,4 @@ const CreateConfigurationButton: FunctionComponent = () => {
   )
 }
 
-export default CreateConfigurationButton
+export default CreateConfigButton
