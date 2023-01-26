@@ -70,4 +70,23 @@ describe('Dashboard', () => {
         })
       })
   })
+
+  it('can import dashboard', () => {
+    const content = `{
+  "id": "0a66228cdb616000",
+  "created": "2022-12-07T01:47:33.101807828+08:00",
+  "updated": "2022-12-07T01:57:01.526551906+08:00",
+  "name": "Manta",
+  "desc": "Metrics of Manta",
+  "orgID": "0a659bccc2aba000"
+  }
+`
+    cy.getByTestID('add-resource-dropdown--button')
+      .should('have.length', 1)
+      .click()
+    cy.getByTestID('add-resource-dropdown--import').click()
+    cy.getByTestID('import-overlay--textarea').type(content).getByTestID('submit-Dashboard-button').click()
+
+    cy.getByTestID('dashboard-card').should('have.length', 2)
+  })
 })
