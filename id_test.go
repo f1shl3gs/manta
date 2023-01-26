@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/f1shl3gs/manta"
+    "github.com/f1shl3gs/manta"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -193,8 +193,4 @@ func BenchmarkIDDecode(b *testing.B) {
 		_ = id.DecodeFromString("5ca1ab1eba5eba11")
 
 	}
-}
-
-func TestName(t *testing.T) {
-	fmt.Println(10e3)
 }
