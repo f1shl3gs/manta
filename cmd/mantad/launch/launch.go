@@ -234,12 +234,13 @@ func (l *Launcher) run() error {
 	service := kv.NewService(logger, kvStore)
 
 	var (
-		orgService       manta.OrganizationService = service
-		oplogService     manta.OperationLogService = service
-		dashboardService manta.DashboardService    = service
-		taskService      manta.TaskService         = service
-		configService    manta.ConfigService       = service
-		secretService    manta.SecretService       = service
+		orgService                  manta.OrganizationService         = service
+		oplogService                manta.OperationLogService         = service
+		dashboardService            manta.DashboardService            = service
+		taskService                 manta.TaskService                 = service
+		configService               manta.ConfigService               = service
+		secretService               manta.SecretService               = service
+		notificationEndpointService manta.NotificationEndpointService = service
 	)
 
 	var tenantStorage multitsdb.TenantStorage
@@ -343,6 +344,7 @@ func (l *Launcher) run() error {
 		configService = oplog.NewConfigService(configService, oplogService, logger)
 		dashboardService = oplog.NewDashboardService(dashboardService, oplogService, logger)
 		secretService = oplog.NewSecretService(secretService, oplogService, logger)
+		notificationEndpointService = oplog.NewNotificationEndpointService(notificationEndpointService, oplogService, logger)
 
 		hl := logger.With(zap.String("service", "http"))
 		handler := httpservice.New(hl, &httpservice.Backend{
@@ -362,7 +364,7 @@ func (l *Launcher) run() error {
 			ScrapeTargetService:         authorizer.NewScrapeTargetService(scrapeTargetService),
 			RegistryService:             service,
 			SecretService:               authorizer.NewSecretService(secretService),
-			NotificationEndpointService: service,
+			NotificationEndpointService: authorizer.NewNotificationEndpointService(notificationEndpointService),
 			OperationLogService:         oplogService,
 			TenantStorage:               tenantStorage,
 			TenantTargetRetriever:       targetRetrievers,

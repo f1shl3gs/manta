@@ -32,15 +32,16 @@ func (rt ResourceType) String() string {
 }
 
 const (
-	AuthorizationsResourceType = ResourceType("authorizations")
-	ChecksResourceType         = ResourceType("checks")
-	ConfigsResourceType        = ResourceType("configs")
-	DashboardsResourceType     = ResourceType("dashboards")
-	OrgsResourceType           = ResourceType("orgs")
-	SecretsResourceType        = ResourceType("scretes")
-	ScrapesResourceType        = ResourceType("scrapes")
-	TasksResourceType          = ResourceType("tasks")
-	UsersResourceType          = ResourceType("users")
+	AuthorizationsResourceType        = ResourceType("authorizations")
+	ChecksResourceType                = ResourceType("checks")
+	ConfigsResourceType               = ResourceType("configs")
+	DashboardsResourceType            = ResourceType("dashboards")
+	NotificationEndpointsResourceType = ResourceType("notifiactionEndpoints")
+	OrgsResourceType                  = ResourceType("orgs")
+	SecretsResourceType               = ResourceType("scretes")
+	ScrapesResourceType               = ResourceType("scrapes")
+	TasksResourceType                 = ResourceType("tasks")
+	UsersResourceType                 = ResourceType("users")
 
 	// InstanceResourceType is a special permission that allows ownership of the entire
 	// instance (creating orgs/operator tokens/etc)
@@ -52,6 +53,7 @@ var AllResourceTypes = []ResourceType{
 	ChecksResourceType,
 	ConfigsResourceType,
 	DashboardsResourceType,
+	NotificationEndpointsResourceType,
 	OrgsResourceType,
 	ScrapesResourceType,
 	SecretsResourceType,

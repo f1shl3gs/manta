@@ -67,7 +67,7 @@ type NotificationEndpointService interface {
 	// Returns the new notification endpoint after update.
 	UpdateNotificationEndpoint(ctx context.Context, id ID, ne NotificationEndpoint) (NotificationEndpoint, error)
 
-	// PatchNotificationENdpoint patch a single notification endpoint.
+	// PatchNotificationEndpoint patch a single notification endpoint.
 	// Returns the new notification endpoint after patch.
 	PatchNotificationEndpoint(ctx context.Context, id ID, upd NotificationEndpointUpdate) (NotificationEndpoint, error)
 
