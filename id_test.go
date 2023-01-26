@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-    "github.com/f1shl3gs/manta"
+	"github.com/f1shl3gs/manta"
 
 	"github.com/stretchr/testify/assert"
 )
