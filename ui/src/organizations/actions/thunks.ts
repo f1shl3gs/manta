@@ -1,18 +1,27 @@
+// Libraries
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
 
-import {Action, addOrg, setOrgs} from 'src/organizations/actions'
-import request from 'src/shared/utils/request'
+// Types
 import {RemoteDataState} from '@influxdata/clockface'
 import {Organization} from 'src/types/organization'
-
 import {OrgEntities} from 'src/types/schemas'
-import {arrayOfOrgs} from 'src/schemas'
-import {defaultErrorNotification} from 'src/shared/constants/notification'
+import {arrayOfOrgs, orgSchema} from 'src/schemas'
+
+// Actions
+import {Action, addOrg, setOrg, setOrgs} from 'src/organizations/actions'
 import {
+  info,
   notify,
   PublishNotificationAction,
 } from 'src/shared/actions/notifications'
+import {push, UpdateLocationActions} from '@lagunovsky/redux-react-router'
+
+// Utils
+import request from 'src/shared/utils/request'
+
+// Constants
+import {defaultErrorNotification} from 'src/shared/constants/notification'
 
 export const getOrgs =
   () =>
@@ -43,17 +52,29 @@ export const getOrgs =
 export const createOrg =
   (org: Organization) =>
   async (
-    dispatch: Dispatch<Action | PublishNotificationAction>
+    dispatch: Dispatch<
+      Action | PublishNotificationAction | UpdateLocationActions
+    >
   ): Promise<void> => {
     try {
-      const resp = await request('/api/v1/orgs', {method: 'POST', body: org})
+      const resp = await request('/api/v1/organizations', {
+        method: 'POST',
+        body: org,
+      })
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
 
-      const created = resp.data
+      dispatch(info('Create Organization success'))
 
-      dispatch(addOrg(created))
+      const norm = normalize<Organization, OrgEntities, string>(
+        resp.data,
+        orgSchema
+      )
+
+      dispatch(addOrg(norm))
+      dispatch(setOrg(resp.data))
+      dispatch(push(`/orgs/${norm.result}`))
     } catch (err) {
       console.error(err)
 

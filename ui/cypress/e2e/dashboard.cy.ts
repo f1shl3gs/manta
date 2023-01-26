@@ -22,8 +22,8 @@ describe('Dashboard', () => {
 
   it('can delete', () => {
     // delete dashboard from list
-    cy.getByTestID('dashboard-card-context--delete').click()
-    cy.getByTestID('context_menu-delete').click()
+    cy.getByTestID('dashboard-card-context--delete--button').click()
+    cy.getByTestID('dashboard-card-context--delete--confirm-button').click()
     cy.getByTestID('notification-success').should('have.length', 1)
 
     // should be empty
@@ -61,14 +61,13 @@ describe('Dashboard', () => {
     cy.get(`[class="cf-resource-description--preview untitled"]`).click()
     cy.getByTestID('input-field').type(`${desc}{enter}`)
 
-    cy.get('@org').then((org: Organization) => {
-      cy.request({
-        url: `/api/v1/dashboards?orgID=${org.id}`,
-      }).then(resp => {
-        expect(resp.status).eq(200)
-
-        expect(resp.body[0].desc).eq(desc)
+    cy.wait(1000) // wait for patch finished, redux introduce latency!?
+      .get('@org')
+      .then((org: Organization) => {
+        cy.request({url: `/api/v1/dashboards?orgID=${org.id}`}).then(resp => {
+          expect(resp.status).eq(200)
+          expect(resp.body[0].desc).eq(desc)
+        })
       })
-    })
   })
 })

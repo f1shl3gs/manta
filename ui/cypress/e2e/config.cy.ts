@@ -26,7 +26,7 @@ describe('Configuration', () => {
       cy.get('@org').then((org: Organization) => {
         cy.request({
           method: 'POST',
-          url: '/api/v1/configurations',
+          url: '/api/v1/configs',
           body: {
             name: 'foo',
             desc: 'bar',

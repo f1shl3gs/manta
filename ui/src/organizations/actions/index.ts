@@ -23,10 +23,10 @@ export const setOrgs = (
     schema,
   } as const)
 
-export const addOrg = (org: Organization) =>
+export const addOrg = (org: NormalizedSchema<OrgEntities, string>) =>
   ({
     type: ADD_ORG,
-    org,
+    schema: org,
   } as const)
 
 export const setOrg = (org: Organization) =>

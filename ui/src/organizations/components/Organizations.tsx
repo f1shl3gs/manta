@@ -5,13 +5,15 @@ import React, {FunctionComponent, ReactNode, useEffect, useState} from 'react'
 import Nav from 'src/layout/Nav'
 import PageSpinner from 'src/shared/components/PageSpinner'
 
+// Types
+import {RemoteDataState} from '@influxdata/clockface'
+
 // Hooks
 import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
 import {getOrgs} from 'src/organizations/actions/thunks'
 import {getOrg, getOrgs as selectOrgs} from 'src/organizations/selectors'
-import {RemoteDataState} from '@influxdata/clockface'
 import {setOrg} from 'src/organizations/actions'
 
 interface Props {

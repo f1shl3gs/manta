@@ -16,13 +16,13 @@ import {Link, useNavigate} from 'react-router-dom'
 import UserWidget from 'src/layout/UserWidget'
 
 // Hooks
-import {useOrg} from 'src/organizations/selectors'
 
 // Actions
 import {toggleNavBarState} from 'src/shared/actions/app'
 
 // Types
 import {AppState} from 'src/types/stores'
+import {useOrg} from 'src/organizations/selectors'
 
 const getNavItemActivation = (
   keywords: string[],

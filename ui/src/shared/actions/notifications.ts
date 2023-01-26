@@ -10,6 +10,8 @@ export const DISMISS_NOTIFICATION = 'DISMISS_NOTIFICATION'
 export type Action =
   | ReturnType<typeof notify>
   | ReturnType<typeof dismissNotification>
+  | ReturnType<typeof info>
+  | ReturnType<typeof error>
 
 export interface PublishNotificationAction {
   type: 'PUBLISH_NOTIFICATION'
@@ -28,18 +30,20 @@ export const dismissNotification = (id: string) =>
     id,
   } as const)
 
-export const error = (message: string) => ({
-  type: PUBLISH_NOTIFICATION,
-  notification: {
-    ...defaultErrorNotification,
-    message,
-  },
-})
+export const error = (message: string) =>
+  ({
+    type: PUBLISH_NOTIFICATION,
+    notification: {
+      ...defaultErrorNotification,
+      message,
+    },
+  } as const)
 
-export const info = (message: string) => ({
-  type: PUBLISH_NOTIFICATION,
-  notification: {
-    ...defaultSuccessNotification,
-    message,
-  },
-})
+export const info = (message: string) =>
+  ({
+    type: PUBLISH_NOTIFICATION,
+    notification: {
+      ...defaultSuccessNotification,
+      message,
+    },
+  } as const)

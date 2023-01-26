@@ -1,11 +1,32 @@
 import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
+import {get} from 'lodash'
 
 // Types
 import {Layout} from 'react-grid-layout'
-
-import request from 'src/shared/utils/request'
 import {GetState} from 'src/types/stores'
+import {RemoteDataState} from '@influxdata/clockface'
+import {ResourceType} from 'src/types/resources'
+import {DashboardEntities} from 'src/types/schemas'
+import {Dashboard} from 'src/types/dashboards'
+import {Cell, CellEntities} from 'src/types/cells'
+import {arrayOfDashboards, dashboardSchema} from 'src/schemas'
+
+import {
+  defaultErrorNotification,
+  defaultSuccessNotification,
+} from 'src/shared/constants/notification'
+
+import {arrayOfCells} from 'src/schemas/dashboards'
+
+// Actions
+import {
+  notify,
+  PublishNotificationAction,
+} from 'src/shared/actions/notifications'
+import {setViewName, setViewProperties} from 'src/timeMachine/actions'
+import {push} from '@lagunovsky/redux-react-router'
+import {setCells} from 'src/cells/actions/creators'
 import {
   Action,
   editDashboard,
@@ -13,28 +34,14 @@ import {
   setDashboard,
   setDashboards,
 } from 'src/dashboards/actions/creators'
-import {RemoteDataState} from '@influxdata/clockface'
-import {getByID, getStatus} from 'src/resources/selectors'
-import {ResourceType} from 'src/types/resources'
-import {getOrg, getOrgID} from 'src/organizations/selectors'
-import {DashboardEntities} from 'src/types/schemas'
-import {Dashboard} from 'src/types/dashboards'
-import {Cell, CellEntities} from 'src/types/cells'
-import {arrayOfDashboards, dashboardSchema} from 'src/schemas'
-import {
-  notify,
-  PublishNotificationAction,
-} from 'src/shared/actions/notifications'
-import {
-  defaultErrorNotification,
-  defaultSuccessNotification,
-} from 'src/shared/constants/notification'
-import {push} from '@lagunovsky/redux-react-router'
-import {setCells} from 'src/cells/actions/creators'
-import {arrayOfCells} from 'src/schemas/dashboards'
-import {get} from 'lodash'
+
+// Selectors
 import {getCells} from 'src/cells/selectors'
-import {setViewName, setViewProperties} from 'src/timeMachine/actions'
+import {getByID, getStatus} from 'src/resources/selectors'
+import {getOrg, getOrgID} from 'src/organizations/selectors'
+
+// Utils
+import request from 'src/shared/utils/request'
 
 export const getDashboard =
   (id: string) =>
@@ -77,15 +84,15 @@ export const getDashboards =
     dispatch: Dispatch<Action>,
     getState: GetState
   ): Promise<Dashboard[]> => {
+    const state = getState()
+    const org = getOrg(state)
+
     try {
-      const state = getState()
       if (
         getStatus(state, ResourceType.Dashboards) === RemoteDataState.NotStarted
       ) {
         dispatch(setDashboards(RemoteDataState.Loading))
       }
-
-      const org = getOrg(state)
 
       const resp = await request(`/api/v1/dashboards?orgID=${org.id}`)
       if (resp.status !== 200) {

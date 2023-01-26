@@ -1,6 +1,5 @@
 // Libraries
 import React, {FunctionComponent, useCallback} from 'react'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -26,6 +25,9 @@ import {Organization} from 'src/types/organization'
 // Actions
 import {SET_ORG} from 'src/organizations/actions'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+
 interface Props {
   visible: boolean
   dismiss: () => void
@@ -39,7 +41,7 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
   const navigate = useNavigate()
   const {orgs, current} = useSelector((state: AppState) => {
     const orgs = getAll<Organization>(state, ResourceType.Organizations)
-    const current = get(state, 'resources.orgs.org', null)
+    const current = getOrg(state)
 
     return {
       orgs,
@@ -82,7 +84,7 @@ const OrganizationsSwitcher: FunctionComponent<Props> = ({
 
                     setCurrent(org)
                     dismiss()
-                    navigate(`/orgs/${org.id}/dashboards`)
+                    navigate(`/orgs/${org.id}`)
                   }}
                 >
                   {org.name}

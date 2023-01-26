@@ -37,7 +37,7 @@ export const signout = () => async (dispatch): Promise<void> => {
     const resp = await request(`/api/v1/signout`, {
       method: 'DELETE'
     })
-    if (resp.status !== 200) {
+    if (resp.status !== 204) {
       throw new Error(resp.date.message)
     }
 
