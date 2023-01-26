@@ -21,7 +21,7 @@ type RegistryHandler struct {
 	registryService manta.RegistryService
 }
 
-func NewRegistryService(backend *Backend, logger *zap.Logger) {
+func NewRegistryHandler(backend *Backend, logger *zap.Logger) {
 	h := &RegistryHandler{
 		Router:          backend.router,
 		logger:          logger.With(zap.String("handler", "registry")),

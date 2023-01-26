@@ -114,7 +114,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewConfigService(backend, logger)
 	NewPromAPIHandler(backend, logger)
 	NewScrapeHandler(backend, logger)
-	NewRegistryService(backend, logger)
+	NewRegistryHandler(backend, logger)
 	NewChecksHandler(logger, backend.router, backend.CheckService, backend.TaskService, backend.OperationLogService)
 	NewTaskHandler(backend, logger)
 	NewSecretHandler(logger, backend)
