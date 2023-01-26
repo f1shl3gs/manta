@@ -2,13 +2,13 @@ package http
 
 import (
 	"context"
-	"github.com/f1shl3gs/manta/telemetry/prom"
 	"os"
 	"testing"
 
 	"github.com/f1shl3gs/manta/bolt"
 	"github.com/f1shl3gs/manta/kv"
 	"github.com/f1shl3gs/manta/kv/migration"
+	"github.com/f1shl3gs/manta/telemetry/prom"
 
 	"github.com/f1shl3gs/manta/http/router"
 	"github.com/stretchr/testify/require"
