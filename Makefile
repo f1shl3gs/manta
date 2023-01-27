@@ -1,13 +1,17 @@
+VERSION     := 0.1.0
+GIT_SHA     := $(shell git rev-parse --short HEAD)
+GIT_BRANCE  := $(shell git rev-parse --abbrev-ref HEAD)
 UISOURCES   := $(shell find ./ui -type f -not \( -path ./ui/dist/\* -o -path ./ui/node_modules/\* -o -name Makefile -prune \) )
 GOSROUCES   := $(shell find . -type f -name '*.go') go.mod go.sum
-LDFLAGS    	:= "-extldflags '-static' -s -w -X manta/version.Version=${VERSION} -X manta/version.GitSHA=${GIT_SHA} -X manta/version.GitBranch=${GIT_BRANCE}"
+
+LDFLAGS    	:= "-extldflags '-static' -s -w -X github.com/f1shl3gs/manta.Version=${VERSION} -X github.com/f1shl3gs/manta.Commit=${GIT_SHA} -X github.com/f1shl3gs/manta.Branch=${GIT_BRANCE}"
 GO			:= go
 
 export GOOS=$(shell go env GOOS)
 export GOBUILD=${GO} build -tags assets -ldflags ${LDFLAGS}
 
 .PHONY: build
-build: ui $(GOSROUCES)
+build:  $(GOSROUCES)
 	tar czf assets.tgz ui/build
 	CGO_ENABLED=0 $(GOBUILD) -o bin/mantad ./cmd/mantad
 

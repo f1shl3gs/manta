@@ -121,6 +121,7 @@ func New(logger *zap.Logger, backend *Backend) *Service {
 	NewNotificationEendpointHandler(logger, backend)
 	NewClusterServiceHandler(logger, backend)
 	NewOperationLogHandler(backend)
+	NewBuildInfoHandler(backend, logger)
 
 	ah := &AuthenticationHandler{
 		logger:               logger.With(zap.String("handler", "authentication")),
