@@ -8,8 +8,6 @@ import Organizations from 'src/organizations/components/Organizations'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import PageSpinner from 'src/shared/components/PageSpinner'
 import ToOrg from 'src/organizations/components/ToOrg'
-// DataPage is just a simple tabed page, it's small enough and it can reduce re-render
-import DataPage from 'src/data/DataPage'
 import Authenticate from 'src/me/components/Authenticate'
 import NotFound from 'src/shared/components/NotFound'
 
@@ -18,7 +16,6 @@ import {useSelector} from 'react-redux'
 
 // Selectors
 import {getPresentationMode} from 'src/shared/selectors/app'
-import AlertsIndex from './alerts/AlertsIndex'
 
 // Lazy load components
 const ChecksIndex = lazy(() => import('src/checks/components/ChecksIndex'))
@@ -40,6 +37,8 @@ const DashboardImportOverlay = lazy(
 const DashboardExportOverlay = lazy(
   () => import('src/dashboards/components/ExportOverlay')
 )
+const DataPage = lazy(() => import('src/data/DataPage'))
+const AlertsIndex = lazy(() => import('src/alerts/AlertsIndex'))
 
 const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)

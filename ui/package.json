@@ -27,6 +27,7 @@
     "react-virtualized": "^9.22.3",
     "redux-thunk": "^2.4.2",
     "reselect": "^4.1.7",
+    "source-map-explorer": "^2.5.3",
     "web-vitals": "^3.1.0"
   },
   "devDependencies": {
@@ -67,7 +68,8 @@
     "prettier": "pretty-quick --config .prettierrc.json --check '{src,cypress}/**/*.{ts,tsx}'",
     "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [

@@ -11,7 +11,7 @@ export GOOS=$(shell go env GOOS)
 export GOBUILD=${GO} build -tags assets -ldflags ${LDFLAGS}
 
 .PHONY: build
-build:  $(GOSROUCES)
+build: ui $(GOSROUCES)
 	tar czf assets.tgz ui/build
 	CGO_ENABLED=0 $(GOBUILD) -o bin/mantad ./cmd/mantad
 

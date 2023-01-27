@@ -11,7 +11,6 @@ import App from 'src/App'
 import {Provider} from 'react-redux'
 import Setup from 'src/Setup'
 import PageSpinner from 'src/shared/components/PageSpinner'
-import SetupPage from 'src/setup/components/SetupPage'
 
 // Styles
 import '@influxdata/clockface/dist/index.css'
@@ -26,6 +25,7 @@ import {ReduxRouter} from '@lagunovsky/redux-react-router'
 import {history} from 'src/store/history'
 
 // Lazy Load
+const SetupPage = lazy(() => import('src/setup/components/SetupPage'))
 const SignInPage = lazy(() => import('src/signin/LoginPage'))
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
