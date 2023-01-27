@@ -2,7 +2,7 @@ package version
 
 import (
 	"fmt"
-    
+
 	"github.com/f1shl3gs/manta"
 	"github.com/spf13/cobra"
 )

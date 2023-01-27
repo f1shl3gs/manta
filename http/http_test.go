@@ -2,6 +2,10 @@ package http
 
 import (
 	"context"
+	"fmt"
+	"github.com/stretchr/testify/assert"
+	"net/http"
+	"net/http/httputil"
 	"os"
 	"testing"
 
@@ -46,4 +50,15 @@ func NewTestHTTPService(t *testing.T) (*Service, *Backend) {
 	_ = os.RemoveAll(tmpFile)
 
 	return New(logger, backend), backend
+}
+
+func TestNE(t *testing.T) {
+	http.HandleFunc("/api/v1/alerts", func(w http.ResponseWriter, r *http.Request) {
+		data, err := httputil.DumpRequest(r, true)
+		assert.NoError(t, err)
+
+		fmt.Println(string(data))
+	})
+
+	http.ListenAndServe(":8080", nil)
 }
