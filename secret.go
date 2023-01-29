@@ -20,7 +20,7 @@ func (s SecretField) String() string {
 	return "secret: " + s.Key
 }
 
-func (s *SecretField) MarshalJSON() ([]byte, error) {
+func (s SecretField) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.String())
 }
 

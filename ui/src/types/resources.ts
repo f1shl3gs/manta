@@ -11,8 +11,8 @@ import {NotificationEndpoint} from 'src/types/notificationEndpoints'
 import {SortOptions} from 'src/types/sort'
 
 export interface Resource {
-  type: ResourceType
   id: string
+  type: ResourceType
 }
 
 export enum ResourceType {
@@ -75,6 +75,8 @@ export interface NotificationEndpointState
   extends NormalizedState<NotificationEndpoint> {
   searchTerm: string
   sortOptions: SortOptions
+
+  current: NotificationEndpoint
 }
 
 // ResourceState defines the types for normalized resources

@@ -7,13 +7,12 @@ import (
 	"net/http/httputil"
 	"strings"
 
-	"github.com/f1shl3gs/manta/http/router"
-
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 
 	"github.com/f1shl3gs/manta"
-	"github.com/f1shl3gs/manta/vertex"
+	"github.com/f1shl3gs/manta/config"
+	"github.com/f1shl3gs/manta/http/router"
 )
 
 const (
@@ -32,14 +31,14 @@ type ConfigHandler struct {
 	*router.Router
 
 	logger        *zap.Logger
-	configService *vertex.CoordinatingVertexService
+	configService *config.CoordinatingConfigService
 }
 
 func NewConfigService(backend *Backend, logger *zap.Logger) {
 	h := &ConfigHandler{
 		Router:        backend.router,
 		logger:        logger.With(zap.String("handle", "config")),
-		configService: vertex.NewCoordinatingVertexService(backend.ConfigService, logger),
+		configService: config.NewCoordinatingVertexService(backend.ConfigService, logger),
 	}
 
 	backend.PromRegistry.MustRegister(watchStreams)

@@ -14,7 +14,7 @@ var (
 	NotificationENdpointOrgIndexBucket = []byte("notificationendpointorgindex")
 )
 
-// FindNotificationByID returns a single notification endpoint by ID
+// FindNotificationEndpointByID returns a single notification endpoint by ID
 func (s *Service) FindNotificationEndpointByID(ctx context.Context, id manta.ID) (manta.NotificationEndpoint, error) {
 	var (
 		ne  manta.NotificationEndpoint
@@ -57,20 +57,20 @@ func (s *Service) FindNotificationEndpoints(
 	ctx context.Context,
 	filter manta.NotificationEndpointFilter,
 ) ([]manta.NotificationEndpoint, error) {
-	var (
-		list = make([]manta.NotificationEndpoint, 0)
-		err  error
-	)
+	list := make([]manta.NotificationEndpoint, 0)
+
+	prefix, err := filter.OrgID.Encode()
+	if err != nil {
+		return nil, err
+	}
 
 	err = s.kv.View(ctx, func(tx Tx) error {
-		prefix := filter.OrgID.String()
-
 		b, err := tx.Bucket(NotificationENdpointOrgIndexBucket)
 		if err != nil {
 			return err
 		}
 
-		cursor, err := b.Cursor(WithCursorHintPrefix(prefix))
+		cursor, err := b.ForwardCursor(prefix, WithCursorPrefix(prefix))
 		if err != nil {
 			return err
 		}

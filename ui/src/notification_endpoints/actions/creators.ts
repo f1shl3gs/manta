@@ -5,6 +5,10 @@ import {NormalizedSchema} from 'normalizr'
 import {RemoteDataState, Sort} from '@influxdata/clockface'
 import {NotificationEndpointEntities} from 'src/types/schemas'
 import {SortTypes} from 'src/types/sort'
+import {NotificationEndpoint} from 'src/types/notificationEndpoints'
+
+// Helpers
+import {defaultNotificationEndpoint} from 'src/notification_endpoints/reducers';
 
 // Action types
 export const SET_NOTIFICATION_ENDPOINTS = 'SET_NOTIFICATION_ENDPOINTS'
@@ -14,11 +18,22 @@ export const SET_NOTIFICATION_ENDPOINT_SEARCH_TERM =
   'SET_NOTIFICATION_ENDPOINT_SEARCH_TERM'
 export const SET_NOTIFICATION_ENDPOINT_SORT_OPTIONS =
   'SET_NOTIFICATION_ENDPOINT_SORT_OPTIONS'
+export const UPDATE_NOTIFICATION_ENDPOINT = 'UPDATE_NOTIFICATION_ENDPOINT'
+export const SET_CURRENT_NOTIFICATION_ENDPOINT =
+  'SET_CURRENT_NOTIFICATION_ENDPOINT'
 
 type NotificationEndpointSchema<R extends string | string[]> = NormalizedSchema<
   NotificationEndpointEntities,
   R
 >
+
+export const updateNotificationEndpoint = (
+  patch: Partial<NotificationEndpoint>
+) =>
+  ({
+    type: UPDATE_NOTIFICATION_ENDPOINT,
+    patch,
+  } as const)
 
 export const setNotificationEndpoints = (
   status: RemoteDataState,
@@ -68,9 +83,24 @@ export const setNotificationEndpointSortOptions = (
     },
   } as const)
 
+export const setCurrentNotificationEndpoint = (ne: NotificationEndpoint) =>
+  ({
+    type: SET_CURRENT_NOTIFICATION_ENDPOINT,
+    current: ne,
+  } as const)
+
+export const resetCurrentNotificationEndpoint = () =>
+  ({
+    type: SET_CURRENT_NOTIFICATION_ENDPOINT,
+    current: defaultNotificationEndpoint()
+  } as const)
+
 export type Action =
   | ReturnType<typeof setNotificationEndpoints>
   | ReturnType<typeof setNotificationEndpoint>
   | ReturnType<typeof removeNotificationEndpoint>
   | ReturnType<typeof setNotificationEndpointSearchTerm>
   | ReturnType<typeof setNotificationEndpointSortOptions>
+  | ReturnType<typeof updateNotificationEndpoint>
+  | ReturnType<typeof setCurrentNotificationEndpoint>
+  | ReturnType<typeof resetCurrentNotificationEndpoint>

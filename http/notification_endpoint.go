@@ -33,6 +33,7 @@ func NewNotificationEendpointHandler(logger *zap.Logger, backend *Backend) {
 
 	h.HandlerFunc(http.MethodGet, notificationEndpointPrefix, h.handleList)
 	h.HandlerFunc(http.MethodPost, notificationEndpointPrefix, h.handleCreate)
+	h.HandlerFunc(http.MethodGet, notificationEndpointIDPath, h.handleGet)
 	h.HandlerFunc(http.MethodPatch, notificationEndpointIDPath, h.handlePatch)
 	h.HandlerFunc(http.MethodPost, notificationEndpointIDPath, h.handleUpdate)
 	h.HandlerFunc(http.MethodDelete, notificationEndpointIDPath, h.handleDelete)
@@ -84,7 +85,29 @@ func (h *NotificationEndpointHandler) handleCreate(w http.ResponseWriter, r *htt
 		return
 	}
 
-	// response ?
+	if err = h.EncodeResponse(ctx, w, http.StatusCreated, ne); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
+}
+
+func (h *NotificationEndpointHandler) handleGet(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	id, err := idFromPath(r)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	ne, err := h.notificationEndpointService.FindNotificationEndpointByID(ctx, id)
+	if err != nil {
+		h.HandleHTTPError(ctx, err, w)
+		return
+	}
+
+	if err = h.EncodeResponse(ctx, w, http.StatusOK, ne); err != nil {
+		logEncodingError(h.logger, r, err)
+	}
 }
 
 func decodeNotificationEndpointUpdate(r *http.Request) (manta.NotificationEndpointUpdate, error) {

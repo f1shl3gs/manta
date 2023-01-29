@@ -11,10 +11,12 @@ import {NotificationEndpoint} from 'src/types/notificationEndpoints'
 import {
   Action,
   REMOVE_NOTIFICATION_ENDPOINT,
+  SET_CURRENT_NOTIFICATION_ENDPOINT,
   SET_NOTIFICATION_ENDPOINT,
   SET_NOTIFICATION_ENDPOINT_SEARCH_TERM,
   SET_NOTIFICATION_ENDPOINT_SORT_OPTIONS,
   SET_NOTIFICATION_ENDPOINTS,
+  UPDATE_NOTIFICATION_ENDPOINT,
 } from 'src/notification_endpoints/actions/creators'
 
 // Helper
@@ -23,6 +25,19 @@ import {
   setResource,
   setResourceAtID,
 } from 'src/resources/reducers/helpers'
+
+export const defaultNotificationEndpoint = (): NotificationEndpoint => ({
+  name: 'Name this Endpoint',
+  desc: '',
+  orgID: '',
+  status: RemoteDataState.NotStarted,
+
+  type: 'http',
+  method: 'POST',
+  url: '',
+  headers: {},
+  authMethod: 'none',
+})
 
 const initialState = (): NotificationEndpointState => ({
   allIDs: [],
@@ -34,6 +49,7 @@ const initialState = (): NotificationEndpointState => ({
     type: SortTypes.String,
     key: 'name',
   },
+  current: defaultNotificationEndpoint(),
 })
 
 export const notificationEndpointsReducer = (
@@ -58,6 +74,10 @@ export const notificationEndpointsReducer = (
         )
         return
 
+      case SET_CURRENT_NOTIFICATION_ENDPOINT:
+        draftState.current = action.current
+        return
+
       case REMOVE_NOTIFICATION_ENDPOINT:
         removeResource<NotificationEndpoint>(draftState, action)
         return
@@ -68,6 +88,13 @@ export const notificationEndpointsReducer = (
 
       case SET_NOTIFICATION_ENDPOINT_SORT_OPTIONS:
         draftState.sortOptions = action.payload
+        return
+
+      case UPDATE_NOTIFICATION_ENDPOINT:
+        draftState.current = {
+          ...draftState.current,
+          ...action.patch,
+        }
         return
 
       default:

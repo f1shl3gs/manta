@@ -1,9 +1,9 @@
 import {RemoteDataState} from '@influxdata/clockface'
 
 interface Base {
-  readonly id: string
-  readonly created: string
-  readonly updated: string
+  readonly id?: string
+  readonly created?: string
+  readonly updated?: string
 
   name: string
   desc: string
@@ -24,11 +24,11 @@ export interface HTTP extends Base {
   }
 
   authMethod: HTTPAuthMethod
-  username: string
-  password: string
-  token: string
+  username?: string
+  password?: string
+  token?: string
 
-  contentTemplate: string
+  contentTemplate?: string
 }
 
 export type NotificationEndpoint = HTTP

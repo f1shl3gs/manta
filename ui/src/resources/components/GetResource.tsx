@@ -11,6 +11,7 @@ import {Resource, ResourceType} from 'src/types/resources'
 // Actions
 import {getDashboard} from 'src/dashboards/actions/thunks'
 import {getCell} from 'src/cells/actions/thunks'
+import {getNotificationEndpoint} from 'src/notification_endpoints/actions/thunks'
 
 // Selectors
 import {getResourceStatus} from 'src/resources/selectors'
@@ -31,6 +32,7 @@ const mstp = (state: AppState, props: OwnProps) => {
 const mdtp = {
   getCell,
   getDashboard,
+  getNotificationEndpoint,
 }
 
 const connector = connect(mstp, mdtp)
@@ -38,7 +40,14 @@ const connector = connect(mstp, mdtp)
 type Props = OwnProps & ConnectedProps<typeof connector>
 
 const GetResource: FunctionComponent<Props> = props => {
-  const {loading, children, resources, getDashboard, getCell} = props
+  const {
+    loading,
+    children,
+    resources,
+    getDashboard,
+    getCell,
+    getNotificationEndpoint,
+  } = props
 
   useEffect(
     () => {
@@ -50,6 +59,9 @@ const GetResource: FunctionComponent<Props> = props => {
           case ResourceType.Cells:
             return getCell(id)
 
+          case ResourceType.NotificationEndpoints:
+            return getNotificationEndpoint(id)
+
           default:
             throw new Error(
               `incorrect resouce type: ${type} provided to GetResource`
@@ -57,13 +69,7 @@ const GetResource: FunctionComponent<Props> = props => {
         }
       }
 
-      const promises = []
-
-      resources.forEach(resource => {
-        promises.push(getResourceDetails(resource))
-      })
-
-      Promise.all(promises)
+      Promise.all(resources.map(resource => getResourceDetails(resource)))
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

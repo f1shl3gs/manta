@@ -19,14 +19,14 @@ type HTTP struct {
 	Base
 
 	URL        string            `json:"url"`
-	Headers    map[string]string `json:"headers"`
-	Username   manta.SecretField `json:"username"`
-	Password   manta.SecretField `json:"password"`
-	Token      manta.SecretField `json:"token"`
+	Headers    map[string]string `json:"headers,omitempty"`
+	Username   manta.SecretField `json:"username,omitempty"`
+	Password   manta.SecretField `json:"password,omitempty"`
+	Token      manta.SecretField `json:"token,omitempty"`
 	Method     string            `json:"method"`
 	AuthMethod string            `json:"authMethod"`
 
-	ContentTemplate string `json:"contentTemplate"`
+	ContentTemplate string `json:"contentTemplate,omitempty"`
 }
 
 // BackfillSecretKeys fill back fill the secret field key during the unmarshaling

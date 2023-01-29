@@ -13,21 +13,13 @@ export interface AppState {
   router: ReduxRouterState
 
   app: State
-
   autoRefresh: AutoRefreshState
-
   checkBuilder: CheckBuilderState
-
   me: MeState
-
   notifications: Notification[]
-
   resources: ResourceState
-
   setup: SetupState
-
   timeRange: TimeRangeState
-
   timeMachine: TimeMachineState
 }
 

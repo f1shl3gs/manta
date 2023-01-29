@@ -1,4 +1,4 @@
-package vertex
+package config
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type CoordinatingVertexService struct {
+type CoordinatingConfigService struct {
 	manta.ConfigService
 
 	logger *zap.Logger
@@ -22,8 +22,8 @@ type CoordinatingVertexService struct {
 func NewCoordinatingVertexService(
 	configService manta.ConfigService,
 	logger *zap.Logger,
-) *CoordinatingVertexService {
-	cs := &CoordinatingVertexService{
+) *CoordinatingConfigService {
+	cs := &CoordinatingConfigService{
 		ConfigService: configService,
 		logger:        logger,
 		broadcasters:  make(map[manta.ID]*broadcast.Broadcaster[*manta.Config]),
@@ -32,7 +32,7 @@ func NewCoordinatingVertexService(
 	return cs
 }
 
-func (s *CoordinatingVertexService) Sub(id manta.ID) *broadcast.Queue[*manta.Config] {
+func (s *CoordinatingConfigService) Sub(id manta.ID) *broadcast.Queue[*manta.Config] {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
@@ -45,22 +45,22 @@ func (s *CoordinatingVertexService) Sub(id manta.ID) *broadcast.Queue[*manta.Con
 	return b.Sub()
 }
 
-func (s *CoordinatingVertexService) CreateConfign(ctx context.Context, cf *manta.Config) error {
+func (s *CoordinatingConfigService) CreateConfign(ctx context.Context, cf *manta.Config) error {
 	return s.ConfigService.CreateConfig(ctx, cf)
 }
 
-func (s *CoordinatingVertexService) FindConfigByID(ctx context.Context, id manta.ID) (*manta.Config, error) {
+func (s *CoordinatingConfigService) FindConfigByID(ctx context.Context, id manta.ID) (*manta.Config, error) {
 	return s.ConfigService.FindConfigByID(ctx, id)
 }
 
-func (s *CoordinatingVertexService) FindConfigs(
+func (s *CoordinatingConfigService) FindConfigs(
 	ctx context.Context,
 	filter manta.ConfigFilter,
 ) ([]*manta.Config, error) {
 	return s.ConfigService.FindConfigs(ctx, filter)
 }
 
-func (s *CoordinatingVertexService) UpdateConfig(
+func (s *CoordinatingConfigService) UpdateConfig(
 	ctx context.Context,
 	id manta.ID,
 	upd manta.ConfigUpdate,
@@ -81,7 +81,7 @@ func (s *CoordinatingVertexService) UpdateConfig(
 	return cf, nil
 }
 
-func (s *CoordinatingVertexService) DeleteConfig(ctx context.Context, id manta.ID) error {
+func (s *CoordinatingConfigService) DeleteConfig(ctx context.Context, id manta.ID) error {
 	err := s.ConfigService.DeleteConfig(ctx, id)
 	if err != nil {
 		return err

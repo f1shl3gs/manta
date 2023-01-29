@@ -39,6 +39,12 @@ const DashboardExportOverlay = lazy(
 )
 const DataPage = lazy(() => import('src/data/DataPage'))
 const AlertsIndex = lazy(() => import('src/alerts/AlertsIndex'))
+const CEVOverlay = lazy(
+  () => import('src/notification_endpoints/components/CreateOverlay')
+)
+const ENOverlay = lazy(
+  () => import('src/notification_endpoints/components/EditNotificationOverlay')
+)
 
 const App: FunctionComponent = () => {
   const presentationMode = useSelector(getPresentationMode)
@@ -60,6 +66,14 @@ const App: FunctionComponent = () => {
                   <Route index={true} element={<Introduce />} />
 
                   <Route path="alerts/*" element={<AlertsIndex />} />
+                  <Route
+                    path="alerts/notificationEndpoints/new"
+                    element={<CEVOverlay />}
+                  />
+                  <Route
+                    path="alerts/notificationEndpoints/:id"
+                    element={<ENOverlay />}
+                  />
 
                   <Route path="checks/*" element={<ChecksIndex />} />
 
