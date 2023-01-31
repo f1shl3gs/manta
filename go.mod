@@ -27,7 +27,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible
-	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/bbolt v1.3.7
 	go.etcd.io/raft/v3 v3.0.0-20230111134043-eb615dae0bdf
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.1.0
