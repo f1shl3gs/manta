@@ -1,6 +1,5 @@
 // Libraries
 import React from 'react'
-import {get} from 'lodash'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -17,6 +16,9 @@ import {AppState} from 'src/types/stores'
 
 // Actions
 import {dismissNotification} from 'src/shared/actions/notifications'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 const matchGradientToColor = (style: NotificationStyle): Gradients => {
   const converter = {

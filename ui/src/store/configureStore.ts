@@ -16,7 +16,6 @@ import {
 import {AppState} from 'src/types/stores'
 import {LocalStorage} from 'src/types/localStorage'
 import {loadLocalStorage} from 'src/store/localStorage'
-// import persistStateEnhancer from 'src/store/persistStateEnhancer'
 
 // Global history
 import {history} from 'src/store/history'
@@ -76,7 +75,6 @@ function configureStore(
 ): Store<AppState> {
   const routerMiddleware = createRouterMiddleware(history)
   const create = composeEnhancers(
-    // persistStateEnhancer(),
     applyMiddleware(thunkMiddleware, routerMiddleware, resizeLayout)
   )(createStore)
 

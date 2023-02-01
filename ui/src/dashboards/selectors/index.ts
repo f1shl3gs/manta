@@ -1,11 +1,13 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {AppState} from 'src/types/stores'
 import {ResourceType} from 'src/types/resources'
-import {getByID} from '../../resources/selectors'
-import {Dashboard} from '../../types/dashboards'
+import {Dashboard} from 'src/types/dashboards'
+
+// Selectors
+import {getByID} from 'src/resources/selectors'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 export const getDashboardID = (state: AppState): string => {
   return get(state, 'resources.dashboards.current', '')

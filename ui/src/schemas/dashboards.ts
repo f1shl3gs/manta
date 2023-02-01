@@ -1,7 +1,8 @@
-import {RemoteDataState} from '@influxdata/clockface'
-import {omit} from 'lodash'
+// Libraries
 import {schema} from 'normalizr'
 
+// Types
+import {RemoteDataState} from '@influxdata/clockface'
 import {Cell} from 'src/types/cells'
 import {Dashboard} from 'src/types/dashboards'
 import {ResourceType} from 'src/types/resources'
@@ -15,13 +16,14 @@ export const cellSchema = new schema.Entity(
   {
     processStrategy: (cell: Cell, parent: Dashboard) => {
       return {
-        ...omit<Cell>(cell, 'properties'),
+        ...cell,
         dashboardID: cell.dashboardID ? cell.dashboardID : parent.id,
         status: RemoteDataState.Done,
       }
     },
   }
 )
+
 export const arrayOfCells = [cellSchema]
 
 // Defines the schema for the "dashboards" resource

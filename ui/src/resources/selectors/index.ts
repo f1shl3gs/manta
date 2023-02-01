@@ -1,13 +1,14 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {AppState} from 'src/types/stores'
 import {ResourceType} from 'src/types/resources'
+import {RemoteDataState} from '@influxdata/clockface'
 
+// Selectors
 import {getResourcesStatus} from 'src/resources/selectors/GetResourcesStatus'
 import {getResourceStatus} from 'src/resources/selectors/GetResourceStatus'
-import {RemoteDataState} from '@influxdata/clockface'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 export {getResourceStatus, getResourcesStatus}
 

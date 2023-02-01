@@ -1,9 +1,9 @@
+// Libraries
 import {produce} from 'immer'
-import {get} from 'lodash'
 
+// Types
 import {ResourceState} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
-
 import {
   Action,
   REMOVE_CELL,
@@ -11,6 +11,9 @@ import {
   SET_CELLS,
 } from 'src/cells/actions/creators'
 import {Cell} from 'src/types/cells'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 type CellsState = ResourceState['cells']
 
@@ -33,7 +36,7 @@ export const cellsReducer = (
         const {status, schema} = action
         draftState.status = status
 
-        if (get(schema, ['entities', 'cells'])) {
+        if (get(schema, 'entities.cells')) {
           draftState.byID = schema.entities['cells']
         }
         return
@@ -41,7 +44,7 @@ export const cellsReducer = (
 
       case SET_CELL:
         const {id, schema, status} = action
-        const cell: Cell = get(schema, ['entities', 'cells', id])
+        const cell: Cell = get(schema, `entities.cells.${id}`)
         const exists = !!draftState.byID[id]
 
         if (cell || !exists) {

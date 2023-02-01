@@ -1,11 +1,12 @@
-import {get} from 'lodash'
-
 import {RemoteDataState} from '@influxdata/clockface'
 import {Resource} from 'src/types/resources'
 import {AppState} from 'src/types/stores'
 
+// Utils
+import {get} from 'src/shared/utils/get'
+
 const getStatus = ({resources}: AppState, {type, id}: Resource) => {
-  return get(resources, [type, 'byID', id, 'status'], RemoteDataState.Loading)
+  return get(resources, `${type}.byID.${id}.status`, RemoteDataState.Loading)
 }
 
 export const getResourceStatus = (

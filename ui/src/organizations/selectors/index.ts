@@ -1,5 +1,4 @@
 // Libraries
-import {get} from 'lodash'
 import {useSelector} from 'react-redux'
 
 // Types
@@ -9,6 +8,9 @@ import {ResourceType} from 'src/types/resources'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 export const getOrg = (state: AppState): Organization => {
   return get(state, 'resources.organizations.org', null)

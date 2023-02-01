@@ -1,5 +1,8 @@
+// Types
 import {LocalStorage} from 'src/types/localStorage'
-import {get} from 'lodash'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 const StateKey = 'state'
 
@@ -34,13 +37,5 @@ const normalizeApp = (app: LocalStorage['app']) => {
     persisted: {
       ...app.persisted,
     },
-  }
-}
-
-export const saveToLocalStorage = (state: LocalStorage): void => {
-  try {
-    window.localStorage.setItem(StateKey, JSON.stringify(state))
-  } catch (err) {
-    console.error(`Unable to save state to local storage: ${err}`)
   }
 }

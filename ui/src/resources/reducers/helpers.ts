@@ -1,8 +1,9 @@
-// Libraries
-import {get} from 'lodash'
-
+// Types
 import {NormalizedState, ResourceType} from 'src/types/resources'
 import {RemoteDataState} from '@influxdata/clockface'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 export const setResourceAtID = <R extends {status: RemoteDataState}>(
   draftState: NormalizedState<R>,
@@ -10,8 +11,8 @@ export const setResourceAtID = <R extends {status: RemoteDataState}>(
   resource: ResourceType
 ) => {
   const {schema, status, id} = action
-  const prevResource = get(draftState, ['byID', id], {})
-  const currentResource = get(schema, ['entities', resource, id], {})
+  const prevResource = get(draftState, `byID.${id}`, {})
+  const currentResource = get(schema, `entities.${resource}.${id}`, {})
 
   if (!draftState.allIDs.includes(id)) {
     draftState.allIDs.push(id)
@@ -27,8 +28,8 @@ export const setResource = <R>(
 ) => {
   const {status, schema} = action
   draftState.status = status
-  
-  if (get(schema, ['entities', resource])) {
+
+  if (get(schema, `entities.${resource}`)) {
     draftState.byID = schema.entities[resource]
     draftState.allIDs = schema.result
   } else {

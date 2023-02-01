@@ -1,23 +1,32 @@
-import {get} from 'lodash'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  defaultDeletionNotification,
-  defaultErrorNotification,
-} from 'src/shared/constants/notification'
+// Libraries
+import {normalize} from 'normalizr'
+
+// Types
 import {Dashboard} from 'src/types/dashboards'
 import {GetState} from 'src/types/stores'
-import request from 'src/shared/utils/request'
-import * as creators from 'src/cells/actions/creators'
-import {setCell} from 'src/cells/actions/creators'
-import {getByID} from 'src/resources/selectors'
 import {ResourceType} from 'src/types/resources'
-import {normalize} from 'normalizr'
 import {DashboardEntities} from 'src/types/schemas'
 import {dashboardSchema} from 'src/schemas'
 import {cellSchema} from 'src/schemas/dashboards'
 import {Cell, CellEntities, ViewProperties, ViewType} from 'src/types/cells'
 import {RemoteDataState} from '@influxdata/clockface'
+
+// Actions
+import {notify} from 'src/shared/actions/notifications'
+import {
+  defaultDeletionNotification,
+  defaultErrorNotification,
+} from 'src/shared/constants/notification'
+import * as creators from 'src/cells/actions/creators'
+import {setCell} from 'src/cells/actions/creators'
 import {back} from '@lagunovsky/redux-react-router'
+
+// Selectors
+import {getByID} from 'src/resources/selectors'
+
+// Utils
+import {get} from 'src/shared/utils/get'
+import request from 'src/shared/utils/request'
 
 export const getCell =
   (cellID: string) =>

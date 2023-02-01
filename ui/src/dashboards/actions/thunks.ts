@@ -1,6 +1,6 @@
+// Libraries
 import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
-import {get} from 'lodash'
 
 // Types
 import {Layout} from 'react-grid-layout'
@@ -11,12 +11,6 @@ import {DashboardEntities} from 'src/types/schemas'
 import {Dashboard} from 'src/types/dashboards'
 import {Cell, CellEntities} from 'src/types/cells'
 import {arrayOfDashboards, dashboardSchema} from 'src/schemas'
-
-import {
-  defaultErrorNotification,
-  defaultSuccessNotification,
-} from 'src/shared/constants/notification'
-
 import {arrayOfCells} from 'src/schemas/dashboards'
 
 // Actions
@@ -42,6 +36,13 @@ import {getOrg, getOrgID} from 'src/organizations/selectors'
 
 // Utils
 import request from 'src/shared/utils/request'
+import {get} from 'src/shared/utils/get'
+
+// Constants
+import {
+  defaultErrorNotification,
+  defaultSuccessNotification,
+} from 'src/shared/constants/notification'
 
 export const getDashboard =
   (id: string) =>

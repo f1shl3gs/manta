@@ -1,7 +1,9 @@
+// Types
 import {Sort} from '@influxdata/clockface'
-
 import {SortTypes} from 'src/types/sort'
-import {get} from 'lodash'
+
+// Utils
+import {get} from 'src/shared/utils/get'
 
 function sortBy<T>(
   resourceList: T[],

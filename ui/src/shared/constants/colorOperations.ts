@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import chroma from 'chroma-js'
 
 import {
@@ -23,8 +22,9 @@ const getLegibleTextColor = bgColorHex => {
 
 //@ts-ignore
 const findNearestCrossedThreshold = (colors, lastValue) => {
-  const sortedColors = _.sortBy(colors, color => Number(color.value))
-  const nearestCrossedThreshold = sortedColors
+  colors.sort((a, b) => Number(a.value) - Number(b.value))
+
+  const nearestCrossedThreshold = colors
     .filter(color => lastValue >= color.value)
     .pop()
 
