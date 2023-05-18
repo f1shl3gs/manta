@@ -3,7 +3,7 @@ module github.com/f1shl3gs/manta
 go 1.19
 
 require (
-	github.com/benbjohnson/clock v1.3.0
+	github.com/benbjohnson/clock v1.3.5
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/go-kit/log v0.2.1
 	github.com/gogo/protobuf v1.3.3-0.20221024144010-f67b8970b736
